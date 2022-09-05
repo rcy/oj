@@ -9,6 +9,8 @@ import logger from 'morgan';
 import { ensureLoggedIn } from 'connect-ensure-login';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import connectPgSimple from 'connect-pg-simple';
+import { postgraphile } from 'postgraphile';
+import pgSimplifyInflector from '@graphile-contrib/pg-simplify-inflector';
 
 import pg from 'pg';
 const pgPool = new pg.Pool({
@@ -56,6 +58,25 @@ passport.deserializeUser(function(user, cb) {
 });
 
 const app = express();
+
+// https://www.graphile.org/postgraphile/usage-library/
+app.use(postgraphile(pgPool, ['app_public'], {
+  watchPg: true,
+  ownerConnectionString: process.env.WATCH_DATABASE_URL,
+  graphiql: true,
+  enhanceGraphiql: true,
+  //subscriptions: true,
+  dynamicJson: true,
+  setofFunctionsContainNulls: false,
+  ignoreRBAC: false,
+  showErrorStack: 'json',
+  extendedErrors: ['hint', 'detail', 'errcode'],
+  allowExplain: true, // don't use in production
+  legacyRelations: 'omit',
+  //exportGqlSchemaPath: `${__dirname}/schema.graphql`,
+  sortExport: true,
+  appendPlugins: [pgSimplifyInflector],
+}));
 
 app.use(logger('dev'));
 app.use(express.json());
