@@ -5,7 +5,7 @@ const config = {
   server: {
     proxy: {
       '/auth': {
-        target: 'http://localhost:3108'
+        target: 'http://localhost:5100'
       },
       '/graphql': {
         target: 'http://localhost:5000'

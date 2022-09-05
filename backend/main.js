@@ -102,4 +102,5 @@ app.get('/welcome', ensureLoggedIn('/auth/google'), function(req,res) {
   res.send(`welcome ${req.user.id}`)
 })
 
-app.listen(process.env.PORT || 3108)
+console.log(`express listening on ${process.env.PORT}`)
+app.listen(process.env.PORT)
