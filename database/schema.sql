@@ -218,7 +218,7 @@ GRANT SELECT,UPDATE ON TABLE app_public.users TO visitor;
 -- Name: TABLE authentications; Type: ACL; Schema: app_public; Owner: -
 --
 
-GRANT ALL ON TABLE app_public.authentications TO visitor;
+GRANT SELECT ON TABLE app_public.authentications TO visitor;
 
 
 --
