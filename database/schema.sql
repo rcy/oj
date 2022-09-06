@@ -121,6 +121,18 @@ CREATE TABLE app_public.authentications (
 
 
 --
+-- Name: families; Type: TABLE; Schema: app_public; Owner: -
+--
+
+CREATE TABLE app_public.families (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    user_id uuid NOT NULL
+);
+
+
+--
 -- Name: passport_sessions session_pkey; Type: CONSTRAINT; Schema: app_private; Owner: -
 --
 
@@ -142,6 +154,22 @@ ALTER TABLE ONLY app_public.authentications
 
 ALTER TABLE ONLY app_public.authentications
     ADD CONSTRAINT authentications_service_identifier_key UNIQUE (service, identifier);
+
+
+--
+-- Name: families families_pkey; Type: CONSTRAINT; Schema: app_public; Owner: -
+--
+
+ALTER TABLE ONLY app_public.families
+    ADD CONSTRAINT families_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: families families_user_id_key; Type: CONSTRAINT; Schema: app_public; Owner: -
+--
+
+ALTER TABLE ONLY app_public.families
+    ADD CONSTRAINT families_user_id_key UNIQUE (user_id);
 
 
 --
@@ -168,10 +196,24 @@ ALTER TABLE ONLY app_public.authentications
 
 
 --
+-- Name: families families_user_id_fkey; Type: FK CONSTRAINT; Schema: app_public; Owner: -
+--
+
+ALTER TABLE ONLY app_public.families
+    ADD CONSTRAINT families_user_id_fkey FOREIGN KEY (user_id) REFERENCES app_public.users(id);
+
+
+--
 -- Name: authentications; Type: ROW SECURITY; Schema: app_public; Owner: -
 --
 
 ALTER TABLE app_public.authentications ENABLE ROW LEVEL SECURITY;
+
+--
+-- Name: families; Type: ROW SECURITY; Schema: app_public; Owner: -
+--
+
+ALTER TABLE app_public.families ENABLE ROW LEVEL SECURITY;
 
 --
 -- Name: users select_all; Type: POLICY; Schema: app_public; Owner: -
@@ -185,6 +227,13 @@ CREATE POLICY select_all ON app_public.users FOR SELECT USING (true);
 --
 
 CREATE POLICY select_own ON app_public.authentications FOR SELECT USING ((user_id = app_public.user_id()));
+
+
+--
+-- Name: families select_own; Type: POLICY; Schema: app_public; Owner: -
+--
+
+CREATE POLICY select_own ON app_public.families FOR SELECT USING ((user_id = app_public.user_id()));
 
 
 --
@@ -219,6 +268,20 @@ GRANT SELECT,UPDATE ON TABLE app_public.users TO visitor;
 --
 
 GRANT SELECT ON TABLE app_public.authentications TO visitor;
+
+
+--
+-- Name: TABLE families; Type: ACL; Schema: app_public; Owner: -
+--
+
+GRANT SELECT ON TABLE app_public.families TO visitor;
+
+
+--
+-- Name: COLUMN families.user_id; Type: ACL; Schema: app_public; Owner: -
+--
+
+GRANT INSERT(user_id) ON TABLE app_public.families TO visitor;
 
 
 --
