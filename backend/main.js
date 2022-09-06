@@ -59,25 +59,6 @@ passport.deserializeUser(function(user, cb) {
 
 const app = express();
 
-// https://www.graphile.org/postgraphile/usage-library/
-app.use(postgraphile(pgPool, ['app_public'], {
-  watchPg: true,
-  ownerConnectionString: process.env.WATCH_DATABASE_URL,
-  graphiql: true,
-  enhanceGraphiql: true,
-  //subscriptions: true,
-  dynamicJson: true,
-  setofFunctionsContainNulls: false,
-  ignoreRBAC: false,
-  showErrorStack: 'json',
-  extendedErrors: ['hint', 'detail', 'errcode'],
-  allowExplain: true, // don't use in production
-  legacyRelations: 'omit',
-  //exportGqlSchemaPath: `${__dirname}/schema.graphql`,
-  sortExport: true,
-  appendPlugins: [pgSimplifyInflector],
-}));
-
 app.use(logger('dev'));
 app.use(express.json());
 app.use(cookieParser());
@@ -122,6 +103,32 @@ app.get('/', function(req,res) {
 app.get('/welcome', ensureLoggedIn('/auth/google'), function(req,res) {
   res.send(`welcome ${req.user.id}`)
 })
+
+// https://www.graphile.org/postgraphile/usage-library/
+app.use(postgraphile(pgPool, ['app_public'], {
+  watchPg: true,
+  ownerConnectionString: process.env.WATCH_DATABASE_URL,
+  graphiql: true,
+  enhanceGraphiql: true,
+  //subscriptions: true,
+  dynamicJson: true,
+  setofFunctionsContainNulls: false,
+  ignoreRBAC: false,
+  showErrorStack: 'json',
+  extendedErrors: ['hint', 'detail', 'errcode'],
+  allowExplain: true, // don't use in production
+  legacyRelations: 'omit',
+  //exportGqlSchemaPath: `${__dirname}/schema.graphql`,
+  sortExport: true,
+  appendPlugins: [pgSimplifyInflector],
+  pgSettings: function(req) {
+    console.log('**************************************************************** req.user', req.user)
+    return {
+      'role': 'visitor',
+      'user.id': req.user,
+    }
+  },
+}));
 
 console.log(`express listening on ${process.env.PORT}`)
 app.listen(process.env.PORT)
