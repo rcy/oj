@@ -14,7 +14,7 @@ import pgSimplifyInflector from '@graphile-contrib/pg-simplify-inflector';
 
 import pg from 'pg';
 const pgPool = new pg.Pool({
-  connectionString: process.env.DATABASE_URL,
+  connectionString: process.env.VISITOR_DATABASE_URL,
 });
 pgPool.on('error', (err, client) => {
   console.error('Unexpected error on idle pg client', err);
@@ -68,7 +68,7 @@ app.use(session({
   resave: false, // don't save session if unmodified
   saveUninitialized: false, // don't create session until something stored
   store: new (connectPgSimple(session))({
-    pool: pgPool,
+    conString: process.env.DATABASE_URL,
     schemaName: 'app_private',
     tableName: 'passport_sessions',
   })
@@ -124,7 +124,7 @@ app.use(postgraphile(pgPool, ['app_public'], {
   pgSettings: function(req) {
     console.log('**************************************************************** req.user', req.user)
     return {
-      'role': 'visitor',
+      //'role': 'visitor',
       'user.id': req.user,
     }
   },
