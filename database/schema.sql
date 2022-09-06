@@ -163,11 +163,31 @@ ALTER TABLE ONLY app_public.authentications
 ALTER TABLE app_public.authentications ENABLE ROW LEVEL SECURITY;
 
 --
+-- Name: users select_all; Type: POLICY; Schema: app_public; Owner: -
+--
+
+CREATE POLICY select_all ON app_public.users FOR SELECT USING (true);
+
+
+--
 -- Name: authentications select_own; Type: POLICY; Schema: app_public; Owner: -
 --
 
 CREATE POLICY select_own ON app_public.authentications FOR SELECT USING ((user_id = app_public.user_id()));
 
+
+--
+-- Name: users update_own; Type: POLICY; Schema: app_public; Owner: -
+--
+
+CREATE POLICY update_own ON app_public.users FOR UPDATE USING ((id = app_public.user_id()));
+
+
+--
+-- Name: users; Type: ROW SECURITY; Schema: app_public; Owner: -
+--
+
+ALTER TABLE app_public.users ENABLE ROW LEVEL SECURITY;
 
 --
 -- Name: SCHEMA app_public; Type: ACL; Schema: -; Owner: -
@@ -187,7 +207,7 @@ GRANT ALL ON TABLE app_public.authentications TO visitor;
 -- Name: TABLE users; Type: ACL; Schema: app_public; Owner: -
 --
 
-GRANT ALL ON TABLE app_public.users TO visitor;
+GRANT SELECT,UPDATE ON TABLE app_public.users TO visitor;
 
 
 --
