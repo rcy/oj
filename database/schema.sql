@@ -38,10 +38,10 @@ CREATE SCHEMA app_public;
 
 
 --
--- Name: create_user_authentication(text, text, text, jsonb); Type: FUNCTION; Schema: app_public; Owner: -
+-- Name: create_user_authentication(text, text, text, jsonb); Type: FUNCTION; Schema: app_private; Owner: -
 --
 
-CREATE FUNCTION app_public.create_user_authentication(name text, service text, identifier text, details jsonb) RETURNS uuid
+CREATE FUNCTION app_private.create_user_authentication(name text, service text, identifier text, details jsonb) RETURNS uuid
     LANGUAGE plpgsql STRICT
     AS $$
 declare

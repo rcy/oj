@@ -13,11 +13,15 @@ import { postgraphile } from 'postgraphile';
 import pgSimplifyInflector from '@graphile-contrib/pg-simplify-inflector';
 
 import pg from 'pg';
-const pgPool = new pg.Pool({
-  connectionString: process.env.VISITOR_DATABASE_URL,
+const pgAppPool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
+pgAppPool.on('error', (err, client) => {
+  console.error('Unexpected error on idle pg client (pgAppPool)', err);
+  process.exit(-1);
 });
-pgPool.on('error', (err, client) => {
-  console.error('Unexpected error on idle pg client', err);
+
+const pgVisitorPool = new pg.Pool({ connectionString: process.env.VISITOR_DATABASE_URL });
+pgVisitorPool.on('error', (err, client) => {
+  console.error('Unexpected error on idle pg client (pgVisitorPool)', err);
   process.exit(-1);
 });
 
@@ -28,14 +32,14 @@ passport.use(
     callbackURL: process.env.GOOGLE_CALLBACK_URL,
   }, async function(accessToken, refreshToken, profile, cb) {
     console.log('GoogleStrategy 1', profile)
-    const client = await pgPool.connect();
+    const client = await pgAppPool.connect();
     try {
       const res1 = await client.query("select user_id from app_public.authentications where service = 'google' and identifier = $1", [profile.id])
       console.log('GoogleStrategy 2.0', res1.rows[0])
       if (res1.rows[0]) {
         return cb(null, res1.rows[0].user_id)
       } else {
-        const res2 = await client.query(`select app_public.create_user_authentication(service:='google', name:=$1, identifier:=$2, details:=$3)`,
+        const res2 = await client.query(`select app_private.create_user_authentication(service:='google', name:=$1, identifier:=$2, details:=$3)`,
                                         [profile._json.name, profile.id, profile])
         return cb(null, res2.rows[0]['create_user_authentication'])
       }
@@ -68,7 +72,7 @@ app.use(session({
   resave: false, // don't save session if unmodified
   saveUninitialized: false, // don't create session until something stored
   store: new (connectPgSimple(session))({
-    conString: process.env.DATABASE_URL,
+    pool: pgAppPool,
     schemaName: 'app_private',
     tableName: 'passport_sessions',
   })
@@ -105,7 +109,7 @@ app.get('/welcome', ensureLoggedIn('/auth/google'), function(req,res) {
 })
 
 // https://www.graphile.org/postgraphile/usage-library/
-app.use(postgraphile(pgPool, ['app_public'], {
+app.use(postgraphile(pgVisitorPool, ['app_public'], {
   watchPg: true,
   ownerConnectionString: process.env.WATCH_DATABASE_URL,
   graphiql: true,
