@@ -122,7 +122,7 @@ app.use(postgraphile(pgVisitorPool, ['app_public'], {
   extendedErrors: ['hint', 'detail', 'errcode'],
   allowExplain: true, // don't use in production
   legacyRelations: 'omit',
-  //exportGqlSchemaPath: `${__dirname}/schema.graphql`,
+  exportGqlSchemaPath: `./schema.graphql`, //`${__dirname}/schema.graphql`,
   sortExport: true,
   appendPlugins: [pgSimplifyInflector],
   pgSettings: function(req) {
