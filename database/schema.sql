@@ -54,6 +54,35 @@ end;
 $$;
 
 
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
+--
+-- Name: users; Type: TABLE; Schema: app_public; Owner: -
+--
+
+CREATE TABLE app_public.users (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    name text NOT NULL,
+    avatar_url text,
+    CONSTRAINT users_avatar_url_check CHECK ((avatar_url ~ '^https?://[^/]+'::text))
+);
+
+
+--
+-- Name: current_user(); Type: FUNCTION; Schema: app_public; Owner: -
+--
+
+CREATE FUNCTION app_public."current_user"() RETURNS app_public.users
+    LANGUAGE sql STABLE
+    AS $$
+  select users.* from app_public.users where id = app_public.user_id();
+$$;
+
+
 --
 -- Name: user_id(); Type: FUNCTION; Schema: app_public; Owner: -
 --
@@ -64,10 +93,6 @@ CREATE FUNCTION app_public.user_id() RETURNS uuid
   select nullif(current_setting('user.id', true), '')::uuid;
 $$;
 
-
-SET default_tablespace = '';
-
-SET default_table_access_method = heap;
 
 --
 -- Name: passport_sessions; Type: TABLE; Schema: app_private; Owner: -
@@ -92,20 +117,6 @@ CREATE TABLE app_public.authentications (
     service text NOT NULL,
     identifier text NOT NULL,
     details jsonb DEFAULT '{}'::jsonb NOT NULL
-);
-
-
---
--- Name: users; Type: TABLE; Schema: app_public; Owner: -
---
-
-CREATE TABLE app_public.users (
-    id uuid DEFAULT gen_random_uuid() NOT NULL,
-    created_at timestamp with time zone DEFAULT now() NOT NULL,
-    updated_at timestamp with time zone DEFAULT now() NOT NULL,
-    name text NOT NULL,
-    avatar_url text,
-    CONSTRAINT users_avatar_url_check CHECK ((avatar_url ~ '^https?://[^/]+'::text))
 );
 
 
@@ -197,17 +208,17 @@ GRANT ALL ON SCHEMA app_public TO visitor;
 
 
 --
--- Name: TABLE authentications; Type: ACL; Schema: app_public; Owner: -
---
-
-GRANT ALL ON TABLE app_public.authentications TO visitor;
-
-
---
 -- Name: TABLE users; Type: ACL; Schema: app_public; Owner: -
 --
 
 GRANT SELECT,UPDATE ON TABLE app_public.users TO visitor;
+
+
+--
+-- Name: TABLE authentications; Type: ACL; Schema: app_public; Owner: -
+--
+
+GRANT ALL ON TABLE app_public.authentications TO visitor;
 
 
 --
