@@ -28,5 +28,11 @@ watch:
 commit:
 	npx graphile-migrate commit
 
-reset: down
+uncommit:
+	npx graphile-migrate uncommit
+
+reset:
+	npx graphile-migrate reset --erase
+
+hardreset: down
 	rm -rf .gmrc migrations
