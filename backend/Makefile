@@ -1,2 +1,2 @@
 dev:
-	npx nodemon main.js
+	npx nodemon server.js
