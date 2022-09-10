@@ -68,6 +68,7 @@ CREATE TABLE app_public.users (
     updated_at timestamp with time zone DEFAULT now() NOT NULL,
     name text NOT NULL,
     avatar_url text,
+    person_id uuid,
     CONSTRAINT users_avatar_url_check CHECK ((avatar_url ~ '^https?://[^/]+'::text))
 );
 
@@ -133,6 +134,67 @@ CREATE TABLE app_public.families (
 
 
 --
+-- Name: family_memberships; Type: TABLE; Schema: app_public; Owner: -
+--
+
+CREATE TABLE app_public.family_memberships (
+    family_id uuid NOT NULL,
+    person_id uuid NOT NULL,
+    role_id integer NOT NULL,
+    title text
+);
+
+
+--
+-- Name: family_roles; Type: TABLE; Schema: app_public; Owner: -
+--
+
+CREATE TABLE app_public.family_roles (
+    id integer NOT NULL,
+    name text NOT NULL
+);
+
+
+--
+-- Name: family_roles_id_seq; Type: SEQUENCE; Schema: app_public; Owner: -
+--
+
+CREATE SEQUENCE app_public.family_roles_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: family_roles_id_seq; Type: SEQUENCE OWNED BY; Schema: app_public; Owner: -
+--
+
+ALTER SEQUENCE app_public.family_roles_id_seq OWNED BY app_public.family_roles.id;
+
+
+--
+-- Name: people; Type: TABLE; Schema: app_public; Owner: -
+--
+
+CREATE TABLE app_public.people (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    name text NOT NULL
+);
+
+
+--
+-- Name: family_roles id; Type: DEFAULT; Schema: app_public; Owner: -
+--
+
+ALTER TABLE ONLY app_public.family_roles ALTER COLUMN id SET DEFAULT nextval('app_public.family_roles_id_seq'::regclass);
+
+
+--
 -- Name: passport_sessions session_pkey; Type: CONSTRAINT; Schema: app_private; Owner: -
 --
 
@@ -173,6 +235,38 @@ ALTER TABLE ONLY app_public.families
 
 
 --
+-- Name: family_roles family_roles_name_key; Type: CONSTRAINT; Schema: app_public; Owner: -
+--
+
+ALTER TABLE ONLY app_public.family_roles
+    ADD CONSTRAINT family_roles_name_key UNIQUE (name);
+
+
+--
+-- Name: family_roles family_roles_pkey; Type: CONSTRAINT; Schema: app_public; Owner: -
+--
+
+ALTER TABLE ONLY app_public.family_roles
+    ADD CONSTRAINT family_roles_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: people people_pkey; Type: CONSTRAINT; Schema: app_public; Owner: -
+--
+
+ALTER TABLE ONLY app_public.people
+    ADD CONSTRAINT people_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: users users_person_id_key; Type: CONSTRAINT; Schema: app_public; Owner: -
+--
+
+ALTER TABLE ONLY app_public.users
+    ADD CONSTRAINT users_person_id_key UNIQUE (person_id);
+
+
+--
 -- Name: users users_pkey; Type: CONSTRAINT; Schema: app_public; Owner: -
 --
 
@@ -201,6 +295,38 @@ ALTER TABLE ONLY app_public.authentications
 
 ALTER TABLE ONLY app_public.families
     ADD CONSTRAINT families_user_id_fkey FOREIGN KEY (user_id) REFERENCES app_public.users(id);
+
+
+--
+-- Name: family_memberships family_memberships_family_id_fkey; Type: FK CONSTRAINT; Schema: app_public; Owner: -
+--
+
+ALTER TABLE ONLY app_public.family_memberships
+    ADD CONSTRAINT family_memberships_family_id_fkey FOREIGN KEY (family_id) REFERENCES app_public.families(id);
+
+
+--
+-- Name: family_memberships family_memberships_person_id_fkey; Type: FK CONSTRAINT; Schema: app_public; Owner: -
+--
+
+ALTER TABLE ONLY app_public.family_memberships
+    ADD CONSTRAINT family_memberships_person_id_fkey FOREIGN KEY (person_id) REFERENCES app_public.people(id);
+
+
+--
+-- Name: family_memberships family_memberships_role_id_fkey; Type: FK CONSTRAINT; Schema: app_public; Owner: -
+--
+
+ALTER TABLE ONLY app_public.family_memberships
+    ADD CONSTRAINT family_memberships_role_id_fkey FOREIGN KEY (role_id) REFERENCES app_public.family_roles(id);
+
+
+--
+-- Name: users users_person_id_fkey; Type: FK CONSTRAINT; Schema: app_public; Owner: -
+--
+
+ALTER TABLE ONLY app_public.users
+    ADD CONSTRAINT users_person_id_fkey FOREIGN KEY (person_id) REFERENCES app_public.people(id);
 
 
 --
@@ -282,6 +408,27 @@ GRANT SELECT ON TABLE app_public.families TO visitor;
 --
 
 GRANT INSERT(user_id) ON TABLE app_public.families TO visitor;
+
+
+--
+-- Name: TABLE family_memberships; Type: ACL; Schema: app_public; Owner: -
+--
+
+GRANT ALL ON TABLE app_public.family_memberships TO visitor;
+
+
+--
+-- Name: TABLE family_roles; Type: ACL; Schema: app_public; Owner: -
+--
+
+GRANT SELECT ON TABLE app_public.family_roles TO visitor;
+
+
+--
+-- Name: TABLE people; Type: ACL; Schema: app_public; Owner: -
+--
+
+GRANT ALL ON TABLE app_public.people TO visitor;
 
 
 --
