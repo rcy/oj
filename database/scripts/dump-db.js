@@ -14,7 +14,7 @@ if (!connectionString) {
   process.exit(1);
 }
 
-console.error('dumping to ./schema.sql')
+//console.error('dumping to ./schema.sql')
 spawn(
   process.env.PG_DUMP || "pg_dump",
   [
