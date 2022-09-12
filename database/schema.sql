@@ -96,6 +96,69 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
+-- Name: family_memberships; Type: TABLE; Schema: app_public; Owner: -
+--
+
+CREATE TABLE app_public.family_memberships (
+    family_id uuid NOT NULL,
+    person_id uuid NOT NULL,
+    title text,
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    role text NOT NULL
+);
+
+
+--
+-- Name: create_new_family_member(text, text); Type: FUNCTION; Schema: app_public; Owner: -
+--
+
+CREATE FUNCTION app_public.create_new_family_member(name text, role text) RETURNS app_public.family_memberships
+    LANGUAGE plpgsql STRICT
+    AS $$
+declare
+  v_person_id uuid;
+  v_result app_public.family_memberships;
+  v_family_id uuid;
+begin
+  -- TODO: verify current user is admin in family
+  select family_id into v_family_id from app_public.family_memberships where id = app_public.current_family_membership_id();
+  insert into app_public.people(name) values(name) returning id into v_person_id;
+  insert into app_public.family_memberships(person_id, family_id, role) values(v_person_id, v_family_id, role) returning * into v_result;
+  return v_result;
+end;
+$$;
+
+
+--
+-- Name: current_family_membership(); Type: FUNCTION; Schema: app_public; Owner: -
+--
+
+CREATE FUNCTION app_public.current_family_membership() RETURNS app_public.family_memberships
+    LANGUAGE sql STABLE
+    AS $$
+  select family_memberships.* from app_public.family_memberships where id = app_public.current_family_membership_id();
+$$;
+
+
+--
+-- Name: current_family_membership_id(); Type: FUNCTION; Schema: app_public; Owner: -
+--
+
+CREATE FUNCTION app_public.current_family_membership_id() RETURNS uuid
+    LANGUAGE sql STABLE
+    AS $$
+  select m2.id
+  from app_public.family_memberships as m1
+  join app_public.family_memberships as m2 on m1.family_id = m2.family_id
+  join app_public.users on users.person_id = m1.person_id
+  where
+    users.id = app_public.user_id() and
+    m1.role = 'admin' and
+    m2.id = current_setting('family_membership.id', true)::uuid;
+$$;
+
+
+--
 -- Name: users; Type: TABLE; Schema: app_public; Owner: -
 --
 
@@ -167,19 +230,6 @@ CREATE TABLE app_public.families (
     created_at timestamp with time zone DEFAULT now() NOT NULL,
     updated_at timestamp with time zone DEFAULT now() NOT NULL,
     user_id uuid NOT NULL
-);
-
-
---
--- Name: family_memberships; Type: TABLE; Schema: app_public; Owner: -
---
-
-CREATE TABLE app_public.family_memberships (
-    family_id uuid NOT NULL,
-    person_id uuid NOT NULL,
-    title text,
-    id uuid DEFAULT gen_random_uuid() NOT NULL,
-    role text NOT NULL
 );
 
 
@@ -394,6 +444,14 @@ ALTER TABLE app_public.authentications ENABLE ROW LEVEL SECURITY;
 ALTER TABLE app_public.families ENABLE ROW LEVEL SECURITY;
 
 --
+-- Name: family_memberships insert_as_admin; Type: POLICY; Schema: app_public; Owner: -
+--
+
+CREATE POLICY insert_as_admin ON app_public.family_memberships WITH CHECK ((EXISTS ( SELECT app_public.current_family_membership() AS current_family_membership
+  WHERE (family_memberships.role = 'admin'::text))));
+
+
+--
 -- Name: users select_all; Type: POLICY; Schema: app_public; Owner: -
 --
 
@@ -435,6 +493,13 @@ GRANT ALL ON SCHEMA app_public TO visitor;
 
 
 --
+-- Name: TABLE family_memberships; Type: ACL; Schema: app_public; Owner: -
+--
+
+GRANT ALL ON TABLE app_public.family_memberships TO visitor;
+
+
+--
 -- Name: TABLE users; Type: ACL; Schema: app_public; Owner: -
 --
 
@@ -460,13 +525,6 @@ GRANT SELECT ON TABLE app_public.families TO visitor;
 --
 
 GRANT INSERT(user_id) ON TABLE app_public.families TO visitor;
-
-
---
--- Name: TABLE family_memberships; Type: ACL; Schema: app_public; Owner: -
---
-
-GRANT ALL ON TABLE app_public.family_memberships TO visitor;
 
 
 --

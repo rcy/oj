@@ -169,6 +169,44 @@ type CreateFamilyPayload {
   user: User
 }
 
+"""All input for the `createNewFamilyMember` mutation."""
+input CreateNewFamilyMemberInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+  name: String!
+  role: String!
+}
+
+"""The output of our `createNewFamilyMember` mutation."""
+type CreateNewFamilyMemberPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """Reads a single `Family` that is related to this `FamilyMembership`."""
+  family: Family
+  familyMembership: FamilyMembership
+
+  """An edge for our `FamilyMembership`. May be used by Relay 1."""
+  familyMembershipEdge(
+    """The method to use when ordering `FamilyMembership`."""
+    orderBy: [FamilyMembershipsOrderBy!] = [PRIMARY_KEY_ASC]
+  ): FamilyMembershipsEdge
+
+  """Reads a single `Person` that is related to this `FamilyMembership`."""
+  person: Person
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+}
+
 """All input for the create `Person` mutation."""
 input CreatePersonInput {
   """
@@ -609,6 +647,12 @@ type Mutation {
     """
     input: CreateFamilyMembershipInput!
   ): CreateFamilyMembershipPayload
+  createNewFamilyMember(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: CreateNewFamilyMemberInput!
+  ): CreateNewFamilyMemberPayload
 
   """Creates a single `Person`."""
   createPerson(
@@ -893,6 +937,8 @@ type Query implements Node {
     """The method to use when ordering `Authentication`."""
     orderBy: [AuthenticationsOrderBy!] = [PRIMARY_KEY_ASC]
   ): AuthenticationsConnection
+  currentFamilyMembership: FamilyMembership
+  currentFamilyMembershipId: UUID
   currentUser: User
 
   """Reads and enables pagination through a set of `Family`."""

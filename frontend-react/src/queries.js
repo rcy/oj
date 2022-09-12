@@ -31,10 +31,21 @@ export const CURRENT_USER_FAMILY = gql`
   }
 `;
 
-export const CURRENT_MEMBERSHIP = gql`
-  query CurrentMembership {
-    currentMembership {
+export const CURRENT_FAMILY_MEMBERSHIP = gql`
+  query CurrentFamilyMembership{
+    currentFamilyMembership {
       id
+      role
+      family {
+        id
+      }
+      person {
+        id
+        name
+        user {
+          id
+        }
+      }
     }
   }
 `;

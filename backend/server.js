@@ -130,10 +130,11 @@ app.use(postgraphile(pgVisitorPool, ['app_public'], {
   sortExport: true,
   appendPlugins: [pgSimplifyInflector],
   pgSettings: function(req) {
-    console.log('**************************************************************** req.user', req.user)
+    console.log('**************************************************************** user/membership', req.user, req.headers['x-family-membership-id'])
     return {
       'role': 'visitor',
       'user.id': req.user,
+      'family_membership.id': req.headers['x-family-membership-id'],
     }
   },
 }));

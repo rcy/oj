@@ -3,10 +3,23 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { ApolloClient, InMemoryCache, ApolloProvider, gql } from '@apollo/client';
+import { HttpLink, ApolloLink, ApolloClient, ApolloProvider, concat, InMemoryCache } from '@apollo/client';
+//import { , concat } from "apollo-link";
+
+const httpLink = new HttpLink({ uri: '/graphql' });
+
+// cookies are used for user auth, but we add a header for current family membership here
+const familyMembershipMiddleware = new ApolloLink((operation, forward) => {
+  operation.setContext({
+    headers: {
+      'X-FAMILY-MEMBERSHIP-ID': sessionStorage.getItem('familyMembershipId')
+    },
+  });
+  return forward(operation);
+});
 
 const client = new ApolloClient({
-  uri: '/graphql',
+  link: concat(familyMembershipMiddleware, httpLink),
   cache: new InMemoryCache(),
 });
 

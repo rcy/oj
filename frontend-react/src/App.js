@@ -6,6 +6,13 @@ import { CURRENT_USER } from './queries.js';
 function App() {
   const { loading, error, data } = useQuery(CURRENT_USER)
 
+  function logout(ev) {
+    ev.preventDefault()
+    console.log('logout')
+    sessionStorage.clear()
+    window.location = '/auth/logout'
+  }
+
   if (loading) {
     return null
   }
@@ -18,9 +25,9 @@ function App() {
     return (
       <>
         <header>
-          {data.currentUser.name}'s Family
+          <a href="/">{data.currentUser.name}'s Family</a>
           <div style={{ float: 'right'}}>
-            <a href="/auth/logout">logout</a>
+            <a href="#logout" onClick={logout}>logout</a>
           </div>
           <hr/>
         </header>

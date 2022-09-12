@@ -13,9 +13,8 @@ export default function FamilyLanding() {
     alert('add family member')
   }
 
-  function become(membershipId) {
-    console.log({ membershipId })
-    window.sessionStorage.setItem('membershipId', membershipId)
+  function become(familyMembershipId) {
+    window.sessionStorage.setItem('familyMembershipId', familyMembershipId)
     navigate('/member')
   }
 
