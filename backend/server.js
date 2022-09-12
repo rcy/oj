@@ -79,7 +79,11 @@ app.use(session({
 }));
 app.use(passport.authenticate('session'));
 
-app.get('/auth/google',
+app.get('/auth/login',
+        function(req, res, next) {
+          res.cookie('from', req.query.from)
+          next()
+        },
         passport.authenticate('google', {
           scope: ['profile', 'email'],
           prompt: 'select_account',
@@ -89,11 +93,15 @@ app.get('/auth/google',
 app.get('/auth/google/callback',
         passport.authenticate('google', {
           failureRedirect: '/error',
-          successRedirect: '/welcome',
+          successRedirect: '/auth/success',
         })
 );
 
-app.post('/auth/logout', function(req, res, next){
+app.get('/auth/success', function(req, res, next) {
+  res.redirect(req.cookies.from || '/welcome')
+});
+
+app.get('/auth/logout', function(req, res, next){
   req.logout(function(err) {
     if (err) { return next(err); }
     res.redirect('/');
@@ -102,10 +110,6 @@ app.post('/auth/logout', function(req, res, next){
 
 app.get('/', function(req,res) {
   res.send('<h1>welcome to aschool</h1> <a href="/auth/google">login</a>')
-})
-
-app.get('/welcome', ensureLoggedIn('/auth/google'), function(req,res) {
-  res.send(`welcome ${req.user.id}`)
 })
 
 // https://www.graphile.org/postgraphile/usage-library/

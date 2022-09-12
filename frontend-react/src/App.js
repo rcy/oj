@@ -1,5 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
+import LoggedInApp from './LoggedInApp.js'
 import { useQuery, gql } from '@apollo/client';
 
 const CURRENT_USER = gql`
@@ -15,7 +16,7 @@ function App() {
   const { loading, error, data } = useQuery(CURRENT_USER)
 
   if (loading) {
-    return <p>loading...</p>
+    return null
   }
 
   if (error) {
@@ -24,15 +25,20 @@ function App() {
 
   if (data.currentUser) {
     return (
-      <p>
-        Logged in as {data.currentUser.name} <a href="/auth/logout">logout</a>
-      </p>
+      <>
+        <header>
+          Logged in as {data.currentUser.name} <a href="/auth/logout">logout</a>
+        </header>
+        <main>
+          <LoggedInApp />
+        </main>
+      </>
     )
   }
 
   return (
     <p>
-      <a href="/auth/google">login</a>
+      <a href={`/auth/login?from=${encodeURIComponent(window.location)}`}>login</a>
     </p>
   )
 }
