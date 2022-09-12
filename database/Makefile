@@ -33,6 +33,7 @@ uncommit:
 
 reset:
 	npx graphile-migrate reset --erase
+	${MAKE} create
 
 hardreset: down
 	rm -rf .gmrc migrations
