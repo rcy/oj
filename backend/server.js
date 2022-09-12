@@ -86,7 +86,7 @@ app.get('/auth/login',
         },
         passport.authenticate('google', {
           scope: ['profile', 'email'],
-          prompt: 'select_account',
+          //prompt: 'select_account',
         })
 );
 
@@ -132,7 +132,7 @@ app.use(postgraphile(pgVisitorPool, ['app_public'], {
   pgSettings: function(req) {
     console.log('**************************************************************** req.user', req.user)
     return {
-      //'role': 'visitor',
+      'role': 'visitor',
       'user.id': req.user,
     }
   },

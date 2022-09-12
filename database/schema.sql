@@ -38,6 +38,43 @@ CREATE SCHEMA app_public;
 
 
 --
+-- Name: create_family(); Type: FUNCTION; Schema: app_private; Owner: -
+--
+
+CREATE FUNCTION app_private.create_family() RETURNS trigger
+    LANGUAGE plpgsql SECURITY DEFINER
+    AS $$
+declare
+  v_family_id uuid;
+begin
+  -- create the family
+  insert into app_public.families(user_id) values(new.id) returning id into v_family_id;
+  -- create a family membership for the user person as admin
+  insert into app_public.family_memberships(person_id, family_id, role) values(new.person_id, v_family_id, 'admin');
+  return new;
+end;
+$$;
+
+
+--
+-- Name: create_person(); Type: FUNCTION; Schema: app_private; Owner: -
+--
+
+CREATE FUNCTION app_private.create_person() RETURNS trigger
+    LANGUAGE plpgsql SECURITY DEFINER
+    AS $$
+declare 
+  v_person_id uuid;
+begin
+  -- create a person using name from the user
+  insert into app_public.people(name) values(new.name) returning id into v_person_id;
+  new.person_id = v_person_id;
+  return new;
+end;
+$$;
+
+
+--
 -- Name: create_user_authentication(text, text, text, jsonb); Type: FUNCTION; Schema: app_private; Owner: -
 --
 
@@ -140,8 +177,9 @@ CREATE TABLE app_public.families (
 CREATE TABLE app_public.family_memberships (
     family_id uuid NOT NULL,
     person_id uuid NOT NULL,
-    role_id integer NOT NULL,
-    title text
+    title text,
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    role text NOT NULL
 );
 
 
@@ -235,6 +273,14 @@ ALTER TABLE ONLY app_public.families
 
 
 --
+-- Name: family_memberships family_memberships_pkey; Type: CONSTRAINT; Schema: app_public; Owner: -
+--
+
+ALTER TABLE ONLY app_public.family_memberships
+    ADD CONSTRAINT family_memberships_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: family_roles family_roles_name_key; Type: CONSTRAINT; Schema: app_public; Owner: -
 --
 
@@ -282,6 +328,20 @@ CREATE INDEX idx_session_expire ON app_private.passport_sessions USING btree (ex
 
 
 --
+-- Name: users _100_create_person; Type: TRIGGER; Schema: app_public; Owner: -
+--
+
+CREATE TRIGGER _100_create_person BEFORE INSERT ON app_public.users FOR EACH ROW EXECUTE FUNCTION app_private.create_person();
+
+
+--
+-- Name: users _200_create_family; Type: TRIGGER; Schema: app_public; Owner: -
+--
+
+CREATE TRIGGER _200_create_family AFTER INSERT ON app_public.users FOR EACH ROW EXECUTE FUNCTION app_private.create_family();
+
+
+--
 -- Name: authentications authentications_user_id_fkey; Type: FK CONSTRAINT; Schema: app_public; Owner: -
 --
 
@@ -311,14 +371,6 @@ ALTER TABLE ONLY app_public.family_memberships
 
 ALTER TABLE ONLY app_public.family_memberships
     ADD CONSTRAINT family_memberships_person_id_fkey FOREIGN KEY (person_id) REFERENCES app_public.people(id);
-
-
---
--- Name: family_memberships family_memberships_role_id_fkey; Type: FK CONSTRAINT; Schema: app_public; Owner: -
---
-
-ALTER TABLE ONLY app_public.family_memberships
-    ADD CONSTRAINT family_memberships_role_id_fkey FOREIGN KEY (role_id) REFERENCES app_public.family_roles(id);
 
 
 --

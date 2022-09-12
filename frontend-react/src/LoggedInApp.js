@@ -4,17 +4,16 @@ import {
   Routes,
   Route,
 } from "react-router-dom";
+import FamilyLanding from './FamilyLanding.js'
+import MemberHome from './MemberHome.js'
 
 export default function LoggedInApp() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Home/>} />
+        <Route path="/" element={<FamilyLanding />} />
+        <Route path="/member" element={<MemberHome />} />
       </Routes>
     </BrowserRouter>
   )
-}
-
-function Home() {
-  return <p>home</p>
 }
