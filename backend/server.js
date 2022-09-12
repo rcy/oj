@@ -1,4 +1,4 @@
-import dotenv from 'dotenv'; dotenv.config();
+import dotenv from 'dotenv'; dotenv.config({ path: '../.env' });
 import createError from 'http-errors';
 import express from 'express';
 import path from 'path';
