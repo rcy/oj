@@ -1,32 +1,39 @@
 import React from 'react'
 import { CURRENT_USER_FAMILY } from './queries.js'
 import { useQuery } from '@apollo/client';
-import { useNavigate } from 'react-router-dom';
+import useSessionStorage from './util/useSessionStorage.js';
 
-export default function FamilyLanding() {
+export default function FamilyLanding({ setFamilyMembershipId }) {
   const { loading, error, data } = useQuery(CURRENT_USER_FAMILY)
-  let navigate = useNavigate();
 
-  if (loading) { return "loading" }
+  if (loading) { return null }
 
-  function addFamilyMember() {
-    alert('add family member')
-  }
-
-  function become(familyMembershipId) {
-    window.sessionStorage.setItem('familyMembershipId', familyMembershipId)
-    navigate('/member')
+  function become(ev, id) {
+    ev.preventDefault()
+    setFamilyMembershipId(id)
   }
 
   return (
-    <section>
-      <h1>family</h1>
-      <h2>members</h2>
-      {data.currentUser.family.familyMemberships.nodes.map((m) => (
-        <div key={m.id}>
-          {m.person.name} ({m.role}) <button onClick={() => become(m.id)}>become</button>
-        </div>
-      ))}
-    </section>
+    <div className="grid h-screen place-items-center bg-orange-200">
+      <div>
+        <h1 className="pb-20 text-xl">Select Family Member</h1>
+        <section className="flex space-x-10">
+          {data.currentUser.family.familyMemberships.nodes.map((m) => (
+            <a
+              href="#"
+              onClick={(ev) => become(ev, m.id)}
+              key={m.id}
+              className="rounded-lg bg-blue-200 w-48 text-center"
+            >
+              <img className="rounded-t-lg" src="https://placekitten.com/201" alt=""/>
+
+              <div className="p-2">
+                {m.person.name}
+              </div>
+            </a>
+          ))}
+        </section>
+      </div>
+    </div>
   )
 }

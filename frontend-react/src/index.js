@@ -4,22 +4,33 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { HttpLink, ApolloLink, ApolloClient, ApolloProvider, concat, InMemoryCache } from '@apollo/client';
+import { setContext } from "@apollo/client/link/context";
+
 //import { , concat } from "apollo-link";
 
 const httpLink = new HttpLink({ uri: '/graphql' });
 
 // cookies are used for user auth, but we add a header for current family membership here
-const familyMembershipMiddleware = new ApolloLink((operation, forward) => {
-  operation.setContext({
-    headers: {
-      'X-FAMILY-MEMBERSHIP-ID': sessionStorage.getItem('familyMembershipId')
-    },
-  });
-  return forward(operation);
-});
+// const familyMembershipMiddleware = new ApolloLink((operation, forward) => {
+//   operation.setContext(() => ({
+//     headers: {
+//       'X-FAMILY-MEMBERSHIP-ID': JSON.parse(sessionStorage.getItem('familyMembershipId') || "null")
+//     },
+//   }));
+//   return forward(operation);
+// });
+
+const asyncAuthLink = setContext(
+  request =>
+    new Promise((success, fail) => {
+      success({ headers: {
+        'X-FAMILY-MEMBERSHIP-ID': JSON.parse(sessionStorage.getItem('familyMembershipId') || "null")
+      }})
+    })
+)
 
 const client = new ApolloClient({
-  link: concat(familyMembershipMiddleware, httpLink),
+  link: concat(asyncAuthLink, httpLink),
   cache: new InMemoryCache(),
 });
 
