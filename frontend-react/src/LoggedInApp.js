@@ -5,7 +5,7 @@ import {
   Route,
 } from "react-router-dom";
 import FamilyLanding from './FamilyLanding.js'
-import MemberHome from './MemberHome.js'
+import MemberLayout from './MemberLayout.js'
 import useSessionStorage from './util/useSessionStorage.js'
 
 export default function LoggedInApp() {
@@ -18,15 +18,14 @@ export default function LoggedInApp() {
     return <FamilyLanding setFamilyMembershipId={setFamilyMembershipId} />
   }
 
-  function logout(ev) {
-    ev.preventDefault()
+  function doLogout() {
     setFamilyMembershipId(null)
   }
 
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="*" element={<MemberHome logout={logout}/>} />
+        <Route path="*" element={<MemberLayout doLogout={doLogout}/>} />
       </Routes>
     </BrowserRouter>
   )

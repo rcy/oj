@@ -49,3 +49,11 @@ export const CURRENT_FAMILY_MEMBERSHIP = gql`
     }
   }
 `;
+
+export const CREATE_NEW_FAMILY_MEMBER = gql`
+  mutation CreateNewFamilyMember($name: String!, $role: String!) {
+    createNewFamilyMember(input: {name: $name, role: $role}) {
+      clientMutationId
+    }
+  }
+`
