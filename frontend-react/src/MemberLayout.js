@@ -30,7 +30,7 @@ export default function MemberLayout({ doLogout }) {
     <div className="font-sans">
       <nav className="bg-gray-800 px-2 py-2 text-white flex justify-between text-xl">
         <div className="flex items-center space-x-2">
-          <div>🐱</div><a href="#" onClick={handleLogout}>Small Space</a>
+          <div>🐙</div><a href="#" onClick={handleLogout}>Octopus Jr</a>
         </div>
         <div className="text-orange-200">
           {data.currentFamilyMembership.person.name} ({data.currentFamilyMembership.role})
