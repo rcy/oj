@@ -13,9 +13,12 @@ export default function AdminSection() {
   }
 
   return (  
-    <div className="flex space-x-10" >
+    <div className="flex gap-x-1 justify-start" >
       <Link to="/admin/add-family-member">
         <Button>add family member</Button>
+      </Link>
+      <Link to="/admin/create-space">
+        <Button>create space</Button>
       </Link>
       <Button onClick={hardLogout} color="red">sign out completely</Button>
     </div>

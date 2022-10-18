@@ -57,3 +57,11 @@ export const CREATE_NEW_FAMILY_MEMBER = gql`
     }
   }
 `
+
+export const CREATE_SPACE = gql`
+  mutation CreateSpace($name: String!) {
+    createSpace(input: {space: {name: $name}}) {
+      clientMutationId
+    }
+  }
+`

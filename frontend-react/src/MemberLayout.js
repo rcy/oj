@@ -9,6 +9,9 @@ import Button from './Button.js';
 import AdminLayout from './admin/AdminLayout.js';
 import PageNotFound from './PageNotFound.js';
 
+import SpacesIndex from './routes/spaces/index.js';
+import SpacesShow from './routes/spaces/show.js';
+
 export default function MemberLayout({ doLogout }) {
   const { loading, error, data } = useQuery(CURRENT_FAMILY_MEMBERSHIP, { fetchPolicy: 'network-only' })
   let navigate = useNavigate();
@@ -19,11 +22,6 @@ export default function MemberLayout({ doLogout }) {
     ev.preventDefault()
     navigate('/');
     doLogout()
-  }
-
-  function addFamilyMember() {
-    // https://www.apollographql.com/docs/react/data/mutations
-    alert('not implemented')
   }
 
   return (
@@ -39,6 +37,8 @@ export default function MemberLayout({ doLogout }) {
       <main className="p-10">
         <Routes>
           <Route path="/" element={<MemberHome familyMembership={data.currentFamilyMembership} />}/>
+          <Route path="/spaces" element={<SpacesIndex />}/>
+          <Route path="/spaces/:id" element={<SpacesShow />}/>
           <Route path="/admin/*" element={<AdminLayout />}/>
           <Route path="*" element={<PageNotFound />} />
         </Routes>

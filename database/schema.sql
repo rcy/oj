@@ -264,10 +264,87 @@ ALTER SEQUENCE app_public.family_roles_id_seq OWNED BY app_public.family_roles.i
 
 
 --
+-- Name: interests; Type: TABLE; Schema: app_public; Owner: -
+--
+
+CREATE TABLE app_public.interests (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    topic_id uuid,
+    person_id uuid
+);
+
+
+--
 -- Name: people; Type: TABLE; Schema: app_public; Owner: -
 --
 
 CREATE TABLE app_public.people (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    name text NOT NULL
+);
+
+
+--
+-- Name: posts; Type: TABLE; Schema: app_public; Owner: -
+--
+
+CREATE TABLE app_public.posts (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    membership_id uuid NOT NULL,
+    body text NOT NULL
+);
+
+
+--
+-- Name: space_memberships; Type: TABLE; Schema: app_public; Owner: -
+--
+
+CREATE TABLE app_public.space_memberships (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    person_id uuid NOT NULL,
+    space_id uuid NOT NULL,
+    role_id text NOT NULL
+);
+
+
+--
+-- Name: space_topics; Type: TABLE; Schema: app_public; Owner: -
+--
+
+CREATE TABLE app_public.space_topics (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    topic_id uuid,
+    space_id uuid
+);
+
+
+--
+-- Name: spaces; Type: TABLE; Schema: app_public; Owner: -
+--
+
+CREATE TABLE app_public.spaces (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    name text NOT NULL
+);
+
+
+--
+-- Name: topics; Type: TABLE; Schema: app_public; Owner: -
+--
+
+CREATE TABLE app_public.topics (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
     updated_at timestamp with time zone DEFAULT now() NOT NULL,
@@ -347,11 +424,59 @@ ALTER TABLE ONLY app_public.family_roles
 
 
 --
+-- Name: interests interests_pkey; Type: CONSTRAINT; Schema: app_public; Owner: -
+--
+
+ALTER TABLE ONLY app_public.interests
+    ADD CONSTRAINT interests_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: people people_pkey; Type: CONSTRAINT; Schema: app_public; Owner: -
 --
 
 ALTER TABLE ONLY app_public.people
     ADD CONSTRAINT people_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: posts posts_pkey; Type: CONSTRAINT; Schema: app_public; Owner: -
+--
+
+ALTER TABLE ONLY app_public.posts
+    ADD CONSTRAINT posts_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: space_memberships space_memberships_pkey; Type: CONSTRAINT; Schema: app_public; Owner: -
+--
+
+ALTER TABLE ONLY app_public.space_memberships
+    ADD CONSTRAINT space_memberships_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: space_topics space_topics_pkey; Type: CONSTRAINT; Schema: app_public; Owner: -
+--
+
+ALTER TABLE ONLY app_public.space_topics
+    ADD CONSTRAINT space_topics_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: spaces spaces_pkey; Type: CONSTRAINT; Schema: app_public; Owner: -
+--
+
+ALTER TABLE ONLY app_public.spaces
+    ADD CONSTRAINT spaces_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: topics topics_pkey; Type: CONSTRAINT; Schema: app_public; Owner: -
+--
+
+ALTER TABLE ONLY app_public.topics
+    ADD CONSTRAINT topics_pkey PRIMARY KEY (id);
 
 
 --
@@ -421,6 +546,62 @@ ALTER TABLE ONLY app_public.family_memberships
 
 ALTER TABLE ONLY app_public.family_memberships
     ADD CONSTRAINT family_memberships_person_id_fkey FOREIGN KEY (person_id) REFERENCES app_public.people(id);
+
+
+--
+-- Name: interests interests_person_id_fkey; Type: FK CONSTRAINT; Schema: app_public; Owner: -
+--
+
+ALTER TABLE ONLY app_public.interests
+    ADD CONSTRAINT interests_person_id_fkey FOREIGN KEY (person_id) REFERENCES app_public.people(id);
+
+
+--
+-- Name: interests interests_topic_id_fkey; Type: FK CONSTRAINT; Schema: app_public; Owner: -
+--
+
+ALTER TABLE ONLY app_public.interests
+    ADD CONSTRAINT interests_topic_id_fkey FOREIGN KEY (topic_id) REFERENCES app_public.topics(id);
+
+
+--
+-- Name: posts posts_membership_id_fkey; Type: FK CONSTRAINT; Schema: app_public; Owner: -
+--
+
+ALTER TABLE ONLY app_public.posts
+    ADD CONSTRAINT posts_membership_id_fkey FOREIGN KEY (membership_id) REFERENCES app_public.space_memberships(id);
+
+
+--
+-- Name: space_memberships space_memberships_person_id_fkey; Type: FK CONSTRAINT; Schema: app_public; Owner: -
+--
+
+ALTER TABLE ONLY app_public.space_memberships
+    ADD CONSTRAINT space_memberships_person_id_fkey FOREIGN KEY (person_id) REFERENCES app_public.people(id);
+
+
+--
+-- Name: space_memberships space_memberships_space_id_fkey; Type: FK CONSTRAINT; Schema: app_public; Owner: -
+--
+
+ALTER TABLE ONLY app_public.space_memberships
+    ADD CONSTRAINT space_memberships_space_id_fkey FOREIGN KEY (space_id) REFERENCES app_public.spaces(id);
+
+
+--
+-- Name: space_topics space_topics_space_id_fkey; Type: FK CONSTRAINT; Schema: app_public; Owner: -
+--
+
+ALTER TABLE ONLY app_public.space_topics
+    ADD CONSTRAINT space_topics_space_id_fkey FOREIGN KEY (space_id) REFERENCES app_public.spaces(id);
+
+
+--
+-- Name: space_topics space_topics_topic_id_fkey; Type: FK CONSTRAINT; Schema: app_public; Owner: -
+--
+
+ALTER TABLE ONLY app_public.space_topics
+    ADD CONSTRAINT space_topics_topic_id_fkey FOREIGN KEY (topic_id) REFERENCES app_public.topics(id);
 
 
 --
@@ -535,10 +716,45 @@ GRANT SELECT ON TABLE app_public.family_roles TO visitor;
 
 
 --
+-- Name: TABLE interests; Type: ACL; Schema: app_public; Owner: -
+--
+
+GRANT ALL ON TABLE app_public.interests TO visitor;
+
+
+--
 -- Name: TABLE people; Type: ACL; Schema: app_public; Owner: -
 --
 
 GRANT ALL ON TABLE app_public.people TO visitor;
+
+
+--
+-- Name: TABLE posts; Type: ACL; Schema: app_public; Owner: -
+--
+
+GRANT ALL ON TABLE app_public.posts TO visitor;
+
+
+--
+-- Name: TABLE space_memberships; Type: ACL; Schema: app_public; Owner: -
+--
+
+GRANT ALL ON TABLE app_public.space_memberships TO visitor;
+
+
+--
+-- Name: TABLE spaces; Type: ACL; Schema: app_public; Owner: -
+--
+
+GRANT ALL ON TABLE app_public.spaces TO visitor;
+
+
+--
+-- Name: TABLE topics; Type: ACL; Schema: app_public; Owner: -
+--
+
+GRANT ALL ON TABLE app_public.topics TO visitor;
 
 
 --
