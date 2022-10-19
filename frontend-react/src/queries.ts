@@ -1,15 +1,15 @@
-import { gql } from '@apollo/client';
+import { graphql } from './gql';
 
-export const CURRENT_USER = gql`
+export const CURRENT_USER = graphql(`
   query CurrentUser {
     currentUser {
       id
       name
     }
   }
-`;
+`);
 
-export const CURRENT_USER_FAMILY = gql`
+export const CURRENT_USER_FAMILY = graphql(`
   query CurrentUserFamily {
     currentUser {
       id
@@ -29,9 +29,9 @@ export const CURRENT_USER_FAMILY = gql`
       }
     }
   }
-`;
+`);
 
-export const CURRENT_FAMILY_MEMBERSHIP = gql`
+export const CURRENT_FAMILY_MEMBERSHIP = graphql(`
   query CurrentFamilyMembership{
     currentFamilyMembership {
       id
@@ -48,20 +48,21 @@ export const CURRENT_FAMILY_MEMBERSHIP = gql`
       }
     }
   }
-`;
+`);
 
-export const CREATE_NEW_FAMILY_MEMBER = gql`
+export const CREATE_NEW_FAMILY_MEMBER = graphql(`
   mutation CreateNewFamilyMember($name: String!, $role: String!) {
     createNewFamilyMember(input: {name: $name, role: $role}) {
       clientMutationId
     }
   }
-`
+`);
 
-export const CREATE_SPACE = gql`
+export const CREATE_SPACE = graphql(`
   mutation CreateSpace($name: String!) {
     createSpace(input: {space: {name: $name}}) {
       clientMutationId
     }
   }
-`
+`);
+

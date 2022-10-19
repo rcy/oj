@@ -14,7 +14,7 @@ function App() {
     return <p>error</p>
   }
 
-  if (data.currentUser) {
+  if (data?.currentUser) {
     return (
       <LoggedInApp />
     )

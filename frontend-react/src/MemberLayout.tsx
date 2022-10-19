@@ -31,12 +31,12 @@ export default function MemberLayout({ doLogout }: MemberLayoutType) {
           <div>🐙</div><a href="#" onClick={handleLogout}>Octopus Jr</a>
         </div>
         <div className="text-orange-200">
-          {data.currentFamilyMembership.person.name} ({data.currentFamilyMembership.role})
+          {data?.currentFamilyMembership?.person?.name} ({data?.currentFamilyMembership?.role})
         </div>
       </nav>
       <main className="p-10">
         <Routes>
-          <Route path="/" element={<MemberHome familyMembership={data.currentFamilyMembership} />}/>
+          <Route path="/" element={<MemberHome familyMembership={data?.currentFamilyMembership} />}/>
           <Route path="/spaces" element={<SpacesIndex />}/>
           <Route path="/spaces/:id" element={<SpacesShow />}/>
           <Route path="/admin/*" element={<AdminLayout />}/>

@@ -5,7 +5,7 @@ import { useQuery } from '@apollo/client';
 type FamilyLandingType = { setFamilyMembershipId: Function }
 
 export default function FamilyLanding({ setFamilyMembershipId }: FamilyLandingType) {
-  const { loading, error, data } = useQuery(CURRENT_USER_FAMILY)
+  const { loading, data } = useQuery(CURRENT_USER_FAMILY)
 
   if (loading) { return null }
 
@@ -19,7 +19,7 @@ export default function FamilyLanding({ setFamilyMembershipId }: FamilyLandingTy
       <div>
         <h1 className="pb-20 text-xl">Select Family Member</h1>
         <section className="flex space-x-10">
-          {data.currentUser.family.familyMemberships.nodes.map((m: any) => (
+          {data?.currentUser?.family?.familyMemberships.nodes.map((m: any) => (
             <a
               href="#"
               onClick={(ev) => become(ev, m.id)}
