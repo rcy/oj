@@ -1,11 +1,11 @@
 import { MouseEvent } from 'react'
-import { CURRENT_USER_FAMILY } from './queries'
+import { useCurrentUserFamilyQuery } from './generated-types';
 import { useQuery } from '@apollo/client';
 
 type FamilyLandingType = { setFamilyMembershipId: Function }
 
 export default function FamilyLanding({ setFamilyMembershipId }: FamilyLandingType) {
-  const { loading, data } = useQuery(CURRENT_USER_FAMILY)
+  const { loading, data } = useCurrentUserFamilyQuery();
 
   if (loading) { return null }
 

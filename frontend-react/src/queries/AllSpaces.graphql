@@ -1,0 +1,10 @@
+query AllSpaces {
+  spaces {
+    edges {
+      node {
+        id
+        name
+      }
+    }
+  }
+}

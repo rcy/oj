@@ -1,0 +1,16 @@
+query CurrentFamilyMembership {
+  currentFamilyMembership {
+    id
+    role
+    family {
+      id
+    }
+    person {
+      id
+      name
+      user {
+        id
+      }
+    }
+  }
+}

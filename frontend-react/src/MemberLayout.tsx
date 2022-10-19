@@ -1,6 +1,5 @@
-import { MouseEventHandler } from 'react'
-import { CURRENT_FAMILY_MEMBERSHIP } from './queries'
-import { useQuery } from '@apollo/client';
+import { MouseEventHandler } from 'react';
+import { useCurrentFamilyMembershipQuery } from './generated-types';
 import { useNavigate } from 'react-router-dom';
 import { Routes, Route } from "react-router-dom";
 import MemberHome from './MemberHome';
@@ -13,7 +12,7 @@ import SpacesShow from './routes/spaces/show';
 type MemberLayoutType = { doLogout: Function }
 
 export default function MemberLayout({ doLogout }: MemberLayoutType) {
-  const { loading, data } = useQuery(CURRENT_FAMILY_MEMBERSHIP, { fetchPolicy: 'network-only' })
+  const { loading, data } = useCurrentFamilyMembershipQuery({ fetchPolicy: 'network-only' })
   let navigate = useNavigate();
 
   if (loading) { return <span>loading</span> }

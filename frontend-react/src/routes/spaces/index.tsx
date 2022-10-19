@@ -1,22 +1,8 @@
-import { useQuery } from '@apollo/client';
-import { graphql } from '../../gql';
+import { useAllSpacesQuery } from '../../generated-types';
 import { Link } from "react-router-dom";
 
-const ALL_SPACES = graphql(`
-  query AllSpaces {
-    spaces {
-      edges {
-        node {
-          id
-          name
-        }
-      }
-    }
-  }
-`);
-
 export default function() {
-  const {loading, data } = useQuery(ALL_SPACES)
+  const {loading, data } = useAllSpacesQuery()
 
   if (loading) { return null }
 

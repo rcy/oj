@@ -1,0 +1,19 @@
+query CurrentUserFamily {
+  currentUser {
+    id
+    name
+    family {
+      id
+      familyMemberships {
+        nodes {
+          id
+          person {
+            id
+            name
+          }
+          role
+        }
+      }
+    }
+  }
+}

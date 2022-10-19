@@ -45,11 +45,12 @@
   },
   "devDependencies": {
     "@graphql-codegen/cli": "2.13.7",
+    "@graphql-codegen/client-preset": "1.0.7",
+    "@graphql-codegen/introspection": "2.2.1",
+    "@graphql-codegen/typescript-react-apollo": "^3.3.4",
     "autoprefixer": "^10.4.11",
     "postcss": "^8.4.16",
     "tailwindcss": "^3.1.8",
-    "typescript": "^4.8.4",
-    "@graphql-codegen/introspection": "2.2.1",
-    "@graphql-codegen/client-preset": "1.0.7"
+    "typescript": "^4.8.4"
   }
 }

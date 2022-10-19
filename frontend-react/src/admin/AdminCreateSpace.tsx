@@ -1,12 +1,11 @@
 import { FormEventHandler, useState } from 'react';
-import { useMutation } from '@apollo/client';
-import { CREATE_SPACE } from '../queries';
+import { useCreateSpaceMutation } from '../generated-types';
 import TextInput from './TextInput';
 import Button from '../Button';
 
 export default function AdminAddFamilyMember() {
   const [value, setValue] = useState('')
-  const [createSpace] = useMutation(CREATE_SPACE);
+  const [createSpace] = useCreateSpaceMutation();
 
   const handleSubmit: FormEventHandler = async (ev) => {
     ev.preventDefault()

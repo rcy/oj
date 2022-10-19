@@ -1,10 +1,11 @@
-/* eslint-disable */
-import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/core';
+import { gql } from '@apollo/client';
+import * as Apollo from '@apollo/client';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
+const defaultOptions = {} as const;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -2751,20 +2752,10 @@ export enum UsersOrderBy {
   UpdatedAtDesc = 'UPDATED_AT_DESC'
 }
 
-export type CurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
+export type AllSpacesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type CurrentUserQuery = { __typename?: 'Query', currentUser?: { __typename?: 'User', id: any, name: string } | null };
-
-export type CurrentUserFamilyQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type CurrentUserFamilyQuery = { __typename?: 'Query', currentUser?: { __typename?: 'User', id: any, name: string, family?: { __typename?: 'Family', id: any, familyMemberships: { __typename?: 'FamilyMembershipsConnection', nodes: Array<{ __typename?: 'FamilyMembership', id: any, role: string, person?: { __typename?: 'Person', id: any, name: string } | null }> } } | null } | null };
-
-export type CurrentFamilyMembershipQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type CurrentFamilyMembershipQuery = { __typename?: 'Query', currentFamilyMembership?: { __typename?: 'FamilyMembership', id: any, role: string, family?: { __typename?: 'Family', id: any } | null, person?: { __typename?: 'Person', id: any, name: string, user?: { __typename?: 'User', id: any } | null } | null } | null };
+export type AllSpacesQuery = { __typename?: 'Query', spaces?: { __typename?: 'SpacesConnection', edges: Array<{ __typename?: 'SpacesEdge', node: { __typename?: 'Space', id: any, name: string } }> } | null };
 
 export type CreateNewFamilyMemberMutationVariables = Exact<{
   name: Scalars['String'];
@@ -2781,15 +2772,253 @@ export type CreateSpaceMutationVariables = Exact<{
 
 export type CreateSpaceMutation = { __typename?: 'Mutation', createSpace?: { __typename?: 'CreateSpacePayload', clientMutationId?: string | null } | null };
 
-export type AllSpacesQueryVariables = Exact<{ [key: string]: never; }>;
+export type CurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type AllSpacesQuery = { __typename?: 'Query', spaces?: { __typename?: 'SpacesConnection', edges: Array<{ __typename?: 'SpacesEdge', node: { __typename?: 'Space', id: any, name: string } }> } | null };
+export type CurrentUserQuery = { __typename?: 'Query', currentUser?: { __typename?: 'User', id: any, name: string } | null };
+
+export type CurrentUserFamilyQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export const CurrentUserDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"CurrentUser"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"currentUser"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]} as unknown as DocumentNode<CurrentUserQuery, CurrentUserQueryVariables>;
-export const CurrentUserFamilyDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"CurrentUserFamily"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"currentUser"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"family"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"familyMemberships"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"nodes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"person"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"role"}}]}}]}}]}}]}}]}}]} as unknown as DocumentNode<CurrentUserFamilyQuery, CurrentUserFamilyQueryVariables>;
-export const CurrentFamilyMembershipDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"CurrentFamilyMembership"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"currentFamilyMembership"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"role"}},{"kind":"Field","name":{"kind":"Name","value":"family"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"person"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]}}]} as unknown as DocumentNode<CurrentFamilyMembershipQuery, CurrentFamilyMembershipQueryVariables>;
-export const CreateNewFamilyMemberDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateNewFamilyMember"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"name"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"role"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createNewFamilyMember"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"Variable","name":{"kind":"Name","value":"name"}}},{"kind":"ObjectField","name":{"kind":"Name","value":"role"},"value":{"kind":"Variable","name":{"kind":"Name","value":"role"}}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"clientMutationId"}}]}}]}}]} as unknown as DocumentNode<CreateNewFamilyMemberMutation, CreateNewFamilyMemberMutationVariables>;
-export const CreateSpaceDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateSpace"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"name"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createSpace"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"space"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"Variable","name":{"kind":"Name","value":"name"}}}]}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"clientMutationId"}}]}}]}}]} as unknown as DocumentNode<CreateSpaceMutation, CreateSpaceMutationVariables>;
-export const AllSpacesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"AllSpaces"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"spaces"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]}}]} as unknown as DocumentNode<AllSpacesQuery, AllSpacesQueryVariables>;
+export type CurrentUserFamilyQuery = { __typename?: 'Query', currentUser?: { __typename?: 'User', id: any, name: string, family?: { __typename?: 'Family', id: any, familyMemberships: { __typename?: 'FamilyMembershipsConnection', nodes: Array<{ __typename?: 'FamilyMembership', id: any, role: string, person?: { __typename?: 'Person', id: any, name: string } | null }> } } | null } | null };
+
+export type CurrentFamilyMembershipQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type CurrentFamilyMembershipQuery = { __typename?: 'Query', currentFamilyMembership?: { __typename?: 'FamilyMembership', id: any, role: string, family?: { __typename?: 'Family', id: any } | null, person?: { __typename?: 'Person', id: any, name: string, user?: { __typename?: 'User', id: any } | null } | null } | null };
+
+
+export const AllSpacesDocument = gql`
+    query AllSpaces {
+  spaces {
+    edges {
+      node {
+        id
+        name
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useAllSpacesQuery__
+ *
+ * To run a query within a React component, call `useAllSpacesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAllSpacesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAllSpacesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useAllSpacesQuery(baseOptions?: Apollo.QueryHookOptions<AllSpacesQuery, AllSpacesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<AllSpacesQuery, AllSpacesQueryVariables>(AllSpacesDocument, options);
+      }
+export function useAllSpacesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AllSpacesQuery, AllSpacesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<AllSpacesQuery, AllSpacesQueryVariables>(AllSpacesDocument, options);
+        }
+export type AllSpacesQueryHookResult = ReturnType<typeof useAllSpacesQuery>;
+export type AllSpacesLazyQueryHookResult = ReturnType<typeof useAllSpacesLazyQuery>;
+export type AllSpacesQueryResult = Apollo.QueryResult<AllSpacesQuery, AllSpacesQueryVariables>;
+export const CreateNewFamilyMemberDocument = gql`
+    mutation CreateNewFamilyMember($name: String!, $role: String!) {
+  createNewFamilyMember(input: {name: $name, role: $role}) {
+    clientMutationId
+  }
+}
+    `;
+export type CreateNewFamilyMemberMutationFn = Apollo.MutationFunction<CreateNewFamilyMemberMutation, CreateNewFamilyMemberMutationVariables>;
+
+/**
+ * __useCreateNewFamilyMemberMutation__
+ *
+ * To run a mutation, you first call `useCreateNewFamilyMemberMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateNewFamilyMemberMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createNewFamilyMemberMutation, { data, loading, error }] = useCreateNewFamilyMemberMutation({
+ *   variables: {
+ *      name: // value for 'name'
+ *      role: // value for 'role'
+ *   },
+ * });
+ */
+export function useCreateNewFamilyMemberMutation(baseOptions?: Apollo.MutationHookOptions<CreateNewFamilyMemberMutation, CreateNewFamilyMemberMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateNewFamilyMemberMutation, CreateNewFamilyMemberMutationVariables>(CreateNewFamilyMemberDocument, options);
+      }
+export type CreateNewFamilyMemberMutationHookResult = ReturnType<typeof useCreateNewFamilyMemberMutation>;
+export type CreateNewFamilyMemberMutationResult = Apollo.MutationResult<CreateNewFamilyMemberMutation>;
+export type CreateNewFamilyMemberMutationOptions = Apollo.BaseMutationOptions<CreateNewFamilyMemberMutation, CreateNewFamilyMemberMutationVariables>;
+export const CreateSpaceDocument = gql`
+    mutation CreateSpace($name: String!) {
+  createSpace(input: {space: {name: $name}}) {
+    clientMutationId
+  }
+}
+    `;
+export type CreateSpaceMutationFn = Apollo.MutationFunction<CreateSpaceMutation, CreateSpaceMutationVariables>;
+
+/**
+ * __useCreateSpaceMutation__
+ *
+ * To run a mutation, you first call `useCreateSpaceMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateSpaceMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createSpaceMutation, { data, loading, error }] = useCreateSpaceMutation({
+ *   variables: {
+ *      name: // value for 'name'
+ *   },
+ * });
+ */
+export function useCreateSpaceMutation(baseOptions?: Apollo.MutationHookOptions<CreateSpaceMutation, CreateSpaceMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateSpaceMutation, CreateSpaceMutationVariables>(CreateSpaceDocument, options);
+      }
+export type CreateSpaceMutationHookResult = ReturnType<typeof useCreateSpaceMutation>;
+export type CreateSpaceMutationResult = Apollo.MutationResult<CreateSpaceMutation>;
+export type CreateSpaceMutationOptions = Apollo.BaseMutationOptions<CreateSpaceMutation, CreateSpaceMutationVariables>;
+export const CurrentUserDocument = gql`
+    query CurrentUser {
+  currentUser {
+    id
+    name
+  }
+}
+    `;
+
+/**
+ * __useCurrentUserQuery__
+ *
+ * To run a query within a React component, call `useCurrentUserQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCurrentUserQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCurrentUserQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useCurrentUserQuery(baseOptions?: Apollo.QueryHookOptions<CurrentUserQuery, CurrentUserQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<CurrentUserQuery, CurrentUserQueryVariables>(CurrentUserDocument, options);
+      }
+export function useCurrentUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CurrentUserQuery, CurrentUserQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<CurrentUserQuery, CurrentUserQueryVariables>(CurrentUserDocument, options);
+        }
+export type CurrentUserQueryHookResult = ReturnType<typeof useCurrentUserQuery>;
+export type CurrentUserLazyQueryHookResult = ReturnType<typeof useCurrentUserLazyQuery>;
+export type CurrentUserQueryResult = Apollo.QueryResult<CurrentUserQuery, CurrentUserQueryVariables>;
+export const CurrentUserFamilyDocument = gql`
+    query CurrentUserFamily {
+  currentUser {
+    id
+    name
+    family {
+      id
+      familyMemberships {
+        nodes {
+          id
+          person {
+            id
+            name
+          }
+          role
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useCurrentUserFamilyQuery__
+ *
+ * To run a query within a React component, call `useCurrentUserFamilyQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCurrentUserFamilyQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCurrentUserFamilyQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useCurrentUserFamilyQuery(baseOptions?: Apollo.QueryHookOptions<CurrentUserFamilyQuery, CurrentUserFamilyQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<CurrentUserFamilyQuery, CurrentUserFamilyQueryVariables>(CurrentUserFamilyDocument, options);
+      }
+export function useCurrentUserFamilyLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CurrentUserFamilyQuery, CurrentUserFamilyQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<CurrentUserFamilyQuery, CurrentUserFamilyQueryVariables>(CurrentUserFamilyDocument, options);
+        }
+export type CurrentUserFamilyQueryHookResult = ReturnType<typeof useCurrentUserFamilyQuery>;
+export type CurrentUserFamilyLazyQueryHookResult = ReturnType<typeof useCurrentUserFamilyLazyQuery>;
+export type CurrentUserFamilyQueryResult = Apollo.QueryResult<CurrentUserFamilyQuery, CurrentUserFamilyQueryVariables>;
+export const CurrentFamilyMembershipDocument = gql`
+    query CurrentFamilyMembership {
+  currentFamilyMembership {
+    id
+    role
+    family {
+      id
+    }
+    person {
+      id
+      name
+      user {
+        id
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useCurrentFamilyMembershipQuery__
+ *
+ * To run a query within a React component, call `useCurrentFamilyMembershipQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCurrentFamilyMembershipQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCurrentFamilyMembershipQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useCurrentFamilyMembershipQuery(baseOptions?: Apollo.QueryHookOptions<CurrentFamilyMembershipQuery, CurrentFamilyMembershipQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<CurrentFamilyMembershipQuery, CurrentFamilyMembershipQueryVariables>(CurrentFamilyMembershipDocument, options);
+      }
+export function useCurrentFamilyMembershipLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CurrentFamilyMembershipQuery, CurrentFamilyMembershipQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<CurrentFamilyMembershipQuery, CurrentFamilyMembershipQueryVariables>(CurrentFamilyMembershipDocument, options);
+        }
+export type CurrentFamilyMembershipQueryHookResult = ReturnType<typeof useCurrentFamilyMembershipQuery>;
+export type CurrentFamilyMembershipLazyQueryHookResult = ReturnType<typeof useCurrentFamilyMembershipLazyQuery>;
+export type CurrentFamilyMembershipQueryResult = Apollo.QueryResult<CurrentFamilyMembershipQuery, CurrentFamilyMembershipQueryVariables>;

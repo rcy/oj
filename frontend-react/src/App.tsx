@@ -1,10 +1,9 @@
 import LoggedInApp from './LoggedInApp'
-import { useQuery } from '@apollo/client';
-import { CURRENT_USER } from './queries';
+import { useCurrentUserQuery } from './generated-types';
 import Button from './Button';
 
 function App() {
-  const { loading, error, data } = useQuery(CURRENT_USER)
+  const { loading, error, data } = useCurrentUserQuery();
 
   if (loading) {
     return null
