@@ -1970,6 +1970,7 @@ export type QueryUsersArgs = {
 export type Space = Node & {
   __typename?: 'Space';
   createdAt: Scalars['Datetime'];
+  description?: Maybe<Scalars['String']>;
   id: Scalars['UUID'];
   name: Scalars['String'];
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
@@ -1994,6 +1995,8 @@ export type SpaceSpaceMembershipsArgs = {
 export type SpaceCondition = {
   /** Checks for equality with the object’s `createdAt` field. */
   createdAt?: InputMaybe<Scalars['Datetime']>;
+  /** Checks for equality with the object’s `description` field. */
+  description?: InputMaybe<Scalars['String']>;
   /** Checks for equality with the object’s `id` field. */
   id?: InputMaybe<Scalars['UUID']>;
   /** Checks for equality with the object’s `name` field. */
@@ -2005,6 +2008,7 @@ export type SpaceCondition = {
 /** An input for mutations affecting `Space` */
 export type SpaceInput = {
   createdAt?: InputMaybe<Scalars['Datetime']>;
+  description?: InputMaybe<Scalars['String']>;
   id?: InputMaybe<Scalars['UUID']>;
   name: Scalars['String'];
   updatedAt?: InputMaybe<Scalars['Datetime']>;
@@ -2122,6 +2126,7 @@ export enum SpaceMembershipsOrderBy {
 /** Represents an update to a `Space`. Fields that are set will be updated. */
 export type SpacePatch = {
   createdAt?: InputMaybe<Scalars['Datetime']>;
+  description?: InputMaybe<Scalars['String']>;
   id?: InputMaybe<Scalars['UUID']>;
   name?: InputMaybe<Scalars['String']>;
   updatedAt?: InputMaybe<Scalars['Datetime']>;
@@ -2153,6 +2158,8 @@ export type SpacesEdge = {
 export enum SpacesOrderBy {
   CreatedAtAsc = 'CREATED_AT_ASC',
   CreatedAtDesc = 'CREATED_AT_DESC',
+  DescriptionAsc = 'DESCRIPTION_ASC',
+  DescriptionDesc = 'DESCRIPTION_DESC',
   IdAsc = 'ID_ASC',
   IdDesc = 'ID_DESC',
   NameAsc = 'NAME_ASC',
@@ -2787,6 +2794,13 @@ export type CurrentFamilyMembershipQueryVariables = Exact<{ [key: string]: never
 
 export type CurrentFamilyMembershipQuery = { __typename?: 'Query', currentFamilyMembership?: { __typename?: 'FamilyMembership', id: any, role: string, family?: { __typename?: 'Family', id: any } | null, person?: { __typename?: 'Person', id: any, name: string, user?: { __typename?: 'User', id: any } | null } | null } | null };
 
+export type SpaceQueryVariables = Exact<{
+  id: Scalars['UUID'];
+}>;
+
+
+export type SpaceQuery = { __typename?: 'Query', space?: { __typename?: 'Space', id: any, name: string, description?: string | null } | null };
+
 
 export const AllSpacesDocument = gql`
     query AllSpaces {
@@ -3022,3 +3036,40 @@ export function useCurrentFamilyMembershipLazyQuery(baseOptions?: Apollo.LazyQue
 export type CurrentFamilyMembershipQueryHookResult = ReturnType<typeof useCurrentFamilyMembershipQuery>;
 export type CurrentFamilyMembershipLazyQueryHookResult = ReturnType<typeof useCurrentFamilyMembershipLazyQuery>;
 export type CurrentFamilyMembershipQueryResult = Apollo.QueryResult<CurrentFamilyMembershipQuery, CurrentFamilyMembershipQueryVariables>;
+export const SpaceDocument = gql`
+    query Space($id: UUID!) {
+  space(id: $id) {
+    id
+    name
+    description
+  }
+}
+    `;
+
+/**
+ * __useSpaceQuery__
+ *
+ * To run a query within a React component, call `useSpaceQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSpaceQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSpaceQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useSpaceQuery(baseOptions: Apollo.QueryHookOptions<SpaceQuery, SpaceQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<SpaceQuery, SpaceQueryVariables>(SpaceDocument, options);
+      }
+export function useSpaceLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SpaceQuery, SpaceQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<SpaceQuery, SpaceQueryVariables>(SpaceDocument, options);
+        }
+export type SpaceQueryHookResult = ReturnType<typeof useSpaceQuery>;
+export type SpaceLazyQueryHookResult = ReturnType<typeof useSpaceLazyQuery>;
+export type SpaceQueryResult = Apollo.QueryResult<SpaceQuery, SpaceQueryVariables>;

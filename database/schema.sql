@@ -336,7 +336,8 @@ CREATE TABLE app_public.spaces (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
     updated_at timestamp with time zone DEFAULT now() NOT NULL,
-    name text NOT NULL
+    name text NOT NULL,
+    description text DEFAULT 'default description'::text
 );
 
 

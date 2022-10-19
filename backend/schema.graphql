@@ -2236,6 +2236,7 @@ type Query implements Node {
 
 type Space implements Node {
   createdAt: Datetime!
+  description: String
   id: UUID!
   name: String!
 
@@ -2282,6 +2283,9 @@ input SpaceCondition {
   """Checks for equality with the object’s `createdAt` field."""
   createdAt: Datetime
 
+  """Checks for equality with the object’s `description` field."""
+  description: String
+
   """Checks for equality with the object’s `id` field."""
   id: UUID
 
@@ -2295,6 +2299,7 @@ input SpaceCondition {
 """An input for mutations affecting `Space`"""
 input SpaceInput {
   createdAt: Datetime
+  description: String
   id: UUID
   name: String!
   updatedAt: Datetime
@@ -2447,6 +2452,7 @@ Represents an update to a `Space`. Fields that are set will be updated.
 """
 input SpacePatch {
   createdAt: Datetime
+  description: String
   id: UUID
   name: String
   updatedAt: Datetime
@@ -2482,6 +2488,8 @@ type SpacesEdge {
 enum SpacesOrderBy {
   CREATED_AT_ASC
   CREATED_AT_DESC
+  DESCRIPTION_ASC
+  DESCRIPTION_DESC
   ID_ASC
   ID_DESC
   NAME_ASC
