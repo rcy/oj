@@ -1,4 +1,4 @@
-export function setFamilyMembershipId(familyMembershipId) {
+export function setFamilyMembershipId(familyMembershipId: string) {
   window.sessionStorage.setItem('familyMembershipId', familyMembershipId)
 }
 

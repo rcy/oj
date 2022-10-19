@@ -1,14 +1,14 @@
-import { useState } from 'react';
+import { ChangeEvent, FormEventHandler, useState } from 'react';
 import { useMutation } from '@apollo/client';
-import { CREATE_NEW_FAMILY_MEMBER } from '../queries.js';
-import TextInput from './TextInput.js';
+import { CREATE_NEW_FAMILY_MEMBER } from '../queries';
+import TextInput from './TextInput';
 import Button from '../Button';
 
 export default function AdminAddFamilyMember() {
   const [value, setValue] = useState('')
-  const [addFamilyMember, { data, loading, error }] = useMutation(CREATE_NEW_FAMILY_MEMBER);
+  const [addFamilyMember] = useMutation(CREATE_NEW_FAMILY_MEMBER);
 
-  async function handleSubmit(ev) {
+  const handleSubmit: FormEventHandler = async (ev) => {
     ev.preventDefault()
     console.log('mutating...')
     const result = await addFamilyMember({
@@ -25,11 +25,11 @@ export default function AdminAddFamilyMember() {
         <TextInput
           label="New Family Member Name"
           name="name"
-          onChange={(ev) => setValue(ev.target.value)}
+          onChange={(ev: React.ChangeEvent<HTMLInputElement>) => setValue(ev.target.value)}
           value={value}
         />
 
-        <Button type='submit'>Submit</Button>
+        <Button color="green" type='submit'>Submit</Button>
       </form>
     </>
   )

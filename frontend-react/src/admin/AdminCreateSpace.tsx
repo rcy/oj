@@ -1,14 +1,14 @@
-import { useState } from 'react';
+import { FormEventHandler, useState } from 'react';
 import { useMutation } from '@apollo/client';
-import { CREATE_SPACE } from '../queries.js';
-import TextInput from './TextInput.js';
+import { CREATE_SPACE } from '../queries';
+import TextInput from './TextInput';
 import Button from '../Button';
 
 export default function AdminAddFamilyMember() {
   const [value, setValue] = useState('')
-  const [createSpace, { data, loading, error }] = useMutation(CREATE_SPACE);
+  const [createSpace] = useMutation(CREATE_SPACE);
 
-  async function handleSubmit(ev) {
+  const handleSubmit: FormEventHandler = async (ev) => {
     ev.preventDefault()
     console.log('mutating...')
     const result = await createSpace({
@@ -25,11 +25,11 @@ export default function AdminAddFamilyMember() {
         <TextInput
           label="Space Name"
           name="name"
-          onChange={(ev) => setValue(ev.target.value)}
+          onChange={(ev: React.ChangeEvent<HTMLInputElement>) => setValue(ev.target.value)}
           value={value}
         />
 
-        <Button type='submit'>Submit</Button>
+        <Button color="blue" type='submit'>Submit</Button>
       </form>
     </>
   )

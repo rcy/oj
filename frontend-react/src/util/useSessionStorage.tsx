@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-function getSessionStorageOrDefault(key, defaultValue) {
+function getSessionStorageOrDefault(key: string, defaultValue: string | null) {
   console.log('getSessionStorageOrDefault', { key, defaultValue })
   const stored = window.sessionStorage.getItem(key);
   if (!stored) {
@@ -9,7 +9,7 @@ function getSessionStorageOrDefault(key, defaultValue) {
   return JSON.parse(stored);
 }
 
-export default function useSessionStorage(key, defaultValue) {
+export default function useSessionStorage(key: string, defaultValue: string | null) {
   console.log('useSessionStorage', { key, defaultValue })
   const [value, setValue] = useState(
     getSessionStorageOrDefault(key, defaultValue)

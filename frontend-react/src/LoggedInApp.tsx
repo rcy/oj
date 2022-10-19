@@ -4,9 +4,9 @@ import {
   Routes,
   Route,
 } from "react-router-dom";
-import FamilyLanding from './FamilyLanding.js'
-import MemberLayout from './MemberLayout.js'
-import useSessionStorage from './util/useSessionStorage.js'
+import FamilyLanding from './FamilyLanding'
+import MemberLayout from './MemberLayout'
+import useSessionStorage from './util/useSessionStorage'
 
 export default function LoggedInApp() {
   const [familyMembershipId, setFamilyMembershipId] = useSessionStorage('familyMembershipId', null);

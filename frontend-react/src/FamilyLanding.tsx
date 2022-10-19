@@ -1,14 +1,15 @@
-import React from 'react'
-import { CURRENT_USER_FAMILY } from './queries.js'
+import { MouseEvent } from 'react'
+import { CURRENT_USER_FAMILY } from './queries'
 import { useQuery } from '@apollo/client';
-import useSessionStorage from './util/useSessionStorage.js';
 
-export default function FamilyLanding({ setFamilyMembershipId }) {
+type FamilyLandingType = { setFamilyMembershipId: Function }
+
+export default function FamilyLanding({ setFamilyMembershipId }: FamilyLandingType) {
   const { loading, error, data } = useQuery(CURRENT_USER_FAMILY)
 
   if (loading) { return null }
 
-  function become(ev, id) {
+  function become(ev: MouseEvent, id: string) {
     ev.preventDefault()
     setFamilyMembershipId(id)
   }
@@ -18,7 +19,7 @@ export default function FamilyLanding({ setFamilyMembershipId }) {
       <div>
         <h1 className="pb-20 text-xl">Select Family Member</h1>
         <section className="flex space-x-10">
-          {data.currentUser.family.familyMemberships.nodes.map((m) => (
+          {data.currentUser.family.familyMemberships.nodes.map((m: any) => (
             <a
               href="#"
               onClick={(ev) => become(ev, m.id)}

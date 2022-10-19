@@ -1,9 +1,11 @@
 import React from 'react'
-import AdminSection from './admin/AdminSection.js';
+import AdminSection from './admin/AdminSection';
 import { Link } from "react-router-dom";
-import Button from './Button.js';
+import Button from './Button';
 
-export default function MemberHome({ familyMembership }) {
+type MemberHomeType = { familyMembership: any }
+
+export default function MemberHome({ familyMembership }: MemberHomeType) {
   return <div className="flex flex-col gap-y-10">
     <section>
       {familyMembership.role === 'admin' && <AdminSection />}
@@ -11,7 +13,7 @@ export default function MemberHome({ familyMembership }) {
 
     <section>
       <Link to="/spaces">
-        <Button>Spaces</Button>
+        <Button color="blue">Spaces</Button>
       </Link>
     </section>
   </div>

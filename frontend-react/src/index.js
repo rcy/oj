@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './App';
+import App from './App.tsx';
 import reportWebVitals from './reportWebVitals';
 import { HttpLink, ApolloLink, ApolloClient, ApolloProvider, concat, InMemoryCache } from '@apollo/client';
 import { setContext } from "@apollo/client/link/context";

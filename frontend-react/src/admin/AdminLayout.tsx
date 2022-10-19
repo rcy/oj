@@ -1,7 +1,7 @@
 import { Routes, Route, Link } from "react-router-dom";
 import PageNotFound from '../PageNotFound';
-import AdminAddFamilyMember from './AdminAddFamilyMember.js';
-import AdminCreateSpace from './AdminCreateSpace.js';
+import AdminAddFamilyMember from './AdminAddFamilyMember';
+import AdminCreateSpace from './AdminCreateSpace';
 
 export default function AdminLayout() {
   return (

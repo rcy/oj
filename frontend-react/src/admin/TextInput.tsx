@@ -1,4 +1,8 @@
-export default function TextInput({ label, name, onChange, value }) {
+import { ChangeEventHandler } from "react"
+
+type TextInputType = { label: string, name: string, onChange: ChangeEventHandler, value: string }
+
+export default function TextInput({ label, name, onChange, value }: TextInputType) {
   return (
     <>
       <label className="form-label inline-block mb-2 text-gray-700">

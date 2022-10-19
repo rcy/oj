@@ -1,24 +1,24 @@
-import React from 'react'
-import { CURRENT_FAMILY_MEMBERSHIP } from './queries.js'
+import { MouseEventHandler } from 'react'
+import { CURRENT_FAMILY_MEMBERSHIP } from './queries'
 import { useQuery } from '@apollo/client';
 import { useNavigate } from 'react-router-dom';
-import { clearFamilyMembershipId } from './util/family.js';
-import { Routes, Route, Link, navigate } from "react-router-dom";
-import MemberHome from './MemberHome.js';
-import Button from './Button.js';
-import AdminLayout from './admin/AdminLayout.js';
-import PageNotFound from './PageNotFound.js';
+import { Routes, Route } from "react-router-dom";
+import MemberHome from './MemberHome';
+import AdminLayout from './admin/AdminLayout';
+import PageNotFound from './PageNotFound';
 
-import SpacesIndex from './routes/spaces/index.js';
-import SpacesShow from './routes/spaces/show.js';
+import SpacesIndex from './routes/spaces/index';
+import SpacesShow from './routes/spaces/show';
 
-export default function MemberLayout({ doLogout }) {
-  const { loading, error, data } = useQuery(CURRENT_FAMILY_MEMBERSHIP, { fetchPolicy: 'network-only' })
+type MemberLayoutType = { doLogout: Function }
+
+export default function MemberLayout({ doLogout }: MemberLayoutType) {
+  const { loading, data } = useQuery(CURRENT_FAMILY_MEMBERSHIP, { fetchPolicy: 'network-only' })
   let navigate = useNavigate();
 
-  if (loading) { return "loading" }
+  if (loading) { return <span>loading</span> }
 
-  function handleLogout(ev) {
+  const handleLogout: MouseEventHandler = (ev) => {
     ev.preventDefault()
     navigate('/');
     doLogout()

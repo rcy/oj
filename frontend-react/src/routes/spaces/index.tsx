@@ -1,4 +1,3 @@
-import React from 'react'
 import { useQuery, gql } from '@apollo/client';
 import { Link } from "react-router-dom";
 
@@ -16,7 +15,7 @@ const ALL_SPACES = gql`
 `
 
 export default function() {
-  const { loading, error, data } = useQuery(ALL_SPACES)
+  const { loading, data } = useQuery(ALL_SPACES)
 
   console.log({ data })
 
@@ -24,7 +23,7 @@ export default function() {
 
   return (
     <div className="flex flex-col">
-      {data.spaces.edges.map((s) => (
+      {data.spaces.edges.map((s: any) => (
         <Link
           to={`/spaces/${s.node.id}`}
           key={s.node.id}

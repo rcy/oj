@@ -1,8 +1,7 @@
-import logo from './logo.svg';
-import LoggedInApp from './LoggedInApp.js'
+import LoggedInApp from './LoggedInApp'
 import { useQuery } from '@apollo/client';
-import { CURRENT_USER } from './queries.js';
-import Button from './Button.js';
+import { CURRENT_USER } from './queries';
+import Button from './Button';
 
 function App() {
   const { loading, error, data } = useQuery(CURRENT_USER)
@@ -23,8 +22,8 @@ function App() {
 
   return (
     <div className="grid h-screen place-items-center">
-      <a href={`/auth/login?from=${encodeURIComponent(window.location)}`}>
-        <Button>login</Button>
+      <a href={`/auth/login?from=${encodeURIComponent(window.location.href)}`}>
+        <Button color="blue">login</Button>
       </a>
     </div>
   )
