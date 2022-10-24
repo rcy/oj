@@ -1,21 +1,25 @@
-import { useAllSpacesQuery } from '../../generated-types';
-import { Link } from "react-router-dom";
+// import { useAllSpacesQuery } from '../../generated-types';
+// import { Link } from "react-router-dom";
+// import JoinSpaceButton from '../../components/JoinSpaceButton';
+import { useContext } from 'react';
+import { PersonIdContext } from '../../contexts';
+import AllSpaces from './AllSpaces';
+import MySpaceMemberships from './MySpaceMemberships';
 
 export default function() {
-  const {loading, data } = useAllSpacesQuery()
-
-  if (loading) { return null }
+  const personId = useContext(PersonIdContext)
 
   return (
     <div className="flex flex-col">
-      {data?.spaces?.edges.map((s) => (
-        <Link
-          to={`/spaces/${s.node.id}`}
-          key={s.node.id}
-        >
-          {s.node.name}
-        </Link>
-      ))}
+      <section>
+        <h1 className="text-xl">my spaces</h1>
+        <MySpaceMemberships />
+      </section>
+
+      <section>
+        <h1 className="text-xl">all spaces</h1>
+        <AllSpaces />
+      </section>
     </div>
   );
 }

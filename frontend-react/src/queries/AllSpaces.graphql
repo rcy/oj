@@ -1,9 +1,20 @@
-query AllSpaces {
+query AllSpaces($personId: UUID!) {
   spaces {
+    totalCount
     edges {
       node {
         id
         name
+        spaceMemberships(condition: { personId: $personId }) {
+          edges {
+            node {
+              id
+              person {
+                id
+              }
+            }
+          }
+        }
       }
     }
   }

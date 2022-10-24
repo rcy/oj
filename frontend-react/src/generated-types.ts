@@ -283,41 +283,6 @@ export type CreatePersonPayloadPersonEdgeArgs = {
   orderBy?: InputMaybe<Array<PeopleOrderBy>>;
 };
 
-/** All input for the create `Post` mutation. */
-export type CreatePostInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']>;
-  /** The `Post` to be created by this mutation. */
-  post: PostInput;
-};
-
-/** The output of our create `Post` mutation. */
-export type CreatePostPayload = {
-  __typename?: 'CreatePostPayload';
-  /**
-   * The exact same `clientMutationId` that was provided in the mutation input,
-   * unchanged and unused. May be used by a client to track mutations.
-   */
-  clientMutationId?: Maybe<Scalars['String']>;
-  /** Reads a single `SpaceMembership` that is related to this `Post`. */
-  membership?: Maybe<SpaceMembership>;
-  /** The `Post` that was created by this mutation. */
-  post?: Maybe<Post>;
-  /** An edge for our `Post`. May be used by Relay 1. */
-  postEdge?: Maybe<PostsEdge>;
-  /** Our root query field type. Allows us to run any query from our mutation payload. */
-  query?: Maybe<Query>;
-};
-
-
-/** The output of our create `Post` mutation. */
-export type CreatePostPayloadPostEdgeArgs = {
-  orderBy?: InputMaybe<Array<PostsOrderBy>>;
-};
-
 /** All input for the create `Space` mutation. */
 export type CreateSpaceInput = {
   /**
@@ -561,52 +526,6 @@ export type DeletePersonPayloadPersonEdgeArgs = {
   orderBy?: InputMaybe<Array<PeopleOrderBy>>;
 };
 
-/** All input for the `deletePostByNodeId` mutation. */
-export type DeletePostByNodeIdInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']>;
-  /** The globally unique `ID` which will identify a single `Post` to be deleted. */
-  nodeId: Scalars['ID'];
-};
-
-/** All input for the `deletePost` mutation. */
-export type DeletePostInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']>;
-  id: Scalars['UUID'];
-};
-
-/** The output of our delete `Post` mutation. */
-export type DeletePostPayload = {
-  __typename?: 'DeletePostPayload';
-  /**
-   * The exact same `clientMutationId` that was provided in the mutation input,
-   * unchanged and unused. May be used by a client to track mutations.
-   */
-  clientMutationId?: Maybe<Scalars['String']>;
-  deletedPostNodeId?: Maybe<Scalars['ID']>;
-  /** Reads a single `SpaceMembership` that is related to this `Post`. */
-  membership?: Maybe<SpaceMembership>;
-  /** The `Post` that was deleted by this mutation. */
-  post?: Maybe<Post>;
-  /** An edge for our `Post`. May be used by Relay 1. */
-  postEdge?: Maybe<PostsEdge>;
-  /** Our root query field type. Allows us to run any query from our mutation payload. */
-  query?: Maybe<Query>;
-};
-
-
-/** The output of our delete `Post` mutation. */
-export type DeletePostPayloadPostEdgeArgs = {
-  orderBy?: InputMaybe<Array<PostsOrderBy>>;
-};
-
 /** All input for the `deleteSpaceByNodeId` mutation. */
 export type DeleteSpaceByNodeIdInput = {
   /**
@@ -637,6 +556,17 @@ export type DeleteSpaceMembershipByNodeIdInput = {
   clientMutationId?: InputMaybe<Scalars['String']>;
   /** The globally unique `ID` which will identify a single `SpaceMembership` to be deleted. */
   nodeId: Scalars['ID'];
+};
+
+/** All input for the `deleteSpaceMembershipByPersonIdAndSpaceId` mutation. */
+export type DeleteSpaceMembershipByPersonIdAndSpaceIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  personId: Scalars['UUID'];
+  spaceId: Scalars['UUID'];
 };
 
 /** All input for the `deleteSpaceMembership` mutation. */
@@ -1064,8 +994,6 @@ export type Mutation = {
   createNewFamilyMember?: Maybe<CreateNewFamilyMemberPayload>;
   /** Creates a single `Person`. */
   createPerson?: Maybe<CreatePersonPayload>;
-  /** Creates a single `Post`. */
-  createPost?: Maybe<CreatePostPayload>;
   /** Creates a single `Space`. */
   createSpace?: Maybe<CreateSpacePayload>;
   /** Creates a single `SpaceMembership`. */
@@ -1084,10 +1012,6 @@ export type Mutation = {
   deletePerson?: Maybe<DeletePersonPayload>;
   /** Deletes a single `Person` using its globally unique id. */
   deletePersonByNodeId?: Maybe<DeletePersonPayload>;
-  /** Deletes a single `Post` using a unique key. */
-  deletePost?: Maybe<DeletePostPayload>;
-  /** Deletes a single `Post` using its globally unique id. */
-  deletePostByNodeId?: Maybe<DeletePostPayload>;
   /** Deletes a single `Space` using a unique key. */
   deleteSpace?: Maybe<DeleteSpacePayload>;
   /** Deletes a single `Space` using its globally unique id. */
@@ -1096,10 +1020,13 @@ export type Mutation = {
   deleteSpaceMembership?: Maybe<DeleteSpaceMembershipPayload>;
   /** Deletes a single `SpaceMembership` using its globally unique id. */
   deleteSpaceMembershipByNodeId?: Maybe<DeleteSpaceMembershipPayload>;
+  /** Deletes a single `SpaceMembership` using a unique key. */
+  deleteSpaceMembershipByPersonIdAndSpaceId?: Maybe<DeleteSpaceMembershipPayload>;
   /** Deletes a single `Topic` using a unique key. */
   deleteTopic?: Maybe<DeleteTopicPayload>;
   /** Deletes a single `Topic` using its globally unique id. */
   deleteTopicByNodeId?: Maybe<DeleteTopicPayload>;
+  postMessage?: Maybe<PostMessagePayload>;
   /** Updates a single `FamilyMembership` using a unique key and a patch. */
   updateFamilyMembership?: Maybe<UpdateFamilyMembershipPayload>;
   /** Updates a single `FamilyMembership` using its globally unique id and a patch. */
@@ -1112,10 +1039,6 @@ export type Mutation = {
   updatePerson?: Maybe<UpdatePersonPayload>;
   /** Updates a single `Person` using its globally unique id and a patch. */
   updatePersonByNodeId?: Maybe<UpdatePersonPayload>;
-  /** Updates a single `Post` using a unique key and a patch. */
-  updatePost?: Maybe<UpdatePostPayload>;
-  /** Updates a single `Post` using its globally unique id and a patch. */
-  updatePostByNodeId?: Maybe<UpdatePostPayload>;
   /** Updates a single `Space` using a unique key and a patch. */
   updateSpace?: Maybe<UpdateSpacePayload>;
   /** Updates a single `Space` using its globally unique id and a patch. */
@@ -1124,6 +1047,8 @@ export type Mutation = {
   updateSpaceMembership?: Maybe<UpdateSpaceMembershipPayload>;
   /** Updates a single `SpaceMembership` using its globally unique id and a patch. */
   updateSpaceMembershipByNodeId?: Maybe<UpdateSpaceMembershipPayload>;
+  /** Updates a single `SpaceMembership` using a unique key and a patch. */
+  updateSpaceMembershipByPersonIdAndSpaceId?: Maybe<UpdateSpaceMembershipPayload>;
   /** Updates a single `Topic` using a unique key and a patch. */
   updateTopic?: Maybe<UpdateTopicPayload>;
   /** Updates a single `Topic` using its globally unique id and a patch. */
@@ -1164,12 +1089,6 @@ export type MutationCreateNewFamilyMemberArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationCreatePersonArgs = {
   input: CreatePersonInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
-export type MutationCreatePostArgs = {
-  input: CreatePostInput;
 };
 
 
@@ -1228,18 +1147,6 @@ export type MutationDeletePersonByNodeIdArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
-export type MutationDeletePostArgs = {
-  input: DeletePostInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
-export type MutationDeletePostByNodeIdArgs = {
-  input: DeletePostByNodeIdInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
 export type MutationDeleteSpaceArgs = {
   input: DeleteSpaceInput;
 };
@@ -1264,6 +1171,12 @@ export type MutationDeleteSpaceMembershipByNodeIdArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteSpaceMembershipByPersonIdAndSpaceIdArgs = {
+  input: DeleteSpaceMembershipByPersonIdAndSpaceIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
 export type MutationDeleteTopicArgs = {
   input: DeleteTopicInput;
 };
@@ -1272,6 +1185,12 @@ export type MutationDeleteTopicArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationDeleteTopicByNodeIdArgs = {
   input: DeleteTopicByNodeIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationPostMessageArgs = {
+  input: PostMessageInput;
 };
 
 
@@ -1312,18 +1231,6 @@ export type MutationUpdatePersonByNodeIdArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
-export type MutationUpdatePostArgs = {
-  input: UpdatePostInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
-export type MutationUpdatePostByNodeIdArgs = {
-  input: UpdatePostByNodeIdInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
 export type MutationUpdateSpaceArgs = {
   input: UpdateSpaceInput;
 };
@@ -1344,6 +1251,12 @@ export type MutationUpdateSpaceMembershipArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationUpdateSpaceMembershipByNodeIdArgs = {
   input: UpdateSpaceMembershipByNodeIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateSpaceMembershipByPersonIdAndSpaceIdArgs = {
+  input: UpdateSpaceMembershipByPersonIdAndSpaceIdInput;
 };
 
 
@@ -1521,6 +1434,9 @@ export type Post = Node & {
   membershipId: Scalars['UUID'];
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
   nodeId: Scalars['ID'];
+  /** Reads a single `Space` that is related to this `Post`. */
+  space?: Maybe<Space>;
+  spaceId: Scalars['UUID'];
   updatedAt: Scalars['Datetime'];
 };
 
@@ -1534,26 +1450,46 @@ export type PostCondition = {
   id?: InputMaybe<Scalars['UUID']>;
   /** Checks for equality with the object’s `membershipId` field. */
   membershipId?: InputMaybe<Scalars['UUID']>;
+  /** Checks for equality with the object’s `spaceId` field. */
+  spaceId?: InputMaybe<Scalars['UUID']>;
   /** Checks for equality with the object’s `updatedAt` field. */
   updatedAt?: InputMaybe<Scalars['Datetime']>;
 };
 
-/** An input for mutations affecting `Post` */
-export type PostInput = {
+/** All input for the `postMessage` mutation. */
+export type PostMessageInput = {
   body: Scalars['String'];
-  createdAt?: InputMaybe<Scalars['Datetime']>;
-  id?: InputMaybe<Scalars['UUID']>;
-  membershipId: Scalars['UUID'];
-  updatedAt?: InputMaybe<Scalars['Datetime']>;
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  spaceMembershipId: Scalars['UUID'];
 };
 
-/** Represents an update to a `Post`. Fields that are set will be updated. */
-export type PostPatch = {
-  body?: InputMaybe<Scalars['String']>;
-  createdAt?: InputMaybe<Scalars['Datetime']>;
-  id?: InputMaybe<Scalars['UUID']>;
-  membershipId?: InputMaybe<Scalars['UUID']>;
-  updatedAt?: InputMaybe<Scalars['Datetime']>;
+/** The output of our `postMessage` mutation. */
+export type PostMessagePayload = {
+  __typename?: 'PostMessagePayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** Reads a single `SpaceMembership` that is related to this `Post`. */
+  membership?: Maybe<SpaceMembership>;
+  post?: Maybe<Post>;
+  /** An edge for our `Post`. May be used by Relay 1. */
+  postEdge?: Maybe<PostsEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  /** Reads a single `Space` that is related to this `Post`. */
+  space?: Maybe<Space>;
+};
+
+
+/** The output of our `postMessage` mutation. */
+export type PostMessagePayloadPostEdgeArgs = {
+  orderBy?: InputMaybe<Array<PostsOrderBy>>;
 };
 
 /** A connection to a list of `Post` values. */
@@ -1591,6 +1527,8 @@ export enum PostsOrderBy {
   Natural = 'NATURAL',
   PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
   PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
+  SpaceIdAsc = 'SPACE_ID_ASC',
+  SpaceIdDesc = 'SPACE_ID_DESC',
   UpdatedAtAsc = 'UPDATED_AT_ASC',
   UpdatedAtDesc = 'UPDATED_AT_DESC'
 }
@@ -1654,6 +1592,7 @@ export type Query = Node & {
   spaceMembership?: Maybe<SpaceMembership>;
   /** Reads a single `SpaceMembership` using its globally unique `ID`. */
   spaceMembershipByNodeId?: Maybe<SpaceMembership>;
+  spaceMembershipByPersonIdAndSpaceId?: Maybe<SpaceMembership>;
   /** Reads and enables pagination through a set of `SpaceMembership`. */
   spaceMemberships?: Maybe<SpaceMembershipsConnection>;
   /** Reads and enables pagination through a set of `Space`. */
@@ -1891,6 +1830,13 @@ export type QuerySpaceMembershipByNodeIdArgs = {
 
 
 /** The root query type which gives access points into the data universe. */
+export type QuerySpaceMembershipByPersonIdAndSpaceIdArgs = {
+  personId: Scalars['UUID'];
+  spaceId: Scalars['UUID'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
 export type QuerySpaceMembershipsArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
   before?: InputMaybe<Scalars['Cursor']>;
@@ -1975,9 +1921,22 @@ export type Space = Node & {
   name: Scalars['String'];
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
   nodeId: Scalars['ID'];
+  /** Reads and enables pagination through a set of `Post`. */
+  posts: PostsConnection;
   /** Reads and enables pagination through a set of `SpaceMembership`. */
   spaceMemberships: SpaceMembershipsConnection;
   updatedAt: Scalars['Datetime'];
+};
+
+
+export type SpacePostsArgs = {
+  after?: InputMaybe<Scalars['Cursor']>;
+  before?: InputMaybe<Scalars['Cursor']>;
+  condition?: InputMaybe<PostCondition>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<Array<PostsOrderBy>>;
 };
 
 
@@ -2408,55 +2367,6 @@ export type UpdatePersonPayloadPersonEdgeArgs = {
   orderBy?: InputMaybe<Array<PeopleOrderBy>>;
 };
 
-/** All input for the `updatePostByNodeId` mutation. */
-export type UpdatePostByNodeIdInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']>;
-  /** The globally unique `ID` which will identify a single `Post` to be updated. */
-  nodeId: Scalars['ID'];
-  /** An object where the defined keys will be set on the `Post` being updated. */
-  patch: PostPatch;
-};
-
-/** All input for the `updatePost` mutation. */
-export type UpdatePostInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']>;
-  id: Scalars['UUID'];
-  /** An object where the defined keys will be set on the `Post` being updated. */
-  patch: PostPatch;
-};
-
-/** The output of our update `Post` mutation. */
-export type UpdatePostPayload = {
-  __typename?: 'UpdatePostPayload';
-  /**
-   * The exact same `clientMutationId` that was provided in the mutation input,
-   * unchanged and unused. May be used by a client to track mutations.
-   */
-  clientMutationId?: Maybe<Scalars['String']>;
-  /** Reads a single `SpaceMembership` that is related to this `Post`. */
-  membership?: Maybe<SpaceMembership>;
-  /** The `Post` that was updated by this mutation. */
-  post?: Maybe<Post>;
-  /** An edge for our `Post`. May be used by Relay 1. */
-  postEdge?: Maybe<PostsEdge>;
-  /** Our root query field type. Allows us to run any query from our mutation payload. */
-  query?: Maybe<Query>;
-};
-
-
-/** The output of our update `Post` mutation. */
-export type UpdatePostPayloadPostEdgeArgs = {
-  orderBy?: InputMaybe<Array<PostsOrderBy>>;
-};
-
 /** All input for the `updateSpaceByNodeId` mutation. */
 export type UpdateSpaceByNodeIdInput = {
   /**
@@ -2493,6 +2403,19 @@ export type UpdateSpaceMembershipByNodeIdInput = {
   nodeId: Scalars['ID'];
   /** An object where the defined keys will be set on the `SpaceMembership` being updated. */
   patch: SpaceMembershipPatch;
+};
+
+/** All input for the `updateSpaceMembershipByPersonIdAndSpaceId` mutation. */
+export type UpdateSpaceMembershipByPersonIdAndSpaceIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  /** An object where the defined keys will be set on the `SpaceMembership` being updated. */
+  patch: SpaceMembershipPatch;
+  personId: Scalars['UUID'];
+  spaceId: Scalars['UUID'];
 };
 
 /** All input for the `updateSpaceMembership` mutation. */
@@ -2759,10 +2682,12 @@ export enum UsersOrderBy {
   UpdatedAtDesc = 'UPDATED_AT_DESC'
 }
 
-export type AllSpacesQueryVariables = Exact<{ [key: string]: never; }>;
+export type AllSpacesQueryVariables = Exact<{
+  personId: Scalars['UUID'];
+}>;
 
 
-export type AllSpacesQuery = { __typename?: 'Query', spaces?: { __typename?: 'SpacesConnection', edges: Array<{ __typename?: 'SpacesEdge', node: { __typename?: 'Space', id: any, name: string } }> } | null };
+export type AllSpacesQuery = { __typename?: 'Query', spaces?: { __typename?: 'SpacesConnection', totalCount: number, edges: Array<{ __typename?: 'SpacesEdge', node: { __typename?: 'Space', id: any, name: string, spaceMemberships: { __typename?: 'SpaceMembershipsConnection', edges: Array<{ __typename?: 'SpaceMembershipsEdge', node: { __typename?: 'SpaceMembership', id: any, person?: { __typename?: 'Person', id: any } | null } }> } } }> } | null };
 
 export type CreateNewFamilyMemberMutationVariables = Exact<{
   name: Scalars['String'];
@@ -2794,6 +2719,22 @@ export type CurrentFamilyMembershipQueryVariables = Exact<{ [key: string]: never
 
 export type CurrentFamilyMembershipQuery = { __typename?: 'Query', currentFamilyMembership?: { __typename?: 'FamilyMembership', id: any, role: string, family?: { __typename?: 'Family', id: any } | null, person?: { __typename?: 'Person', id: any, name: string, user?: { __typename?: 'User', id: any } | null } | null } | null };
 
+export type JoinSpaceMutationVariables = Exact<{
+  spaceId: Scalars['UUID'];
+  personId: Scalars['UUID'];
+}>;
+
+
+export type JoinSpaceMutation = { __typename?: 'Mutation', createSpaceMembership?: { __typename?: 'CreateSpaceMembershipPayload', clientMutationId?: string | null } | null };
+
+export type PostMessageMutationVariables = Exact<{
+  membershipId: Scalars['UUID'];
+  body: Scalars['String'];
+}>;
+
+
+export type PostMessageMutation = { __typename?: 'Mutation', postMessage?: { __typename?: 'PostMessagePayload', post?: { __typename?: 'Post', id: any } | null } | null };
+
 export type SpaceQueryVariables = Exact<{
   id: Scalars['UUID'];
 }>;
@@ -2801,14 +2742,54 @@ export type SpaceQueryVariables = Exact<{
 
 export type SpaceQuery = { __typename?: 'Query', space?: { __typename?: 'Space', id: any, name: string, description?: string | null } | null };
 
+export type SpaceMembershipByPersonIdAndSpaceIdQueryVariables = Exact<{
+  personId: Scalars['UUID'];
+  spaceId: Scalars['UUID'];
+}>;
+
+
+export type SpaceMembershipByPersonIdAndSpaceIdQuery = { __typename?: 'Query', spaceMembershipByPersonIdAndSpaceId?: { __typename?: 'SpaceMembership', id: any } | null };
+
+export type SpaceMembershipsByPersonIdQueryVariables = Exact<{
+  personId: Scalars['UUID'];
+}>;
+
+
+export type SpaceMembershipsByPersonIdQuery = { __typename?: 'Query', spaceMemberships?: { __typename?: 'SpaceMembershipsConnection', edges: Array<{ __typename?: 'SpaceMembershipsEdge', node: { __typename?: 'SpaceMembership', id: any, space?: { __typename?: 'Space', id: any, name: string } | null } }> } | null };
+
+export type SpaceMembershipsBySpaceIdQueryVariables = Exact<{
+  spaceId: Scalars['UUID'];
+}>;
+
+
+export type SpaceMembershipsBySpaceIdQuery = { __typename?: 'Query', spaceMemberships?: { __typename?: 'SpaceMembershipsConnection', edges: Array<{ __typename?: 'SpaceMembershipsEdge', node: { __typename?: 'SpaceMembership', id: any, person?: { __typename?: 'Person', id: any, name: string } | null } }> } | null };
+
+export type SpacePostsQueryVariables = Exact<{
+  spaceId: Scalars['UUID'];
+}>;
+
+
+export type SpacePostsQuery = { __typename?: 'Query', posts?: { __typename?: 'PostsConnection', edges: Array<{ __typename?: 'PostsEdge', node: { __typename?: 'Post', id: any, body: string, membership?: { __typename?: 'SpaceMembership', person?: { __typename?: 'Person', name: string } | null } | null } }> } | null };
+
 
 export const AllSpacesDocument = gql`
-    query AllSpaces {
+    query AllSpaces($personId: UUID!) {
   spaces {
+    totalCount
     edges {
       node {
         id
         name
+        spaceMemberships(condition: {personId: $personId}) {
+          edges {
+            node {
+              id
+              person {
+                id
+              }
+            }
+          }
+        }
       }
     }
   }
@@ -2827,10 +2808,11 @@ export const AllSpacesDocument = gql`
  * @example
  * const { data, loading, error } = useAllSpacesQuery({
  *   variables: {
+ *      personId: // value for 'personId'
  *   },
  * });
  */
-export function useAllSpacesQuery(baseOptions?: Apollo.QueryHookOptions<AllSpacesQuery, AllSpacesQueryVariables>) {
+export function useAllSpacesQuery(baseOptions: Apollo.QueryHookOptions<AllSpacesQuery, AllSpacesQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<AllSpacesQuery, AllSpacesQueryVariables>(AllSpacesDocument, options);
       }
@@ -3036,6 +3018,78 @@ export function useCurrentFamilyMembershipLazyQuery(baseOptions?: Apollo.LazyQue
 export type CurrentFamilyMembershipQueryHookResult = ReturnType<typeof useCurrentFamilyMembershipQuery>;
 export type CurrentFamilyMembershipLazyQueryHookResult = ReturnType<typeof useCurrentFamilyMembershipLazyQuery>;
 export type CurrentFamilyMembershipQueryResult = Apollo.QueryResult<CurrentFamilyMembershipQuery, CurrentFamilyMembershipQueryVariables>;
+export const JoinSpaceDocument = gql`
+    mutation JoinSpace($spaceId: UUID!, $personId: UUID!) {
+  createSpaceMembership(
+    input: {spaceMembership: {personId: $personId, spaceId: $spaceId, roleId: "member"}}
+  ) {
+    clientMutationId
+  }
+}
+    `;
+export type JoinSpaceMutationFn = Apollo.MutationFunction<JoinSpaceMutation, JoinSpaceMutationVariables>;
+
+/**
+ * __useJoinSpaceMutation__
+ *
+ * To run a mutation, you first call `useJoinSpaceMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useJoinSpaceMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [joinSpaceMutation, { data, loading, error }] = useJoinSpaceMutation({
+ *   variables: {
+ *      spaceId: // value for 'spaceId'
+ *      personId: // value for 'personId'
+ *   },
+ * });
+ */
+export function useJoinSpaceMutation(baseOptions?: Apollo.MutationHookOptions<JoinSpaceMutation, JoinSpaceMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<JoinSpaceMutation, JoinSpaceMutationVariables>(JoinSpaceDocument, options);
+      }
+export type JoinSpaceMutationHookResult = ReturnType<typeof useJoinSpaceMutation>;
+export type JoinSpaceMutationResult = Apollo.MutationResult<JoinSpaceMutation>;
+export type JoinSpaceMutationOptions = Apollo.BaseMutationOptions<JoinSpaceMutation, JoinSpaceMutationVariables>;
+export const PostMessageDocument = gql`
+    mutation PostMessage($membershipId: UUID!, $body: String!) {
+  postMessage(input: {spaceMembershipId: $membershipId, body: $body}) {
+    post {
+      id
+    }
+  }
+}
+    `;
+export type PostMessageMutationFn = Apollo.MutationFunction<PostMessageMutation, PostMessageMutationVariables>;
+
+/**
+ * __usePostMessageMutation__
+ *
+ * To run a mutation, you first call `usePostMessageMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `usePostMessageMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [postMessageMutation, { data, loading, error }] = usePostMessageMutation({
+ *   variables: {
+ *      membershipId: // value for 'membershipId'
+ *      body: // value for 'body'
+ *   },
+ * });
+ */
+export function usePostMessageMutation(baseOptions?: Apollo.MutationHookOptions<PostMessageMutation, PostMessageMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<PostMessageMutation, PostMessageMutationVariables>(PostMessageDocument, options);
+      }
+export type PostMessageMutationHookResult = ReturnType<typeof usePostMessageMutation>;
+export type PostMessageMutationResult = Apollo.MutationResult<PostMessageMutation>;
+export type PostMessageMutationOptions = Apollo.BaseMutationOptions<PostMessageMutation, PostMessageMutationVariables>;
 export const SpaceDocument = gql`
     query Space($id: UUID!) {
   space(id: $id) {
@@ -3073,3 +3127,170 @@ export function useSpaceLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Spac
 export type SpaceQueryHookResult = ReturnType<typeof useSpaceQuery>;
 export type SpaceLazyQueryHookResult = ReturnType<typeof useSpaceLazyQuery>;
 export type SpaceQueryResult = Apollo.QueryResult<SpaceQuery, SpaceQueryVariables>;
+export const SpaceMembershipByPersonIdAndSpaceIdDocument = gql`
+    query SpaceMembershipByPersonIdAndSpaceId($personId: UUID!, $spaceId: UUID!) {
+  spaceMembershipByPersonIdAndSpaceId(personId: $personId, spaceId: $spaceId) {
+    id
+  }
+}
+    `;
+
+/**
+ * __useSpaceMembershipByPersonIdAndSpaceIdQuery__
+ *
+ * To run a query within a React component, call `useSpaceMembershipByPersonIdAndSpaceIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSpaceMembershipByPersonIdAndSpaceIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSpaceMembershipByPersonIdAndSpaceIdQuery({
+ *   variables: {
+ *      personId: // value for 'personId'
+ *      spaceId: // value for 'spaceId'
+ *   },
+ * });
+ */
+export function useSpaceMembershipByPersonIdAndSpaceIdQuery(baseOptions: Apollo.QueryHookOptions<SpaceMembershipByPersonIdAndSpaceIdQuery, SpaceMembershipByPersonIdAndSpaceIdQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<SpaceMembershipByPersonIdAndSpaceIdQuery, SpaceMembershipByPersonIdAndSpaceIdQueryVariables>(SpaceMembershipByPersonIdAndSpaceIdDocument, options);
+      }
+export function useSpaceMembershipByPersonIdAndSpaceIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SpaceMembershipByPersonIdAndSpaceIdQuery, SpaceMembershipByPersonIdAndSpaceIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<SpaceMembershipByPersonIdAndSpaceIdQuery, SpaceMembershipByPersonIdAndSpaceIdQueryVariables>(SpaceMembershipByPersonIdAndSpaceIdDocument, options);
+        }
+export type SpaceMembershipByPersonIdAndSpaceIdQueryHookResult = ReturnType<typeof useSpaceMembershipByPersonIdAndSpaceIdQuery>;
+export type SpaceMembershipByPersonIdAndSpaceIdLazyQueryHookResult = ReturnType<typeof useSpaceMembershipByPersonIdAndSpaceIdLazyQuery>;
+export type SpaceMembershipByPersonIdAndSpaceIdQueryResult = Apollo.QueryResult<SpaceMembershipByPersonIdAndSpaceIdQuery, SpaceMembershipByPersonIdAndSpaceIdQueryVariables>;
+export const SpaceMembershipsByPersonIdDocument = gql`
+    query SpaceMembershipsByPersonId($personId: UUID!) {
+  spaceMemberships(condition: {personId: $personId}) {
+    edges {
+      node {
+        id
+        space {
+          id
+          name
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useSpaceMembershipsByPersonIdQuery__
+ *
+ * To run a query within a React component, call `useSpaceMembershipsByPersonIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSpaceMembershipsByPersonIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSpaceMembershipsByPersonIdQuery({
+ *   variables: {
+ *      personId: // value for 'personId'
+ *   },
+ * });
+ */
+export function useSpaceMembershipsByPersonIdQuery(baseOptions: Apollo.QueryHookOptions<SpaceMembershipsByPersonIdQuery, SpaceMembershipsByPersonIdQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<SpaceMembershipsByPersonIdQuery, SpaceMembershipsByPersonIdQueryVariables>(SpaceMembershipsByPersonIdDocument, options);
+      }
+export function useSpaceMembershipsByPersonIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SpaceMembershipsByPersonIdQuery, SpaceMembershipsByPersonIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<SpaceMembershipsByPersonIdQuery, SpaceMembershipsByPersonIdQueryVariables>(SpaceMembershipsByPersonIdDocument, options);
+        }
+export type SpaceMembershipsByPersonIdQueryHookResult = ReturnType<typeof useSpaceMembershipsByPersonIdQuery>;
+export type SpaceMembershipsByPersonIdLazyQueryHookResult = ReturnType<typeof useSpaceMembershipsByPersonIdLazyQuery>;
+export type SpaceMembershipsByPersonIdQueryResult = Apollo.QueryResult<SpaceMembershipsByPersonIdQuery, SpaceMembershipsByPersonIdQueryVariables>;
+export const SpaceMembershipsBySpaceIdDocument = gql`
+    query SpaceMembershipsBySpaceId($spaceId: UUID!) {
+  spaceMemberships(condition: {spaceId: $spaceId}) {
+    edges {
+      node {
+        id
+        person {
+          id
+          name
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useSpaceMembershipsBySpaceIdQuery__
+ *
+ * To run a query within a React component, call `useSpaceMembershipsBySpaceIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSpaceMembershipsBySpaceIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSpaceMembershipsBySpaceIdQuery({
+ *   variables: {
+ *      spaceId: // value for 'spaceId'
+ *   },
+ * });
+ */
+export function useSpaceMembershipsBySpaceIdQuery(baseOptions: Apollo.QueryHookOptions<SpaceMembershipsBySpaceIdQuery, SpaceMembershipsBySpaceIdQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<SpaceMembershipsBySpaceIdQuery, SpaceMembershipsBySpaceIdQueryVariables>(SpaceMembershipsBySpaceIdDocument, options);
+      }
+export function useSpaceMembershipsBySpaceIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SpaceMembershipsBySpaceIdQuery, SpaceMembershipsBySpaceIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<SpaceMembershipsBySpaceIdQuery, SpaceMembershipsBySpaceIdQueryVariables>(SpaceMembershipsBySpaceIdDocument, options);
+        }
+export type SpaceMembershipsBySpaceIdQueryHookResult = ReturnType<typeof useSpaceMembershipsBySpaceIdQuery>;
+export type SpaceMembershipsBySpaceIdLazyQueryHookResult = ReturnType<typeof useSpaceMembershipsBySpaceIdLazyQuery>;
+export type SpaceMembershipsBySpaceIdQueryResult = Apollo.QueryResult<SpaceMembershipsBySpaceIdQuery, SpaceMembershipsBySpaceIdQueryVariables>;
+export const SpacePostsDocument = gql`
+    query SpacePosts($spaceId: UUID!) {
+  posts(condition: {spaceId: $spaceId}, orderBy: CREATED_AT_ASC) {
+    edges {
+      node {
+        id
+        body
+        membership {
+          person {
+            name
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useSpacePostsQuery__
+ *
+ * To run a query within a React component, call `useSpacePostsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSpacePostsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSpacePostsQuery({
+ *   variables: {
+ *      spaceId: // value for 'spaceId'
+ *   },
+ * });
+ */
+export function useSpacePostsQuery(baseOptions: Apollo.QueryHookOptions<SpacePostsQuery, SpacePostsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<SpacePostsQuery, SpacePostsQueryVariables>(SpacePostsDocument, options);
+      }
+export function useSpacePostsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SpacePostsQuery, SpacePostsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<SpacePostsQuery, SpacePostsQueryVariables>(SpacePostsDocument, options);
+        }
+export type SpacePostsQueryHookResult = ReturnType<typeof useSpacePostsQuery>;
+export type SpacePostsLazyQueryHookResult = ReturnType<typeof useSpacePostsLazyQuery>;
+export type SpacePostsQueryResult = Apollo.QueryResult<SpacePostsQuery, SpacePostsQueryVariables>;

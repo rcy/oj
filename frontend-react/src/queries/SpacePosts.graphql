@@ -1,0 +1,15 @@
+query SpacePosts($spaceId: UUID!) {
+  posts(condition: { spaceId: $spaceId }, orderBy: CREATED_AT_ASC) {
+    edges {
+      node {
+        id
+        body
+        membership {
+          person {
+            name
+          }
+        }
+      }
+    }
+  }
+}

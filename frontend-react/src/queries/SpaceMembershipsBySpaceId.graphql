@@ -1,0 +1,13 @@
+query SpaceMembershipsBySpaceId($spaceId: UUID!) {
+  spaceMemberships(condition: { spaceId: $spaceId }) {
+    edges {
+      node {
+        id
+        person {
+          id
+          name
+        }
+      }
+    }
+  }
+}

@@ -185,6 +185,46 @@ $$;
 
 
 --
+-- Name: posts; Type: TABLE; Schema: app_public; Owner: -
+--
+
+CREATE TABLE app_public.posts (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    membership_id uuid NOT NULL,
+    body text NOT NULL,
+    space_id uuid NOT NULL
+);
+
+
+--
+-- Name: post_message(uuid, text); Type: FUNCTION; Schema: app_public; Owner: -
+--
+
+CREATE FUNCTION app_public.post_message(space_membership_id uuid, body text) RETURNS app_public.posts
+    LANGUAGE plpgsql STRICT SECURITY DEFINER
+    AS $$
+declare
+        v_space_id uuid;
+        v_result app_public.posts;
+begin
+        select space_id
+        into v_space_id
+        from app_public.space_memberships
+        where id = space_membership_id;
+
+        insert
+                into app_public.posts(membership_id, space_id, body)
+                values(space_membership_id, v_space_id, body)
+                returning * into v_result;
+
+        return v_result;
+end;
+$$;
+
+
+--
 -- Name: user_id(); Type: FUNCTION; Schema: app_public; Owner: -
 --
 
@@ -285,19 +325,6 @@ CREATE TABLE app_public.people (
     created_at timestamp with time zone DEFAULT now() NOT NULL,
     updated_at timestamp with time zone DEFAULT now() NOT NULL,
     name text NOT NULL
-);
-
-
---
--- Name: posts; Type: TABLE; Schema: app_public; Owner: -
---
-
-CREATE TABLE app_public.posts (
-    id uuid DEFAULT gen_random_uuid() NOT NULL,
-    created_at timestamp with time zone DEFAULT now() NOT NULL,
-    updated_at timestamp with time zone DEFAULT now() NOT NULL,
-    membership_id uuid NOT NULL,
-    body text NOT NULL
 );
 
 
@@ -449,6 +476,14 @@ ALTER TABLE ONLY app_public.posts
 
 
 --
+-- Name: space_memberships space_memberships_person_id_space_id_unq; Type: CONSTRAINT; Schema: app_public; Owner: -
+--
+
+ALTER TABLE ONLY app_public.space_memberships
+    ADD CONSTRAINT space_memberships_person_id_space_id_unq UNIQUE (person_id, space_id);
+
+
+--
 -- Name: space_memberships space_memberships_pkey; Type: CONSTRAINT; Schema: app_public; Owner: -
 --
 
@@ -574,6 +609,14 @@ ALTER TABLE ONLY app_public.posts
 
 
 --
+-- Name: posts posts_space_id_fkey; Type: FK CONSTRAINT; Schema: app_public; Owner: -
+--
+
+ALTER TABLE ONLY app_public.posts
+    ADD CONSTRAINT posts_space_id_fkey FOREIGN KEY (space_id) REFERENCES app_public.spaces(id);
+
+
+--
 -- Name: space_memberships space_memberships_person_id_fkey; Type: FK CONSTRAINT; Schema: app_public; Owner: -
 --
 
@@ -689,6 +732,13 @@ GRANT SELECT,UPDATE ON TABLE app_public.users TO visitor;
 
 
 --
+-- Name: TABLE posts; Type: ACL; Schema: app_public; Owner: -
+--
+
+GRANT SELECT ON TABLE app_public.posts TO visitor;
+
+
+--
 -- Name: TABLE authentications; Type: ACL; Schema: app_public; Owner: -
 --
 
@@ -728,13 +778,6 @@ GRANT ALL ON TABLE app_public.interests TO visitor;
 --
 
 GRANT ALL ON TABLE app_public.people TO visitor;
-
-
---
--- Name: TABLE posts; Type: ACL; Schema: app_public; Owner: -
---
-
-GRANT ALL ON TABLE app_public.posts TO visitor;
 
 
 --

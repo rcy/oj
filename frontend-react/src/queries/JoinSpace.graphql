@@ -1,0 +1,11 @@
+mutation JoinSpace($spaceId: UUID!, $personId: UUID!) {
+  createSpaceMembership(input: {
+      spaceMembership: {
+        personId: $personId,
+        spaceId: $spaceId,
+        roleId: "member"
+      }
+    }) {
+    clientMutationId
+  }
+}
