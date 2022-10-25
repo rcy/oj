@@ -1,5 +1,5 @@
 import { useCurrentFamilyMembershipQuery } from './generated-types';
-import { Link, Navigate } from 'react-router-dom';
+import { Link, Navigate, NavLink } from 'react-router-dom';
 import { Routes, Route } from "react-router-dom";
 import MemberHome from './MemberHome';
 import AdminLayout from './admin/AdminLayout';
@@ -9,6 +9,7 @@ import SpacesIndex from './routes/spaces/index';
 import SpacesShow from './routes/spaces/show';
 import SpacesExplore from './routes/spaces/explore';
 import { PersonIdContext } from './contexts'
+import { ReactNode } from 'react';
 
 type MemberLayoutType = { doLogout: Function }
 
@@ -29,8 +30,20 @@ export default function MemberLayout({ doLogout }: MemberLayoutType) {
             </Link>
           </div>
         </nav>
-        <main>
 
+        <nav className="bg-black px-10 py-2 text-white flex justify-between text-xl">
+          <div>
+            <MyNavLink to="/me" activeClass="bg-red-200 text-black">me</MyNavLink>
+          </div>
+          <div>
+            <MyNavLink to="/family" activeClass="bg-blue-200 text-black">my family</MyNavLink>
+          </div>
+          <div>
+            <MyNavLink to="/spaces" activeClass="bg-green-200 text-black">my places</MyNavLink>
+          </div>
+        </nav>
+
+        <main>
           <Routes>
             <Route path="/" element={<Navigate to="/spaces" />} />
             <Route path="/me" element={<MemberHome familyMembership={data?.currentFamilyMembership} doLogout={doLogout} />} />
@@ -43,5 +56,21 @@ export default function MemberLayout({ doLogout }: MemberLayoutType) {
         </main>
       </div>
     </PersonIdContext.Provider>
+  )
+}
+
+interface MyNavLinkProps {
+  to: string,
+  activeClass: string,
+  children: ReactNode,
+}
+function MyNavLink({ to, children, activeClass }: MyNavLinkProps) {
+  return (
+    <NavLink
+      to={to}
+      className={({ isActive }) => isActive ? activeClass : ""}
+    >
+      {children}
+    </NavLink>
   )
 }
