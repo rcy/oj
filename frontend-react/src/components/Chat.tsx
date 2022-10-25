@@ -1,4 +1,4 @@
-import { useContext } from "react"
+import { useContext, useEffect } from "react"
 import { PersonIdContext } from "../contexts"
 import { usePostMessageMutation, useSpaceMembershipByPersonIdAndSpaceIdQuery, useSpacePostsQuery } from "../generated-types"
 import ChatInput from './ChatInput'
@@ -8,10 +8,15 @@ interface Props {
 }
 
 export default function Chat({ spaceId }: Props) {
-  const spacePostsQueryResult = useSpacePostsQuery({ variables: { spaceId } });
+  const spacePostsQueryResult = useSpacePostsQuery({ variables: { spaceId, limit: 20 } });
   const [postMessageMutation] = usePostMessageMutation();
   const personId = useContext(PersonIdContext)
   const membershipQueryResult = useSpaceMembershipByPersonIdAndSpaceIdQuery({ variables: { spaceId, personId } })
+
+  useEffect(() => {
+    spacePostsQueryResult.startPolling(1000)
+    return () => spacePostsQueryResult.stopPolling()
+  }, [])
 
   const handleSubmit = async (text: string) => {
     const result = await postMessageMutation({
@@ -20,7 +25,6 @@ export default function Chat({ spaceId }: Props) {
         body: text
       }
     })
-    console.log({ result })
 
     // refetch all the messages (switch to subscription)
     spacePostsQueryResult.refetch()

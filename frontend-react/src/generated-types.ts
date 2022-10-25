@@ -2766,6 +2766,7 @@ export type SpaceMembershipsBySpaceIdQuery = { __typename?: 'Query', spaceMember
 
 export type SpacePostsQueryVariables = Exact<{
   spaceId: Scalars['UUID'];
+  limit?: InputMaybe<Scalars['Int']>;
 }>;
 
 
@@ -3250,8 +3251,8 @@ export type SpaceMembershipsBySpaceIdQueryHookResult = ReturnType<typeof useSpac
 export type SpaceMembershipsBySpaceIdLazyQueryHookResult = ReturnType<typeof useSpaceMembershipsBySpaceIdLazyQuery>;
 export type SpaceMembershipsBySpaceIdQueryResult = Apollo.QueryResult<SpaceMembershipsBySpaceIdQuery, SpaceMembershipsBySpaceIdQueryVariables>;
 export const SpacePostsDocument = gql`
-    query SpacePosts($spaceId: UUID!) {
-  posts(condition: {spaceId: $spaceId}, orderBy: CREATED_AT_ASC) {
+    query SpacePosts($spaceId: UUID!, $limit: Int) {
+  posts(condition: {spaceId: $spaceId}, last: $limit, orderBy: CREATED_AT_ASC) {
     edges {
       node {
         id
@@ -3280,6 +3281,7 @@ export const SpacePostsDocument = gql`
  * const { data, loading, error } = useSpacePostsQuery({
  *   variables: {
  *      spaceId: // value for 'spaceId'
+ *      limit: // value for 'limit'
  *   },
  * });
  */

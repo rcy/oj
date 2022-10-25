@@ -1,5 +1,5 @@
-query SpacePosts($spaceId: UUID!) {
-  posts(condition: { spaceId: $spaceId }, orderBy: CREATED_AT_ASC) {
+query SpacePosts($spaceId: UUID!, $limit: Int) {
+  posts(condition: { spaceId: $spaceId }, last: $limit, orderBy: CREATED_AT_ASC) {
     edges {
       node {
         id
