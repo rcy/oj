@@ -1,5 +1,5 @@
 import { MouseEventHandler } from 'react';
-import { Maybe, FamilyMembership, useCurrentFamilyMembershipQuery } from './generated-types';
+import { useCurrentFamilyMembershipQuery } from './generated-types';
 import { useNavigate } from 'react-router-dom';
 import { Routes, Route } from "react-router-dom";
 import MemberHome from './MemberHome';
