@@ -11,6 +11,10 @@ export default function SpaceShow() {
   //const personId = useContext(PersonIdContext)
   const spaceQueryResult = useSpaceQuery({ variables: { id } })
 
+  if (spaceQueryResult.error) {
+    return <div>{JSON.stringify(spaceQueryResult.error)}</div>
+  }
+
   // show the space members
   // show the space messages
   // customize the space with colors and images

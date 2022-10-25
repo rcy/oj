@@ -17,10 +17,7 @@ export default function () {
     <div>
       {allSpacesResult.data?.spaces?.edges.map(({ node: space }) => (
         <div className="flex justify-between" key={space.id}>
-          <Link
-            to={`/spaces/${space.id}`}
-            key={space.id}
-          >
+          <Link to={`/spaces/${space.id}`}>
             {space.name}
           </Link>
           {space.spaceMemberships.edges.find(x => x)?.node.id ? 'joined' : <JoinSpaceButton spaceId={space.id} />}

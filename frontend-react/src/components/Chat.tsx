@@ -34,9 +34,6 @@ export default function Chat({ spaceId }: Props) {
 
   return (
     <div>
-      <h1>{spaceId}</h1>
-      <hr />
-
       {spacePostsQueryResult.data?.posts?.edges.map(({ node: post }) => (
         <div key={post.id}>
           <b>{post.membership?.person?.name}</b>: {post.body}
