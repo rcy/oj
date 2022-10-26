@@ -30,11 +30,5 @@ export default function MemberHome({ familyMembership, doLogout }: MemberHomeTyp
     <section>
       {familyMembership.role === 'admin' && <AdminSection />}
     </section>
-
-    <section>
-      <Link to="/spaces">
-        <Button color="blue">Spaces</Button>
-      </Link>
-    </section>
   </div>
 }

@@ -46,7 +46,7 @@ export default function MemberLayout({ doLogout }: MemberLayoutType) {
 
         <main>
           <Routes>
-            <Route path="/" element={<Navigate to="/spaces" />} />
+            <Route path="/" element={<Navigate to="/me" />} />
             <Route path="/me" element={<MemberHome familyMembership={data?.currentFamilyMembership} doLogout={doLogout} />} />
             <Route path="/spaces" element={<SpacesIndex />} />
             <Route path="/family" element={<FamilyIndex />} />
