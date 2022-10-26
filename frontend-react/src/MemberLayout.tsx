@@ -1,6 +1,8 @@
 import { useCurrentFamilyMembershipQuery } from './generated-types';
 import { Link, Navigate, NavLink } from 'react-router-dom';
 import { Routes, Route } from "react-router-dom";
+import { PersonIdContext } from './contexts'
+import { ReactNode } from 'react';
 import MemberHome from './MemberHome';
 import AdminLayout from './admin/AdminLayout';
 import PageNotFound from './PageNotFound';
@@ -8,8 +10,7 @@ import PageNotFound from './PageNotFound';
 import SpacesIndex from './routes/spaces/index';
 import SpacesShow from './routes/spaces/show';
 import SpacesExplore from './routes/spaces/explore';
-import { PersonIdContext } from './contexts'
-import { ReactNode } from 'react';
+import FamilyIndex from './routes/family/index';
 
 type MemberLayoutType = { doLogout: Function }
 
@@ -31,7 +32,7 @@ export default function MemberLayout({ doLogout }: MemberLayoutType) {
           </div>
         </nav>
 
-        <nav className="bg-black px-10 py-2 text-white flex justify-between text-xl">
+        <nav className="bg-black px-10 py-2 text-white flex gap-10 text-xl">
           <div>
             <MyNavLink to="/me" activeClass="bg-red-200 text-black">me</MyNavLink>
           </div>
@@ -39,7 +40,7 @@ export default function MemberLayout({ doLogout }: MemberLayoutType) {
             <MyNavLink to="/family" activeClass="bg-blue-200 text-black">my family</MyNavLink>
           </div>
           <div>
-            <MyNavLink to="/spaces" activeClass="bg-green-200 text-black">my places</MyNavLink>
+            <MyNavLink to="/spaces" activeClass="bg-green-200 text-black">places</MyNavLink>
           </div>
         </nav>
 
@@ -48,6 +49,7 @@ export default function MemberLayout({ doLogout }: MemberLayoutType) {
             <Route path="/" element={<Navigate to="/spaces" />} />
             <Route path="/me" element={<MemberHome familyMembership={data?.currentFamilyMembership} doLogout={doLogout} />} />
             <Route path="/spaces" element={<SpacesIndex />} />
+            <Route path="/family" element={<FamilyIndex />} />
             <Route path="/spaces/explore" element={<SpacesExplore />} />
             <Route path="/spaces/:id" element={<SpacesShow />} />
             <Route path="/admin/*" element={<AdminLayout />} />
