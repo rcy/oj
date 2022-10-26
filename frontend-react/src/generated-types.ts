@@ -1339,6 +1339,8 @@ export type PeopleEdge = {
 
 /** Methods to use when ordering `Person`. */
 export enum PeopleOrderBy {
+  AvatarUrlAsc = 'AVATAR_URL_ASC',
+  AvatarUrlDesc = 'AVATAR_URL_DESC',
   CreatedAtAsc = 'CREATED_AT_ASC',
   CreatedAtDesc = 'CREATED_AT_DESC',
   IdAsc = 'ID_ASC',
@@ -1354,6 +1356,7 @@ export enum PeopleOrderBy {
 
 export type Person = Node & {
   __typename?: 'Person';
+  avatarUrl: Scalars['String'];
   createdAt: Scalars['Datetime'];
   /** Reads and enables pagination through a set of `FamilyMembership`. */
   familyMemberships: FamilyMembershipsConnection;
@@ -1405,6 +1408,8 @@ export type PersonSpaceMembershipsArgs = {
 
 /** A condition to be used against `Person` object types. All fields are tested for equality and combined with a logical ‘and.’ */
 export type PersonCondition = {
+  /** Checks for equality with the object’s `avatarUrl` field. */
+  avatarUrl?: InputMaybe<Scalars['String']>;
   /** Checks for equality with the object’s `createdAt` field. */
   createdAt?: InputMaybe<Scalars['Datetime']>;
   /** Checks for equality with the object’s `id` field. */
@@ -1417,6 +1422,7 @@ export type PersonCondition = {
 
 /** An input for mutations affecting `Person` */
 export type PersonInput = {
+  avatarUrl?: InputMaybe<Scalars['String']>;
   createdAt?: InputMaybe<Scalars['Datetime']>;
   id?: InputMaybe<Scalars['UUID']>;
   name: Scalars['String'];
@@ -1425,6 +1431,7 @@ export type PersonInput = {
 
 /** Represents an update to a `Person`. Fields that are set will be updated. */
 export type PersonPatch = {
+  avatarUrl?: InputMaybe<Scalars['String']>;
   createdAt?: InputMaybe<Scalars['Datetime']>;
   id?: InputMaybe<Scalars['UUID']>;
   name?: InputMaybe<Scalars['String']>;
@@ -2719,7 +2726,7 @@ export type CurrentUserQuery = { __typename?: 'Query', currentUser?: { __typenam
 export type CurrentUserFamilyQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type CurrentUserFamilyQuery = { __typename?: 'Query', currentUser?: { __typename?: 'User', id: any, name: string, family?: { __typename?: 'Family', id: any, familyMemberships: { __typename?: 'FamilyMembershipsConnection', nodes: Array<{ __typename?: 'FamilyMembership', id: any, role: string, person?: { __typename?: 'Person', id: any, name: string } | null }> } } | null } | null };
+export type CurrentUserFamilyQuery = { __typename?: 'Query', currentUser?: { __typename?: 'User', id: any, name: string, family?: { __typename?: 'Family', id: any, familyMemberships: { __typename?: 'FamilyMembershipsConnection', nodes: Array<{ __typename?: 'FamilyMembership', id: any, role: string, person?: { __typename?: 'Person', id: any, name: string, avatarUrl: string } | null }> } } | null } | null };
 
 export type CurrentFamilyMembershipQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -2741,6 +2748,14 @@ export type PostMessageMutationVariables = Exact<{
 
 
 export type PostMessageMutation = { __typename?: 'Mutation', postMessage?: { __typename?: 'PostMessagePayload', post?: { __typename?: 'Post', id: any } | null } | null };
+
+export type SetPersonAvatarMutationVariables = Exact<{
+  personId: Scalars['UUID'];
+  avatarUrl: Scalars['String'];
+}>;
+
+
+export type SetPersonAvatarMutation = { __typename?: 'Mutation', updatePerson?: { __typename?: 'UpdatePersonPayload', clientMutationId?: string | null } | null };
 
 export type SpaceQueryVariables = Exact<{
   id: Scalars['UUID'];
@@ -2777,7 +2792,7 @@ export type SpacePostsQueryVariables = Exact<{
 }>;
 
 
-export type SpacePostsQuery = { __typename?: 'Query', posts?: { __typename?: 'PostsConnection', edges: Array<{ __typename?: 'PostsEdge', node: { __typename?: 'Post', id: any, body: string, membership?: { __typename?: 'SpaceMembership', person?: { __typename?: 'Person', name: string } | null } | null } }> } | null };
+export type SpacePostsQuery = { __typename?: 'Query', posts?: { __typename?: 'PostsConnection', edges: Array<{ __typename?: 'PostsEdge', node: { __typename?: 'Post', id: any, body: string, membership?: { __typename?: 'SpaceMembership', id: any, person?: { __typename?: 'Person', id: any, name: string, avatarUrl: string } | null } | null } }> } | null };
 
 
 export const AllSpacesDocument = gql`
@@ -2946,6 +2961,7 @@ export const CurrentUserFamilyDocument = gql`
           person {
             id
             name
+            avatarUrl
           }
           role
         }
@@ -3098,6 +3114,40 @@ export function usePostMessageMutation(baseOptions?: Apollo.MutationHookOptions<
 export type PostMessageMutationHookResult = ReturnType<typeof usePostMessageMutation>;
 export type PostMessageMutationResult = Apollo.MutationResult<PostMessageMutation>;
 export type PostMessageMutationOptions = Apollo.BaseMutationOptions<PostMessageMutation, PostMessageMutationVariables>;
+export const SetPersonAvatarDocument = gql`
+    mutation SetPersonAvatar($personId: UUID!, $avatarUrl: String!) {
+  updatePerson(input: {id: $personId, patch: {avatarUrl: $avatarUrl}}) {
+    clientMutationId
+  }
+}
+    `;
+export type SetPersonAvatarMutationFn = Apollo.MutationFunction<SetPersonAvatarMutation, SetPersonAvatarMutationVariables>;
+
+/**
+ * __useSetPersonAvatarMutation__
+ *
+ * To run a mutation, you first call `useSetPersonAvatarMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSetPersonAvatarMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [setPersonAvatarMutation, { data, loading, error }] = useSetPersonAvatarMutation({
+ *   variables: {
+ *      personId: // value for 'personId'
+ *      avatarUrl: // value for 'avatarUrl'
+ *   },
+ * });
+ */
+export function useSetPersonAvatarMutation(baseOptions?: Apollo.MutationHookOptions<SetPersonAvatarMutation, SetPersonAvatarMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<SetPersonAvatarMutation, SetPersonAvatarMutationVariables>(SetPersonAvatarDocument, options);
+      }
+export type SetPersonAvatarMutationHookResult = ReturnType<typeof useSetPersonAvatarMutation>;
+export type SetPersonAvatarMutationResult = Apollo.MutationResult<SetPersonAvatarMutation>;
+export type SetPersonAvatarMutationOptions = Apollo.BaseMutationOptions<SetPersonAvatarMutation, SetPersonAvatarMutationVariables>;
 export const SpaceDocument = gql`
     query Space($id: UUID!) {
   space(id: $id) {
@@ -3265,8 +3315,11 @@ export const SpacePostsDocument = gql`
         id
         body
         membership {
+          id
           person {
+            id
             name
+            avatarUrl
           }
         }
       }

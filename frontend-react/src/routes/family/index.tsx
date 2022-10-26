@@ -12,7 +12,10 @@ export default function FamilyIndex() {
     <div className="p-10">
       <div className="flex gap-2">
         {family.familyMemberships.nodes.map((n) => (
-          <div>{n.person?.name}</div>
+          <div>
+            <img src={n.person?.avatarUrl} />
+            {n.person?.name}
+          </div>
         ))}
       </div>
     </div>

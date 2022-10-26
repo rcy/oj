@@ -26,7 +26,7 @@ export default function FamilyLanding({ setFamilyMembershipId }: FamilyLandingTy
               key={m.id}
               className="rounded-lg bg-blue-200 w-48 text-center"
             >
-              <img className="rounded-t-lg" src="https://placekitten.com/201" alt=""/>
+              <img className="rounded-t-lg" src={m.person.avatarUrl} alt=""/>
 
               <div className="p-2">
                 {m.person.name}

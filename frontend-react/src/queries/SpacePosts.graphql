@@ -5,8 +5,11 @@ query SpacePosts($spaceId: UUID!, $limit: Int) {
         id
         body
         membership {
+          id
           person {
+            id
             name
+            avatarUrl
           }
         }
       }

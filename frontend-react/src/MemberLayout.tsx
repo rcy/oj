@@ -11,6 +11,7 @@ import SpacesIndex from './routes/spaces/index';
 import SpacesShow from './routes/spaces/show';
 import SpacesExplore from './routes/spaces/explore';
 import FamilyIndex from './routes/family/index';
+import HackIndex from './routes/hack/index';
 
 type MemberLayoutType = { doLogout: Function }
 
@@ -53,6 +54,7 @@ export default function MemberLayout({ doLogout }: MemberLayoutType) {
             <Route path="/spaces/explore" element={<SpacesExplore />} />
             <Route path="/spaces/:id" element={<SpacesShow />} />
             <Route path="/admin/*" element={<AdminLayout />} />
+            <Route path="/hack/*" element={<HackIndex />} />
             <Route path="*" element={<PageNotFound />} />
           </Routes>
         </main>

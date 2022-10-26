@@ -1469,6 +1469,8 @@ type PeopleEdge {
 
 """Methods to use when ordering `Person`."""
 enum PeopleOrderBy {
+  AVATAR_URL_ASC
+  AVATAR_URL_DESC
   CREATED_AT_ASC
   CREATED_AT_DESC
   ID_ASC
@@ -1483,6 +1485,7 @@ enum PeopleOrderBy {
 }
 
 type Person implements Node {
+  avatarUrl: String!
   createdAt: Datetime!
 
   """Reads and enables pagination through a set of `FamilyMembership`."""
@@ -1588,6 +1591,9 @@ type Person implements Node {
 A condition to be used against `Person` object types. All fields are tested for equality and combined with a logical ‘and.’
 """
 input PersonCondition {
+  """Checks for equality with the object’s `avatarUrl` field."""
+  avatarUrl: String
+
   """Checks for equality with the object’s `createdAt` field."""
   createdAt: Datetime
 
@@ -1603,6 +1609,7 @@ input PersonCondition {
 
 """An input for mutations affecting `Person`"""
 input PersonInput {
+  avatarUrl: String
   createdAt: Datetime
   id: UUID
   name: String!
@@ -1613,6 +1620,7 @@ input PersonInput {
 Represents an update to a `Person`. Fields that are set will be updated.
 """
 input PersonPatch {
+  avatarUrl: String
   createdAt: Datetime
   id: UUID
   name: String

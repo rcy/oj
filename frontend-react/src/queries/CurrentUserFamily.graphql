@@ -4,12 +4,13 @@ query CurrentUserFamily {
     name
     family {
       id
-      familyMemberships(orderBy: _ASC) {
+      familyMemberships(orderBy: CREATED_AT_ASC) {
         nodes {
           id
           person {
             id
             name
+            avatarUrl
           }
           role
         }

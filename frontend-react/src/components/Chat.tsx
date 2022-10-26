@@ -35,8 +35,10 @@ export default function Chat({ spaceId }: Props) {
   return (
     <div>
       {spacePostsQueryResult.data?.posts?.edges.map(({ node: post }) => (
-        <div key={post.id}>
-          <b>{post.membership?.person?.name}</b>: {post.body}
+        <div key={post.id} className="flex">
+          <img width="32" src={post.membership?.person?.avatarUrl}/>
+          <b>{post.membership?.person?.name}: </b>
+          <div>{post.body}</div>
         </div>
       ))}
 
