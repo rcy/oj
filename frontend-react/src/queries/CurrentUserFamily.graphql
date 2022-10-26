@@ -4,7 +4,7 @@ query CurrentUserFamily {
     name
     family {
       id
-      familyMemberships {
+      familyMemberships(orderBy: _ASC) {
         nodes {
           id
           person {

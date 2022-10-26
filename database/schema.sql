@@ -104,7 +104,8 @@ CREATE TABLE app_public.family_memberships (
     person_id uuid NOT NULL,
     title text,
     id uuid DEFAULT gen_random_uuid() NOT NULL,
-    role text NOT NULL
+    role text NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL
 );
 
 

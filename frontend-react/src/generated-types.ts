@@ -754,6 +754,7 @@ export type FamilyInput = {
 
 export type FamilyMembership = Node & {
   __typename?: 'FamilyMembership';
+  createdAt: Scalars['Datetime'];
   /** Reads a single `Family` that is related to this `FamilyMembership`. */
   family?: Maybe<Family>;
   familyId: Scalars['UUID'];
@@ -772,6 +773,8 @@ export type FamilyMembership = Node & {
  * tested for equality and combined with a logical ‘and.’
  */
 export type FamilyMembershipCondition = {
+  /** Checks for equality with the object’s `createdAt` field. */
+  createdAt?: InputMaybe<Scalars['Datetime']>;
   /** Checks for equality with the object’s `familyId` field. */
   familyId?: InputMaybe<Scalars['UUID']>;
   /** Checks for equality with the object’s `id` field. */
@@ -786,6 +789,7 @@ export type FamilyMembershipCondition = {
 
 /** An input for mutations affecting `FamilyMembership` */
 export type FamilyMembershipInput = {
+  createdAt?: InputMaybe<Scalars['Datetime']>;
   familyId: Scalars['UUID'];
   id?: InputMaybe<Scalars['UUID']>;
   personId: Scalars['UUID'];
@@ -795,6 +799,7 @@ export type FamilyMembershipInput = {
 
 /** Represents an update to a `FamilyMembership`. Fields that are set will be updated. */
 export type FamilyMembershipPatch = {
+  createdAt?: InputMaybe<Scalars['Datetime']>;
   familyId?: InputMaybe<Scalars['UUID']>;
   id?: InputMaybe<Scalars['UUID']>;
   personId?: InputMaybe<Scalars['UUID']>;
@@ -826,6 +831,8 @@ export type FamilyMembershipsEdge = {
 
 /** Methods to use when ordering `FamilyMembership`. */
 export enum FamilyMembershipsOrderBy {
+  CreatedAtAsc = 'CREATED_AT_ASC',
+  CreatedAtDesc = 'CREATED_AT_DESC',
   FamilyIdAsc = 'FAMILY_ID_ASC',
   FamilyIdDesc = 'FAMILY_ID_DESC',
   IdAsc = 'ID_ASC',
@@ -2933,7 +2940,7 @@ export const CurrentUserFamilyDocument = gql`
     name
     family {
       id
-      familyMemberships {
+      familyMemberships(orderBy: CREATED_AT_ASC) {
         nodes {
           id
           person {

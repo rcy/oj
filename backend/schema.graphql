@@ -830,6 +830,8 @@ input FamilyInput {
 }
 
 type FamilyMembership implements Node {
+  createdAt: Datetime!
+
   """Reads a single `Family` that is related to this `FamilyMembership`."""
   family: Family
   familyId: UUID!
@@ -852,6 +854,9 @@ A condition to be used against `FamilyMembership` object types. All fields are
 tested for equality and combined with a logical ‘and.’
 """
 input FamilyMembershipCondition {
+  """Checks for equality with the object’s `createdAt` field."""
+  createdAt: Datetime
+
   """Checks for equality with the object’s `familyId` field."""
   familyId: UUID
 
@@ -870,6 +875,7 @@ input FamilyMembershipCondition {
 
 """An input for mutations affecting `FamilyMembership`"""
 input FamilyMembershipInput {
+  createdAt: Datetime
   familyId: UUID!
   id: UUID
   personId: UUID!
@@ -881,6 +887,7 @@ input FamilyMembershipInput {
 Represents an update to a `FamilyMembership`. Fields that are set will be updated.
 """
 input FamilyMembershipPatch {
+  createdAt: Datetime
   familyId: UUID
   id: UUID
   personId: UUID
@@ -918,6 +925,8 @@ type FamilyMembershipsEdge {
 
 """Methods to use when ordering `FamilyMembership`."""
 enum FamilyMembershipsOrderBy {
+  CREATED_AT_ASC
+  CREATED_AT_DESC
   FAMILY_ID_ASC
   FAMILY_ID_DESC
   ID_ASC
