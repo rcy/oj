@@ -40,7 +40,7 @@ export default function MemberLayout({ doLogout }: MemberLayoutType) {
             <MyNavLink to="/family" activeClass="bg-blue-200 text-black">my family</MyNavLink>
           </div>
           <div>
-            <MyNavLink to="/spaces" activeClass="bg-green-200 text-black">places</MyNavLink>
+            <MyNavLink to="/spaces" activeClass="bg-green-200 text-black">spaces</MyNavLink>
           </div>
         </nav>
 
