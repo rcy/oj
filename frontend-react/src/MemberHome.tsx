@@ -20,7 +20,7 @@ export default function MemberHome({ familyMembership, doLogout }: MemberHomeTyp
   return <div className="flex flex-col p-10">
     <section>
       <h1>Welcome to Octopus Junior!</h1>
-      <p>Here you will be able to explore create places where you can play and talk to your friends and family</p>
+      <p>Here you will be able to explore and create places where you can play and talk to your friends and family</p>
     </section>
 
     <Link className="text-orange-500" to="/hack">select profile picture</Link>
