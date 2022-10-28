@@ -5,12 +5,14 @@ import Button from './Button';
 function App() {
   const { loading, error, data } = useCurrentUserQuery();
 
-  if (loading) {
-    return null
-  }
+  console.log({ data })
 
   if (error) {
-    return <p>error</p>
+    return <p>{JSON.stringify(error, null, 2)}</p>
+  }
+
+  if (loading) {
+    return null
   }
 
   if (data?.currentUser) {

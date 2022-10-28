@@ -1,18 +1,20 @@
 import dotenv from 'dotenv'; dotenv.config({ path: '../.env' });
-import createError from 'http-errors';
 import express from 'express';
-import path from 'path';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import passport from 'passport';
 import logger from 'morgan';
-import { ensureLoggedIn } from 'connect-ensure-login';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
+import pg from 'pg';
 import connectPgSimple from 'connect-pg-simple';
 import { postgraphile } from 'postgraphile';
 import pgSimplifyInflector from '@graphile-contrib/pg-simplify-inflector';
+import { fileURLToPath } from 'url'
+import { dirname } from 'path'
 
-import pg from 'pg';
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
+
 const pgAppPool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
 pgAppPool.on('error', (err, client) => {
   console.error('Unexpected error on idle pg client (pgAppPool)', err);
@@ -29,7 +31,7 @@ passport.use(
   new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: process.env.GOOGLE_CALLBACK_URL,
+    callbackURL: process.env.BASE_URL + '/auth/google/callback',
   }, async function(accessToken, refreshToken, profile, cb) {
     console.log('GoogleStrategy 1', profile)
     const client = await pgAppPool.connect();
@@ -108,10 +110,6 @@ app.get('/auth/logout', function(req, res, next){
   });
 });
 
-app.get('/', function(req,res) {
-  res.send('<h1>welcome to aschool</h1> <a href="/auth/google">login</a>')
-})
-
 // https://www.graphile.org/postgraphile/usage-library/
 app.use(postgraphile(pgVisitorPool, ['app_public'], {
   watchPg: true,
@@ -138,6 +136,10 @@ app.use(postgraphile(pgVisitorPool, ['app_public'], {
     }
   },
 }));
+
+// serve all other routes from react app
+app.use(express.static(__dirname + '/react'));
+app.get('*', (_, res) => res.sendFile(__dirname + '/react/index.html'));
 
 console.log(`express listening on ${process.env.PORT}`)
 app.listen(process.env.PORT)
