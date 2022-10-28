@@ -17,14 +17,17 @@ export default function MemberHome({ familyMembership, doLogout }: MemberHomeTyp
     doLogout()
   }
 
-  return <div className="flex flex-col p-10">
-    <section>
+  return <div className="flex flex-col">
+    <div className='text-6xl'>
+      Hi, {familyMembership?.person?.name}!
+    </div>
+
+    <section className='mt-5'>
       <h1>Welcome to Octopus Junior!</h1>
       <p>Here you will be able to explore and create places where you can play and talk to your friends and family</p>
     </section>
 
     <Link className="text-orange-500" to="/hack">
-      <img src={familyMembership.person?.avatarUrl}/>
       <Button>select profile picture</Button>
     </Link>
 
@@ -32,7 +35,7 @@ export default function MemberHome({ familyMembership, doLogout }: MemberHomeTyp
       <Button color="red" onClick={handleLogout}>logout</Button>
     </section>
 
-    <section>
+    <section className='mt-10'>
       {familyMembership.role === 'admin' && <AdminSection />}
     </section>
   </div>

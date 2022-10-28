@@ -15,6 +15,14 @@ import HackIndex from './routes/hack/index';
 
 type MemberLayoutType = { doLogout: Function }
 
+function NavCell({children}:any) {
+  return (
+    <div className='mb-5'>
+      {children}
+    </div>
+  )
+}
+
 export default function MemberLayout({ doLogout }: MemberLayoutType) {
   const { loading, data } = useCurrentFamilyMembershipQuery({ fetchPolicy: 'network-only' })
   if (loading) { return <span>loading</span> }
@@ -22,46 +30,47 @@ export default function MemberLayout({ doLogout }: MemberLayoutType) {
   return (
     <PersonIdContext.Provider value={data?.currentFamilyMembership?.person?.id}>
       <div className="font-sans">
-        <nav className="bg-gray-800 px-2 py-2 text-white flex justify-between text-xl">
-          <div className="flex items-center space-x-2">
-            <Link to="/">🐙 Octopus Jr</Link>
-          </div>
-          <div className="text-orange-200">
-            <Link to="/me">
-              {data?.currentFamilyMembership?.person?.name} ({data?.currentFamilyMembership?.role})
-            </Link>
-          </div>
-        </nav>
+        <nav className="text-black flex gap-2">
 
-        <nav className="bg-black px-10 py-2 text-white flex gap-10 text-xl">
-          <div>
-            <MyNavLink to="/me" activeClass="bg-red-200 text-black">
-              <img width={32} src={data?.currentFamilyMembership?.person?.avatarUrl}/>me
-            </MyNavLink>
-          </div>
-          <div>
-            <MyNavLink to="/family" activeClass="bg-blue-200 text-black">my family</MyNavLink>
-          </div>
-          <div>
-            <MyNavLink to="/spaces" activeClass="bg-green-200 text-black">explore</MyNavLink>
-          </div>
-        </nav>
+          <aside className="flex-none flex flex-col items-center w-21 text-white">
+            <NavCell>
+              <MyNavLink to="/me" activeClass="bg-red-200 text-black">
+                <img width="80" src={data?.currentFamilyMembership?.person?.avatarUrl} />
+              </MyNavLink>
+            </NavCell>
+            <NavCell>
+              <MyNavLink to="/family" activeClass="bg-blue-200 text-black">
+                <img width="80" src="https://www.gravatar.com/avatar/07ae617e?f=y&d=identicon" />
+              </MyNavLink>
+            </NavCell>
+            <NavCell>
+              <MyNavLink to="/spaces" activeClass="bg-green-200 text-black">
+                <div className="text-6xl pb-2">🧭</div>
+              </MyNavLink>
+            </NavCell>
+            <NavCell>
+              <Link to="/xyz">
+                <img height="80" width="80" src="https://tse4.mm.bing.net/th?id=OIP.fbwROgl5jUOKwUD2XkCXRAHaGw&pid=Api" />
+              </Link>
+            </NavCell>
+          </aside>
 
-        <main>
-          <Routes>
-            <Route path="/" element={<Navigate to="/me" />} />
-            <Route path="/me" element={<MemberHome familyMembership={data?.currentFamilyMembership} doLogout={doLogout} />} />
-            <Route path="/spaces" element={<SpacesIndex />} />
-            <Route path="/family" element={<FamilyIndex />} />
-            <Route path="/spaces/explore" element={<SpacesExplore />} />
-            <Route path="/spaces/:id" element={<SpacesShow />} />
-            <Route path="/admin/*" element={<AdminLayout />} />
-            <Route path="/hack/*" element={<HackIndex />} />
-            <Route path="*" element={<PageNotFound />} />
-          </Routes>
-        </main>
+          <main className='w-full'>
+            <Routes>
+              <Route path="/" element={<Navigate to="/me" />} />
+              <Route path="/me" element={<MemberHome familyMembership={data?.currentFamilyMembership} doLogout={doLogout} />} />
+              <Route path="/spaces" element={<SpacesIndex />} />
+              <Route path="/family" element={<FamilyIndex />} />
+              <Route path="/spaces/explore" element={<SpacesExplore />} />
+              <Route path="/spaces/:id" element={<SpacesShow />} />
+              <Route path="/admin/*" element={<AdminLayout />} />
+              <Route path="/hack/*" element={<HackIndex />} />
+              <Route path="*" element={<PageNotFound />} />
+            </Routes>
+          </main>
+        </nav>
       </div>
-    </PersonIdContext.Provider>
+    </PersonIdContext.Provider >
   )
 }
 

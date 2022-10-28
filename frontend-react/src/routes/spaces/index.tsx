@@ -3,7 +3,10 @@ import MySpaceMemberships from './MySpaceMemberships';
 
 export default function() {
   return (
-    <div className="flex flex-col p-10">
+    <div className="flex flex-col">
+      <div className="text-6xl">
+        Explore
+      </div>
       <section className="pb-10">
         <MySpaceMemberships />
         <Link className="text-blue-600" to="/spaces/explore">explore</Link>

@@ -21,8 +21,8 @@ export default function SpaceShow() {
 
   return (
     <div>
-      <header className='pb-5'>
-        <h1 className='p-5 text-5xl bg-yellow-300'>{spaceQueryResult.data?.space?.name}</h1>
+      <header className=''>
+        <h1 className='text-7xl bg-yellow-300'>{spaceQueryResult.data?.space?.name}</h1>
         <p className='px-5 bg-orange-300'>
           {spaceQueryResult.data?.space?.description}
         </p>
