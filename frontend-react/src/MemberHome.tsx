@@ -23,10 +23,13 @@ export default function MemberHome({ familyMembership, doLogout }: MemberHomeTyp
       <p>Here you will be able to explore and create places where you can play and talk to your friends and family</p>
     </section>
 
-    <Link className="text-orange-500" to="/hack">select profile picture</Link>
+    <Link className="text-orange-500" to="/hack">
+      <img src={familyMembership.person?.avatarUrl}/>
+      <Button>select profile picture</Button>
+    </Link>
 
     <section>
-      <Button onClick={handleLogout}>logout</Button>
+      <Button color="red" onClick={handleLogout}>logout</Button>
     </section>
 
     <section>

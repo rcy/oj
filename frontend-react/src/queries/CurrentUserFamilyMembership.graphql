@@ -8,6 +8,7 @@ query CurrentFamilyMembership {
     person {
       id
       name
+      avatarUrl
       user {
         id
       }

@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from 'react'
 import Button from '../../Button'
 import { PersonIdContext } from '../../contexts'
-import { useSetPersonAvatarMutation } from '../../generated-types'
+import { useCurrentFamilyMembershipQuery, useSetPersonAvatarMutation } from '../../generated-types'
 
 function getHash() {
   return crypto.randomUUID().split('-')[0]
@@ -14,15 +14,15 @@ function getRandomType() {
 }
 
 export default function () {
+  const cfmResult = useCurrentFamilyMembershipQuery()
   const personId = useContext(PersonIdContext)
   const [dtype, selectType] = useState(types[0])
   const [mutation] = useSetPersonAvatarMutation()
   const [hashes, setHashes] = useState([])
 
   async function handleSelect(avatarUrl) {
-    console.log(avatarUrl)
-    const result = await mutation({ variables: { personId, avatarUrl }})
-    console.log({ result })
+    await mutation({ variables: { personId, avatarUrl }})
+    cfmResult.refetch()
   }
 
   useEffect(() => {

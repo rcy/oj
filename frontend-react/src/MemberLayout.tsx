@@ -35,7 +35,9 @@ export default function MemberLayout({ doLogout }: MemberLayoutType) {
 
         <nav className="bg-black px-10 py-2 text-white flex gap-10 text-xl">
           <div>
-            <MyNavLink to="/me" activeClass="bg-red-200 text-black">me</MyNavLink>
+            <MyNavLink to="/me" activeClass="bg-red-200 text-black">
+              <img width={32} src={data?.currentFamilyMembership?.person?.avatarUrl}/>me
+            </MyNavLink>
           </div>
           <div>
             <MyNavLink to="/family" activeClass="bg-blue-200 text-black">my family</MyNavLink>

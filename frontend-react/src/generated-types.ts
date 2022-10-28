@@ -2731,7 +2731,7 @@ export type CurrentUserFamilyQuery = { __typename?: 'Query', currentUser?: { __t
 export type CurrentFamilyMembershipQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type CurrentFamilyMembershipQuery = { __typename?: 'Query', currentFamilyMembership?: { __typename?: 'FamilyMembership', id: any, role: string, family?: { __typename?: 'Family', id: any } | null, person?: { __typename?: 'Person', id: any, name: string, user?: { __typename?: 'User', id: any } | null } | null } | null };
+export type CurrentFamilyMembershipQuery = { __typename?: 'Query', currentFamilyMembership?: { __typename?: 'FamilyMembership', id: any, role: string, family?: { __typename?: 'Family', id: any } | null, person?: { __typename?: 'Person', id: any, name: string, avatarUrl: string, user?: { __typename?: 'User', id: any } | null } | null } | null };
 
 export type JoinSpaceMutationVariables = Exact<{
   spaceId: Scalars['UUID'];
@@ -3008,6 +3008,7 @@ export const CurrentFamilyMembershipDocument = gql`
     person {
       id
       name
+      avatarUrl
       user {
         id
       }
