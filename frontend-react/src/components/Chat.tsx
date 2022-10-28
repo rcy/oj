@@ -8,7 +8,7 @@ interface Props {
 }
 
 export default function Chat({ spaceId }: Props) {
-  const spacePostsQueryResult = useSpacePostsQuery({ variables: { spaceId, limit: 20 } });
+  const spacePostsQueryResult = useSpacePostsQuery({ variables: { spaceId, limit: 10 } });
   const [postMessageMutation] = usePostMessageMutation();
   const personId = useContext(PersonIdContext)
   const membershipQueryResult = useSpaceMembershipByPersonIdAndSpaceIdQuery({ variables: { spaceId, personId } })
