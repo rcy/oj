@@ -13,7 +13,7 @@ export default function ChatInput({ onSubmit }: Props) {
 
   const handleKey: KeyboardEventHandler<HTMLInputElement> = (ev) => {
     if (ev.key === 'Enter') {
-      if (onSubmit(input)) {
+      if (input.length > 0 && onSubmit(input)) {
         setInput('')
       }
     }

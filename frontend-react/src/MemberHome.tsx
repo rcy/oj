@@ -27,7 +27,7 @@ export default function MemberHome({ familyMembership, doLogout }: MemberHomeTyp
       <p>Here you will be able to explore and create places where you can play and talk to your friends and family</p>
     </section>
 
-    <Link className="text-orange-500" to="/hack">
+    <Link className="text-orange-500" to="/me/pic">
       <Button>select profile picture</Button>
     </Link>
 

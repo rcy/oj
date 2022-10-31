@@ -12,11 +12,12 @@ export default function MembersList({ spaceId }: Props) {
   const personId = useContext(PersonIdContext)
 
   return (
-    <div>
+    <div className="flex">
       {queryResult.data?.spaceMemberships?.edges?.map(x => (
         <div key={x.node.id}>
-          {x.node.person?.name}
-          {x.node.person?.id === personId && '(me)'}
+          <img src={x.node.person?.avatarUrl} />
+          <div>{x.node.person?.name}</div>
+          <div>{x.node.person?.id === personId && '(me)'}</div>
         </div>
       ))}
     </div>

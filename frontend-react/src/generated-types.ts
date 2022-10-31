@@ -2784,7 +2784,7 @@ export type SpaceMembershipsBySpaceIdQueryVariables = Exact<{
 }>;
 
 
-export type SpaceMembershipsBySpaceIdQuery = { __typename?: 'Query', spaceMemberships?: { __typename?: 'SpaceMembershipsConnection', edges: Array<{ __typename?: 'SpaceMembershipsEdge', node: { __typename?: 'SpaceMembership', id: any, person?: { __typename?: 'Person', id: any, name: string } | null } }> } | null };
+export type SpaceMembershipsBySpaceIdQuery = { __typename?: 'Query', spaceMemberships?: { __typename?: 'SpaceMembershipsConnection', edges: Array<{ __typename?: 'SpaceMembershipsEdge', node: { __typename?: 'SpaceMembership', id: any, person?: { __typename?: 'Person', id: any, name: string, avatarUrl: string } | null } }> } | null };
 
 export type SpacePostsQueryVariables = Exact<{
   spaceId: Scalars['UUID'];
@@ -3274,6 +3274,7 @@ export const SpaceMembershipsBySpaceIdDocument = gql`
         person {
           id
           name
+          avatarUrl
         }
       }
     }

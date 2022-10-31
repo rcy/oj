@@ -1,6 +1,6 @@
 import LoggedInApp from './LoggedInApp'
+import LoggedOutApp from './LoggedOutApp'
 import { useCurrentUserQuery } from './generated-types';
-import Button from './Button';
 
 function App() {
   const { loading, error, data } = useCurrentUserQuery();
@@ -22,11 +22,7 @@ function App() {
   }
 
   return (
-    <div className="grid h-screen place-items-center">
-      <a href={`/auth/login?from=${encodeURIComponent(window.location.href)}`}>
-        <Button color="blue">login</Button>
-      </a>
-    </div>
+    <LoggedOutApp />
   )
 }
 

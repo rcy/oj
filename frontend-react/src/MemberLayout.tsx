@@ -11,7 +11,7 @@ import SpacesIndex from './routes/spaces/index';
 import SpacesShow from './routes/spaces/show';
 import SpacesExplore from './routes/spaces/explore';
 import FamilyIndex from './routes/family/index';
-import HackIndex from './routes/hack/index';
+import MemberSetProfilePicture from './routes/member/MemberSetProfilePicture';
 
 type MemberLayoutType = { doLogout: Function }
 
@@ -32,26 +32,26 @@ export default function MemberLayout({ doLogout }: MemberLayoutType) {
       <div className="font-sans">
         <nav className="text-black flex gap-2">
 
-          <aside className="flex-none flex flex-col items-center w-21 text-white">
+          <aside className="flex-none flex flex-col items-center w-21 text-white p-2 border-solid border-r-2 border-gray-300">
             <NavCell>
-              <MyNavLink to="/me" activeClass="bg-red-200 text-black">
+              <MyNavLink to="/xyz" inactiveClassName="grayscale hover:grayscale-0" activeClass="grayscale-0">
+                <img height="80" width="80" src="octopus1.png" />
+              </MyNavLink>
+            </NavCell>
+            <NavCell>
+              <MyNavLink to="/me" inactiveClassName="grayscale hover:grayscale-0" activeClass="grayscale-0">
                 <img width="80" src={data?.currentFamilyMembership?.person?.avatarUrl} />
               </MyNavLink>
             </NavCell>
             <NavCell>
-              <MyNavLink to="/family" activeClass="bg-blue-200 text-black">
-                <img width="80" src="https://www.gravatar.com/avatar/07ae617e?f=y&d=identicon" />
+              <MyNavLink to="/family" inactiveClassName="grayscale hover:grayscale-0" activeClass="grayscale-0">
+                <img height="80" width="80" src="oj-house.png" />
               </MyNavLink>
             </NavCell>
             <NavCell>
-              <MyNavLink to="/spaces" activeClass="bg-green-200 text-black">
-                <div className="text-6xl pb-2">🧭</div>
+              <MyNavLink to="/spaces" inactiveClassName="grayscale hover:grayscale-0" activeClass="grayscale-0">
+                <img height="80" width="80" src="oj-chat.png" />
               </MyNavLink>
-            </NavCell>
-            <NavCell>
-              <Link to="/xyz">
-                <img height="80" width="80" src="https://tse4.mm.bing.net/th?id=OIP.fbwROgl5jUOKwUD2XkCXRAHaGw&pid=Api" />
-              </Link>
             </NavCell>
           </aside>
 
@@ -59,12 +59,12 @@ export default function MemberLayout({ doLogout }: MemberLayoutType) {
             <Routes>
               <Route path="/" element={<Navigate to="/me" />} />
               <Route path="/me" element={<MemberHome familyMembership={data?.currentFamilyMembership} doLogout={doLogout} />} />
+              <Route path="/me/pic" element={<MemberSetProfilePicture />} />
               <Route path="/spaces" element={<SpacesIndex />} />
               <Route path="/family" element={<FamilyIndex />} />
               <Route path="/spaces/explore" element={<SpacesExplore />} />
               <Route path="/spaces/:id" element={<SpacesShow />} />
               <Route path="/admin/*" element={<AdminLayout />} />
-              <Route path="/hack/*" element={<HackIndex />} />
               <Route path="*" element={<PageNotFound />} />
             </Routes>
           </main>
@@ -76,14 +76,15 @@ export default function MemberLayout({ doLogout }: MemberLayoutType) {
 
 interface MyNavLinkProps {
   to: string,
+  inactiveClassName?: string,
   activeClass: string,
   children: ReactNode,
 }
-function MyNavLink({ to, children, activeClass }: MyNavLinkProps) {
+function MyNavLink({ to, children, inactiveClassName, activeClass }: MyNavLinkProps) {
   return (
     <NavLink
       to={to}
-      className={({ isActive }) => isActive ? activeClass : ""}
+      className={({ isActive }) => isActive ? activeClass : inactiveClassName}
     >
       {children}
     </NavLink>
