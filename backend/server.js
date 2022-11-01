@@ -65,6 +65,8 @@ passport.deserializeUser(function(user, cb) {
 
 const app = express();
 
+const environment = app.get('env');
+
 app.use(logger('dev'));
 app.use(express.json());
 app.use(cookieParser());
@@ -111,23 +113,17 @@ app.get('/auth/logout', function(req, res, next){
 });
 
 // https://www.graphile.org/postgraphile/usage-library/
-app.use(postgraphile(pgVisitorPool, ['app_public'], {
-  watchPg: true,
-  ownerConnectionString: process.env.WATCH_DATABASE_URL,
-  graphiql: true,
-  enhanceGraphiql: true,
+const postgraphileOptions = Object.assign({
   //subscriptions: true,
   dynamicJson: true,
   setofFunctionsContainNulls: false,
   ignoreRBAC: false,
   showErrorStack: 'json',
   extendedErrors: ['hint', 'detail', 'errcode'],
-  allowExplain: true, // don't use in production
   legacyRelations: 'omit',
-  exportGqlSchemaPath: `./schema.graphql`, //`${__dirname}/schema.graphql`,
   sortExport: true,
   appendPlugins: [pgSimplifyInflector],
-  pgSettings: function(req) {
+  pgSettings: function (req) {
     console.log('**************************************************************** user/membership', req.user, req.headers['x-family-membership-id'])
     return {
       'role': 'visitor',
@@ -135,7 +131,16 @@ app.use(postgraphile(pgVisitorPool, ['app_public'], {
       'family_membership.id': req.headers['x-family-membership-id'],
     }
   },
-}));
+}, environment === 'development' && {
+  watchPg: true,
+  ownerConnectionString: process.env.WATCH_DATABASE_URL,
+  graphiql: true,
+  enhanceGraphiql: true,
+  allowExplain: true,
+  exportGqlSchemaPath: `${__dirname}/schema.graphql`,
+})
+
+app.use(postgraphile(pgVisitorPool, ['app_public'], postgraphileOptions));
 
 // serve all other routes from react app
 app.use(express.static(__dirname + '/react'));
