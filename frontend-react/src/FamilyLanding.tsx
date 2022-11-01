@@ -15,26 +15,23 @@ export default function FamilyLanding({ setFamilyMembershipId }: FamilyLandingTy
   }
 
   return (
-    <div className="grid h-screen place-items-center bg-orange-200">
-      <div>
-        <h1 className="pb-20 text-xl">Select Family Member</h1>
-        <section className="flex space-x-10">
-          {data?.currentUser?.family?.familyMemberships.nodes.map((m: any) => (
-            <a
-              href="#"
-              onClick={(ev) => become(ev, m.id)}
-              key={m.id}
-              className="rounded-lg bg-blue-200 w-48 text-center"
-            >
-              <img className="rounded-t-lg" src={m.person.avatarUrl} alt=""/>
+    <div className="grid bg-gradient-to-b from-orange-300 to-yellow-300">
+      <section className="py-10 w-full flex flex-col items-center gap-5">
+        {data?.currentUser?.family?.familyMemberships.nodes.map((m: any) => (
+          <a
+            href="#"
+            onClick={(ev) => become(ev, m.id)}
+            key={m.id}
+            className="rounded-lg w-64 flex bg-white items-center border-solid border-4 hover:border-orange-600"
+          >
+            <img className="rounded-l-sm" src={m.person.avatarUrl} alt={m.person.name} />
 
-              <div className="p-2">
-                {m.person.name}
-              </div>
-            </a>
-          ))}
-        </section>
-      </div>
+            <div className="p-3 text-xl">
+              {m.person.name}
+            </div>
+          </a>
+        ))}
+      </section>
     </div>
   )
 }
