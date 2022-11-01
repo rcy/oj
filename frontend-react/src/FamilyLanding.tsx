@@ -15,8 +15,15 @@ export default function FamilyLanding({ setFamilyMembershipId }: FamilyLandingTy
   }
 
   return (
-    <div className="grid bg-gradient-to-b from-orange-300 to-yellow-300">
-      <section className="py-10 w-full flex flex-col items-center gap-5">
+    <div className="bg-gradient-to-b from-orange-300 to-yellow-300 min-h-screen flex flex-col">
+      <header className='pr-2 flex justify-between bg-orange-200'>
+        <div className='flex gap-1'>
+          <img width="32" src="octopus1.png"/>
+          Octopus Jr.
+        </div>
+        <div>{data?.currentUser?.name}'s Account</div>
+      </header>
+      <main className="py-16 w-full flex flex-col items-center gap-5">
         {data?.currentUser?.family?.familyMemberships.nodes.map((m: any) => (
           <a
             href="#"
@@ -31,7 +38,7 @@ export default function FamilyLanding({ setFamilyMembershipId }: FamilyLandingTy
             </div>
           </a>
         ))}
-      </section>
+      </main>
     </div>
   )
 }
