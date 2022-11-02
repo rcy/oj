@@ -170,6 +170,7 @@ CREATE TABLE app_public.users (
     name text NOT NULL,
     avatar_url text,
     person_id uuid,
+    family_id uuid,
     CONSTRAINT users_avatar_url_check CHECK ((avatar_url ~ '^https?://[^/]+'::text))
 );
 
@@ -269,8 +270,7 @@ CREATE TABLE app_public.authentications (
 CREATE TABLE app_public.families (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
-    updated_at timestamp with time zone DEFAULT now() NOT NULL,
-    user_id uuid NOT NULL
+    updated_at timestamp with time zone DEFAULT now() NOT NULL
 );
 
 
@@ -422,14 +422,6 @@ ALTER TABLE ONLY app_public.families
 
 
 --
--- Name: families families_user_id_key; Type: CONSTRAINT; Schema: app_public; Owner: -
---
-
-ALTER TABLE ONLY app_public.families
-    ADD CONSTRAINT families_user_id_key UNIQUE (user_id);
-
-
---
 -- Name: family_memberships family_memberships_pkey; Type: CONSTRAINT; Schema: app_public; Owner: -
 --
 
@@ -563,14 +555,6 @@ ALTER TABLE ONLY app_public.authentications
 
 
 --
--- Name: families families_user_id_fkey; Type: FK CONSTRAINT; Schema: app_public; Owner: -
---
-
-ALTER TABLE ONLY app_public.families
-    ADD CONSTRAINT families_user_id_fkey FOREIGN KEY (user_id) REFERENCES app_public.users(id);
-
-
---
 -- Name: family_memberships family_memberships_family_id_fkey; Type: FK CONSTRAINT; Schema: app_public; Owner: -
 --
 
@@ -651,6 +635,14 @@ ALTER TABLE ONLY app_public.space_topics
 
 
 --
+-- Name: users users_family_id_fkey; Type: FK CONSTRAINT; Schema: app_public; Owner: -
+--
+
+ALTER TABLE ONLY app_public.users
+    ADD CONSTRAINT users_family_id_fkey FOREIGN KEY (family_id) REFERENCES app_public.families(id);
+
+
+--
 -- Name: users users_person_id_fkey; Type: FK CONSTRAINT; Schema: app_public; Owner: -
 --
 
@@ -696,7 +688,8 @@ CREATE POLICY select_own ON app_public.authentications FOR SELECT USING ((user_i
 -- Name: families select_own; Type: POLICY; Schema: app_public; Owner: -
 --
 
-CREATE POLICY select_own ON app_public.families FOR SELECT USING ((user_id = app_public.user_id()));
+CREATE POLICY select_own ON app_public.families FOR SELECT USING ((id = ( SELECT "current_user".family_id
+   FROM app_public."current_user"() "current_user"(id, created_at, updated_at, name, avatar_url, person_id, family_id))));
 
 
 --
@@ -752,13 +745,6 @@ GRANT SELECT ON TABLE app_public.authentications TO visitor;
 --
 
 GRANT SELECT ON TABLE app_public.families TO visitor;
-
-
---
--- Name: COLUMN families.user_id; Type: ACL; Schema: app_public; Owner: -
---
-
-GRANT INSERT(user_id) ON TABLE app_public.families TO visitor;
 
 
 --

@@ -105,17 +105,6 @@ export enum AuthenticationsOrderBy {
   UserIdDesc = 'USER_ID_DESC'
 }
 
-/** All input for the create `Family` mutation. */
-export type CreateFamilyInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']>;
-  /** The `Family` to be created by this mutation. */
-  family: FamilyInput;
-};
-
 /** All input for the create `FamilyMembership` mutation. */
 export type CreateFamilyMembershipInput = {
   /**
@@ -151,30 +140,6 @@ export type CreateFamilyMembershipPayload = {
 /** The output of our create `FamilyMembership` mutation. */
 export type CreateFamilyMembershipPayloadFamilyMembershipEdgeArgs = {
   orderBy?: InputMaybe<Array<FamilyMembershipsOrderBy>>;
-};
-
-/** The output of our create `Family` mutation. */
-export type CreateFamilyPayload = {
-  __typename?: 'CreateFamilyPayload';
-  /**
-   * The exact same `clientMutationId` that was provided in the mutation input,
-   * unchanged and unused. May be used by a client to track mutations.
-   */
-  clientMutationId?: Maybe<Scalars['String']>;
-  /** The `Family` that was created by this mutation. */
-  family?: Maybe<Family>;
-  /** An edge for our `Family`. May be used by Relay 1. */
-  familyEdge?: Maybe<FamiliesEdge>;
-  /** Our root query field type. Allows us to run any query from our mutation payload. */
-  query?: Maybe<Query>;
-  /** Reads a single `User` that is related to this `Family`. */
-  user?: Maybe<User>;
-};
-
-
-/** The output of our create `Family` mutation. */
-export type CreateFamilyPayloadFamilyEdgeArgs = {
-  orderBy?: InputMaybe<Array<FamiliesOrderBy>>;
 };
 
 /** All input for the create `Interest` mutation. */
@@ -705,9 +670,7 @@ export enum FamiliesOrderBy {
   PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
   PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
   UpdatedAtAsc = 'UPDATED_AT_ASC',
-  UpdatedAtDesc = 'UPDATED_AT_DESC',
-  UserIdAsc = 'USER_ID_ASC',
-  UserIdDesc = 'USER_ID_DESC'
+  UpdatedAtDesc = 'UPDATED_AT_DESC'
 }
 
 export type Family = Node & {
@@ -719,9 +682,8 @@ export type Family = Node & {
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
   nodeId: Scalars['ID'];
   updatedAt: Scalars['Datetime'];
-  /** Reads a single `User` that is related to this `Family`. */
-  user?: Maybe<User>;
-  userId: Scalars['UUID'];
+  /** Reads and enables pagination through a set of `User`. */
+  users: UsersConnection;
 };
 
 
@@ -735,6 +697,17 @@ export type FamilyFamilyMembershipsArgs = {
   orderBy?: InputMaybe<Array<FamilyMembershipsOrderBy>>;
 };
 
+
+export type FamilyUsersArgs = {
+  after?: InputMaybe<Scalars['Cursor']>;
+  before?: InputMaybe<Scalars['Cursor']>;
+  condition?: InputMaybe<UserCondition>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<Array<UsersOrderBy>>;
+};
+
 /** A condition to be used against `Family` object types. All fields are tested for equality and combined with a logical ‘and.’ */
 export type FamilyCondition = {
   /** Checks for equality with the object’s `createdAt` field. */
@@ -743,13 +716,6 @@ export type FamilyCondition = {
   id?: InputMaybe<Scalars['UUID']>;
   /** Checks for equality with the object’s `updatedAt` field. */
   updatedAt?: InputMaybe<Scalars['Datetime']>;
-  /** Checks for equality with the object’s `userId` field. */
-  userId?: InputMaybe<Scalars['UUID']>;
-};
-
-/** An input for mutations affecting `Family` */
-export type FamilyInput = {
-  userId: Scalars['UUID'];
 };
 
 export type FamilyMembership = Node & {
@@ -992,8 +958,6 @@ export enum InterestsOrderBy {
 /** The root mutation type which contains root level fields which mutate data. */
 export type Mutation = {
   __typename?: 'Mutation';
-  /** Creates a single `Family`. */
-  createFamily?: Maybe<CreateFamilyPayload>;
   /** Creates a single `FamilyMembership`. */
   createFamilyMembership?: Maybe<CreateFamilyMembershipPayload>;
   /** Creates a single `Interest`. */
@@ -1066,12 +1030,6 @@ export type Mutation = {
   updateUserByNodeId?: Maybe<UpdateUserPayload>;
   /** Updates a single `User` using a unique key and a patch. */
   updateUserByPersonId?: Maybe<UpdateUserPayload>;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
-export type MutationCreateFamilyArgs = {
-  input: CreateFamilyInput;
 };
 
 
@@ -1564,7 +1522,6 @@ export type Query = Node & {
   family?: Maybe<Family>;
   /** Reads a single `Family` using its globally unique `ID`. */
   familyByNodeId?: Maybe<Family>;
-  familyByUserId?: Maybe<Family>;
   familyMembership?: Maybe<FamilyMembership>;
   /** Reads a single `FamilyMembership` using its globally unique `ID`. */
   familyMembershipByNodeId?: Maybe<FamilyMembership>;
@@ -1678,12 +1635,6 @@ export type QueryFamilyArgs = {
 /** The root query type which gives access points into the data universe. */
 export type QueryFamilyByNodeIdArgs = {
   nodeId: Scalars['ID'];
-};
-
-
-/** The root query type which gives access points into the data universe. */
-export type QueryFamilyByUserIdArgs = {
-  userId: Scalars['UUID'];
 };
 
 
@@ -2584,6 +2535,8 @@ export type UpdateUserPayload = {
    * unchanged and unused. May be used by a client to track mutations.
    */
   clientMutationId?: Maybe<Scalars['String']>;
+  /** Reads a single `Family` that is related to this `User`. */
+  family?: Maybe<Family>;
   /** Reads a single `Person` that is related to this `User`. */
   person?: Maybe<Person>;
   /** Our root query field type. Allows us to run any query from our mutation payload. */
@@ -2608,6 +2561,7 @@ export type User = Node & {
   createdAt: Scalars['Datetime'];
   /** Reads a single `Family` that is related to this `User`. */
   family?: Maybe<Family>;
+  familyId?: Maybe<Scalars['UUID']>;
   id: Scalars['UUID'];
   name: Scalars['String'];
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
@@ -2635,6 +2589,8 @@ export type UserCondition = {
   avatarUrl?: InputMaybe<Scalars['String']>;
   /** Checks for equality with the object’s `createdAt` field. */
   createdAt?: InputMaybe<Scalars['Datetime']>;
+  /** Checks for equality with the object’s `familyId` field. */
+  familyId?: InputMaybe<Scalars['UUID']>;
   /** Checks for equality with the object’s `id` field. */
   id?: InputMaybe<Scalars['UUID']>;
   /** Checks for equality with the object’s `name` field. */
@@ -2649,6 +2605,7 @@ export type UserCondition = {
 export type UserPatch = {
   avatarUrl?: InputMaybe<Scalars['String']>;
   createdAt?: InputMaybe<Scalars['Datetime']>;
+  familyId?: InputMaybe<Scalars['UUID']>;
   id?: InputMaybe<Scalars['UUID']>;
   name?: InputMaybe<Scalars['String']>;
   personId?: InputMaybe<Scalars['UUID']>;
@@ -2683,6 +2640,8 @@ export enum UsersOrderBy {
   AvatarUrlDesc = 'AVATAR_URL_DESC',
   CreatedAtAsc = 'CREATED_AT_ASC',
   CreatedAtDesc = 'CREATED_AT_DESC',
+  FamilyIdAsc = 'FAMILY_ID_ASC',
+  FamilyIdDesc = 'FAMILY_ID_DESC',
   IdAsc = 'ID_ASC',
   IdDesc = 'ID_DESC',
   NameAsc = 'NAME_ASC',
