@@ -13,5 +13,3 @@ down:
 psql:
 	psql ${DATABASE_URL}
 
-create:
-	psql ${ROOT_DATABASE_URL} < create.sql

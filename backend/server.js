@@ -35,6 +35,15 @@ passport.use(
   }, async function(accessToken, refreshToken, profile, cb) {
     console.log('GoogleStrategy 1', profile)
     const client = await pgAppPool.connect();
+
+    // revisit this logic... we should maybe always create a new
+    // authentication, but from there, look up the user by email rather
+    // than creating a new user.  The result should be, we can delete
+    // all the authentications, and have seamlessly continue to work
+    // after users re-authenticate.  Currently if we delete
+    // authentications, subsequent logins will result in new users and
+    // families being created, orphaning the old ones
+
     try {
       const res1 = await client.query("select user_id from app_public.authentications where service = 'google' and identifier = $1", [profile.id])
       console.log('GoogleStrategy 2.0', res1.rows[0])

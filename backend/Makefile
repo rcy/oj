@@ -27,5 +27,5 @@ reset:
 	npx graphile-migrate reset --erase
 	${MAKE} create
 
-hardreset: down
-	rm -rf .gmrc migrations
+create:
+	psql ${ROOT_DATABASE_URL} < create.sql

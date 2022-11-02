@@ -48,9 +48,14 @@ declare
   v_family_id uuid;
 begin
   -- create the family
-  insert into app_public.families(user_id) values(new.id) returning id into v_family_id;
+  insert into app_public.families default values returning id into v_family_id;
+
   -- create a family membership for the user person as admin
   insert into app_public.family_memberships(person_id, family_id, role) values(new.person_id, v_family_id, 'admin');
+
+  -- update the new user
+  update app_public.users set family_id = v_family_id where id = new.id;
+
   return new;
 end;
 $$;
