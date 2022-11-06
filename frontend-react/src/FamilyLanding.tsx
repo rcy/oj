@@ -8,6 +8,8 @@ export default function FamilyLanding({ setFamilyMembershipId }: FamilyLandingTy
 
   if (loading) { return null }
 
+  const familyMemberships = data?.currentUser?.family?.familyMemberships;
+
   function become(ev: MouseEvent, id: string) {
     ev.preventDefault()
     setFamilyMembershipId(id)
@@ -23,7 +25,7 @@ export default function FamilyLanding({ setFamilyMembershipId }: FamilyLandingTy
         <div>{data?.currentUser?.name}'s Account</div>
       </header>
       <main className="py-16 w-full flex flex-col items-center gap-5">
-        {data?.currentUser?.family?.familyMemberships.nodes.map((m: any) => (
+        {familyMemberships?.nodes.map((m: any) => (
           <a
             href={`#${m.id}`}
             onClick={(ev) => become(ev, m.id)}

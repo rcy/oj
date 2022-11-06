@@ -11,6 +11,9 @@ query CurrentUserFamily {
             id
             name
             avatarUrl
+            user {
+              id
+            }
           }
           role
         }

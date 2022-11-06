@@ -1,4 +1,3 @@
-import AdminSection from './admin/AdminSection';
 import { Link, useNavigate } from "react-router-dom";
 import Button from './Button';
 import { MouseEventHandler } from 'react';
@@ -33,10 +32,6 @@ export default function MemberHome({ familyMembership, doLogout }: MemberHomeTyp
 
     <section>
       <Button color="red" onClick={handleLogout}>logout</Button>
-    </section>
-
-    <section className='mt-10'>
-      {familyMembership.role === 'admin' && <AdminSection />}
     </section>
   </div>
 }

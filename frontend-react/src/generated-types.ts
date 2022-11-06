@@ -2685,7 +2685,7 @@ export type CurrentUserQuery = { __typename?: 'Query', currentUser?: { __typenam
 export type CurrentUserFamilyQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type CurrentUserFamilyQuery = { __typename?: 'Query', currentUser?: { __typename?: 'User', id: any, name: string, family?: { __typename?: 'Family', id: any, familyMemberships: { __typename?: 'FamilyMembershipsConnection', nodes: Array<{ __typename?: 'FamilyMembership', id: any, role: string, person?: { __typename?: 'Person', id: any, name: string, avatarUrl: string } | null }> } } | null } | null };
+export type CurrentUserFamilyQuery = { __typename?: 'Query', currentUser?: { __typename?: 'User', id: any, name: string, family?: { __typename?: 'Family', id: any, familyMemberships: { __typename?: 'FamilyMembershipsConnection', nodes: Array<{ __typename?: 'FamilyMembership', id: any, role: string, person?: { __typename?: 'Person', id: any, name: string, avatarUrl: string, user?: { __typename?: 'User', id: any } | null } | null }> } } | null } | null };
 
 export type CurrentFamilyMembershipQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -2921,6 +2921,9 @@ export const CurrentUserFamilyDocument = gql`
             id
             name
             avatarUrl
+            user {
+              id
+            }
           }
           role
         }

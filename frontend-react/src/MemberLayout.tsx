@@ -4,7 +4,7 @@ import { Routes, Route } from "react-router-dom";
 import { PersonIdContext } from './contexts'
 import { ReactNode } from 'react';
 import MemberHome from './MemberHome';
-import AdminLayout from './admin/AdminLayout';
+import AdminLayout from './components/AdminLayout';
 import PageNotFound from './PageNotFound';
 
 import SpacesIndex from './routes/spaces/index';
@@ -61,7 +61,7 @@ export default function MemberLayout({ doLogout }: MemberLayoutType) {
               <Route path="/me" element={<MemberHome familyMembership={data?.currentFamilyMembership} doLogout={doLogout} />} />
               <Route path="/me/pic" element={<MemberSetProfilePicture />} />
               <Route path="/spaces" element={<SpacesIndex />} />
-              <Route path="/family" element={<FamilyIndex />} />
+              <Route path="/family/*" element={<FamilyIndex />} />
               <Route path="/spaces/explore" element={<SpacesExplore />} />
               <Route path="/spaces/:id" element={<SpacesShow />} />
               <Route path="/admin/*" element={<AdminLayout />} />
