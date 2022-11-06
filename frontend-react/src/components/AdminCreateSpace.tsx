@@ -3,7 +3,7 @@ import { useCreateSpaceMutation } from '../generated-types';
 import TextInput from './TextInput';
 import Button from '../Button';
 
-export default function AdminAddFamilyMember() {
+export default function AdminAddSpace() {
   const [value, setValue] = useState('')
   const [createSpace] = useCreateSpaceMutation();
 
