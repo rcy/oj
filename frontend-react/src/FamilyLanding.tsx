@@ -30,7 +30,7 @@ export default function FamilyLanding({ setFamilyMembershipId }: FamilyLandingTy
             href={`#${m.id}`}
             onClick={(ev) => become(ev, m.id)}
             key={m.id}
-            className="rounded-lg w-64 flex bg-white items-center border-solid border-4 hover:border-orange-600"
+            className="rounded-lg w-72 flex bg-white items-center border-solid border-4 hover:border-orange-600"
           >
             <img className="rounded-l-sm" src={m.person.avatarUrl} alt={m.person.name} />
 
