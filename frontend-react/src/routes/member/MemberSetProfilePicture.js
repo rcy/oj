@@ -1,24 +1,12 @@
+import md5 from 'md5'
 import { useContext, useEffect, useState } from 'react'
 import Button from '../../Button'
 import { PersonIdContext } from '../../contexts'
 import { useCurrentFamilyMembershipQuery, useSetPersonAvatarMutation } from '../../generated-types'
 
-function hashCode(str) {
-  let hash = 0;
-  for (let i = 0, len = str.length; i < len; i++) {
-    let chr = str.charCodeAt(i);
-    hash = (hash << 5) - hash + chr;
-    hash |= 0; // Convert to 32bit integer
-  }
-  return hash;
-}
-
-// return a hash based on a given uuid, index that is unique per day
-function getDailyHash(uuid, index) {
-  const today = Math.floor(Date.now() / 1000 / 60 / 60 / 24)
-  const hash = `${uuid.split('-')[0]}${today}${index}`
-  console.log({ uuid, index, today, hash })
-  return hash;
+// return a hash based on a given string and index
+function getDailyHash(str, index) {
+  return md5(`${str}${index}`)
 }
 
 const types = ['monsterid', 'wavatar', 'robohash', 'identicon', 'retro']
@@ -36,7 +24,7 @@ export default function () {
   }
 
   function shuffle() {
-    setHashes([...Array(100).keys()].map((k) => getDailyHash(personId, k)))
+    setHashes([...Array(32).keys()].map((k) => getDailyHash(personId, k)))
   }
 
   useEffect(shuffle, [])
