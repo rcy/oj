@@ -572,7 +572,7 @@ ALTER TABLE ONLY app_public.family_memberships
 --
 
 ALTER TABLE ONLY app_public.family_memberships
-    ADD CONSTRAINT family_memberships_person_id_fkey FOREIGN KEY (person_id) REFERENCES app_public.people(id);
+    ADD CONSTRAINT family_memberships_person_id_fkey FOREIGN KEY (person_id) REFERENCES app_public.people(id) ON DELETE CASCADE;
 
 
 --
