@@ -2668,7 +2668,7 @@ export type CreateNewFamilyMemberMutationVariables = Exact<{
 }>;
 
 
-export type CreateNewFamilyMemberMutation = { __typename?: 'Mutation', createNewFamilyMember?: { __typename?: 'CreateNewFamilyMemberPayload', clientMutationId?: string | null } | null };
+export type CreateNewFamilyMemberMutation = { __typename?: 'Mutation', createNewFamilyMember?: { __typename?: 'CreateNewFamilyMemberPayload', familyMembership?: { __typename?: 'FamilyMembership', personId: any } | null } | null };
 
 export type CreateSpaceMutationVariables = Exact<{
   name: Scalars['String'];
@@ -2753,6 +2753,13 @@ export type SpacePostsQueryVariables = Exact<{
 
 export type SpacePostsQuery = { __typename?: 'Query', posts?: { __typename?: 'PostsConnection', edges: Array<{ __typename?: 'PostsEdge', node: { __typename?: 'Post', id: any, body: string, membership?: { __typename?: 'SpaceMembership', id: any, person?: { __typename?: 'Person', id: any, name: string, avatarUrl: string } | null } | null } }> } | null };
 
+export type PersonPageDataQueryVariables = Exact<{
+  id: Scalars['UUID'];
+}>;
+
+
+export type PersonPageDataQuery = { __typename?: 'Query', person?: { __typename?: 'Person', id: any, name: string, avatarUrl: string, createdAt: any } | null };
+
 
 export const AllSpacesDocument = gql`
     query AllSpaces($personId: UUID!) {
@@ -2808,7 +2815,9 @@ export type AllSpacesQueryResult = Apollo.QueryResult<AllSpacesQuery, AllSpacesQ
 export const CreateNewFamilyMemberDocument = gql`
     mutation CreateNewFamilyMember($name: String!, $role: String!) {
   createNewFamilyMember(input: {name: $name, role: $role}) {
-    clientMutationId
+    familyMembership {
+      personId
+    }
   }
 }
     `;
@@ -3320,3 +3329,41 @@ export function useSpacePostsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions
 export type SpacePostsQueryHookResult = ReturnType<typeof useSpacePostsQuery>;
 export type SpacePostsLazyQueryHookResult = ReturnType<typeof useSpacePostsLazyQuery>;
 export type SpacePostsQueryResult = Apollo.QueryResult<SpacePostsQuery, SpacePostsQueryVariables>;
+export const PersonPageDataDocument = gql`
+    query PersonPageData($id: UUID!) {
+  person(id: $id) {
+    id
+    name
+    avatarUrl
+    createdAt
+  }
+}
+    `;
+
+/**
+ * __usePersonPageDataQuery__
+ *
+ * To run a query within a React component, call `usePersonPageDataQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePersonPageDataQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePersonPageDataQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function usePersonPageDataQuery(baseOptions: Apollo.QueryHookOptions<PersonPageDataQuery, PersonPageDataQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<PersonPageDataQuery, PersonPageDataQueryVariables>(PersonPageDataDocument, options);
+      }
+export function usePersonPageDataLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<PersonPageDataQuery, PersonPageDataQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<PersonPageDataQuery, PersonPageDataQueryVariables>(PersonPageDataDocument, options);
+        }
+export type PersonPageDataQueryHookResult = ReturnType<typeof usePersonPageDataQuery>;
+export type PersonPageDataLazyQueryHookResult = ReturnType<typeof usePersonPageDataLazyQuery>;
+export type PersonPageDataQueryResult = Apollo.QueryResult<PersonPageDataQuery, PersonPageDataQueryVariables>;

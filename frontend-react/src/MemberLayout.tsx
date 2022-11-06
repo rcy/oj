@@ -12,6 +12,7 @@ import SpacesShow from './routes/spaces/show';
 import SpacesExplore from './routes/spaces/explore';
 import FamilyIndex from './routes/family/index';
 import MemberSetProfilePicture from './routes/member/MemberSetProfilePicture';
+import PeopleIndexPage from './routes/people';
 
 type MemberLayoutType = { doLogout: Function }
 
@@ -62,6 +63,7 @@ export default function MemberLayout({ doLogout }: MemberLayoutType) {
               <Route path="/me/pic" element={<MemberSetProfilePicture />} />
               <Route path="/spaces" element={<SpacesIndex />} />
               <Route path="/family/*" element={<FamilyIndex />} />
+              <Route path="/people/*" element={<PeopleIndexPage />} />
               <Route path="/spaces/explore" element={<SpacesExplore />} />
               <Route path="/spaces/:id" element={<SpacesShow />} />
               <Route path="/admin/*" element={<AdminLayout />} />

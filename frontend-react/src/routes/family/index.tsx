@@ -1,14 +1,21 @@
-import { Routes, Route, Link } from "react-router-dom";
+import { Routes, Route, Link, useNavigate } from "react-router-dom";
 import { useCurrentUserFamilyQuery } from "../../generated-types"
-import AdminSection from '../../components/AdminSection';
 import Button from '../../Button';
+import AdminAddFamilyMember from "../../components/AdminAddFamilyMember";
+import MemberPageNotFound from "../../PageNotFound";
 
 export default function FamilyIndex() {
   const queryResult = useCurrentUserFamilyQuery({ fetchPolicy: 'network-only' })
   const family = queryResult.data?.currentUser?.family;
+  const navigate = useNavigate();
 
   if (!family) {
     return null
+  }
+
+  async function handleAddSuccess(personId: string) {
+    await queryResult.refetch()
+    navigate('/people/'+personId)
   }
 
   return (
@@ -27,7 +34,7 @@ export default function FamilyIndex() {
           <Route path="/" element={
             <div>
               {family.familyMemberships.nodes.map((n) => (
-                <Link to={`/family/${n.person?.id}`}>
+                <Link key={n.person?.id} to={`/people/${n.person?.id}`}>
                   <div className="flex items-center gap-2 hover:bg-red-100">
                     <img src={`${n.person?.avatarUrl}&s=40`} />
                     <div className="text-3xl">
@@ -38,7 +45,11 @@ export default function FamilyIndex() {
               ))}
             </div>
           } />
-          <Route path="/add" element={<div>add</div>} />
+          <Route
+            path="/add"
+            element={<AdminAddFamilyMember onSuccess={handleAddSuccess} onCancel={() => navigate('/family')} />}
+          />
+          <Route path="*" element={<MemberPageNotFound/>}/>
         </Routes>
       </main>
     </div >

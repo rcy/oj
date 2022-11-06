@@ -1,0 +1,8 @@
+query PersonPageData($id: UUID!) {
+  person(id: $id) {
+    id
+    name
+    avatarUrl
+    createdAt
+  }
+}

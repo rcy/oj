@@ -4,9 +4,12 @@ import TextInput from './TextInput';
 import Button from '../Button';
 import { useNavigate } from 'react-router-dom';
 
-export default function AdminAddFamilyMember() {
-  const navigate = useNavigate();
+interface Props {
+  onSuccess: Function,
+  onCancel: Function,
+}
 
+export default function AdminAddFamilyMember({ onSuccess, onCancel }: Props) {
   const [value, setValue] = useState('')
   const [addFamilyMember] = useCreateNewFamilyMemberMutation();
 
@@ -20,13 +23,13 @@ export default function AdminAddFamilyMember() {
       })
       console.log('mutating...done', { result })
       if (!result.errors) {
-        navigate('/family')
+        onSuccess(result.data?.createNewFamilyMember?.familyMembership?.personId)
       }
     }
   }
 
   const handleCancel = () => {
-    navigate('/family')
+    onCancel()
   }
   
   return (
