@@ -25,6 +25,7 @@
     "passport-google-oauth20": "^2.0.0",
     "pg": "^8.8.0",
     "pluralize": "^8.0.0",
-    "postgraphile": "^4.12.11"
+    "postgraphile": "^4.12.11",
+    "postgraphile-plugin-connection-filter": "^2.3.0"
   }
 }
