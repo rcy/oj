@@ -3294,12 +3294,12 @@ export type CurrentUserQuery = { __typename?: 'Query', currentUser?: { __typenam
 export type CurrentUserFamilyQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type CurrentUserFamilyQuery = { __typename?: 'Query', currentUser?: { __typename?: 'User', id: any, name: string, family?: { __typename?: 'Family', id: any, familyMemberships: { __typename?: 'FamilyMembershipsConnection', nodes: Array<{ __typename?: 'FamilyMembership', id: any, role: string, person?: { __typename?: 'Person', id: any, name: string, avatarUrl: string, user?: { __typename?: 'User', id: any } | null } | null }> } } | null } | null };
+export type CurrentUserFamilyQuery = { __typename?: 'Query', currentUser?: { __typename?: 'User', id: any, name: string, family?: { __typename?: 'Family', id: any, familyMemberships: { __typename?: 'FamilyMembershipsConnection', nodes: Array<{ __typename?: 'FamilyMembership', id: any, title?: string | null, role: string, person?: { __typename?: 'Person', id: any, name: string, avatarUrl: string, user?: { __typename?: 'User', id: any } | null } | null }> } } | null } | null };
 
 export type CurrentFamilyMembershipQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type CurrentFamilyMembershipQuery = { __typename?: 'Query', currentFamilyMembership?: { __typename?: 'FamilyMembership', id: any, role: string, family?: { __typename?: 'Family', id: any } | null, person?: { __typename?: 'Person', id: any, name: string, avatarUrl: string, user?: { __typename?: 'User', id: any } | null } | null } | null };
+export type CurrentFamilyMembershipQuery = { __typename?: 'Query', currentFamilyMembership?: { __typename?: 'FamilyMembership', id: any, role: string, title?: string | null, family?: { __typename?: 'Family', id: any } | null, person?: { __typename?: 'Person', id: any, name: string, avatarUrl: string, user?: { __typename?: 'User', id: any } | null } | null } | null };
 
 export type JoinSpaceMutationVariables = Exact<{
   spaceId: Scalars['UUID'];
@@ -3553,6 +3553,7 @@ export const CurrentUserFamilyDocument = gql`
       familyMemberships(orderBy: CREATED_AT_ASC) {
         nodes {
           id
+          title
           person {
             id
             name
@@ -3600,6 +3601,7 @@ export const CurrentFamilyMembershipDocument = gql`
   currentFamilyMembership {
     id
     role
+    title
     family {
       id
     }

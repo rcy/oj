@@ -41,7 +41,7 @@ export default function FamilyIndex() {
                     <div className="flex items-center gap-2">
                       <img src={`${n.person?.avatarUrl}&s=40`} />
                       <div className="text-3xl">
-                        {n.person?.name}
+                        {n.title || n.person?.name}
                       </div>
                     </div>
                   </Link>

@@ -2,6 +2,7 @@ query CurrentFamilyMembership {
   currentFamilyMembership {
     id
     role
+    title
     family {
       id
     }
