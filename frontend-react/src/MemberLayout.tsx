@@ -35,23 +35,8 @@ export default function MemberLayout({ doLogout }: MemberLayoutType) {
 
           <aside className="flex-none flex flex-col items-center w-21 text-white p-2 border-solid border-r-2 border-gray-300">
             <NavCell>
-              <MyNavLink to="/xyz" inactiveClassName="grayscale hover:grayscale-0" activeClass="grayscale-0">
-                <img height="80" width="80" src="octopus1.png" />
-              </MyNavLink>
-            </NavCell>
-            <NavCell>
-              <MyNavLink to="/me" inactiveClassName="grayscale hover:grayscale-0" activeClass="grayscale-0">
+              <MyNavLink to="/me" inactiveClassName="" activeClass="">
                 <img width="80" src={data?.currentFamilyMembership?.person?.avatarUrl} />
-              </MyNavLink>
-            </NavCell>
-            <NavCell>
-              <MyNavLink to="/family" inactiveClassName="grayscale hover:grayscale-0" activeClass="grayscale-0">
-                <img height="80" width="80" src="oj-house.png" />
-              </MyNavLink>
-            </NavCell>
-            <NavCell>
-              <MyNavLink to="/spaces" inactiveClassName="grayscale hover:grayscale-0" activeClass="grayscale-0">
-                <img height="80" width="80" src="oj-chat.png" />
               </MyNavLink>
             </NavCell>
           </aside>

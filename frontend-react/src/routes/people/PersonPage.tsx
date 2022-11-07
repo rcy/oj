@@ -6,9 +6,9 @@ export default function PersonPage() {
   const q = usePersonPageDataQuery({ variables: { id: params.id } })
 
   return (
-    <div>
-      <h1>{q.data?.person?.name}</h1>
+    <div className="p-2 flex items-center">
       <img src={q.data?.person?.avatarUrl} />
+      <h1 className="px-2 text-6xl">{q.data?.person?.name}</h1>
     </div>
   )       
 }
