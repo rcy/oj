@@ -43,6 +43,44 @@ input AuthenticationCondition {
   userId: UUID
 }
 
+"""
+A filter to be used against `Authentication` object types. All fields are combined with a logical ‘and.’
+"""
+input AuthenticationFilter {
+  """Checks for all expressions in this list."""
+  and: [AuthenticationFilter!]
+
+  """Filter by the object’s `createdAt` field."""
+  createdAt: DatetimeFilter
+
+  """Filter by the object’s `details` field."""
+  details: JSONFilter
+
+  """Filter by the object’s `id` field."""
+  id: UUIDFilter
+
+  """Filter by the object’s `identifier` field."""
+  identifier: StringFilter
+
+  """Negates the expression."""
+  not: AuthenticationFilter
+
+  """Checks for any expressions in this list."""
+  or: [AuthenticationFilter!]
+
+  """Filter by the object’s `service` field."""
+  service: StringFilter
+
+  """Filter by the object’s `updatedAt` field."""
+  updatedAt: DatetimeFilter
+
+  """Filter by the object’s `user` relation."""
+  user: UserFilter
+
+  """Filter by the object’s `userId` field."""
+  userId: UUIDFilter
+}
+
 """A connection to a list of `Authentication` values."""
 type AuthenticationsConnection {
   """
@@ -364,6 +402,48 @@ A point in time as described by the [ISO
 8601](https://en.wikipedia.org/wiki/ISO_8601) standard. May or may not include a timezone.
 """
 scalar Datetime
+
+"""
+A filter to be used against Datetime fields. All fields are combined with a logical ‘and.’
+"""
+input DatetimeFilter {
+  """
+  Not equal to the specified value, treating null like an ordinary value.
+  """
+  distinctFrom: Datetime
+
+  """Equal to the specified value."""
+  equalTo: Datetime
+
+  """Greater than the specified value."""
+  greaterThan: Datetime
+
+  """Greater than or equal to the specified value."""
+  greaterThanOrEqualTo: Datetime
+
+  """Included in the specified list."""
+  in: [Datetime!]
+
+  """
+  Is null (if `true` is specified) or is not null (if `false` is specified).
+  """
+  isNull: Boolean
+
+  """Less than the specified value."""
+  lessThan: Datetime
+
+  """Less than or equal to the specified value."""
+  lessThanOrEqualTo: Datetime
+
+  """Equal to the specified value, treating null like an ordinary value."""
+  notDistinctFrom: Datetime
+
+  """Not equal to the specified value."""
+  notEqualTo: Datetime
+
+  """Not included in the specified list."""
+  notIn: [Datetime!]
+}
 
 """All input for the `deleteFamilyMembershipByNodeId` mutation."""
 input DeleteFamilyMembershipByNodeIdInput {
@@ -739,6 +819,11 @@ type Family implements Node {
     """
     condition: FamilyMembershipCondition
 
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: FamilyMembershipFilter
+
     """Only read the first `n` values of the set."""
     first: Int
 
@@ -775,6 +860,11 @@ type Family implements Node {
     """
     condition: UserCondition
 
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: UserFilter
+
     """Only read the first `n` values of the set."""
     first: Int
 
@@ -804,6 +894,41 @@ input FamilyCondition {
 
   """Checks for equality with the object’s `updatedAt` field."""
   updatedAt: Datetime
+}
+
+"""
+A filter to be used against `Family` object types. All fields are combined with a logical ‘and.’
+"""
+input FamilyFilter {
+  """Checks for all expressions in this list."""
+  and: [FamilyFilter!]
+
+  """Filter by the object’s `createdAt` field."""
+  createdAt: DatetimeFilter
+
+  """Filter by the object’s `familyMemberships` relation."""
+  familyMemberships: FamilyToManyFamilyMembershipFilter
+
+  """Some related `familyMemberships` exist."""
+  familyMembershipsExist: Boolean
+
+  """Filter by the object’s `id` field."""
+  id: UUIDFilter
+
+  """Negates the expression."""
+  not: FamilyFilter
+
+  """Checks for any expressions in this list."""
+  or: [FamilyFilter!]
+
+  """Filter by the object’s `updatedAt` field."""
+  updatedAt: DatetimeFilter
+
+  """Filter by the object’s `users` relation."""
+  users: FamilyToManyUserFilter
+
+  """Some related `users` exist."""
+  usersExist: Boolean
 }
 
 type FamilyMembership implements Node {
@@ -848,6 +973,44 @@ input FamilyMembershipCondition {
 
   """Checks for equality with the object’s `title` field."""
   title: String
+}
+
+"""
+A filter to be used against `FamilyMembership` object types. All fields are combined with a logical ‘and.’
+"""
+input FamilyMembershipFilter {
+  """Checks for all expressions in this list."""
+  and: [FamilyMembershipFilter!]
+
+  """Filter by the object’s `createdAt` field."""
+  createdAt: DatetimeFilter
+
+  """Filter by the object’s `family` relation."""
+  family: FamilyFilter
+
+  """Filter by the object’s `familyId` field."""
+  familyId: UUIDFilter
+
+  """Filter by the object’s `id` field."""
+  id: UUIDFilter
+
+  """Negates the expression."""
+  not: FamilyMembershipFilter
+
+  """Checks for any expressions in this list."""
+  or: [FamilyMembershipFilter!]
+
+  """Filter by the object’s `person` relation."""
+  person: PersonFilter
+
+  """Filter by the object’s `personId` field."""
+  personId: UUIDFilter
+
+  """Filter by the object’s `role` field."""
+  role: StringFilter
+
+  """Filter by the object’s `title` field."""
+  title: StringFilter
 }
 
 """An input for mutations affecting `FamilyMembership`"""
@@ -941,6 +1104,26 @@ input FamilyRoleCondition {
   name: String
 }
 
+"""
+A filter to be used against `FamilyRole` object types. All fields are combined with a logical ‘and.’
+"""
+input FamilyRoleFilter {
+  """Checks for all expressions in this list."""
+  and: [FamilyRoleFilter!]
+
+  """Filter by the object’s `id` field."""
+  id: IntFilter
+
+  """Filter by the object’s `name` field."""
+  name: StringFilter
+
+  """Negates the expression."""
+  not: FamilyRoleFilter
+
+  """Checks for any expressions in this list."""
+  or: [FamilyRoleFilter!]
+}
+
 """A connection to a list of `FamilyRole` values."""
 type FamilyRolesConnection {
   """
@@ -976,6 +1159,88 @@ enum FamilyRolesOrderBy {
   NATURAL
   PRIMARY_KEY_ASC
   PRIMARY_KEY_DESC
+}
+
+"""
+A filter to be used against many `FamilyMembership` object types. All fields are combined with a logical ‘and.’
+"""
+input FamilyToManyFamilyMembershipFilter {
+  """
+  Every related `FamilyMembership` matches the filter criteria. All fields are combined with a logical ‘and.’
+  """
+  every: FamilyMembershipFilter
+
+  """
+  No related `FamilyMembership` matches the filter criteria. All fields are combined with a logical ‘and.’
+  """
+  none: FamilyMembershipFilter
+
+  """
+  Some related `FamilyMembership` matches the filter criteria. All fields are combined with a logical ‘and.’
+  """
+  some: FamilyMembershipFilter
+}
+
+"""
+A filter to be used against many `User` object types. All fields are combined with a logical ‘and.’
+"""
+input FamilyToManyUserFilter {
+  """
+  Every related `User` matches the filter criteria. All fields are combined with a logical ‘and.’
+  """
+  every: UserFilter
+
+  """
+  No related `User` matches the filter criteria. All fields are combined with a logical ‘and.’
+  """
+  none: UserFilter
+
+  """
+  Some related `User` matches the filter criteria. All fields are combined with a logical ‘and.’
+  """
+  some: UserFilter
+}
+
+"""
+A filter to be used against Int fields. All fields are combined with a logical ‘and.’
+"""
+input IntFilter {
+  """
+  Not equal to the specified value, treating null like an ordinary value.
+  """
+  distinctFrom: Int
+
+  """Equal to the specified value."""
+  equalTo: Int
+
+  """Greater than the specified value."""
+  greaterThan: Int
+
+  """Greater than or equal to the specified value."""
+  greaterThanOrEqualTo: Int
+
+  """Included in the specified list."""
+  in: [Int!]
+
+  """
+  Is null (if `true` is specified) or is not null (if `false` is specified).
+  """
+  isNull: Boolean
+
+  """Less than the specified value."""
+  lessThan: Int
+
+  """Less than or equal to the specified value."""
+  lessThanOrEqualTo: Int
+
+  """Equal to the specified value, treating null like an ordinary value."""
+  notDistinctFrom: Int
+
+  """Not equal to the specified value."""
+  notEqualTo: Int
+
+  """Not included in the specified list."""
+  notIn: [Int!]
 }
 
 type Interest implements Node {
@@ -1016,6 +1281,47 @@ input InterestCondition {
 
   """Checks for equality with the object’s `updatedAt` field."""
   updatedAt: Datetime
+}
+
+"""
+A filter to be used against `Interest` object types. All fields are combined with a logical ‘and.’
+"""
+input InterestFilter {
+  """Checks for all expressions in this list."""
+  and: [InterestFilter!]
+
+  """Filter by the object’s `createdAt` field."""
+  createdAt: DatetimeFilter
+
+  """Filter by the object’s `id` field."""
+  id: UUIDFilter
+
+  """Negates the expression."""
+  not: InterestFilter
+
+  """Checks for any expressions in this list."""
+  or: [InterestFilter!]
+
+  """Filter by the object’s `person` relation."""
+  person: PersonFilter
+
+  """A related `person` exists."""
+  personExists: Boolean
+
+  """Filter by the object’s `personId` field."""
+  personId: UUIDFilter
+
+  """Filter by the object’s `topic` relation."""
+  topic: TopicFilter
+
+  """A related `topic` exists."""
+  topicExists: Boolean
+
+  """Filter by the object’s `topicId` field."""
+  topicId: UUIDFilter
+
+  """Filter by the object’s `updatedAt` field."""
+  updatedAt: DatetimeFilter
 }
 
 """An input for mutations affecting `Interest`"""
@@ -1085,6 +1391,63 @@ enum InterestsOrderBy {
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
 scalar JSON
+
+"""
+A filter to be used against JSON fields. All fields are combined with a logical ‘and.’
+"""
+input JSONFilter {
+  """Contained by the specified JSON."""
+  containedBy: JSON
+
+  """Contains the specified JSON."""
+  contains: JSON
+
+  """Contains all of the specified keys."""
+  containsAllKeys: [String!]
+
+  """Contains any of the specified keys."""
+  containsAnyKeys: [String!]
+
+  """Contains the specified key."""
+  containsKey: String
+
+  """
+  Not equal to the specified value, treating null like an ordinary value.
+  """
+  distinctFrom: JSON
+
+  """Equal to the specified value."""
+  equalTo: JSON
+
+  """Greater than the specified value."""
+  greaterThan: JSON
+
+  """Greater than or equal to the specified value."""
+  greaterThanOrEqualTo: JSON
+
+  """Included in the specified list."""
+  in: [JSON!]
+
+  """
+  Is null (if `true` is specified) or is not null (if `false` is specified).
+  """
+  isNull: Boolean
+
+  """Less than the specified value."""
+  lessThan: JSON
+
+  """Less than or equal to the specified value."""
+  lessThanOrEqualTo: JSON
+
+  """Equal to the specified value, treating null like an ordinary value."""
+  notDistinctFrom: JSON
+
+  """Not equal to the specified value."""
+  notEqualTo: JSON
+
+  """Not included in the specified list."""
+  notIn: [JSON!]
+}
 
 """
 The root mutation type which contains root level fields which mutate data.
@@ -1470,6 +1833,11 @@ type Person implements Node {
     """
     condition: FamilyMembershipCondition
 
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: FamilyMembershipFilter
+
     """Only read the first `n` values of the set."""
     first: Int
 
@@ -1499,6 +1867,11 @@ type Person implements Node {
     A condition to be used in determining which values should be returned by the collection.
     """
     condition: InterestCondition
+
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: InterestFilter
 
     """Only read the first `n` values of the set."""
     first: Int
@@ -1534,6 +1907,11 @@ type Person implements Node {
     A condition to be used in determining which values should be returned by the collection.
     """
     condition: SpaceMembershipCondition
+
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: SpaceMembershipFilter
 
     """Only read the first `n` values of the set."""
     first: Int
@@ -1576,6 +1954,59 @@ input PersonCondition {
   updatedAt: Datetime
 }
 
+"""
+A filter to be used against `Person` object types. All fields are combined with a logical ‘and.’
+"""
+input PersonFilter {
+  """Checks for all expressions in this list."""
+  and: [PersonFilter!]
+
+  """Filter by the object’s `avatarUrl` field."""
+  avatarUrl: StringFilter
+
+  """Filter by the object’s `createdAt` field."""
+  createdAt: DatetimeFilter
+
+  """Filter by the object’s `familyMemberships` relation."""
+  familyMemberships: PersonToManyFamilyMembershipFilter
+
+  """Some related `familyMemberships` exist."""
+  familyMembershipsExist: Boolean
+
+  """Filter by the object’s `id` field."""
+  id: UUIDFilter
+
+  """Filter by the object’s `interests` relation."""
+  interests: PersonToManyInterestFilter
+
+  """Some related `interests` exist."""
+  interestsExist: Boolean
+
+  """Filter by the object’s `name` field."""
+  name: StringFilter
+
+  """Negates the expression."""
+  not: PersonFilter
+
+  """Checks for any expressions in this list."""
+  or: [PersonFilter!]
+
+  """Filter by the object’s `spaceMemberships` relation."""
+  spaceMemberships: PersonToManySpaceMembershipFilter
+
+  """Some related `spaceMemberships` exist."""
+  spaceMembershipsExist: Boolean
+
+  """Filter by the object’s `updatedAt` field."""
+  updatedAt: DatetimeFilter
+
+  """Filter by the object’s `user` relation."""
+  user: UserFilter
+
+  """A related `user` exists."""
+  userExists: Boolean
+}
+
 """An input for mutations affecting `Person`"""
 input PersonInput {
   avatarUrl: String
@@ -1594,6 +2025,66 @@ input PersonPatch {
   id: UUID
   name: String
   updatedAt: Datetime
+}
+
+"""
+A filter to be used against many `FamilyMembership` object types. All fields are combined with a logical ‘and.’
+"""
+input PersonToManyFamilyMembershipFilter {
+  """
+  Every related `FamilyMembership` matches the filter criteria. All fields are combined with a logical ‘and.’
+  """
+  every: FamilyMembershipFilter
+
+  """
+  No related `FamilyMembership` matches the filter criteria. All fields are combined with a logical ‘and.’
+  """
+  none: FamilyMembershipFilter
+
+  """
+  Some related `FamilyMembership` matches the filter criteria. All fields are combined with a logical ‘and.’
+  """
+  some: FamilyMembershipFilter
+}
+
+"""
+A filter to be used against many `Interest` object types. All fields are combined with a logical ‘and.’
+"""
+input PersonToManyInterestFilter {
+  """
+  Every related `Interest` matches the filter criteria. All fields are combined with a logical ‘and.’
+  """
+  every: InterestFilter
+
+  """
+  No related `Interest` matches the filter criteria. All fields are combined with a logical ‘and.’
+  """
+  none: InterestFilter
+
+  """
+  Some related `Interest` matches the filter criteria. All fields are combined with a logical ‘and.’
+  """
+  some: InterestFilter
+}
+
+"""
+A filter to be used against many `SpaceMembership` object types. All fields are combined with a logical ‘and.’
+"""
+input PersonToManySpaceMembershipFilter {
+  """
+  Every related `SpaceMembership` matches the filter criteria. All fields are combined with a logical ‘and.’
+  """
+  every: SpaceMembershipFilter
+
+  """
+  No related `SpaceMembership` matches the filter criteria. All fields are combined with a logical ‘and.’
+  """
+  none: SpaceMembershipFilter
+
+  """
+  Some related `SpaceMembership` matches the filter criteria. All fields are combined with a logical ‘and.’
+  """
+  some: SpaceMembershipFilter
 }
 
 type Post implements Node {
@@ -1637,6 +2128,44 @@ input PostCondition {
 
   """Checks for equality with the object’s `updatedAt` field."""
   updatedAt: Datetime
+}
+
+"""
+A filter to be used against `Post` object types. All fields are combined with a logical ‘and.’
+"""
+input PostFilter {
+  """Checks for all expressions in this list."""
+  and: [PostFilter!]
+
+  """Filter by the object’s `body` field."""
+  body: StringFilter
+
+  """Filter by the object’s `createdAt` field."""
+  createdAt: DatetimeFilter
+
+  """Filter by the object’s `id` field."""
+  id: UUIDFilter
+
+  """Filter by the object’s `membership` relation."""
+  membership: SpaceMembershipFilter
+
+  """Filter by the object’s `membershipId` field."""
+  membershipId: UUIDFilter
+
+  """Negates the expression."""
+  not: PostFilter
+
+  """Checks for any expressions in this list."""
+  or: [PostFilter!]
+
+  """Filter by the object’s `space` relation."""
+  space: SpaceFilter
+
+  """Filter by the object’s `spaceId` field."""
+  spaceId: UUIDFilter
+
+  """Filter by the object’s `updatedAt` field."""
+  updatedAt: DatetimeFilter
 }
 
 """All input for the `postMessage` mutation."""
@@ -1749,6 +2278,11 @@ type Query implements Node {
     """
     condition: AuthenticationCondition
 
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: AuthenticationFilter
+
     """Only read the first `n` values of the set."""
     first: Int
 
@@ -1780,6 +2314,11 @@ type Query implements Node {
     A condition to be used in determining which values should be returned by the collection.
     """
     condition: FamilyCondition
+
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: FamilyFilter
 
     """Only read the first `n` values of the set."""
     first: Int
@@ -1826,6 +2365,11 @@ type Query implements Node {
     """
     condition: FamilyMembershipCondition
 
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: FamilyMembershipFilter
+
     """Only read the first `n` values of the set."""
     first: Int
 
@@ -1865,6 +2409,11 @@ type Query implements Node {
     """
     condition: FamilyRoleCondition
 
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: FamilyRoleFilter
+
     """Only read the first `n` values of the set."""
     first: Int
 
@@ -1900,6 +2449,11 @@ type Query implements Node {
     A condition to be used in determining which values should be returned by the collection.
     """
     condition: InterestCondition
+
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: InterestFilter
 
     """Only read the first `n` values of the set."""
     first: Int
@@ -1940,6 +2494,11 @@ type Query implements Node {
     A condition to be used in determining which values should be returned by the collection.
     """
     condition: PersonCondition
+
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: PersonFilter
 
     """Only read the first `n` values of the set."""
     first: Int
@@ -1983,6 +2542,11 @@ type Query implements Node {
     A condition to be used in determining which values should be returned by the collection.
     """
     condition: PostCondition
+
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: PostFilter
 
     """Only read the first `n` values of the set."""
     first: Int
@@ -2036,6 +2600,11 @@ type Query implements Node {
     """
     condition: SpaceMembershipCondition
 
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: SpaceMembershipFilter
+
     """Only read the first `n` values of the set."""
     first: Int
 
@@ -2064,6 +2633,11 @@ type Query implements Node {
     A condition to be used in determining which values should be returned by the collection.
     """
     condition: SpaceCondition
+
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: SpaceFilter
 
     """Only read the first `n` values of the set."""
     first: Int
@@ -2100,6 +2674,11 @@ type Query implements Node {
     A condition to be used in determining which values should be returned by the collection.
     """
     condition: TopicCondition
+
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: TopicFilter
 
     """Only read the first `n` values of the set."""
     first: Int
@@ -2138,6 +2717,11 @@ type Query implements Node {
     A condition to be used in determining which values should be returned by the collection.
     """
     condition: UserCondition
+
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: UserFilter
 
     """Only read the first `n` values of the set."""
     first: Int
@@ -2180,6 +2764,11 @@ type Space implements Node {
     """
     condition: PostCondition
 
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: PostFilter
+
     """Only read the first `n` values of the set."""
     first: Int
 
@@ -2208,6 +2797,11 @@ type Space implements Node {
     A condition to be used in determining which values should be returned by the collection.
     """
     condition: SpaceMembershipCondition
+
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: SpaceMembershipFilter
 
     """Only read the first `n` values of the set."""
     first: Int
@@ -2247,6 +2841,47 @@ input SpaceCondition {
   updatedAt: Datetime
 }
 
+"""
+A filter to be used against `Space` object types. All fields are combined with a logical ‘and.’
+"""
+input SpaceFilter {
+  """Checks for all expressions in this list."""
+  and: [SpaceFilter!]
+
+  """Filter by the object’s `createdAt` field."""
+  createdAt: DatetimeFilter
+
+  """Filter by the object’s `description` field."""
+  description: StringFilter
+
+  """Filter by the object’s `id` field."""
+  id: UUIDFilter
+
+  """Filter by the object’s `name` field."""
+  name: StringFilter
+
+  """Negates the expression."""
+  not: SpaceFilter
+
+  """Checks for any expressions in this list."""
+  or: [SpaceFilter!]
+
+  """Filter by the object’s `posts` relation."""
+  posts: SpaceToManyPostFilter
+
+  """Some related `posts` exist."""
+  postsExist: Boolean
+
+  """Filter by the object’s `spaceMemberships` relation."""
+  spaceMemberships: SpaceToManySpaceMembershipFilter
+
+  """Some related `spaceMemberships` exist."""
+  spaceMembershipsExist: Boolean
+
+  """Filter by the object’s `updatedAt` field."""
+  updatedAt: DatetimeFilter
+}
+
 """An input for mutations affecting `Space`"""
 input SpaceInput {
   createdAt: Datetime
@@ -2281,6 +2916,11 @@ type SpaceMembership implements Node {
     A condition to be used in determining which values should be returned by the collection.
     """
     condition: PostCondition
+
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: PostFilter
 
     """Only read the first `n` values of the set."""
     first: Int
@@ -2329,6 +2969,50 @@ input SpaceMembershipCondition {
   updatedAt: Datetime
 }
 
+"""
+A filter to be used against `SpaceMembership` object types. All fields are combined with a logical ‘and.’
+"""
+input SpaceMembershipFilter {
+  """Checks for all expressions in this list."""
+  and: [SpaceMembershipFilter!]
+
+  """Filter by the object’s `createdAt` field."""
+  createdAt: DatetimeFilter
+
+  """Filter by the object’s `id` field."""
+  id: UUIDFilter
+
+  """Negates the expression."""
+  not: SpaceMembershipFilter
+
+  """Checks for any expressions in this list."""
+  or: [SpaceMembershipFilter!]
+
+  """Filter by the object’s `person` relation."""
+  person: PersonFilter
+
+  """Filter by the object’s `personId` field."""
+  personId: UUIDFilter
+
+  """Filter by the object’s `postsByMembershipId` relation."""
+  postsByMembershipId: SpaceMembershipToManyPostFilter
+
+  """Some related `postsByMembershipId` exist."""
+  postsByMembershipIdExist: Boolean
+
+  """Filter by the object’s `roleId` field."""
+  roleId: StringFilter
+
+  """Filter by the object’s `space` relation."""
+  space: SpaceFilter
+
+  """Filter by the object’s `spaceId` field."""
+  spaceId: UUIDFilter
+
+  """Filter by the object’s `updatedAt` field."""
+  updatedAt: DatetimeFilter
+}
+
 """An input for mutations affecting `SpaceMembership`"""
 input SpaceMembershipInput {
   createdAt: Datetime
@@ -2349,6 +3033,26 @@ input SpaceMembershipPatch {
   roleId: String
   spaceId: UUID
   updatedAt: Datetime
+}
+
+"""
+A filter to be used against many `Post` object types. All fields are combined with a logical ‘and.’
+"""
+input SpaceMembershipToManyPostFilter {
+  """
+  Every related `Post` matches the filter criteria. All fields are combined with a logical ‘and.’
+  """
+  every: PostFilter
+
+  """
+  No related `Post` matches the filter criteria. All fields are combined with a logical ‘and.’
+  """
+  none: PostFilter
+
+  """
+  Some related `Post` matches the filter criteria. All fields are combined with a logical ‘and.’
+  """
+  some: PostFilter
 }
 
 """A connection to a list of `SpaceMembership` values."""
@@ -2409,6 +3113,46 @@ input SpacePatch {
   updatedAt: Datetime
 }
 
+"""
+A filter to be used against many `Post` object types. All fields are combined with a logical ‘and.’
+"""
+input SpaceToManyPostFilter {
+  """
+  Every related `Post` matches the filter criteria. All fields are combined with a logical ‘and.’
+  """
+  every: PostFilter
+
+  """
+  No related `Post` matches the filter criteria. All fields are combined with a logical ‘and.’
+  """
+  none: PostFilter
+
+  """
+  Some related `Post` matches the filter criteria. All fields are combined with a logical ‘and.’
+  """
+  some: PostFilter
+}
+
+"""
+A filter to be used against many `SpaceMembership` object types. All fields are combined with a logical ‘and.’
+"""
+input SpaceToManySpaceMembershipFilter {
+  """
+  Every related `SpaceMembership` matches the filter criteria. All fields are combined with a logical ‘and.’
+  """
+  every: SpaceMembershipFilter
+
+  """
+  No related `SpaceMembership` matches the filter criteria. All fields are combined with a logical ‘and.’
+  """
+  none: SpaceMembershipFilter
+
+  """
+  Some related `SpaceMembership` matches the filter criteria. All fields are combined with a logical ‘and.’
+  """
+  some: SpaceMembershipFilter
+}
+
 """A connection to a list of `Space` values."""
 type SpacesConnection {
   """
@@ -2452,6 +3196,138 @@ enum SpacesOrderBy {
   UPDATED_AT_DESC
 }
 
+"""
+A filter to be used against String fields. All fields are combined with a logical ‘and.’
+"""
+input StringFilter {
+  """
+  Not equal to the specified value, treating null like an ordinary value.
+  """
+  distinctFrom: String
+
+  """
+  Not equal to the specified value, treating null like an ordinary value (case-insensitive).
+  """
+  distinctFromInsensitive: String
+
+  """Ends with the specified string (case-sensitive)."""
+  endsWith: String
+
+  """Ends with the specified string (case-insensitive)."""
+  endsWithInsensitive: String
+
+  """Equal to the specified value."""
+  equalTo: String
+
+  """Equal to the specified value (case-insensitive)."""
+  equalToInsensitive: String
+
+  """Greater than the specified value."""
+  greaterThan: String
+
+  """Greater than the specified value (case-insensitive)."""
+  greaterThanInsensitive: String
+
+  """Greater than or equal to the specified value."""
+  greaterThanOrEqualTo: String
+
+  """Greater than or equal to the specified value (case-insensitive)."""
+  greaterThanOrEqualToInsensitive: String
+
+  """Included in the specified list."""
+  in: [String!]
+
+  """Included in the specified list (case-insensitive)."""
+  inInsensitive: [String!]
+
+  """Contains the specified string (case-sensitive)."""
+  includes: String
+
+  """Contains the specified string (case-insensitive)."""
+  includesInsensitive: String
+
+  """
+  Is null (if `true` is specified) or is not null (if `false` is specified).
+  """
+  isNull: Boolean
+
+  """Less than the specified value."""
+  lessThan: String
+
+  """Less than the specified value (case-insensitive)."""
+  lessThanInsensitive: String
+
+  """Less than or equal to the specified value."""
+  lessThanOrEqualTo: String
+
+  """Less than or equal to the specified value (case-insensitive)."""
+  lessThanOrEqualToInsensitive: String
+
+  """
+  Matches the specified pattern (case-sensitive). An underscore (_) matches any single character; a percent sign (%) matches any sequence of zero or more characters.
+  """
+  like: String
+
+  """
+  Matches the specified pattern (case-insensitive). An underscore (_) matches any single character; a percent sign (%) matches any sequence of zero or more characters.
+  """
+  likeInsensitive: String
+
+  """Equal to the specified value, treating null like an ordinary value."""
+  notDistinctFrom: String
+
+  """
+  Equal to the specified value, treating null like an ordinary value (case-insensitive).
+  """
+  notDistinctFromInsensitive: String
+
+  """Does not end with the specified string (case-sensitive)."""
+  notEndsWith: String
+
+  """Does not end with the specified string (case-insensitive)."""
+  notEndsWithInsensitive: String
+
+  """Not equal to the specified value."""
+  notEqualTo: String
+
+  """Not equal to the specified value (case-insensitive)."""
+  notEqualToInsensitive: String
+
+  """Not included in the specified list."""
+  notIn: [String!]
+
+  """Not included in the specified list (case-insensitive)."""
+  notInInsensitive: [String!]
+
+  """Does not contain the specified string (case-sensitive)."""
+  notIncludes: String
+
+  """Does not contain the specified string (case-insensitive)."""
+  notIncludesInsensitive: String
+
+  """
+  Does not match the specified pattern (case-sensitive). An underscore (_) matches any single character; a percent sign (%) matches any sequence of zero or more characters.
+  """
+  notLike: String
+
+  """
+  Does not match the specified pattern (case-insensitive). An underscore (_) matches any single character; a percent sign (%) matches any sequence of zero or more characters.
+  """
+  notLikeInsensitive: String
+
+  """Does not start with the specified string (case-sensitive)."""
+  notStartsWith: String
+
+  """Does not start with the specified string (case-insensitive)."""
+  notStartsWithInsensitive: String
+
+  """Starts with the specified string (case-sensitive)."""
+  startsWith: String
+
+  """Starts with the specified string (case-insensitive)."""
+  startsWithInsensitive: String
+}
+
 type Topic implements Node {
   createdAt: Datetime!
   id: UUID!
@@ -2468,6 +3344,11 @@ type Topic implements Node {
     A condition to be used in determining which values should be returned by the collection.
     """
     condition: InterestCondition
+
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: InterestFilter
 
     """Only read the first `n` values of the set."""
     first: Int
@@ -2510,6 +3391,38 @@ input TopicCondition {
   updatedAt: Datetime
 }
 
+"""
+A filter to be used against `Topic` object types. All fields are combined with a logical ‘and.’
+"""
+input TopicFilter {
+  """Checks for all expressions in this list."""
+  and: [TopicFilter!]
+
+  """Filter by the object’s `createdAt` field."""
+  createdAt: DatetimeFilter
+
+  """Filter by the object’s `id` field."""
+  id: UUIDFilter
+
+  """Filter by the object’s `interests` relation."""
+  interests: TopicToManyInterestFilter
+
+  """Some related `interests` exist."""
+  interestsExist: Boolean
+
+  """Filter by the object’s `name` field."""
+  name: StringFilter
+
+  """Negates the expression."""
+  not: TopicFilter
+
+  """Checks for any expressions in this list."""
+  or: [TopicFilter!]
+
+  """Filter by the object’s `updatedAt` field."""
+  updatedAt: DatetimeFilter
+}
+
 """An input for mutations affecting `Topic`"""
 input TopicInput {
   createdAt: Datetime
@@ -2526,6 +3439,26 @@ input TopicPatch {
   id: UUID
   name: String
   updatedAt: Datetime
+}
+
+"""
+A filter to be used against many `Interest` object types. All fields are combined with a logical ‘and.’
+"""
+input TopicToManyInterestFilter {
+  """
+  Every related `Interest` matches the filter criteria. All fields are combined with a logical ‘and.’
+  """
+  every: InterestFilter
+
+  """
+  No related `Interest` matches the filter criteria. All fields are combined with a logical ‘and.’
+  """
+  none: InterestFilter
+
+  """
+  Some related `Interest` matches the filter criteria. All fields are combined with a logical ‘and.’
+  """
+  some: InterestFilter
 }
 
 """A connection to a list of `Topic` values."""
@@ -2573,6 +3506,48 @@ enum TopicsOrderBy {
 A universally unique identifier as defined by [RFC 4122](https://tools.ietf.org/html/rfc4122).
 """
 scalar UUID
+
+"""
+A filter to be used against UUID fields. All fields are combined with a logical ‘and.’
+"""
+input UUIDFilter {
+  """
+  Not equal to the specified value, treating null like an ordinary value.
+  """
+  distinctFrom: UUID
+
+  """Equal to the specified value."""
+  equalTo: UUID
+
+  """Greater than the specified value."""
+  greaterThan: UUID
+
+  """Greater than or equal to the specified value."""
+  greaterThanOrEqualTo: UUID
+
+  """Included in the specified list."""
+  in: [UUID!]
+
+  """
+  Is null (if `true` is specified) or is not null (if `false` is specified).
+  """
+  isNull: Boolean
+
+  """Less than the specified value."""
+  lessThan: UUID
+
+  """Less than or equal to the specified value."""
+  lessThanOrEqualTo: UUID
+
+  """Equal to the specified value, treating null like an ordinary value."""
+  notDistinctFrom: UUID
+
+  """Not equal to the specified value."""
+  notEqualTo: UUID
+
+  """Not included in the specified list."""
+  notIn: [UUID!]
+}
 
 """All input for the `updateFamilyMembershipByNodeId` mutation."""
 input UpdateFamilyMembershipByNodeIdInput {
@@ -3044,6 +4019,11 @@ type User implements Node {
     """
     condition: AuthenticationCondition
 
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: AuthenticationFilter
+
     """Only read the first `n` values of the set."""
     first: Int
 
@@ -3105,6 +4085,59 @@ input UserCondition {
   updatedAt: Datetime
 }
 
+"""
+A filter to be used against `User` object types. All fields are combined with a logical ‘and.’
+"""
+input UserFilter {
+  """Checks for all expressions in this list."""
+  and: [UserFilter!]
+
+  """Filter by the object’s `authentications` relation."""
+  authentications: UserToManyAuthenticationFilter
+
+  """Some related `authentications` exist."""
+  authenticationsExist: Boolean
+
+  """Filter by the object’s `avatarUrl` field."""
+  avatarUrl: StringFilter
+
+  """Filter by the object’s `createdAt` field."""
+  createdAt: DatetimeFilter
+
+  """Filter by the object’s `family` relation."""
+  family: FamilyFilter
+
+  """A related `family` exists."""
+  familyExists: Boolean
+
+  """Filter by the object’s `familyId` field."""
+  familyId: UUIDFilter
+
+  """Filter by the object’s `id` field."""
+  id: UUIDFilter
+
+  """Filter by the object’s `name` field."""
+  name: StringFilter
+
+  """Negates the expression."""
+  not: UserFilter
+
+  """Checks for any expressions in this list."""
+  or: [UserFilter!]
+
+  """Filter by the object’s `person` relation."""
+  person: PersonFilter
+
+  """A related `person` exists."""
+  personExists: Boolean
+
+  """Filter by the object’s `personId` field."""
+  personId: UUIDFilter
+
+  """Filter by the object’s `updatedAt` field."""
+  updatedAt: DatetimeFilter
+}
+
 """Represents an update to a `User`. Fields that are set will be updated."""
 input UserPatch {
   avatarUrl: String
@@ -3114,6 +4147,26 @@ input UserPatch {
   name: String
   personId: UUID
   updatedAt: Datetime
+}
+
+"""
+A filter to be used against many `Authentication` object types. All fields are combined with a logical ‘and.’
+"""
+input UserToManyAuthenticationFilter {
+  """
+  Every related `Authentication` matches the filter criteria. All fields are combined with a logical ‘and.’
+  """
+  every: AuthenticationFilter
+
+  """
+  No related `Authentication` matches the filter criteria. All fields are combined with a logical ‘and.’
+  """
+  none: AuthenticationFilter
+
+  """
+  Some related `Authentication` matches the filter criteria. All fields are combined with a logical ‘and.’
+  """
+  some: AuthenticationFilter
 }
 
 """A connection to a list of `User` values."""

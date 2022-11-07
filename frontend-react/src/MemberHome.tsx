@@ -33,7 +33,7 @@ export default function MemberHome({ familyMembership, doLogout }: MemberHomeTyp
 
       <section className='mt-5 border border-solid-2 border-black bg-gray-100 p-2'>
         <Link className="text-blue-500" to="/me/pic">
-          <div className="flex gap-2"><img width="20" src={familyMembership.person.avatarUrl} /> change my picture</div>
+          <div className="flex gap-2"><img width="20" src={familyMembership?.person?.avatarUrl} /> change my picture</div>
         </Link>
       </section>
 

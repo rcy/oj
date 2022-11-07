@@ -9,6 +9,8 @@ import pg from 'pg';
 import connectPgSimple from 'connect-pg-simple';
 import { postgraphile } from 'postgraphile';
 import pgSimplifyInflector from '@graphile-contrib/pg-simplify-inflector';
+import ConnectionFilterPlugin from "postgraphile-plugin-connection-filter";
+
 import { fileURLToPath } from 'url'
 import { dirname } from 'path'
 
@@ -131,9 +133,16 @@ const postgraphileOptions = Object.assign({
   extendedErrors: ['hint', 'detail', 'errcode'],
   legacyRelations: 'omit',
   sortExport: true,
-  appendPlugins: [pgSimplifyInflector],
-  pgSettings: function (req) {
+  appendPlugins: [pgSimplifyInflector, ConnectionFilterPlugin],
+  graphileBuildOptions: {
+    connectionFilterRelations: true,
+  },
+  pgSettings: async function (req) {
     console.log('**************************************************************** user/membership', req.user, req.headers['x-family-membership-id'])
+    // await new Promise(function (resolve) {
+//   setTimeout(resolve, 500);
+// });
+// 
     return {
       'role': 'visitor',
       'user.id': req.user,

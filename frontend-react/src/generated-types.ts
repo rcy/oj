@@ -62,6 +62,32 @@ export type AuthenticationCondition = {
   userId?: InputMaybe<Scalars['UUID']>;
 };
 
+/** A filter to be used against `Authentication` object types. All fields are combined with a logical ‘and.’ */
+export type AuthenticationFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<AuthenticationFilter>>;
+  /** Filter by the object’s `createdAt` field. */
+  createdAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `details` field. */
+  details?: InputMaybe<JsonFilter>;
+  /** Filter by the object’s `id` field. */
+  id?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `identifier` field. */
+  identifier?: InputMaybe<StringFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<AuthenticationFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<AuthenticationFilter>>;
+  /** Filter by the object’s `service` field. */
+  service?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `updatedAt` field. */
+  updatedAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `user` relation. */
+  user?: InputMaybe<UserFilter>;
+  /** Filter by the object’s `userId` field. */
+  userId?: InputMaybe<UuidFilter>;
+};
+
 /** A connection to a list of `Authentication` values. */
 export type AuthenticationsConnection = {
   __typename?: 'AuthenticationsConnection';
@@ -349,6 +375,32 @@ export type CreateTopicPayload = {
 /** The output of our create `Topic` mutation. */
 export type CreateTopicPayloadTopicEdgeArgs = {
   orderBy?: InputMaybe<Array<TopicsOrderBy>>;
+};
+
+/** A filter to be used against Datetime fields. All fields are combined with a logical ‘and.’ */
+export type DatetimeFilter = {
+  /** Not equal to the specified value, treating null like an ordinary value. */
+  distinctFrom?: InputMaybe<Scalars['Datetime']>;
+  /** Equal to the specified value. */
+  equalTo?: InputMaybe<Scalars['Datetime']>;
+  /** Greater than the specified value. */
+  greaterThan?: InputMaybe<Scalars['Datetime']>;
+  /** Greater than or equal to the specified value. */
+  greaterThanOrEqualTo?: InputMaybe<Scalars['Datetime']>;
+  /** Included in the specified list. */
+  in?: InputMaybe<Array<Scalars['Datetime']>>;
+  /** Is null (if `true` is specified) or is not null (if `false` is specified). */
+  isNull?: InputMaybe<Scalars['Boolean']>;
+  /** Less than the specified value. */
+  lessThan?: InputMaybe<Scalars['Datetime']>;
+  /** Less than or equal to the specified value. */
+  lessThanOrEqualTo?: InputMaybe<Scalars['Datetime']>;
+  /** Equal to the specified value, treating null like an ordinary value. */
+  notDistinctFrom?: InputMaybe<Scalars['Datetime']>;
+  /** Not equal to the specified value. */
+  notEqualTo?: InputMaybe<Scalars['Datetime']>;
+  /** Not included in the specified list. */
+  notIn?: InputMaybe<Array<Scalars['Datetime']>>;
 };
 
 /** All input for the `deleteFamilyMembershipByNodeId` mutation. */
@@ -691,6 +743,7 @@ export type FamilyFamilyMembershipsArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
   before?: InputMaybe<Scalars['Cursor']>;
   condition?: InputMaybe<FamilyMembershipCondition>;
+  filter?: InputMaybe<FamilyMembershipFilter>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
@@ -702,6 +755,7 @@ export type FamilyUsersArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
   before?: InputMaybe<Scalars['Cursor']>;
   condition?: InputMaybe<UserCondition>;
+  filter?: InputMaybe<UserFilter>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
@@ -716,6 +770,30 @@ export type FamilyCondition = {
   id?: InputMaybe<Scalars['UUID']>;
   /** Checks for equality with the object’s `updatedAt` field. */
   updatedAt?: InputMaybe<Scalars['Datetime']>;
+};
+
+/** A filter to be used against `Family` object types. All fields are combined with a logical ‘and.’ */
+export type FamilyFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<FamilyFilter>>;
+  /** Filter by the object’s `createdAt` field. */
+  createdAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `familyMemberships` relation. */
+  familyMemberships?: InputMaybe<FamilyToManyFamilyMembershipFilter>;
+  /** Some related `familyMemberships` exist. */
+  familyMembershipsExist?: InputMaybe<Scalars['Boolean']>;
+  /** Filter by the object’s `id` field. */
+  id?: InputMaybe<UuidFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<FamilyFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<FamilyFilter>>;
+  /** Filter by the object’s `updatedAt` field. */
+  updatedAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `users` relation. */
+  users?: InputMaybe<FamilyToManyUserFilter>;
+  /** Some related `users` exist. */
+  usersExist?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type FamilyMembership = Node & {
@@ -751,6 +829,32 @@ export type FamilyMembershipCondition = {
   role?: InputMaybe<Scalars['String']>;
   /** Checks for equality with the object’s `title` field. */
   title?: InputMaybe<Scalars['String']>;
+};
+
+/** A filter to be used against `FamilyMembership` object types. All fields are combined with a logical ‘and.’ */
+export type FamilyMembershipFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<FamilyMembershipFilter>>;
+  /** Filter by the object’s `createdAt` field. */
+  createdAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `family` relation. */
+  family?: InputMaybe<FamilyFilter>;
+  /** Filter by the object’s `familyId` field. */
+  familyId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `id` field. */
+  id?: InputMaybe<UuidFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<FamilyMembershipFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<FamilyMembershipFilter>>;
+  /** Filter by the object’s `person` relation. */
+  person?: InputMaybe<PersonFilter>;
+  /** Filter by the object’s `personId` field. */
+  personId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `role` field. */
+  role?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `title` field. */
+  title?: InputMaybe<StringFilter>;
 };
 
 /** An input for mutations affecting `FamilyMembership` */
@@ -833,6 +937,20 @@ export type FamilyRoleCondition = {
   name?: InputMaybe<Scalars['String']>;
 };
 
+/** A filter to be used against `FamilyRole` object types. All fields are combined with a logical ‘and.’ */
+export type FamilyRoleFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<FamilyRoleFilter>>;
+  /** Filter by the object’s `id` field. */
+  id?: InputMaybe<IntFilter>;
+  /** Filter by the object’s `name` field. */
+  name?: InputMaybe<StringFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<FamilyRoleFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<FamilyRoleFilter>>;
+};
+
 /** A connection to a list of `FamilyRole` values. */
 export type FamilyRolesConnection = {
   __typename?: 'FamilyRolesConnection';
@@ -866,6 +984,52 @@ export enum FamilyRolesOrderBy {
   PrimaryKeyDesc = 'PRIMARY_KEY_DESC'
 }
 
+/** A filter to be used against many `FamilyMembership` object types. All fields are combined with a logical ‘and.’ */
+export type FamilyToManyFamilyMembershipFilter = {
+  /** Every related `FamilyMembership` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<FamilyMembershipFilter>;
+  /** No related `FamilyMembership` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<FamilyMembershipFilter>;
+  /** Some related `FamilyMembership` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<FamilyMembershipFilter>;
+};
+
+/** A filter to be used against many `User` object types. All fields are combined with a logical ‘and.’ */
+export type FamilyToManyUserFilter = {
+  /** Every related `User` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<UserFilter>;
+  /** No related `User` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<UserFilter>;
+  /** Some related `User` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<UserFilter>;
+};
+
+/** A filter to be used against Int fields. All fields are combined with a logical ‘and.’ */
+export type IntFilter = {
+  /** Not equal to the specified value, treating null like an ordinary value. */
+  distinctFrom?: InputMaybe<Scalars['Int']>;
+  /** Equal to the specified value. */
+  equalTo?: InputMaybe<Scalars['Int']>;
+  /** Greater than the specified value. */
+  greaterThan?: InputMaybe<Scalars['Int']>;
+  /** Greater than or equal to the specified value. */
+  greaterThanOrEqualTo?: InputMaybe<Scalars['Int']>;
+  /** Included in the specified list. */
+  in?: InputMaybe<Array<Scalars['Int']>>;
+  /** Is null (if `true` is specified) or is not null (if `false` is specified). */
+  isNull?: InputMaybe<Scalars['Boolean']>;
+  /** Less than the specified value. */
+  lessThan?: InputMaybe<Scalars['Int']>;
+  /** Less than or equal to the specified value. */
+  lessThanOrEqualTo?: InputMaybe<Scalars['Int']>;
+  /** Equal to the specified value, treating null like an ordinary value. */
+  notDistinctFrom?: InputMaybe<Scalars['Int']>;
+  /** Not equal to the specified value. */
+  notEqualTo?: InputMaybe<Scalars['Int']>;
+  /** Not included in the specified list. */
+  notIn?: InputMaybe<Array<Scalars['Int']>>;
+};
+
 export type Interest = Node & {
   __typename?: 'Interest';
   createdAt: Scalars['Datetime'];
@@ -896,6 +1060,34 @@ export type InterestCondition = {
   topicId?: InputMaybe<Scalars['UUID']>;
   /** Checks for equality with the object’s `updatedAt` field. */
   updatedAt?: InputMaybe<Scalars['Datetime']>;
+};
+
+/** A filter to be used against `Interest` object types. All fields are combined with a logical ‘and.’ */
+export type InterestFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<InterestFilter>>;
+  /** Filter by the object’s `createdAt` field. */
+  createdAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `id` field. */
+  id?: InputMaybe<UuidFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<InterestFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<InterestFilter>>;
+  /** Filter by the object’s `person` relation. */
+  person?: InputMaybe<PersonFilter>;
+  /** A related `person` exists. */
+  personExists?: InputMaybe<Scalars['Boolean']>;
+  /** Filter by the object’s `personId` field. */
+  personId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `topic` relation. */
+  topic?: InputMaybe<TopicFilter>;
+  /** A related `topic` exists. */
+  topicExists?: InputMaybe<Scalars['Boolean']>;
+  /** Filter by the object’s `topicId` field. */
+  topicId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `updatedAt` field. */
+  updatedAt?: InputMaybe<DatetimeFilter>;
 };
 
 /** An input for mutations affecting `Interest` */
@@ -954,6 +1146,42 @@ export enum InterestsOrderBy {
   UpdatedAtAsc = 'UPDATED_AT_ASC',
   UpdatedAtDesc = 'UPDATED_AT_DESC'
 }
+
+/** A filter to be used against JSON fields. All fields are combined with a logical ‘and.’ */
+export type JsonFilter = {
+  /** Contained by the specified JSON. */
+  containedBy?: InputMaybe<Scalars['JSON']>;
+  /** Contains the specified JSON. */
+  contains?: InputMaybe<Scalars['JSON']>;
+  /** Contains all of the specified keys. */
+  containsAllKeys?: InputMaybe<Array<Scalars['String']>>;
+  /** Contains any of the specified keys. */
+  containsAnyKeys?: InputMaybe<Array<Scalars['String']>>;
+  /** Contains the specified key. */
+  containsKey?: InputMaybe<Scalars['String']>;
+  /** Not equal to the specified value, treating null like an ordinary value. */
+  distinctFrom?: InputMaybe<Scalars['JSON']>;
+  /** Equal to the specified value. */
+  equalTo?: InputMaybe<Scalars['JSON']>;
+  /** Greater than the specified value. */
+  greaterThan?: InputMaybe<Scalars['JSON']>;
+  /** Greater than or equal to the specified value. */
+  greaterThanOrEqualTo?: InputMaybe<Scalars['JSON']>;
+  /** Included in the specified list. */
+  in?: InputMaybe<Array<Scalars['JSON']>>;
+  /** Is null (if `true` is specified) or is not null (if `false` is specified). */
+  isNull?: InputMaybe<Scalars['Boolean']>;
+  /** Less than the specified value. */
+  lessThan?: InputMaybe<Scalars['JSON']>;
+  /** Less than or equal to the specified value. */
+  lessThanOrEqualTo?: InputMaybe<Scalars['JSON']>;
+  /** Equal to the specified value, treating null like an ordinary value. */
+  notDistinctFrom?: InputMaybe<Scalars['JSON']>;
+  /** Not equal to the specified value. */
+  notEqualTo?: InputMaybe<Scalars['JSON']>;
+  /** Not included in the specified list. */
+  notIn?: InputMaybe<Array<Scalars['JSON']>>;
+};
 
 /** The root mutation type which contains root level fields which mutate data. */
 export type Mutation = {
@@ -1336,6 +1564,7 @@ export type PersonFamilyMembershipsArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
   before?: InputMaybe<Scalars['Cursor']>;
   condition?: InputMaybe<FamilyMembershipCondition>;
+  filter?: InputMaybe<FamilyMembershipFilter>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
@@ -1347,6 +1576,7 @@ export type PersonInterestsArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
   before?: InputMaybe<Scalars['Cursor']>;
   condition?: InputMaybe<InterestCondition>;
+  filter?: InputMaybe<InterestFilter>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
@@ -1358,6 +1588,7 @@ export type PersonSpaceMembershipsArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
   before?: InputMaybe<Scalars['Cursor']>;
   condition?: InputMaybe<SpaceMembershipCondition>;
+  filter?: InputMaybe<SpaceMembershipFilter>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
@@ -1378,6 +1609,42 @@ export type PersonCondition = {
   updatedAt?: InputMaybe<Scalars['Datetime']>;
 };
 
+/** A filter to be used against `Person` object types. All fields are combined with a logical ‘and.’ */
+export type PersonFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<PersonFilter>>;
+  /** Filter by the object’s `avatarUrl` field. */
+  avatarUrl?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `createdAt` field. */
+  createdAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `familyMemberships` relation. */
+  familyMemberships?: InputMaybe<PersonToManyFamilyMembershipFilter>;
+  /** Some related `familyMemberships` exist. */
+  familyMembershipsExist?: InputMaybe<Scalars['Boolean']>;
+  /** Filter by the object’s `id` field. */
+  id?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `interests` relation. */
+  interests?: InputMaybe<PersonToManyInterestFilter>;
+  /** Some related `interests` exist. */
+  interestsExist?: InputMaybe<Scalars['Boolean']>;
+  /** Filter by the object’s `name` field. */
+  name?: InputMaybe<StringFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<PersonFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<PersonFilter>>;
+  /** Filter by the object’s `spaceMemberships` relation. */
+  spaceMemberships?: InputMaybe<PersonToManySpaceMembershipFilter>;
+  /** Some related `spaceMemberships` exist. */
+  spaceMembershipsExist?: InputMaybe<Scalars['Boolean']>;
+  /** Filter by the object’s `updatedAt` field. */
+  updatedAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `user` relation. */
+  user?: InputMaybe<UserFilter>;
+  /** A related `user` exists. */
+  userExists?: InputMaybe<Scalars['Boolean']>;
+};
+
 /** An input for mutations affecting `Person` */
 export type PersonInput = {
   avatarUrl?: InputMaybe<Scalars['String']>;
@@ -1394,6 +1661,36 @@ export type PersonPatch = {
   id?: InputMaybe<Scalars['UUID']>;
   name?: InputMaybe<Scalars['String']>;
   updatedAt?: InputMaybe<Scalars['Datetime']>;
+};
+
+/** A filter to be used against many `FamilyMembership` object types. All fields are combined with a logical ‘and.’ */
+export type PersonToManyFamilyMembershipFilter = {
+  /** Every related `FamilyMembership` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<FamilyMembershipFilter>;
+  /** No related `FamilyMembership` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<FamilyMembershipFilter>;
+  /** Some related `FamilyMembership` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<FamilyMembershipFilter>;
+};
+
+/** A filter to be used against many `Interest` object types. All fields are combined with a logical ‘and.’ */
+export type PersonToManyInterestFilter = {
+  /** Every related `Interest` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<InterestFilter>;
+  /** No related `Interest` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<InterestFilter>;
+  /** Some related `Interest` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<InterestFilter>;
+};
+
+/** A filter to be used against many `SpaceMembership` object types. All fields are combined with a logical ‘and.’ */
+export type PersonToManySpaceMembershipFilter = {
+  /** Every related `SpaceMembership` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<SpaceMembershipFilter>;
+  /** No related `SpaceMembership` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<SpaceMembershipFilter>;
+  /** Some related `SpaceMembership` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<SpaceMembershipFilter>;
 };
 
 export type Post = Node & {
@@ -1426,6 +1723,32 @@ export type PostCondition = {
   spaceId?: InputMaybe<Scalars['UUID']>;
   /** Checks for equality with the object’s `updatedAt` field. */
   updatedAt?: InputMaybe<Scalars['Datetime']>;
+};
+
+/** A filter to be used against `Post` object types. All fields are combined with a logical ‘and.’ */
+export type PostFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<PostFilter>>;
+  /** Filter by the object’s `body` field. */
+  body?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `createdAt` field. */
+  createdAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `id` field. */
+  id?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `membership` relation. */
+  membership?: InputMaybe<SpaceMembershipFilter>;
+  /** Filter by the object’s `membershipId` field. */
+  membershipId?: InputMaybe<UuidFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<PostFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<PostFilter>>;
+  /** Filter by the object’s `space` relation. */
+  space?: InputMaybe<SpaceFilter>;
+  /** Filter by the object’s `spaceId` field. */
+  spaceId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `updatedAt` field. */
+  updatedAt?: InputMaybe<DatetimeFilter>;
 };
 
 /** All input for the `postMessage` mutation. */
@@ -1607,6 +1930,7 @@ export type QueryAuthenticationsArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
   before?: InputMaybe<Scalars['Cursor']>;
   condition?: InputMaybe<AuthenticationCondition>;
+  filter?: InputMaybe<AuthenticationFilter>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
@@ -1619,6 +1943,7 @@ export type QueryFamiliesArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
   before?: InputMaybe<Scalars['Cursor']>;
   condition?: InputMaybe<FamilyCondition>;
+  filter?: InputMaybe<FamilyFilter>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
@@ -1655,6 +1980,7 @@ export type QueryFamilyMembershipsArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
   before?: InputMaybe<Scalars['Cursor']>;
   condition?: InputMaybe<FamilyMembershipCondition>;
+  filter?: InputMaybe<FamilyMembershipFilter>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
@@ -1685,6 +2011,7 @@ export type QueryFamilyRolesArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
   before?: InputMaybe<Scalars['Cursor']>;
   condition?: InputMaybe<FamilyRoleCondition>;
+  filter?: InputMaybe<FamilyRoleFilter>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
@@ -1709,6 +2036,7 @@ export type QueryInterestsArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
   before?: InputMaybe<Scalars['Cursor']>;
   condition?: InputMaybe<InterestCondition>;
+  filter?: InputMaybe<InterestFilter>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
@@ -1727,6 +2055,7 @@ export type QueryPeopleArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
   before?: InputMaybe<Scalars['Cursor']>;
   condition?: InputMaybe<PersonCondition>;
+  filter?: InputMaybe<PersonFilter>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
@@ -1763,6 +2092,7 @@ export type QueryPostsArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
   before?: InputMaybe<Scalars['Cursor']>;
   condition?: InputMaybe<PostCondition>;
+  filter?: InputMaybe<PostFilter>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
@@ -1806,6 +2136,7 @@ export type QuerySpaceMembershipsArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
   before?: InputMaybe<Scalars['Cursor']>;
   condition?: InputMaybe<SpaceMembershipCondition>;
+  filter?: InputMaybe<SpaceMembershipFilter>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
@@ -1818,6 +2149,7 @@ export type QuerySpacesArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
   before?: InputMaybe<Scalars['Cursor']>;
   condition?: InputMaybe<SpaceCondition>;
+  filter?: InputMaybe<SpaceFilter>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
@@ -1842,6 +2174,7 @@ export type QueryTopicsArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
   before?: InputMaybe<Scalars['Cursor']>;
   condition?: InputMaybe<TopicCondition>;
+  filter?: InputMaybe<TopicFilter>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
@@ -1872,6 +2205,7 @@ export type QueryUsersArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
   before?: InputMaybe<Scalars['Cursor']>;
   condition?: InputMaybe<UserCondition>;
+  filter?: InputMaybe<UserFilter>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
@@ -1898,6 +2232,7 @@ export type SpacePostsArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
   before?: InputMaybe<Scalars['Cursor']>;
   condition?: InputMaybe<PostCondition>;
+  filter?: InputMaybe<PostFilter>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
@@ -1909,6 +2244,7 @@ export type SpaceSpaceMembershipsArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
   before?: InputMaybe<Scalars['Cursor']>;
   condition?: InputMaybe<SpaceMembershipCondition>;
+  filter?: InputMaybe<SpaceMembershipFilter>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
@@ -1927,6 +2263,34 @@ export type SpaceCondition = {
   name?: InputMaybe<Scalars['String']>;
   /** Checks for equality with the object’s `updatedAt` field. */
   updatedAt?: InputMaybe<Scalars['Datetime']>;
+};
+
+/** A filter to be used against `Space` object types. All fields are combined with a logical ‘and.’ */
+export type SpaceFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<SpaceFilter>>;
+  /** Filter by the object’s `createdAt` field. */
+  createdAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `description` field. */
+  description?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `id` field. */
+  id?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `name` field. */
+  name?: InputMaybe<StringFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<SpaceFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<SpaceFilter>>;
+  /** Filter by the object’s `posts` relation. */
+  posts?: InputMaybe<SpaceToManyPostFilter>;
+  /** Some related `posts` exist. */
+  postsExist?: InputMaybe<Scalars['Boolean']>;
+  /** Filter by the object’s `spaceMemberships` relation. */
+  spaceMemberships?: InputMaybe<SpaceToManySpaceMembershipFilter>;
+  /** Some related `spaceMemberships` exist. */
+  spaceMembershipsExist?: InputMaybe<Scalars['Boolean']>;
+  /** Filter by the object’s `updatedAt` field. */
+  updatedAt?: InputMaybe<DatetimeFilter>;
 };
 
 /** An input for mutations affecting `Space` */
@@ -1961,6 +2325,7 @@ export type SpaceMembershipPostsByMembershipIdArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
   before?: InputMaybe<Scalars['Cursor']>;
   condition?: InputMaybe<PostCondition>;
+  filter?: InputMaybe<PostFilter>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
@@ -1986,6 +2351,36 @@ export type SpaceMembershipCondition = {
   updatedAt?: InputMaybe<Scalars['Datetime']>;
 };
 
+/** A filter to be used against `SpaceMembership` object types. All fields are combined with a logical ‘and.’ */
+export type SpaceMembershipFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<SpaceMembershipFilter>>;
+  /** Filter by the object’s `createdAt` field. */
+  createdAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `id` field. */
+  id?: InputMaybe<UuidFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<SpaceMembershipFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<SpaceMembershipFilter>>;
+  /** Filter by the object’s `person` relation. */
+  person?: InputMaybe<PersonFilter>;
+  /** Filter by the object’s `personId` field. */
+  personId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `postsByMembershipId` relation. */
+  postsByMembershipId?: InputMaybe<SpaceMembershipToManyPostFilter>;
+  /** Some related `postsByMembershipId` exist. */
+  postsByMembershipIdExist?: InputMaybe<Scalars['Boolean']>;
+  /** Filter by the object’s `roleId` field. */
+  roleId?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `space` relation. */
+  space?: InputMaybe<SpaceFilter>;
+  /** Filter by the object’s `spaceId` field. */
+  spaceId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `updatedAt` field. */
+  updatedAt?: InputMaybe<DatetimeFilter>;
+};
+
 /** An input for mutations affecting `SpaceMembership` */
 export type SpaceMembershipInput = {
   createdAt?: InputMaybe<Scalars['Datetime']>;
@@ -2004,6 +2399,16 @@ export type SpaceMembershipPatch = {
   roleId?: InputMaybe<Scalars['String']>;
   spaceId?: InputMaybe<Scalars['UUID']>;
   updatedAt?: InputMaybe<Scalars['Datetime']>;
+};
+
+/** A filter to be used against many `Post` object types. All fields are combined with a logical ‘and.’ */
+export type SpaceMembershipToManyPostFilter = {
+  /** Every related `Post` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<PostFilter>;
+  /** No related `Post` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<PostFilter>;
+  /** Some related `Post` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<PostFilter>;
 };
 
 /** A connection to a list of `SpaceMembership` values. */
@@ -2056,6 +2461,26 @@ export type SpacePatch = {
   updatedAt?: InputMaybe<Scalars['Datetime']>;
 };
 
+/** A filter to be used against many `Post` object types. All fields are combined with a logical ‘and.’ */
+export type SpaceToManyPostFilter = {
+  /** Every related `Post` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<PostFilter>;
+  /** No related `Post` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<PostFilter>;
+  /** Some related `Post` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<PostFilter>;
+};
+
+/** A filter to be used against many `SpaceMembership` object types. All fields are combined with a logical ‘and.’ */
+export type SpaceToManySpaceMembershipFilter = {
+  /** Every related `SpaceMembership` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<SpaceMembershipFilter>;
+  /** No related `SpaceMembership` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<SpaceMembershipFilter>;
+  /** Some related `SpaceMembership` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<SpaceMembershipFilter>;
+};
+
 /** A connection to a list of `Space` values. */
 export type SpacesConnection = {
   __typename?: 'SpacesConnection';
@@ -2095,6 +2520,84 @@ export enum SpacesOrderBy {
   UpdatedAtDesc = 'UPDATED_AT_DESC'
 }
 
+/** A filter to be used against String fields. All fields are combined with a logical ‘and.’ */
+export type StringFilter = {
+  /** Not equal to the specified value, treating null like an ordinary value. */
+  distinctFrom?: InputMaybe<Scalars['String']>;
+  /** Not equal to the specified value, treating null like an ordinary value (case-insensitive). */
+  distinctFromInsensitive?: InputMaybe<Scalars['String']>;
+  /** Ends with the specified string (case-sensitive). */
+  endsWith?: InputMaybe<Scalars['String']>;
+  /** Ends with the specified string (case-insensitive). */
+  endsWithInsensitive?: InputMaybe<Scalars['String']>;
+  /** Equal to the specified value. */
+  equalTo?: InputMaybe<Scalars['String']>;
+  /** Equal to the specified value (case-insensitive). */
+  equalToInsensitive?: InputMaybe<Scalars['String']>;
+  /** Greater than the specified value. */
+  greaterThan?: InputMaybe<Scalars['String']>;
+  /** Greater than the specified value (case-insensitive). */
+  greaterThanInsensitive?: InputMaybe<Scalars['String']>;
+  /** Greater than or equal to the specified value. */
+  greaterThanOrEqualTo?: InputMaybe<Scalars['String']>;
+  /** Greater than or equal to the specified value (case-insensitive). */
+  greaterThanOrEqualToInsensitive?: InputMaybe<Scalars['String']>;
+  /** Included in the specified list. */
+  in?: InputMaybe<Array<Scalars['String']>>;
+  /** Included in the specified list (case-insensitive). */
+  inInsensitive?: InputMaybe<Array<Scalars['String']>>;
+  /** Contains the specified string (case-sensitive). */
+  includes?: InputMaybe<Scalars['String']>;
+  /** Contains the specified string (case-insensitive). */
+  includesInsensitive?: InputMaybe<Scalars['String']>;
+  /** Is null (if `true` is specified) or is not null (if `false` is specified). */
+  isNull?: InputMaybe<Scalars['Boolean']>;
+  /** Less than the specified value. */
+  lessThan?: InputMaybe<Scalars['String']>;
+  /** Less than the specified value (case-insensitive). */
+  lessThanInsensitive?: InputMaybe<Scalars['String']>;
+  /** Less than or equal to the specified value. */
+  lessThanOrEqualTo?: InputMaybe<Scalars['String']>;
+  /** Less than or equal to the specified value (case-insensitive). */
+  lessThanOrEqualToInsensitive?: InputMaybe<Scalars['String']>;
+  /** Matches the specified pattern (case-sensitive). An underscore (_) matches any single character; a percent sign (%) matches any sequence of zero or more characters. */
+  like?: InputMaybe<Scalars['String']>;
+  /** Matches the specified pattern (case-insensitive). An underscore (_) matches any single character; a percent sign (%) matches any sequence of zero or more characters. */
+  likeInsensitive?: InputMaybe<Scalars['String']>;
+  /** Equal to the specified value, treating null like an ordinary value. */
+  notDistinctFrom?: InputMaybe<Scalars['String']>;
+  /** Equal to the specified value, treating null like an ordinary value (case-insensitive). */
+  notDistinctFromInsensitive?: InputMaybe<Scalars['String']>;
+  /** Does not end with the specified string (case-sensitive). */
+  notEndsWith?: InputMaybe<Scalars['String']>;
+  /** Does not end with the specified string (case-insensitive). */
+  notEndsWithInsensitive?: InputMaybe<Scalars['String']>;
+  /** Not equal to the specified value. */
+  notEqualTo?: InputMaybe<Scalars['String']>;
+  /** Not equal to the specified value (case-insensitive). */
+  notEqualToInsensitive?: InputMaybe<Scalars['String']>;
+  /** Not included in the specified list. */
+  notIn?: InputMaybe<Array<Scalars['String']>>;
+  /** Not included in the specified list (case-insensitive). */
+  notInInsensitive?: InputMaybe<Array<Scalars['String']>>;
+  /** Does not contain the specified string (case-sensitive). */
+  notIncludes?: InputMaybe<Scalars['String']>;
+  /** Does not contain the specified string (case-insensitive). */
+  notIncludesInsensitive?: InputMaybe<Scalars['String']>;
+  /** Does not match the specified pattern (case-sensitive). An underscore (_) matches any single character; a percent sign (%) matches any sequence of zero or more characters. */
+  notLike?: InputMaybe<Scalars['String']>;
+  /** Does not match the specified pattern (case-insensitive). An underscore (_) matches any single character; a percent sign (%) matches any sequence of zero or more characters. */
+  notLikeInsensitive?: InputMaybe<Scalars['String']>;
+  /** Does not start with the specified string (case-sensitive). */
+  notStartsWith?: InputMaybe<Scalars['String']>;
+  /** Does not start with the specified string (case-insensitive). */
+  notStartsWithInsensitive?: InputMaybe<Scalars['String']>;
+  /** Starts with the specified string (case-sensitive). */
+  startsWith?: InputMaybe<Scalars['String']>;
+  /** Starts with the specified string (case-insensitive). */
+  startsWithInsensitive?: InputMaybe<Scalars['String']>;
+};
+
 export type Topic = Node & {
   __typename?: 'Topic';
   createdAt: Scalars['Datetime'];
@@ -2112,6 +2615,7 @@ export type TopicInterestsArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
   before?: InputMaybe<Scalars['Cursor']>;
   condition?: InputMaybe<InterestCondition>;
+  filter?: InputMaybe<InterestFilter>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
@@ -2130,6 +2634,28 @@ export type TopicCondition = {
   updatedAt?: InputMaybe<Scalars['Datetime']>;
 };
 
+/** A filter to be used against `Topic` object types. All fields are combined with a logical ‘and.’ */
+export type TopicFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<TopicFilter>>;
+  /** Filter by the object’s `createdAt` field. */
+  createdAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `id` field. */
+  id?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `interests` relation. */
+  interests?: InputMaybe<TopicToManyInterestFilter>;
+  /** Some related `interests` exist. */
+  interestsExist?: InputMaybe<Scalars['Boolean']>;
+  /** Filter by the object’s `name` field. */
+  name?: InputMaybe<StringFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<TopicFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<TopicFilter>>;
+  /** Filter by the object’s `updatedAt` field. */
+  updatedAt?: InputMaybe<DatetimeFilter>;
+};
+
 /** An input for mutations affecting `Topic` */
 export type TopicInput = {
   createdAt?: InputMaybe<Scalars['Datetime']>;
@@ -2144,6 +2670,16 @@ export type TopicPatch = {
   id?: InputMaybe<Scalars['UUID']>;
   name?: InputMaybe<Scalars['String']>;
   updatedAt?: InputMaybe<Scalars['Datetime']>;
+};
+
+/** A filter to be used against many `Interest` object types. All fields are combined with a logical ‘and.’ */
+export type TopicToManyInterestFilter = {
+  /** Every related `Interest` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<InterestFilter>;
+  /** No related `Interest` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<InterestFilter>;
+  /** Some related `Interest` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<InterestFilter>;
 };
 
 /** A connection to a list of `Topic` values. */
@@ -2182,6 +2718,32 @@ export enum TopicsOrderBy {
   UpdatedAtAsc = 'UPDATED_AT_ASC',
   UpdatedAtDesc = 'UPDATED_AT_DESC'
 }
+
+/** A filter to be used against UUID fields. All fields are combined with a logical ‘and.’ */
+export type UuidFilter = {
+  /** Not equal to the specified value, treating null like an ordinary value. */
+  distinctFrom?: InputMaybe<Scalars['UUID']>;
+  /** Equal to the specified value. */
+  equalTo?: InputMaybe<Scalars['UUID']>;
+  /** Greater than the specified value. */
+  greaterThan?: InputMaybe<Scalars['UUID']>;
+  /** Greater than or equal to the specified value. */
+  greaterThanOrEqualTo?: InputMaybe<Scalars['UUID']>;
+  /** Included in the specified list. */
+  in?: InputMaybe<Array<Scalars['UUID']>>;
+  /** Is null (if `true` is specified) or is not null (if `false` is specified). */
+  isNull?: InputMaybe<Scalars['Boolean']>;
+  /** Less than the specified value. */
+  lessThan?: InputMaybe<Scalars['UUID']>;
+  /** Less than or equal to the specified value. */
+  lessThanOrEqualTo?: InputMaybe<Scalars['UUID']>;
+  /** Equal to the specified value, treating null like an ordinary value. */
+  notDistinctFrom?: InputMaybe<Scalars['UUID']>;
+  /** Not equal to the specified value. */
+  notEqualTo?: InputMaybe<Scalars['UUID']>;
+  /** Not included in the specified list. */
+  notIn?: InputMaybe<Array<Scalars['UUID']>>;
+};
 
 /** All input for the `updateFamilyMembershipByNodeId` mutation. */
 export type UpdateFamilyMembershipByNodeIdInput = {
@@ -2577,6 +3139,7 @@ export type UserAuthenticationsArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
   before?: InputMaybe<Scalars['Cursor']>;
   condition?: InputMaybe<AuthenticationCondition>;
+  filter?: InputMaybe<AuthenticationFilter>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
@@ -2601,6 +3164,42 @@ export type UserCondition = {
   updatedAt?: InputMaybe<Scalars['Datetime']>;
 };
 
+/** A filter to be used against `User` object types. All fields are combined with a logical ‘and.’ */
+export type UserFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<UserFilter>>;
+  /** Filter by the object’s `authentications` relation. */
+  authentications?: InputMaybe<UserToManyAuthenticationFilter>;
+  /** Some related `authentications` exist. */
+  authenticationsExist?: InputMaybe<Scalars['Boolean']>;
+  /** Filter by the object’s `avatarUrl` field. */
+  avatarUrl?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `createdAt` field. */
+  createdAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `family` relation. */
+  family?: InputMaybe<FamilyFilter>;
+  /** A related `family` exists. */
+  familyExists?: InputMaybe<Scalars['Boolean']>;
+  /** Filter by the object’s `familyId` field. */
+  familyId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `id` field. */
+  id?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `name` field. */
+  name?: InputMaybe<StringFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<UserFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<UserFilter>>;
+  /** Filter by the object’s `person` relation. */
+  person?: InputMaybe<PersonFilter>;
+  /** A related `person` exists. */
+  personExists?: InputMaybe<Scalars['Boolean']>;
+  /** Filter by the object’s `personId` field. */
+  personId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `updatedAt` field. */
+  updatedAt?: InputMaybe<DatetimeFilter>;
+};
+
 /** Represents an update to a `User`. Fields that are set will be updated. */
 export type UserPatch = {
   avatarUrl?: InputMaybe<Scalars['String']>;
@@ -2610,6 +3209,16 @@ export type UserPatch = {
   name?: InputMaybe<Scalars['String']>;
   personId?: InputMaybe<Scalars['UUID']>;
   updatedAt?: InputMaybe<Scalars['Datetime']>;
+};
+
+/** A filter to be used against many `Authentication` object types. All fields are combined with a logical ‘and.’ */
+export type UserToManyAuthenticationFilter = {
+  /** Every related `Authentication` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<AuthenticationFilter>;
+  /** No related `Authentication` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<AuthenticationFilter>;
+  /** Some related `Authentication` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<AuthenticationFilter>;
 };
 
 /** A connection to a list of `User` values. */
@@ -2675,7 +3284,7 @@ export type CreateSpaceMutationVariables = Exact<{
 }>;
 
 
-export type CreateSpaceMutation = { __typename?: 'Mutation', createSpace?: { __typename?: 'CreateSpacePayload', clientMutationId?: string | null } | null };
+export type CreateSpaceMutation = { __typename?: 'Mutation', createSpace?: { __typename?: 'CreateSpacePayload', space?: { __typename?: 'Space', id: any } | null } | null };
 
 export type CurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -2752,6 +3361,22 @@ export type SpacePostsQueryVariables = Exact<{
 
 
 export type SpacePostsQuery = { __typename?: 'Query', posts?: { __typename?: 'PostsConnection', edges: Array<{ __typename?: 'PostsEdge', node: { __typename?: 'Post', id: any, body: string, membership?: { __typename?: 'SpaceMembership', id: any, person?: { __typename?: 'Person', id: any, name: string, avatarUrl: string } | null } | null } }> } | null };
+
+export type CreateSpaceMembershipMutationVariables = Exact<{
+  spaceId: Scalars['UUID'];
+  personId: Scalars['UUID'];
+}>;
+
+
+export type CreateSpaceMembershipMutation = { __typename?: 'Mutation', createSpaceMembership?: { __typename?: 'CreateSpaceMembershipPayload', clientMutationId?: string | null } | null };
+
+export type SharedSpacesQueryVariables = Exact<{
+  person1: Scalars['UUID'];
+  person2: Scalars['UUID'];
+}>;
+
+
+export type SharedSpacesQuery = { __typename?: 'Query', spaces?: { __typename?: 'SpacesConnection', edges: Array<{ __typename?: 'SpacesEdge', node: { __typename?: 'Space', id: any, name: string } }> } | null };
 
 export type PersonPageDataQueryVariables = Exact<{
   id: Scalars['UUID'];
@@ -2851,7 +3476,9 @@ export type CreateNewFamilyMemberMutationOptions = Apollo.BaseMutationOptions<Cr
 export const CreateSpaceDocument = gql`
     mutation CreateSpace($name: String!) {
   createSpace(input: {space: {name: $name}}) {
-    clientMutationId
+    space {
+      id
+    }
   }
 }
     `;
@@ -3329,6 +3956,85 @@ export function useSpacePostsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions
 export type SpacePostsQueryHookResult = ReturnType<typeof useSpacePostsQuery>;
 export type SpacePostsLazyQueryHookResult = ReturnType<typeof useSpacePostsLazyQuery>;
 export type SpacePostsQueryResult = Apollo.QueryResult<SpacePostsQuery, SpacePostsQueryVariables>;
+export const CreateSpaceMembershipDocument = gql`
+    mutation CreateSpaceMembership($spaceId: UUID!, $personId: UUID!) {
+  createSpaceMembership(
+    input: {spaceMembership: {personId: $personId, spaceId: $spaceId, roleId: "member"}}
+  ) {
+    clientMutationId
+  }
+}
+    `;
+export type CreateSpaceMembershipMutationFn = Apollo.MutationFunction<CreateSpaceMembershipMutation, CreateSpaceMembershipMutationVariables>;
+
+/**
+ * __useCreateSpaceMembershipMutation__
+ *
+ * To run a mutation, you first call `useCreateSpaceMembershipMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateSpaceMembershipMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createSpaceMembershipMutation, { data, loading, error }] = useCreateSpaceMembershipMutation({
+ *   variables: {
+ *      spaceId: // value for 'spaceId'
+ *      personId: // value for 'personId'
+ *   },
+ * });
+ */
+export function useCreateSpaceMembershipMutation(baseOptions?: Apollo.MutationHookOptions<CreateSpaceMembershipMutation, CreateSpaceMembershipMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateSpaceMembershipMutation, CreateSpaceMembershipMutationVariables>(CreateSpaceMembershipDocument, options);
+      }
+export type CreateSpaceMembershipMutationHookResult = ReturnType<typeof useCreateSpaceMembershipMutation>;
+export type CreateSpaceMembershipMutationResult = Apollo.MutationResult<CreateSpaceMembershipMutation>;
+export type CreateSpaceMembershipMutationOptions = Apollo.BaseMutationOptions<CreateSpaceMembershipMutation, CreateSpaceMembershipMutationVariables>;
+export const SharedSpacesDocument = gql`
+    query SharedSpaces($person1: UUID!, $person2: UUID!) {
+  spaces(
+    filter: {and: [{spaceMemberships: {some: {personId: {equalTo: $person1}}}}, {spaceMemberships: {some: {personId: {equalTo: $person2}}}}]}
+  ) {
+    edges {
+      node {
+        id
+        name
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useSharedSpacesQuery__
+ *
+ * To run a query within a React component, call `useSharedSpacesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSharedSpacesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSharedSpacesQuery({
+ *   variables: {
+ *      person1: // value for 'person1'
+ *      person2: // value for 'person2'
+ *   },
+ * });
+ */
+export function useSharedSpacesQuery(baseOptions: Apollo.QueryHookOptions<SharedSpacesQuery, SharedSpacesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<SharedSpacesQuery, SharedSpacesQueryVariables>(SharedSpacesDocument, options);
+      }
+export function useSharedSpacesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SharedSpacesQuery, SharedSpacesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<SharedSpacesQuery, SharedSpacesQueryVariables>(SharedSpacesDocument, options);
+        }
+export type SharedSpacesQueryHookResult = ReturnType<typeof useSharedSpacesQuery>;
+export type SharedSpacesLazyQueryHookResult = ReturnType<typeof useSharedSpacesLazyQuery>;
+export type SharedSpacesQueryResult = Apollo.QueryResult<SharedSpacesQuery, SharedSpacesQueryVariables>;
 export const PersonPageDataDocument = gql`
     query PersonPageData($id: UUID!) {
   person(id: $id) {

@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "postgraphile-plugin-connection-filter": "^2.3.0"
+  }
+}

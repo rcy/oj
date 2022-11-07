@@ -1,5 +1,7 @@
 mutation CreateSpace($name: String!) {
   createSpace(input: {space: {name: $name}}) {
-    clientMutationId
+    space {
+      id
+    }
   }
 }
