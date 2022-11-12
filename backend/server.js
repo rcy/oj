@@ -123,6 +123,8 @@ app.get('/auth/logout', function(req, res, next){
   });
 });
 
+const delay = 0;
+
 // https://www.graphile.org/postgraphile/usage-library/
 const postgraphileOptions = Object.assign({
   //subscriptions: true,
@@ -139,10 +141,13 @@ const postgraphileOptions = Object.assign({
   },
   pgSettings: async function (req) {
     console.log('**************************************************************** user/membership', req.user, req.headers['x-family-membership-id'])
-    // await new Promise(function (resolve) {
-//   setTimeout(resolve, 500);
-// });
-// 
+
+    if (delay) {
+      await new Promise(function (resolve) {
+        setTimeout(resolve, delay);
+      });
+    }
+
     return {
       'role': 'visitor',
       'user.id': req.user,
