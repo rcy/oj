@@ -1,5 +1,5 @@
 import { useCurrentFamilyMembershipQuery } from './generated-types';
-import { Link, Navigate, NavLink } from 'react-router-dom';
+import { Navigate, NavLink } from 'react-router-dom';
 import { Routes, Route } from "react-router-dom";
 import { PersonIdContext } from './contexts'
 import { ReactNode } from 'react';
@@ -36,7 +36,7 @@ export default function MemberLayout({ doLogout }: MemberLayoutType) {
           <aside className="flex-none flex flex-col items-center w-21 text-white p-2 border-solid border-r-2 border-gray-300">
             <NavCell>
               <MyNavLink to="/me" inactiveClassName="" activeClass="">
-                <img width="80" src={data?.currentFamilyMembership?.person?.avatarUrl} />
+                <img alt="avatar" width="80" src={data?.currentFamilyMembership?.person?.avatarUrl} />
               </MyNavLink>
             </NavCell>
           </aside>

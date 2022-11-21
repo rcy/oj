@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import MySpaceMemberships from './MySpaceMemberships';
 
-export default function() {
+export default function SpacesIndex() {
   return (
     <div className="flex flex-col">
       <div className='flex bg-green-200'>

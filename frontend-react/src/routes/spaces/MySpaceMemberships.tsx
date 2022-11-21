@@ -1,10 +1,9 @@
 import { useContext } from 'react';
 import { PersonIdContext } from '../../contexts';
 import { useSpaceMembershipsByPersonIdQuery } from "../../generated-types";
-import Debug from "../../components/Debug";
 import { Link } from 'react-router-dom';
 
-export default function () {
+export default function MySpaceMemberships() {
   const personId = useContext(PersonIdContext)
 
   const queryResult = useSpaceMembershipsByPersonIdQuery({

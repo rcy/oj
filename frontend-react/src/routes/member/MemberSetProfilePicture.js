@@ -11,7 +11,7 @@ function getDailyHash(str, index) {
 
 const types = ['monsterid', 'wavatar', 'robohash', 'identicon', 'retro']
 
-export default function () {
+export default function MemberSetProfilePicture() {
   const cfmResult = useCurrentFamilyMembershipQuery()
   const personId = useContext(PersonIdContext)
   const [dtype, selectType] = useState(types[0])
@@ -27,7 +27,7 @@ export default function () {
     setHashes([...Array(32).keys()].map((k) => getDailyHash(personId, k)))
   }
 
-  useEffect(shuffle, [])
+  useEffect(shuffle, [personId])
 
   return (
     <div className="flex flex-col gap-5">
@@ -57,6 +57,6 @@ function GravImage({ h, d, s, onSelect }) {
   }
 
   return (
-    <img width={s} height={s} key={h} src={`${url}&s=${s}`} onClick={handleClick} />
+    <img alt="avatar" width={s} height={s} key={h} src={`${url}&s=${s}`} onClick={handleClick} />
   )
 }

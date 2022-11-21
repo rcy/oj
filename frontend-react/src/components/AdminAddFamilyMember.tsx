@@ -2,7 +2,6 @@ import { FormEventHandler, useState } from 'react';
 import { useCreateNewFamilyMemberMutation } from '../generated-types';
 import TextInput from './TextInput';
 import Button from '../Button';
-import { useNavigate } from 'react-router-dom';
 
 interface Props {
   onSuccess: Function,

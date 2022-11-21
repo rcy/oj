@@ -43,7 +43,7 @@ export default function FamilyIndex() {
                 <div key={n.person?.id}>
                   <Link to={n.person?.id === personId ? '/me' : `/people/${n.person?.id}`}>
                     <div className="flex items-center gap-2">
-                      <img src={`${n.person?.avatarUrl}&s=40`} />
+                      <img alt="avatar" src={`${n.person?.avatarUrl}&s=40`} />
                       <div className="text-3xl">
                         {n.title || n.person?.name}
                       </div>

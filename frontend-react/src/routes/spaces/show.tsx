@@ -1,10 +1,7 @@
 import { useParams } from 'react-router-dom'
-import { useSpaceMembershipsBySpaceIdQuery, useSpaceQuery } from '../../generated-types'
+import { useSpaceQuery } from '../../generated-types'
 import Chat from '../../components/Chat'
-import Debug from '../../components/Debug'
 import MembersList from './MembersList'
-import { useContext } from 'react'
-import { PersonIdContext } from '../../contexts'
 
 export default function SpaceShow() {
   const { id } = useParams()

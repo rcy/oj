@@ -16,10 +16,10 @@ export default function Chat({ spaceId }: Props) {
   useEffect(() => {
     spacePostsQueryResult.startPolling(1000)
     return () => spacePostsQueryResult.stopPolling()
-  }, [])
+  }, [spacePostsQueryResult])
 
   const handleSubmit = async (text: string) => {
-    const result = await postMessageMutation({
+    await postMessageMutation({
       variables: {
         membershipId: membershipQueryResult.data?.spaceMembershipByPersonIdAndSpaceId?.id,
         body: text
@@ -36,7 +36,7 @@ export default function Chat({ spaceId }: Props) {
     <div>
       {spacePostsQueryResult.data?.posts?.edges.map(({ node: post }) => (
         <div key={post.id} className="flex">
-          <img width="32" src={post.membership?.person?.avatarUrl}/>
+          <img alt="avatar" width="32" src={post.membership?.person?.avatarUrl}/>
           <b>{post.membership?.person?.name}: </b>
           <div>{post.body}</div>
         </div>

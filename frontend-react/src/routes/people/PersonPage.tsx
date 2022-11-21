@@ -10,7 +10,7 @@ export default function PersonPage() {
   return (
     <div className="flex flex-col">
       <header className="p-2 flex items-center">
-        <img src={pagePerson?.avatarUrl} />
+        <img alt="avatar" src={pagePerson?.avatarUrl} />
         <h1 className="px-2 text-6xl">{pagePerson?.name}</h1>
       </header>
 

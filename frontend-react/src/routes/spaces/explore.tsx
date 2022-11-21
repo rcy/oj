@@ -1,8 +1,6 @@
-import { Link } from 'react-router-dom';
 import AllSpaces from './AllSpaces';
-import MySpaceMemberships from './MySpaceMemberships';
 
-export default function() {
+export default function Explore() {
   return (
     <div className="flex flex-col p-10">
       <section className="pb-10">

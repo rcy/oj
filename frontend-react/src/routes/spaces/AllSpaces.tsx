@@ -4,7 +4,7 @@ import JoinSpaceButton from '../../components/JoinSpaceButton';
 import { useContext } from 'react';
 import { PersonIdContext } from '../../contexts';
 
-export default function () {
+export default function AllSpaces() {
   const personId = useContext(PersonIdContext)
 
   const allSpacesResult = useAllSpacesQuery({

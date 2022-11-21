@@ -1,5 +1,4 @@
 import { useContext } from "react"
-import Debug from "../../components/Debug"
 import { PersonIdContext } from "../../contexts"
 import { Scalars, useSpaceMembershipsBySpaceIdQuery } from "../../generated-types"
 
@@ -15,7 +14,7 @@ export default function MembersList({ spaceId }: Props) {
     <div className="flex">
       {queryResult.data?.spaceMemberships?.edges?.map(x => (
         <div key={x.node.id}>
-          <img src={x.node.person?.avatarUrl} />
+          <img alt="avatar" src={x.node.person?.avatarUrl} />
           <div>{x.node.person?.name}</div>
           <div>{x.node.person?.id === personId && '(me)'}</div>
         </div>
