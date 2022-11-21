@@ -1,10 +1,10 @@
-import { useParams } from "react-router-dom"
-import { usePersonPageDataQuery } from "../../generated-types"
+import { useParams } from "react-router-dom";
+import { usePersonPageDataQuery } from "../../generated-types";
 import ChatSection from "./ChatSection";
 
 export default function PersonPage() {
-  const params = useParams()
-  const q = usePersonPageDataQuery({ variables: { id: params.id } })
+  const params = useParams();
+  const q = usePersonPageDataQuery({ variables: { id: params.id } });
   const pagePerson = q.data?.person;
 
   return (
@@ -16,5 +16,5 @@ export default function PersonPage() {
 
       <ChatSection pagePerson={pagePerson} />
     </div>
-  )
+  );
 }

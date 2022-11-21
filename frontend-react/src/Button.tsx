@@ -1,6 +1,11 @@
-import React, { MouseEventHandler } from 'react'
+import React, { MouseEventHandler } from "react";
 
-type ButtonType = { children: React.ReactNode, color?: string, onClick?: MouseEventHandler, type?: "button" | "submit" }
+type ButtonType = {
+  children: React.ReactNode;
+  color?: string;
+  onClick?: MouseEventHandler;
+  type?: "button" | "submit";
+};
 
 function BlueButton({ children, ...props }: ButtonType) {
   return (
@@ -11,7 +16,7 @@ function BlueButton({ children, ...props }: ButtonType) {
     >
       {children}
     </button>
-  )
+  );
 }
 
 function RedButton({ children, ...props }: ButtonType) {
@@ -23,12 +28,12 @@ function RedButton({ children, ...props }: ButtonType) {
     >
       {children}
     </button>
-  )
+  );
 }
 
 export default function Button({ children, color, ...props }: ButtonType) {
-  if (color === 'red') {
-    return <RedButton {...props}>{children}</RedButton>
+  if (color === "red") {
+    return <RedButton {...props}>{children}</RedButton>;
   }
-  return <BlueButton {...props}>{children}</BlueButton>
+  return <BlueButton {...props}>{children}</BlueButton>;
 }

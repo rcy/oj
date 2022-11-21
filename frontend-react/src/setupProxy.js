@@ -1,24 +1,24 @@
-const { createProxyMiddleware } = require('http-proxy-middleware');
+const { createProxyMiddleware } = require("http-proxy-middleware");
 
-module.exports = function(app) {
+module.exports = function (app) {
   app.use(
-    '/auth',
+    "/auth",
     createProxyMiddleware({
-      target: 'http://localhost:5000',
+      target: "http://localhost:5000",
       changeOrigin: true,
     })
   );
   app.use(
-    '/graphql',
+    "/graphql",
     createProxyMiddleware({
-      target: 'http://localhost:5000',
+      target: "http://localhost:5000",
       changeOrigin: true,
     })
   );
   app.use(
-    '/graphiql',
+    "/graphiql",
     createProxyMiddleware({
-      target: 'http://localhost:5000',
+      target: "http://localhost:5000",
       changeOrigin: true,
     })
   );

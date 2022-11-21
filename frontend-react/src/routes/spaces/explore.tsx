@@ -1,4 +1,4 @@
-import AllSpaces from './AllSpaces';
+import AllSpaces from "./AllSpaces";
 
 export default function Explore() {
   return (

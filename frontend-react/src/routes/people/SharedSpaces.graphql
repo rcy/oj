@@ -2,20 +2,8 @@ query SharedSpaces($person1: UUID!, $person2: UUID!) {
   spaces(
     filter: {
       and: [
-        {
-          spaceMemberships: {
-            some: {
-              personId: { equalTo: $person1 }
-            }
-          }
-        }
-        {
-          spaceMemberships: {
-            some: {
-              personId: { equalTo: $person2 }
-            }
-          }
-        }
+        { spaceMemberships: { some: { personId: { equalTo: $person1 } } } }
+        { spaceMemberships: { some: { personId: { equalTo: $person2 } } } }
       ]
     }
   ) {

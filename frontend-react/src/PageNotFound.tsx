@@ -1,6 +1,6 @@
-import React from 'react'
+import React from "react";
 import { Link } from "react-router-dom";
-import Button from './Button';
+import Button from "./Button";
 
 export default function MemberPageNotFound() {
   return (
@@ -10,5 +10,5 @@ export default function MemberPageNotFound() {
         <Button color="red">go back to safety</Button>
       </Link>
     </div>
-  )
+  );
 }

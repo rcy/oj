@@ -1,5 +1,5 @@
 import { Route, Routes } from "react-router-dom";
-import PersonPage from './PersonPage'
+import PersonPage from "./PersonPage";
 
 export default function PeopleIndexPage() {
   return (
@@ -9,5 +9,5 @@ export default function PeopleIndexPage() {
         <Route path="/:id" element={<PersonPage />} />
       </Routes>
     </div>
-  )
+  );
 }

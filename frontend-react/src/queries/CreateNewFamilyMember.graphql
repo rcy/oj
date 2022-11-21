@@ -1,5 +1,5 @@
 mutation CreateNewFamilyMember($name: String!, $role: String!) {
-  createNewFamilyMember(input: {name: $name, role: $role}) {
+  createNewFamilyMember(input: { name: $name, role: $role }) {
     familyMembership {
       personId
     }

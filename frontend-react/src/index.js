@@ -1,14 +1,20 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App.tsx';
-import reportWebVitals from './reportWebVitals';
-import { HttpLink, ApolloClient, ApolloProvider, concat, InMemoryCache } from '@apollo/client';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "./index.css";
+import App from "./App.tsx";
+import reportWebVitals from "./reportWebVitals";
+import {
+  HttpLink,
+  ApolloClient,
+  ApolloProvider,
+  concat,
+  InMemoryCache,
+} from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 
 //import { , concat } from "apollo-link";
 
-const httpLink = new HttpLink({ uri: '/graphql' });
+const httpLink = new HttpLink({ uri: "/graphql" });
 
 // cookies are used for user auth, but we add a header for current family membership here
 // const familyMembershipMiddleware = new ApolloLink((operation, forward) => {
@@ -21,20 +27,24 @@ const httpLink = new HttpLink({ uri: '/graphql' });
 // });
 
 const asyncAuthLink = setContext(
-  request =>
+  (request) =>
     new Promise((success, fail) => {
-      success({ headers: {
-        'X-FAMILY-MEMBERSHIP-ID': JSON.parse(sessionStorage.getItem('familyMembershipId') || "null")
-      }})
+      success({
+        headers: {
+          "X-FAMILY-MEMBERSHIP-ID": JSON.parse(
+            sessionStorage.getItem("familyMembershipId") || "null"
+          ),
+        },
+      });
     })
-)
+);
 
 const client = new ApolloClient({
   link: concat(asyncAuthLink, httpLink),
   cache: new InMemoryCache(),
 });
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <ApolloProvider client={client}>
