@@ -1,5 +1,5 @@
 import { Routes, Route, Link, useNavigate } from "react-router-dom";
-import { useCurrentUserFamilyQuery } from "../../generated-types"
+import { useCurrentFamilyMembershipQuery, useCurrentUserFamilyQuery } from "../../generated-types"
 import Button from '../../Button';
 import AdminAddFamilyMember from "../../components/AdminAddFamilyMember";
 import MemberPageNotFound from "../../PageNotFound";
@@ -8,6 +8,7 @@ import { PersonIdContext } from "../../contexts";
 
 export default function FamilyIndex() {
   const queryResult = useCurrentUserFamilyQuery({ fetchPolicy: 'network-only' })
+  const currentUserFamilyMembershipQuery = useCurrentFamilyMembershipQuery()
   const family = queryResult.data?.currentUser?.family;
   const navigate = useNavigate();
   const personId = useContext(PersonIdContext);
@@ -15,6 +16,8 @@ export default function FamilyIndex() {
   if (!family) {
     return null
   }
+
+  const role = currentUserFamilyMembershipQuery.data?.currentFamilyMembership?.role;
 
   async function handleAddSuccess(personId: string) {
     await queryResult.refetch()
@@ -26,9 +29,10 @@ export default function FamilyIndex() {
       <header className="flex justify-between items-center">
         <div className="text-4xl">Family</div>
 
+        {role === 'admin' &&
         <Link to="/family/add">
           <Button color="blue">add family member</Button>
-        </Link>
+        </Link>}
       </header >
 
       <main className="flex flex-col mt-5 gap-2">
@@ -51,7 +55,7 @@ export default function FamilyIndex() {
           } />
           <Route
             path="/add"
-            element={<AdminAddFamilyMember onSuccess={handleAddSuccess} onCancel={() => navigate('/family')} />}
+            element={<AdminAddFamilyMember onSuccess={handleAddSuccess} onCancel={() => navigate('/me')} />}
           />
           <Route path="*" element={<MemberPageNotFound />} />
         </Routes>
