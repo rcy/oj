@@ -165,6 +165,65 @@ $$;
 
 
 --
+-- Name: people; Type: TABLE; Schema: app_public; Owner: -
+--
+
+CREATE TABLE app_public.people (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    name text NOT NULL,
+    avatar_url text DEFAULT 'https://www.gravatar.com/avatar/DEFAULT?f=y&d=mp'::text NOT NULL
+);
+
+
+--
+-- Name: current_person(); Type: FUNCTION; Schema: app_public; Owner: -
+--
+
+CREATE FUNCTION app_public.current_person() RETURNS app_public.people
+    LANGUAGE sql STABLE
+    AS $$
+  select people.*
+  from app_public.people
+  where id = app_public.current_person_id();
+$$;
+
+
+--
+-- Name: current_person_id(); Type: FUNCTION; Schema: app_public; Owner: -
+--
+
+CREATE FUNCTION app_public.current_person_id() RETURNS uuid
+    LANGUAGE plpgsql
+    AS $$
+declare
+  v_person_id uuid;
+begin
+  -- first check to see if person is managed by user
+  select person_id
+  from app_public.managed_people
+  where
+    user_id = app_public.user_id() and
+    person_id = current_setting('person.id', true)::uuid
+  into v_person_id;
+
+  if v_person_id is null then
+    -- check if person *is* user
+    select person_id
+    from app_public.users
+    where
+      id = app_public.user_id() and
+      person_id = current_setting('person.id', true)::uuid
+    into v_person_id;
+  end if;
+
+  return v_person_id;
+end;
+$$;
+
+
+--
 -- Name: users; Type: TABLE; Schema: app_public; Owner: -
 --
 
@@ -323,15 +382,14 @@ CREATE TABLE app_public.interests (
 
 
 --
--- Name: people; Type: TABLE; Schema: app_public; Owner: -
+-- Name: managed_people; Type: TABLE; Schema: app_public; Owner: -
 --
 
-CREATE TABLE app_public.people (
+CREATE TABLE app_public.managed_people (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
-    updated_at timestamp with time zone DEFAULT now() NOT NULL,
-    name text NOT NULL,
-    avatar_url text DEFAULT 'https://www.gravatar.com/avatar/DEFAULT?f=y&d=mp'::text NOT NULL
+    user_id uuid NOT NULL,
+    person_id uuid NOT NULL
 );
 
 
@@ -592,6 +650,22 @@ ALTER TABLE ONLY app_public.interests
 
 
 --
+-- Name: managed_people managed_people_person_id_fkey; Type: FK CONSTRAINT; Schema: app_public; Owner: -
+--
+
+ALTER TABLE ONLY app_public.managed_people
+    ADD CONSTRAINT managed_people_person_id_fkey FOREIGN KEY (person_id) REFERENCES app_public.people(id);
+
+
+--
+-- Name: managed_people managed_people_user_id_fkey; Type: FK CONSTRAINT; Schema: app_public; Owner: -
+--
+
+ALTER TABLE ONLY app_public.managed_people
+    ADD CONSTRAINT managed_people_user_id_fkey FOREIGN KEY (user_id) REFERENCES app_public.users(id);
+
+
+--
 -- Name: posts posts_membership_id_fkey; Type: FK CONSTRAINT; Schema: app_public; Owner: -
 --
 
@@ -725,6 +799,13 @@ GRANT ALL ON TABLE app_public.family_memberships TO visitor;
 
 
 --
+-- Name: TABLE people; Type: ACL; Schema: app_public; Owner: -
+--
+
+GRANT ALL ON TABLE app_public.people TO visitor;
+
+
+--
 -- Name: TABLE users; Type: ACL; Schema: app_public; Owner: -
 --
 
@@ -767,10 +848,10 @@ GRANT ALL ON TABLE app_public.interests TO visitor;
 
 
 --
--- Name: TABLE people; Type: ACL; Schema: app_public; Owner: -
+-- Name: TABLE managed_people; Type: ACL; Schema: app_public; Owner: -
 --
 
-GRANT ALL ON TABLE app_public.people TO visitor;
+GRANT ALL ON TABLE app_public.managed_people TO visitor;
 
 
 --

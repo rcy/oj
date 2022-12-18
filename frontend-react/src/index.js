@@ -26,13 +26,13 @@ const httpLink = new HttpLink({ uri: "/graphql" });
 //   return forward(operation);
 // });
 
-const asyncAuthLink = setContext(
+const asyncSettingsLink = setContext(
   (request) =>
     new Promise((success, fail) => {
       success({
         headers: {
-          "X-FAMILY-MEMBERSHIP-ID": JSON.parse(
-            sessionStorage.getItem("familyMembershipId") || "null"
+          "X-PERSON-ID": JSON.parse(
+            sessionStorage.getItem("personId") || "null"
           ),
         },
       });
@@ -40,7 +40,7 @@ const asyncAuthLink = setContext(
 );
 
 const client = new ApolloClient({
-  link: concat(asyncAuthLink, httpLink),
+  link: concat(asyncSettingsLink, httpLink),
   cache: new InMemoryCache(),
 });
 

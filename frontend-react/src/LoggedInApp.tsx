@@ -1,30 +1,28 @@
-import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import FamilyLanding from "./FamilyLanding";
-import MemberLayout from "./MemberLayout";
+import PersonPicker from "./PersonPicker";
+import MeLayout from "./routes/MeLayout";
 import useSessionStorage from "./util/useSessionStorage";
 
 export default function LoggedInApp() {
-  const [familyMembershipId, setFamilyMembershipId] = useSessionStorage(
-    "familyMembershipId",
+  const [personId, setPersonId] = useSessionStorage(
+    "personId",
     null
   );
 
-  console.log("rendered LoggedInApp", familyMembershipId);
+  console.log("rendered LoggedInApp", personId);
 
-  if (!familyMembershipId) {
-    // rename to FamilyMemberPicker
-    return <FamilyLanding setFamilyMembershipId={setFamilyMembershipId} />;
+  if (!personId) {
+    return <PersonPicker setPersonId={setPersonId} />;
   }
 
   function doLogout() {
-    setFamilyMembershipId(null);
+    setPersonId(null);
   }
 
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="*" element={<MemberLayout doLogout={doLogout} />} />
+        <Route path="*" element={<MeLayout doLogout={doLogout} />} />
       </Routes>
     </BrowserRouter>
   );

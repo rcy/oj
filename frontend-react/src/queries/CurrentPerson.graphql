@@ -1,0 +1,14 @@
+query CurrentPerson {
+  currentPerson {
+    id
+    name
+    avatarUrl
+    familyMemberships {
+      edges {
+        node {
+          id
+        }
+      }
+    }
+  }
+}

@@ -1,18 +1,22 @@
 import { Link, useNavigate } from "react-router-dom";
-import Button from "./Button";
+import Button from "../../Button"; // FIXME /components
 import { MouseEventHandler } from "react";
-import FamilyIndex from "./routes/family";
+import FamilyIndex from "../family";
+import { useCurrentPersonQuery } from "../../generated-types";
 
-interface MemberHomeType {
-  familyMembership: any;
+interface PersonHomeType {
   doLogout: Function;
 }
 
-export default function MemberHome({
-  familyMembership,
+export default function PersonHome({
   doLogout,
-}: MemberHomeType) {
+}: PersonHomeType) {
   let navigate = useNavigate();
+  const currentPersonQuery = useCurrentPersonQuery();
+
+  if (currentPersonQuery.loading) {
+    return null
+  }
 
   const handleLogout: MouseEventHandler = (ev) => {
     ev.preventDefault();
@@ -23,7 +27,7 @@ export default function MemberHome({
   return (
     <div className="flex flex-col">
       <div className="text-6xl flex items-center justify-between pr-2 h-20 mr-2 my-2">
-        <div>Hi, {familyMembership?.person?.name}</div>
+        <div>Hi, {currentPersonQuery.data?.currentPerson?.name}</div>
         <Button color="red" onClick={handleLogout}>
           logout
         </Button>
@@ -43,7 +47,7 @@ export default function MemberHome({
             <img
               alt="avatar"
               width="20"
-              src={familyMembership?.person?.avatarUrl}
+              src={currentPersonQuery.data?.currentPerson?.avatarUrl}
             />{" "}
             change my picture
           </div>

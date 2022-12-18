@@ -1,0 +1,22 @@
+query CurrentUserWithManagedPeople {
+  currentUser {
+    id
+    name
+    person {
+      # fragment this
+      id
+      name
+      avatarUrl
+    }
+    managedPeople {
+      nodes {
+        id
+        person {
+          id
+          name
+          avatarUrl
+        }
+      }
+    }
+  }
+}

@@ -3,7 +3,7 @@ import { useContext, useEffect, useState } from "react";
 import Button from "../../Button";
 import { PersonIdContext } from "../../contexts";
 import {
-  useCurrentFamilyMembershipQuery,
+  useCurrentPersonQuery,
   useSetPersonAvatarMutation,
 } from "../../generated-types";
 
@@ -15,7 +15,7 @@ function getDailyHash(str, index) {
 const types = ["monsterid", "wavatar", "robohash", "identicon", "retro"];
 
 export default function MemberSetProfilePicture() {
-  const cfmResult = useCurrentFamilyMembershipQuery();
+  const currentPersonQuery = useCurrentPersonQuery();
   const personId = useContext(PersonIdContext);
   const [dtype, selectType] = useState(types[0]);
   const [mutation] = useSetPersonAvatarMutation();
@@ -23,7 +23,7 @@ export default function MemberSetProfilePicture() {
 
   async function handleSelect(avatarUrl) {
     await mutation({ variables: { personId, avatarUrl } });
-    cfmResult.refetch();
+    currentPersonQuery.refetch();
   }
 
   function shuffle() {

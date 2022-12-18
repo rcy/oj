@@ -140,7 +140,8 @@ const postgraphileOptions = Object.assign({
     connectionFilterRelations: true,
   },
   pgSettings: async function (req) {
-    console.log('**************************************************************** user/membership', req.user, req.headers['x-family-membership-id'])
+    const personId = req.headers['x-person-id'];
+    console.log('**************************************************************** user/person', req.user, personId)
 
     if (delay) {
       await new Promise(function (resolve) {
@@ -151,7 +152,7 @@ const postgraphileOptions = Object.assign({
     return {
       'role': 'visitor',
       'user.id': req.user,
-      'family_membership.id': req.headers['x-family-membership-id'],
+      'person.id': personId,
     }
   },
 }, environment === 'development' && {

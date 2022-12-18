@@ -210,6 +210,47 @@ type CreateInterestPayload {
   topic: Topic
 }
 
+"""All input for the create `ManagedPerson` mutation."""
+input CreateManagedPersonInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+
+  """The `ManagedPerson` to be created by this mutation."""
+  managedPerson: ManagedPersonInput!
+}
+
+"""The output of our create `ManagedPerson` mutation."""
+type CreateManagedPersonPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """The `ManagedPerson` that was created by this mutation."""
+  managedPerson: ManagedPerson
+
+  """An edge for our `ManagedPerson`. May be used by Relay 1."""
+  managedPersonEdge(
+    """The method to use when ordering `ManagedPerson`."""
+    orderBy: [ManagedPeopleOrderBy!] = [NATURAL]
+  ): ManagedPeopleEdge
+
+  """Reads a single `Person` that is related to this `ManagedPerson`."""
+  person: Person
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+
+  """Reads a single `User` that is related to this `ManagedPerson`."""
+  user: User
+}
+
 """All input for the `createNewFamilyMember` mutation."""
 input CreateNewFamilyMemberInput {
   """
@@ -392,6 +433,30 @@ type CreateTopicPayload {
     """The method to use when ordering `Topic`."""
     orderBy: [TopicsOrderBy!] = [PRIMARY_KEY_ASC]
   ): TopicsEdge
+}
+
+"""All input for the `currentPersonId` mutation."""
+input CurrentPersonIdInput {
+  """
+  An arbitrary string value with no semantic meaning. Will be included in the
+  payload verbatim. May be used to track mutations by the client.
+  """
+  clientMutationId: String
+}
+
+"""The output of our `currentPersonId` mutation."""
+type CurrentPersonIdPayload {
+  """
+  The exact same `clientMutationId` that was provided in the mutation input,
+  unchanged and unused. May be used by a client to track mutations.
+  """
+  clientMutationId: String
+
+  """
+  Our root query field type. Allows us to run any query from our mutation payload.
+  """
+  query: Query
+  uuid: UUID
 }
 
 """A location in a connection that can be used for resuming pagination."""
@@ -1449,6 +1514,116 @@ input JSONFilter {
   notIn: [JSON!]
 }
 
+"""A connection to a list of `ManagedPerson` values."""
+type ManagedPeopleConnection {
+  """
+  A list of edges which contains the `ManagedPerson` and cursor to aid in pagination.
+  """
+  edges: [ManagedPeopleEdge!]!
+
+  """A list of `ManagedPerson` objects."""
+  nodes: [ManagedPerson!]!
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """The count of *all* `ManagedPerson` you could get from the connection."""
+  totalCount: Int!
+}
+
+"""A `ManagedPerson` edge in the connection."""
+type ManagedPeopleEdge {
+  """A cursor for use in pagination."""
+  cursor: Cursor
+
+  """The `ManagedPerson` at the end of the edge."""
+  node: ManagedPerson!
+}
+
+"""Methods to use when ordering `ManagedPerson`."""
+enum ManagedPeopleOrderBy {
+  CREATED_AT_ASC
+  CREATED_AT_DESC
+  ID_ASC
+  ID_DESC
+  NATURAL
+  PERSON_ID_ASC
+  PERSON_ID_DESC
+  USER_ID_ASC
+  USER_ID_DESC
+}
+
+type ManagedPerson {
+  createdAt: Datetime!
+  id: UUID!
+
+  """Reads a single `Person` that is related to this `ManagedPerson`."""
+  person: Person
+  personId: UUID!
+
+  """Reads a single `User` that is related to this `ManagedPerson`."""
+  user: User
+  userId: UUID!
+}
+
+"""
+A condition to be used against `ManagedPerson` object types. All fields are
+tested for equality and combined with a logical ‘and.’
+"""
+input ManagedPersonCondition {
+  """Checks for equality with the object’s `createdAt` field."""
+  createdAt: Datetime
+
+  """Checks for equality with the object’s `id` field."""
+  id: UUID
+
+  """Checks for equality with the object’s `personId` field."""
+  personId: UUID
+
+  """Checks for equality with the object’s `userId` field."""
+  userId: UUID
+}
+
+"""
+A filter to be used against `ManagedPerson` object types. All fields are combined with a logical ‘and.’
+"""
+input ManagedPersonFilter {
+  """Checks for all expressions in this list."""
+  and: [ManagedPersonFilter!]
+
+  """Filter by the object’s `createdAt` field."""
+  createdAt: DatetimeFilter
+
+  """Filter by the object’s `id` field."""
+  id: UUIDFilter
+
+  """Negates the expression."""
+  not: ManagedPersonFilter
+
+  """Checks for any expressions in this list."""
+  or: [ManagedPersonFilter!]
+
+  """Filter by the object’s `person` relation."""
+  person: PersonFilter
+
+  """Filter by the object’s `personId` field."""
+  personId: UUIDFilter
+
+  """Filter by the object’s `user` relation."""
+  user: UserFilter
+
+  """Filter by the object’s `userId` field."""
+  userId: UUIDFilter
+}
+
+"""An input for mutations affecting `ManagedPerson`"""
+input ManagedPersonInput {
+  createdAt: Datetime
+  id: UUID
+  personId: UUID!
+  userId: UUID!
+}
+
 """
 The root mutation type which contains root level fields which mutate data.
 """
@@ -1468,6 +1643,14 @@ type Mutation {
     """
     input: CreateInterestInput!
   ): CreateInterestPayload
+
+  """Creates a single `ManagedPerson`."""
+  createManagedPerson(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: CreateManagedPersonInput!
+  ): CreateManagedPersonPayload
   createNewFamilyMember(
     """
     The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
@@ -1506,6 +1689,12 @@ type Mutation {
     """
     input: CreateTopicInput!
   ): CreateTopicPayload
+  currentPersonId(
+    """
+    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
+    """
+    input: CurrentPersonIdInput!
+  ): CurrentPersonIdPayload
 
   """Deletes a single `FamilyMembership` using a unique key."""
   deleteFamilyMembership(
@@ -1888,6 +2077,40 @@ type Person implements Node {
     """The method to use when ordering `Interest`."""
     orderBy: [InterestsOrderBy!] = [PRIMARY_KEY_ASC]
   ): InterestsConnection!
+
+  """Reads and enables pagination through a set of `ManagedPerson`."""
+  managedPeople(
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: ManagedPersonCondition
+
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: ManagedPersonFilter
+
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """The method to use when ordering `ManagedPerson`."""
+    orderBy: [ManagedPeopleOrderBy!] = [NATURAL]
+  ): ManagedPeopleConnection!
   name: String!
 
   """
@@ -1982,6 +2205,12 @@ input PersonFilter {
   """Some related `interests` exist."""
   interestsExist: Boolean
 
+  """Filter by the object’s `managedPeople` relation."""
+  managedPeople: PersonToManyManagedPersonFilter
+
+  """Some related `managedPeople` exist."""
+  managedPeopleExist: Boolean
+
   """Filter by the object’s `name` field."""
   name: StringFilter
 
@@ -2065,6 +2294,26 @@ input PersonToManyInterestFilter {
   Some related `Interest` matches the filter criteria. All fields are combined with a logical ‘and.’
   """
   some: InterestFilter
+}
+
+"""
+A filter to be used against many `ManagedPerson` object types. All fields are combined with a logical ‘and.’
+"""
+input PersonToManyManagedPersonFilter {
+  """
+  Every related `ManagedPerson` matches the filter criteria. All fields are combined with a logical ‘and.’
+  """
+  every: ManagedPersonFilter
+
+  """
+  No related `ManagedPerson` matches the filter criteria. All fields are combined with a logical ‘and.’
+  """
+  none: ManagedPersonFilter
+
+  """
+  Some related `ManagedPerson` matches the filter criteria. All fields are combined with a logical ‘and.’
+  """
+  some: ManagedPersonFilter
 }
 
 """
@@ -2300,6 +2549,7 @@ type Query implements Node {
   ): AuthenticationsConnection
   currentFamilyMembership: FamilyMembership
   currentFamilyMembershipId: UUID
+  currentPerson: Person
   currentUser: User
 
   """Reads and enables pagination through a set of `Family`."""
@@ -2470,6 +2720,40 @@ type Query implements Node {
     """The method to use when ordering `Interest`."""
     orderBy: [InterestsOrderBy!] = [PRIMARY_KEY_ASC]
   ): InterestsConnection
+
+  """Reads and enables pagination through a set of `ManagedPerson`."""
+  managedPeople(
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: ManagedPersonCondition
+
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: ManagedPersonFilter
+
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """The method to use when ordering `ManagedPerson`."""
+    orderBy: [ManagedPeopleOrderBy!] = [NATURAL]
+  ): ManagedPeopleConnection
 
   """Fetches an object given its globally unique `ID`."""
   node(
@@ -4046,6 +4330,40 @@ type User implements Node {
   family: Family
   familyId: UUID
   id: UUID!
+
+  """Reads and enables pagination through a set of `ManagedPerson`."""
+  managedPeople(
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: ManagedPersonCondition
+
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: ManagedPersonFilter
+
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """The method to use when ordering `ManagedPerson`."""
+    orderBy: [ManagedPeopleOrderBy!] = [NATURAL]
+  ): ManagedPeopleConnection!
   name: String!
 
   """
@@ -4116,6 +4434,12 @@ input UserFilter {
   """Filter by the object’s `id` field."""
   id: UUIDFilter
 
+  """Filter by the object’s `managedPeople` relation."""
+  managedPeople: UserToManyManagedPersonFilter
+
+  """Some related `managedPeople` exist."""
+  managedPeopleExist: Boolean
+
   """Filter by the object’s `name` field."""
   name: StringFilter
 
@@ -4167,6 +4491,26 @@ input UserToManyAuthenticationFilter {
   Some related `Authentication` matches the filter criteria. All fields are combined with a logical ‘and.’
   """
   some: AuthenticationFilter
+}
+
+"""
+A filter to be used against many `ManagedPerson` object types. All fields are combined with a logical ‘and.’
+"""
+input UserToManyManagedPersonFilter {
+  """
+  Every related `ManagedPerson` matches the filter criteria. All fields are combined with a logical ‘and.’
+  """
+  every: ManagedPersonFilter
+
+  """
+  No related `ManagedPerson` matches the filter criteria. All fields are combined with a logical ‘and.’
+  """
+  none: ManagedPersonFilter
+
+  """
+  Some related `ManagedPerson` matches the filter criteria. All fields are combined with a logical ‘and.’
+  """
+  some: ManagedPersonFilter
 }
 
 """A connection to a list of `User` values."""
