@@ -160,7 +160,7 @@ CREATE FUNCTION app_public.current_family_membership_id() RETURNS uuid
   where
     users.id = app_public.user_id() and
     m1.role = 'admin' and
-    m2.id = current_setting('family_membership.id', true)::uuid;
+    m2.person_id = current_setting('person.id', true)::uuid;
 $$;
 
 
@@ -482,6 +482,14 @@ ALTER TABLE ONLY app_public.authentications
 
 ALTER TABLE ONLY app_public.families
     ADD CONSTRAINT families_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: family_memberships family_memberships_person_id_unq; Type: CONSTRAINT; Schema: app_public; Owner: -
+--
+
+ALTER TABLE ONLY app_public.family_memberships
+    ADD CONSTRAINT family_memberships_person_id_unq UNIQUE (person_id);
 
 
 --

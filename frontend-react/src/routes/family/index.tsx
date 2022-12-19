@@ -1,20 +1,55 @@
 import { Routes, Route, Link, useNavigate } from "react-router-dom";
 import {
-  useCurrentFamilyMembershipQuery,
-  useCurrentUserFamilyQuery,
+  useCurrentPersonFamilyMembershipQuery,
 } from "../../generated-types";
 import Button from "../../Button";
 import AdminAddFamilyMember from "../../components/AdminAddFamilyMember";
 import MemberPageNotFound from "../../PageNotFound";
 import { useContext } from "react";
 import { PersonIdContext } from "../../contexts";
+import { graphql } from "../../gql";
+
+graphql(`
+  fragment FamilyMembershipItem on FamilyMembership {
+    id
+    role
+    title
+    person {
+      id
+      name
+      avatarUrl
+      user {
+        id
+      }
+    }
+  }
+`)
+
+graphql(`
+query CurrentPersonFamilyMembership {
+  currentPerson {
+    id
+    familyMembership {
+      id
+      role
+      family {
+        id
+        familyMemberships(orderBy: CREATED_AT_ASC) {
+          edges {
+            node {
+              ...FamilyMembershipItem
+            }
+          }
+        }
+      }
+    }
+  }
+}
+`);
 
 export default function FamilyIndex() {
-  const queryResult = useCurrentUserFamilyQuery({
-    fetchPolicy: "network-only",
-  });
-  const currentUserFamilyMembershipQuery = useCurrentFamilyMembershipQuery();
-  const family = queryResult.data?.currentUser?.family;
+  const query = useCurrentPersonFamilyMembershipQuery()
+  const family = query.data?.currentPerson?.familyMembership?.family;
   const navigate = useNavigate();
   const personId = useContext(PersonIdContext);
 
@@ -22,11 +57,10 @@ export default function FamilyIndex() {
     return null;
   }
 
-  const role =
-    currentUserFamilyMembershipQuery.data?.currentFamilyMembership?.role;
+  const role = query.data?.currentPerson?.familyMembership?.role;
 
   async function handleAddSuccess(personId: string) {
-    await queryResult.refetch();
+    await query.refetch();
     navigate("/people/" + personId);
   }
 
@@ -48,19 +82,15 @@ export default function FamilyIndex() {
             path="/"
             element={
               <div>
-                {family.familyMemberships.nodes.map((n) => (
-                  <div key={n.person?.id}>
+                {family.familyMemberships.edges.map(({ node: familyMembership }) => (
+                  <div key={familyMembership.id}>
                     <Link
-                      to={
-                        n.person?.id === personId
-                          ? "/me"
-                          : `/people/${n.person?.id}`
-                      }
+                      to={familyMembership.person?.id === personId ? "/me" : `/people/${familyMembership.person?.id}` }
                     >
                       <div className="flex items-center gap-2">
-                        <img alt="avatar" src={`${n.person?.avatarUrl}&s=40`} />
+                        <img alt="avatar" src={`${familyMembership.person?.avatarUrl}&s=40`} />
                         <div className="text-3xl">
-                          {n.title || n.person?.name} {n.person?.user?.id ? null : 'managed account'}
+                          {familyMembership.title || familyMembership.person?.name} {familyMembership.person?.user?.id ? null : 'managed account'}
                         </div>
                       </div>
                     </Link>

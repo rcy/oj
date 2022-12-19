@@ -3,12 +3,5 @@ query CurrentPerson {
     id
     name
     avatarUrl
-    familyMemberships {
-      edges {
-        node {
-          id
-        }
-      }
-    }
   }
 }
