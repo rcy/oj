@@ -10,6 +10,7 @@ import connectPgSimple from 'connect-pg-simple';
 import { postgraphile } from 'postgraphile';
 import pgSimplifyInflector from '@graphile-contrib/pg-simplify-inflector';
 import ConnectionFilterPlugin from "postgraphile-plugin-connection-filter";
+import { worker } from './worker.js'
 
 import { fileURLToPath } from 'url'
 import { dirname } from 'path'
@@ -172,3 +173,8 @@ app.get('*', (_, res) => res.sendFile(__dirname + '/react/index.html'));
 
 console.log(`express listening on ${process.env.PORT}`)
 app.listen(process.env.PORT)
+
+worker().catch((err) => {
+  console.error(err)
+  process.exit(1)
+})

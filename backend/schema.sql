@@ -3,7 +3,7 @@
 --
 
 -- Dumped from database version 14.4 (Debian 14.4-1.pgdg110+1)
--- Dumped by pg_dump version 14.5 (Ubuntu 14.5-0ubuntu0.22.04.1)
+-- Dumped by pg_dump version 14.7 (Ubuntu 14.7-0ubuntu0.22.04.1)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -287,6 +287,25 @@ begin
 
         return v_result;
 end;
+$$;
+
+
+--
+-- Name: trigger_job(); Type: FUNCTION; Schema: app_public; Owner: -
+--
+
+CREATE FUNCTION app_public.trigger_job() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  PERFORM graphile_worker.add_job(TG_ARGV[0], json_build_object(
+    'schema', TG_TABLE_SCHEMA,
+    'table', TG_TABLE_NAME,
+    'op', TG_OP,
+    'id', (CASE WHEN TG_OP = 'DELETE' THEN OLD.id ELSE NEW.id END)
+  ));
+  RETURN NEW;
+END;
 $$;
 
 
