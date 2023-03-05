@@ -37,7 +37,6 @@ export default function Chat({ spaceId }: Props) {
 
           // this could be handled by notifications in the future
           if (p.post.membership.id !== membershipId) {
-            console.log('beep check', p.post.membership.id, membershipId)
             beep();
           }
 
