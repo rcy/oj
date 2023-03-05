@@ -18,9 +18,13 @@ import { createClient } from 'graphql-ws';
 
 //import { , concat } from "apollo-link";
 
+console.log('env', process.env)
+
 const httpLink = new HttpLink({ uri: "/graphql" });
+
+const wsUrl = process.env.NODE_ENV === 'development' ? 'ws://localhost:5000/graphql' : 'wss://octopusjr.ca/graphql'
 const wsLink = new GraphQLWsLink(createClient({
-  url: 'ws://localhost:5000/graphql',
+  url: wsUrl,
 }));
 
 
