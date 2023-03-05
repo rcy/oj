@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 14.4 (Debian 14.4-1.pgdg110+1)
+-- Dumped from database version 14.5 (Debian 14.5-2.pgdg110+2)
 -- Dumped by pg_dump version 14.7 (Ubuntu 14.7-0ubuntu0.22.04.1)
 
 SET statement_timeout = 0;
@@ -247,6 +247,21 @@ CREATE FUNCTION app_public."current_user"() RETURNS app_public.users
     LANGUAGE sql STABLE
     AS $$
   select users.* from app_public.users where id = app_public.user_id();
+$$;
+
+
+--
+-- Name: notify_space_post_created(); Type: FUNCTION; Schema: app_public; Owner: -
+--
+
+CREATE FUNCTION app_public.notify_space_post_created() RETURNS trigger
+    LANGUAGE plpgsql
+    SET search_path TO 'app_public'
+    AS $$
+begin
+  perform pg_notify('graphql:spaceposts:' || new.space_id, json_build_object('event', 'postCreated', 'subject', new.id)::text);
+  return new;
+end
 $$;
 
 
@@ -646,6 +661,13 @@ CREATE TRIGGER _100_create_person BEFORE INSERT ON app_public.users FOR EACH ROW
 --
 
 CREATE TRIGGER _200_create_family AFTER INSERT ON app_public.users FOR EACH ROW EXECUTE FUNCTION app_private.create_family();
+
+
+--
+-- Name: posts _500_notify; Type: TRIGGER; Schema: app_public; Owner: -
+--
+
+CREATE TRIGGER _500_notify AFTER INSERT ON app_public.posts FOR EACH ROW EXECUTE FUNCTION app_public.notify_space_post_created();
 
 
 --
