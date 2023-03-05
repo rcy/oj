@@ -1,11 +1,13 @@
 import { useContext, useEffect } from "react";
 import { PersonIdContext } from "../contexts";
 import {
+  SpacePostsAddedDocument,
   usePostMessageMutation,
   useSpaceMembershipByPersonIdAndSpaceIdQuery,
   useSpacePostsQuery,
 } from "../generated-types";
 import ChatInput from "./ChatInput";
+import beep from '../util/beep';
 
 interface Props {
   spaceId: string;
@@ -21,10 +23,38 @@ export default function Chat({ spaceId }: Props) {
     variables: { spaceId, personId },
   });
 
+  const membershipId = membershipQueryResult.data?.spaceMembershipByPersonIdAndSpaceId?.id;
+
   useEffect(() => {
-    spacePostsQueryResult.startPolling(1000);
-    return () => spacePostsQueryResult.stopPolling();
-  }, [spacePostsQueryResult]);
+    // subscribeToMore returns its unsubscribe function
+    return spacePostsQueryResult.subscribeToMore({
+      document: SpacePostsAddedDocument,
+      variables: { spaceId },
+      updateQuery: (prev, { subscriptionData }) => {
+        const p: any = subscriptionData.data.posts
+
+        if (prev.posts) {
+
+          // this could be handled by notifications in the future
+          if (p.post.membership.id !== membershipId) {
+            beep();
+          }
+
+          return {
+            ...prev,
+            posts: {
+              ...prev.posts,
+              nodes: [
+                ...prev.posts.nodes,
+                p.post
+              ].slice(-10)
+            }
+          }
+        }
+        return prev
+      }
+    })
+  }, [spaceId, membershipId]);
 
   const handleSubmit = async (text: string) => {
     await postMessageMutation({
@@ -36,14 +66,14 @@ export default function Chat({ spaceId }: Props) {
     });
 
     // refetch all the messages (switch to subscription)
-    spacePostsQueryResult.refetch();
+    //spacePostsQueryResult.refetch();
 
     return true;
   };
 
   return (
     <div>
-      {spacePostsQueryResult.data?.posts?.edges.map(({ node: post }) => (
+      {spacePostsQueryResult.data?.posts?.nodes.map((post) => (
         <div key={post.id} className="flex">
           <img
             alt="avatar"

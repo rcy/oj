@@ -4,17 +4,15 @@ query SpacePosts($spaceId: UUID!, $limit: Int) {
     last: $limit
     orderBy: CREATED_AT_ASC
   ) {
-    edges {
-      node {
+    nodes {
+      id
+      body
+      membership {
         id
-        body
-        membership {
+        person {
           id
-          person {
-            id
-            name
-            avatarUrl
-          }
+          name
+          avatarUrl
         }
       }
     }

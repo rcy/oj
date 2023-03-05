@@ -9,12 +9,24 @@ import {
   ApolloProvider,
   concat,
   InMemoryCache,
+  split,
 } from "@apollo/client";
+import { getMainDefinition } from '@apollo/client/utilities';
 import { setContext } from "@apollo/client/link/context";
+import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
+import { createClient } from 'graphql-ws';
 
 //import { , concat } from "apollo-link";
 
+console.log('env', process.env)
+
 const httpLink = new HttpLink({ uri: "/graphql" });
+
+const wsUrl = process.env.NODE_ENV === 'development' ? 'ws://localhost:5000/graphql' : 'wss://octopusjr.ca/graphql'
+const wsLink = new GraphQLWsLink(createClient({
+  url: wsUrl,
+}));
+
 
 // cookies are used for user auth, but we add a header for current family membership here
 // const familyMembershipMiddleware = new ApolloLink((operation, forward) => {
@@ -39,8 +51,25 @@ const asyncSettingsLink = setContext(
     })
 );
 
+// The split function takes three parameters:
+//
+// * A function that's called for each operation to execute
+// * The Link to use for an operation if the function returns a "truthy" value
+// * The Link to use for an operation if the function returns a "falsy" value
+const splitLink = split(
+  ({ query }) => {
+    const definition = getMainDefinition(query);
+    return (
+      definition.kind === 'OperationDefinition' &&
+      definition.operation === 'subscription'
+    );
+  },
+  wsLink,
+  concat(asyncSettingsLink, httpLink),
+);
+
 const client = new ApolloClient({
-  link: concat(asyncSettingsLink, httpLink),
+  link: splitLink,
   cache: new InMemoryCache(),
 });
 
