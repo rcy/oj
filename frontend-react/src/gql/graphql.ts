@@ -2990,13 +2990,6 @@ export type StringFilter = {
 /** The root subscription type: contains realtime events you can subscribe to with the `subscription` operation. */
 export type Subscription = {
   __typename?: 'Subscription';
-  /**
-   * Triggered when the current user's data changes:
-   *
-   * - direct modifications to the user
-   * - when their organization membership changes
-   */
-  currentUserUpdated?: Maybe<UserSubscriptionPayload>;
   listen: ListenPayload;
   posts?: Maybe<PostSubscriptionPayload>;
 };
@@ -3654,12 +3647,6 @@ export type UserPatch = {
   name?: InputMaybe<Scalars['String']>;
   personId?: InputMaybe<Scalars['UUID']>;
   updatedAt?: InputMaybe<Scalars['Datetime']>;
-};
-
-export type UserSubscriptionPayload = {
-  __typename?: 'UserSubscriptionPayload';
-  event?: Maybe<Scalars['String']>;
-  user?: Maybe<User>;
 };
 
 /** A filter to be used against many `Authentication` object types. All fields are combined with a logical ‘and.’ */

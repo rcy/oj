@@ -3864,13 +3864,6 @@ input StringFilter {
 The root subscription type: contains realtime events you can subscribe to with the `subscription` operation.
 """
 type Subscription {
-  """
-  Triggered when the current user's data changes:
-  
-  - direct modifications to the user
-  - when their organization membership changes
-  """
-  currentUserUpdated: UserSubscriptionPayload
   listen(topic: String!): ListenPayload!
   posts(spaceId: UUID!): PostSubscriptionPayload
 }
@@ -4749,11 +4742,6 @@ input UserPatch {
   name: String
   personId: UUID
   updatedAt: Datetime
-}
-
-type UserSubscriptionPayload {
-  event: String
-  user: User
 }
 
 """
