@@ -7,13 +7,15 @@ import logger from 'morgan';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import pg from 'pg';
 import connectPgSimple from 'connect-pg-simple';
-import { postgraphile } from 'postgraphile';
+import { postgraphile, makePluginHook } from 'postgraphile';
 import pgSimplifyInflector from '@graphile-contrib/pg-simplify-inflector';
 import ConnectionFilterPlugin from "postgraphile-plugin-connection-filter";
-import { worker } from './worker.js'
+import { worker } from './worker.js';
+import PgPubsub from '@graphile/pg-pubsub';
 
 import { fileURLToPath } from 'url'
 import { dirname } from 'path'
+import mySubscriptionPlugin from './mySubscriptionPlugin.js';
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
@@ -79,21 +81,26 @@ const app = express();
 
 const environment = app.get('env');
 
-app.use(logger('dev'));
-app.use(express.json());
-app.use(cookieParser());
+const middlewares = [
+  logger('dev'),
+  express.json(),
+  cookieParser(),
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false, // don't save session if unmodified
+    saveUninitialized: false, // don't create session until something stored
+    store: new (connectPgSimple(session))({
+      pool: pgAppPool,
+      schemaName: 'app_private',
+      tableName: 'passport_sessions',
+    })
+  }),
+  passport.authenticate('session')
+]
 
-app.use(session({
-  secret: process.env.SESSION_SECRET,
-  resave: false, // don't save session if unmodified
-  saveUninitialized: false, // don't create session until something stored
-  store: new (connectPgSimple(session))({
-    pool: pgAppPool,
-    schemaName: 'app_private',
-    tableName: 'passport_sessions',
-  })
-}));
-app.use(passport.authenticate('session'));
+for (let middleware of middlewares) {
+  app.use(middleware)
+}
 
 app.get('/auth/login',
         function(req, res, next) {
@@ -128,7 +135,9 @@ const delay = 0;
 
 // https://www.graphile.org/postgraphile/usage-library/
 const postgraphileOptions = Object.assign({
-  //subscriptions: true,
+  pluginHook: makePluginHook([PgPubsub.default]),
+  subscriptions: true,
+  simpleSubscriptions: true, // Add the `listen` subscription field
   dynamicJson: true,
   setofFunctionsContainNulls: false,
   ignoreRBAC: false,
@@ -136,13 +145,18 @@ const postgraphileOptions = Object.assign({
   extendedErrors: ['hint', 'detail', 'errcode'],
   legacyRelations: 'omit',
   sortExport: true,
-  appendPlugins: [pgSimplifyInflector, ConnectionFilterPlugin],
+  appendPlugins: [
+    mySubscriptionPlugin,
+    pgSimplifyInflector,
+    ConnectionFilterPlugin,
+  ],
   graphileBuildOptions: {
     connectionFilterRelations: true,
   },
   pgSettings: async function (req) {
     const personId = req.headers['x-person-id'];
     console.log('**************************************************************** user/person', req.user, personId)
+    //console.log(req)
 
     if (delay) {
       await new Promise(function (resolve) {
@@ -156,6 +170,13 @@ const postgraphileOptions = Object.assign({
       'person.id': personId,
     }
   },
+  async additionalGraphQLContextFromRequest(req) {
+    return {
+      userId: req.user,
+      personId: req.headers['x-person-id'],
+    }
+  },
+  websocketMiddlewares: middlewares,
 }, environment === 'development' && {
   watchPg: true,
   ownerConnectionString: process.env.WATCH_DATABASE_URL,

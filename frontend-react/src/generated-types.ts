@@ -1252,6 +1252,14 @@ export type JsonFilter = {
   notIn?: InputMaybe<Array<Scalars['JSON']>>;
 };
 
+export type ListenPayload = {
+  __typename?: 'ListenPayload';
+  /** Our root query field type. Allows us to run any query from our subscription payload. */
+  query?: Maybe<Query>;
+  relatedNode?: Maybe<Node>;
+  relatedNodeId?: Maybe<Scalars['ID']>;
+};
+
 /** A connection to a list of `ManagedPerson` values. */
 export type ManagedPeopleConnection = {
   __typename?: 'ManagedPeopleConnection';
@@ -2085,6 +2093,12 @@ export type PostMessagePayload = {
 /** The output of our `postMessage` mutation. */
 export type PostMessagePayloadPostEdgeArgs = {
   orderBy?: InputMaybe<Array<PostsOrderBy>>;
+};
+
+export type PostSubscriptionPayload = {
+  __typename?: 'PostSubscriptionPayload';
+  event?: Maybe<Scalars['String']>;
+  post?: Maybe<Post>;
 };
 
 /** A filter to be used against many `Notification` object types. All fields are combined with a logical ‘and.’ */
@@ -2974,6 +2988,32 @@ export type StringFilter = {
   startsWithInsensitive?: InputMaybe<Scalars['String']>;
 };
 
+/** The root subscription type: contains realtime events you can subscribe to with the `subscription` operation. */
+export type Subscription = {
+  __typename?: 'Subscription';
+  /**
+   * Triggered when the current user's data changes:
+   *
+   * - direct modifications to the user
+   * - when their organization membership changes
+   */
+  currentUserUpdated?: Maybe<UserSubscriptionPayload>;
+  listen: ListenPayload;
+  newSpacePosts?: Maybe<PostSubscriptionPayload>;
+};
+
+
+/** The root subscription type: contains realtime events you can subscribe to with the `subscription` operation. */
+export type SubscriptionListenArgs = {
+  topic: Scalars['String'];
+};
+
+
+/** The root subscription type: contains realtime events you can subscribe to with the `subscription` operation. */
+export type SubscriptionNewSpacePostsArgs = {
+  spaceId: Scalars['UUID'];
+};
+
 export type Topic = Node & {
   __typename?: 'Topic';
   createdAt: Scalars['Datetime'];
@@ -3617,6 +3657,12 @@ export type UserPatch = {
   updatedAt?: InputMaybe<Scalars['Datetime']>;
 };
 
+export type UserSubscriptionPayload = {
+  __typename?: 'UserSubscriptionPayload';
+  event?: Maybe<Scalars['String']>;
+  user?: Maybe<User>;
+};
+
 /** A filter to be used against many `Authentication` object types. All fields are combined with a logical ‘and.’ */
 export type UserToManyAuthenticationFilter = {
   /** Every related `Authentication` matches the filter criteria. All fields are combined with a logical ‘and.’ */
@@ -3787,6 +3833,13 @@ export type SpacePostsQueryVariables = Exact<{
 
 
 export type SpacePostsQuery = { __typename?: 'Query', posts?: { __typename?: 'PostsConnection', edges: Array<{ __typename?: 'PostsEdge', node: { __typename?: 'Post', id: any, body: string, membership?: { __typename?: 'SpaceMembership', id: any, person?: { __typename?: 'Person', id: any, name: string, avatarUrl: string } | null } | null } }> } | null };
+
+export type SpacePostsAddedSubscriptionVariables = Exact<{
+  spaceId: Scalars['UUID'];
+}>;
+
+
+export type SpacePostsAddedSubscription = { __typename?: 'Subscription', newSpacePosts?: { __typename?: 'PostSubscriptionPayload', event?: string | null, post?: { __typename?: 'Post', id: any, body: string } | null } | null };
 
 export type FamilyMembershipItemFragment = { __typename?: 'FamilyMembership', id: any, role: string, title?: string | null, person?: { __typename?: 'Person', id: any, name: string, avatarUrl: string, user?: { __typename?: 'User', id: any } | null } | null };
 
@@ -4491,6 +4544,40 @@ export function useSpacePostsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions
 export type SpacePostsQueryHookResult = ReturnType<typeof useSpacePostsQuery>;
 export type SpacePostsLazyQueryHookResult = ReturnType<typeof useSpacePostsLazyQuery>;
 export type SpacePostsQueryResult = Apollo.QueryResult<SpacePostsQuery, SpacePostsQueryVariables>;
+export const SpacePostsAddedDocument = gql`
+    subscription SpacePostsAdded($spaceId: UUID!) {
+  newSpacePosts(spaceId: $spaceId) {
+    event
+    post {
+      id
+      body
+    }
+  }
+}
+    `;
+
+/**
+ * __useSpacePostsAddedSubscription__
+ *
+ * To run a query within a React component, call `useSpacePostsAddedSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useSpacePostsAddedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSpacePostsAddedSubscription({
+ *   variables: {
+ *      spaceId: // value for 'spaceId'
+ *   },
+ * });
+ */
+export function useSpacePostsAddedSubscription(baseOptions: Apollo.SubscriptionHookOptions<SpacePostsAddedSubscription, SpacePostsAddedSubscriptionVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useSubscription<SpacePostsAddedSubscription, SpacePostsAddedSubscriptionVariables>(SpacePostsAddedDocument, options);
+      }
+export type SpacePostsAddedSubscriptionHookResult = ReturnType<typeof useSpacePostsAddedSubscription>;
+export type SpacePostsAddedSubscriptionResult = Apollo.SubscriptionResult<SpacePostsAddedSubscription>;
 export const CurrentPersonFamilyMembershipDocument = gql`
     query CurrentPersonFamilyMembership {
   currentPerson {

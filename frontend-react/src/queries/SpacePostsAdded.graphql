@@ -1,0 +1,9 @@
+subscription SpacePostsAdded($spaceId: UUID!) {
+  newSpacePosts(spaceId: $spaceId) {
+    event
+    post {
+      id
+      body
+    }
+  }
+}

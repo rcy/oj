@@ -1524,6 +1524,15 @@ input JSONFilter {
   notIn: [JSON!]
 }
 
+type ListenPayload {
+  """
+  Our root query field type. Allows us to run any query from our subscription payload.
+  """
+  query: Query
+  relatedNode: Node
+  relatedNodeId: ID
+}
+
 """A connection to a list of `ManagedPerson` values."""
 type ManagedPeopleConnection {
   """
@@ -2573,6 +2582,11 @@ type PostMessagePayload {
 
   """Reads a single `Space` that is related to this `Post`."""
   space: Space
+}
+
+type PostSubscriptionPayload {
+  event: String
+  post: Post
 }
 
 """
@@ -3846,6 +3860,21 @@ input StringFilter {
   startsWithInsensitive: String
 }
 
+"""
+The root subscription type: contains realtime events you can subscribe to with the `subscription` operation.
+"""
+type Subscription {
+  """
+  Triggered when the current user's data changes:
+  
+  - direct modifications to the user
+  - when their organization membership changes
+  """
+  currentUserUpdated: UserSubscriptionPayload
+  listen(topic: String!): ListenPayload!
+  newSpacePosts(spaceId: UUID!): PostSubscriptionPayload
+}
+
 type Topic implements Node {
   createdAt: Datetime!
   id: UUID!
@@ -4720,6 +4749,11 @@ input UserPatch {
   name: String
   personId: UUID
   updatedAt: Datetime
+}
+
+type UserSubscriptionPayload {
+  event: String
+  user: User
 }
 
 """

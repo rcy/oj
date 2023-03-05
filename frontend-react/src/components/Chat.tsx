@@ -1,6 +1,7 @@
 import { useContext, useEffect } from "react";
 import { PersonIdContext } from "../contexts";
 import {
+  SpacePostsAddedDocument,
   usePostMessageMutation,
   useSpaceMembershipByPersonIdAndSpaceIdQuery,
   useSpacePostsQuery,
@@ -22,9 +23,17 @@ export default function Chat({ spaceId }: Props) {
   });
 
   useEffect(() => {
-    spacePostsQueryResult.startPolling(1000);
-    return () => spacePostsQueryResult.stopPolling();
-  }, [spacePostsQueryResult]);
+    spacePostsQueryResult.subscribeToMore({
+      document: SpacePostsAddedDocument,
+      variables: { spaceId },
+      updateQuery: (prev, x) => {
+        console.log({ x })
+        return prev
+      }
+    })
+    //spacePostsQueryResult.startPolling(1000);
+    //return () => spacePostsQueryResult.stopPolling();
+  }, [spaceId]);
 
   const handleSubmit = async (text: string) => {
     await postMessageMutation({
