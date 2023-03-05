@@ -1680,6 +1680,90 @@ export type Node = {
   nodeId: Scalars['ID'];
 };
 
+export type Notification = {
+  __typename?: 'Notification';
+  createdAt: Scalars['Datetime'];
+  id: Scalars['UUID'];
+  /** Reads a single `SpaceMembership` that is related to this `Notification`. */
+  membership?: Maybe<SpaceMembership>;
+  membershipId: Scalars['UUID'];
+  /** Reads a single `Post` that is related to this `Notification`. */
+  post?: Maybe<Post>;
+  postId: Scalars['UUID'];
+};
+
+/**
+ * A condition to be used against `Notification` object types. All fields are
+ * tested for equality and combined with a logical ‘and.’
+ */
+export type NotificationCondition = {
+  /** Checks for equality with the object’s `createdAt` field. */
+  createdAt?: InputMaybe<Scalars['Datetime']>;
+  /** Checks for equality with the object’s `id` field. */
+  id?: InputMaybe<Scalars['UUID']>;
+  /** Checks for equality with the object’s `membershipId` field. */
+  membershipId?: InputMaybe<Scalars['UUID']>;
+  /** Checks for equality with the object’s `postId` field. */
+  postId?: InputMaybe<Scalars['UUID']>;
+};
+
+/** A filter to be used against `Notification` object types. All fields are combined with a logical ‘and.’ */
+export type NotificationFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<NotificationFilter>>;
+  /** Filter by the object’s `createdAt` field. */
+  createdAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `id` field. */
+  id?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `membership` relation. */
+  membership?: InputMaybe<SpaceMembershipFilter>;
+  /** Filter by the object’s `membershipId` field. */
+  membershipId?: InputMaybe<UuidFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<NotificationFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<NotificationFilter>>;
+  /** Filter by the object’s `post` relation. */
+  post?: InputMaybe<PostFilter>;
+  /** Filter by the object’s `postId` field. */
+  postId?: InputMaybe<UuidFilter>;
+};
+
+/** A connection to a list of `Notification` values. */
+export type NotificationsConnection = {
+  __typename?: 'NotificationsConnection';
+  /** A list of edges which contains the `Notification` and cursor to aid in pagination. */
+  edges: Array<NotificationsEdge>;
+  /** A list of `Notification` objects. */
+  nodes: Array<Notification>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** The count of *all* `Notification` you could get from the connection. */
+  totalCount: Scalars['Int'];
+};
+
+/** A `Notification` edge in the connection. */
+export type NotificationsEdge = {
+  __typename?: 'NotificationsEdge';
+  /** A cursor for use in pagination. */
+  cursor?: Maybe<Scalars['Cursor']>;
+  /** The `Notification` at the end of the edge. */
+  node: Notification;
+};
+
+/** Methods to use when ordering `Notification`. */
+export enum NotificationsOrderBy {
+  CreatedAtAsc = 'CREATED_AT_ASC',
+  CreatedAtDesc = 'CREATED_AT_DESC',
+  IdAsc = 'ID_ASC',
+  IdDesc = 'ID_DESC',
+  MembershipIdAsc = 'MEMBERSHIP_ID_ASC',
+  MembershipIdDesc = 'MEMBERSHIP_ID_DESC',
+  Natural = 'NATURAL',
+  PostIdAsc = 'POST_ID_ASC',
+  PostIdDesc = 'POST_ID_DESC'
+}
+
 /** Information about pagination in a connection. */
 export type PageInfo = {
   __typename?: 'PageInfo';
@@ -1901,10 +1985,24 @@ export type Post = Node & {
   membershipId: Scalars['UUID'];
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
   nodeId: Scalars['ID'];
+  /** Reads and enables pagination through a set of `Notification`. */
+  notifications: NotificationsConnection;
   /** Reads a single `Space` that is related to this `Post`. */
   space?: Maybe<Space>;
   spaceId: Scalars['UUID'];
   updatedAt: Scalars['Datetime'];
+};
+
+
+export type PostNotificationsArgs = {
+  after?: InputMaybe<Scalars['Cursor']>;
+  before?: InputMaybe<Scalars['Cursor']>;
+  condition?: InputMaybe<NotificationCondition>;
+  filter?: InputMaybe<NotificationFilter>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<Array<NotificationsOrderBy>>;
 };
 
 /** A condition to be used against `Post` object types. All fields are tested for equality and combined with a logical ‘and.’ */
@@ -1939,6 +2037,10 @@ export type PostFilter = {
   membershipId?: InputMaybe<UuidFilter>;
   /** Negates the expression. */
   not?: InputMaybe<PostFilter>;
+  /** Filter by the object’s `notifications` relation. */
+  notifications?: InputMaybe<PostToManyNotificationFilter>;
+  /** Some related `notifications` exist. */
+  notificationsExist?: InputMaybe<Scalars['Boolean']>;
   /** Checks for any expressions in this list. */
   or?: InputMaybe<Array<PostFilter>>;
   /** Filter by the object’s `space` relation. */
@@ -1983,6 +2085,16 @@ export type PostMessagePayload = {
 /** The output of our `postMessage` mutation. */
 export type PostMessagePayloadPostEdgeArgs = {
   orderBy?: InputMaybe<Array<PostsOrderBy>>;
+};
+
+/** A filter to be used against many `Notification` object types. All fields are combined with a logical ‘and.’ */
+export type PostToManyNotificationFilter = {
+  /** Every related `Notification` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<NotificationFilter>;
+  /** No related `Notification` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<NotificationFilter>;
+  /** Some related `Notification` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<NotificationFilter>;
 };
 
 /** A connection to a list of `Post` values. */
@@ -2067,6 +2179,8 @@ export type Query = Node & {
   node?: Maybe<Node>;
   /** The root query type must be a `Node` to work well with Relay 1 mutations. This just resolves to `query`. */
   nodeId: Scalars['ID'];
+  /** Reads and enables pagination through a set of `Notification`. */
+  notifications?: Maybe<NotificationsConnection>;
   /** Reads and enables pagination through a set of `Person`. */
   people?: Maybe<PeopleConnection>;
   person?: Maybe<Person>;
@@ -2268,6 +2382,19 @@ export type QueryManagedPeopleArgs = {
 /** The root query type which gives access points into the data universe. */
 export type QueryNodeArgs = {
   nodeId: Scalars['ID'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryNotificationsArgs = {
+  after?: InputMaybe<Scalars['Cursor']>;
+  before?: InputMaybe<Scalars['Cursor']>;
+  condition?: InputMaybe<NotificationCondition>;
+  filter?: InputMaybe<NotificationFilter>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<Array<NotificationsOrderBy>>;
 };
 
 
@@ -2529,6 +2656,8 @@ export type SpaceMembership = Node & {
   id: Scalars['UUID'];
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
   nodeId: Scalars['ID'];
+  /** Reads and enables pagination through a set of `Notification`. */
+  notificationsByMembershipId: NotificationsConnection;
   /** Reads a single `Person` that is related to this `SpaceMembership`. */
   person?: Maybe<Person>;
   personId: Scalars['UUID'];
@@ -2539,6 +2668,18 @@ export type SpaceMembership = Node & {
   space?: Maybe<Space>;
   spaceId: Scalars['UUID'];
   updatedAt: Scalars['Datetime'];
+};
+
+
+export type SpaceMembershipNotificationsByMembershipIdArgs = {
+  after?: InputMaybe<Scalars['Cursor']>;
+  before?: InputMaybe<Scalars['Cursor']>;
+  condition?: InputMaybe<NotificationCondition>;
+  filter?: InputMaybe<NotificationFilter>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<Array<NotificationsOrderBy>>;
 };
 
 
@@ -2582,6 +2723,10 @@ export type SpaceMembershipFilter = {
   id?: InputMaybe<UuidFilter>;
   /** Negates the expression. */
   not?: InputMaybe<SpaceMembershipFilter>;
+  /** Filter by the object’s `notificationsByMembershipId` relation. */
+  notificationsByMembershipId?: InputMaybe<SpaceMembershipToManyNotificationFilter>;
+  /** Some related `notificationsByMembershipId` exist. */
+  notificationsByMembershipIdExist?: InputMaybe<Scalars['Boolean']>;
   /** Checks for any expressions in this list. */
   or?: InputMaybe<Array<SpaceMembershipFilter>>;
   /** Filter by the object’s `person` relation. */
@@ -2620,6 +2765,16 @@ export type SpaceMembershipPatch = {
   roleId?: InputMaybe<Scalars['String']>;
   spaceId?: InputMaybe<Scalars['UUID']>;
   updatedAt?: InputMaybe<Scalars['Datetime']>;
+};
+
+/** A filter to be used against many `Notification` object types. All fields are combined with a logical ‘and.’ */
+export type SpaceMembershipToManyNotificationFilter = {
+  /** Every related `Notification` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<NotificationFilter>;
+  /** No related `Notification` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<NotificationFilter>;
+  /** Some related `Notification` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<NotificationFilter>;
 };
 
 /** A filter to be used against many `Post` object types. All fields are combined with a logical ‘and.’ */

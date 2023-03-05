@@ -413,6 +413,18 @@ CREATE TABLE app_public.managed_people (
 
 
 --
+-- Name: notifications; Type: TABLE; Schema: app_public; Owner: -
+--
+
+CREATE TABLE app_public.notifications (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    post_id uuid NOT NULL,
+    membership_id uuid NOT NULL
+);
+
+
+--
 -- Name: space_memberships; Type: TABLE; Schema: app_public; Owner: -
 --
 
@@ -637,6 +649,13 @@ CREATE TRIGGER _200_create_family AFTER INSERT ON app_public.users FOR EACH ROW 
 
 
 --
+-- Name: posts create_post_notifications; Type: TRIGGER; Schema: app_public; Owner: -
+--
+
+CREATE TRIGGER create_post_notifications AFTER INSERT ON app_public.posts FOR EACH ROW EXECUTE FUNCTION app_public.trigger_job('create_post_notifications');
+
+
+--
 -- Name: authentications authentications_user_id_fkey; Type: FK CONSTRAINT; Schema: app_public; Owner: -
 --
 
@@ -690,6 +709,22 @@ ALTER TABLE ONLY app_public.managed_people
 
 ALTER TABLE ONLY app_public.managed_people
     ADD CONSTRAINT managed_people_user_id_fkey FOREIGN KEY (user_id) REFERENCES app_public.users(id);
+
+
+--
+-- Name: notifications notifications_membership_id_fkey; Type: FK CONSTRAINT; Schema: app_public; Owner: -
+--
+
+ALTER TABLE ONLY app_public.notifications
+    ADD CONSTRAINT notifications_membership_id_fkey FOREIGN KEY (membership_id) REFERENCES app_public.space_memberships(id);
+
+
+--
+-- Name: notifications notifications_post_id_fkey; Type: FK CONSTRAINT; Schema: app_public; Owner: -
+--
+
+ALTER TABLE ONLY app_public.notifications
+    ADD CONSTRAINT notifications_post_id_fkey FOREIGN KEY (post_id) REFERENCES app_public.posts(id);
 
 
 --
@@ -879,6 +914,13 @@ GRANT ALL ON TABLE app_public.interests TO visitor;
 --
 
 GRANT ALL ON TABLE app_public.managed_people TO visitor;
+
+
+--
+-- Name: TABLE notifications; Type: ACL; Schema: app_public; Owner: -
+--
+
+GRANT SELECT ON TABLE app_public.notifications TO visitor;
 
 
 --

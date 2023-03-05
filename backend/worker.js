@@ -1,5 +1,8 @@
 import { run } from "graphile-worker";
-import { hello } from './tasks/hello.js'
+import {
+  hello,
+  create_post_notifications,
+} from './tasks/index.js'
 
 export async function worker() {
   // Run a worker to execute jobs:
@@ -12,6 +15,7 @@ export async function worker() {
     // you can set the taskList or taskDirectory but not both
     taskList: {
       hello,
+      create_post_notifications,
     }
   });
 

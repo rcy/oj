@@ -1973,6 +1973,110 @@ interface Node {
   nodeId: ID!
 }
 
+type Notification {
+  createdAt: Datetime!
+  id: UUID!
+
+  """
+  Reads a single `SpaceMembership` that is related to this `Notification`.
+  """
+  membership: SpaceMembership
+  membershipId: UUID!
+
+  """Reads a single `Post` that is related to this `Notification`."""
+  post: Post
+  postId: UUID!
+}
+
+"""
+A condition to be used against `Notification` object types. All fields are
+tested for equality and combined with a logical ‘and.’
+"""
+input NotificationCondition {
+  """Checks for equality with the object’s `createdAt` field."""
+  createdAt: Datetime
+
+  """Checks for equality with the object’s `id` field."""
+  id: UUID
+
+  """Checks for equality with the object’s `membershipId` field."""
+  membershipId: UUID
+
+  """Checks for equality with the object’s `postId` field."""
+  postId: UUID
+}
+
+"""
+A filter to be used against `Notification` object types. All fields are combined with a logical ‘and.’
+"""
+input NotificationFilter {
+  """Checks for all expressions in this list."""
+  and: [NotificationFilter!]
+
+  """Filter by the object’s `createdAt` field."""
+  createdAt: DatetimeFilter
+
+  """Filter by the object’s `id` field."""
+  id: UUIDFilter
+
+  """Filter by the object’s `membership` relation."""
+  membership: SpaceMembershipFilter
+
+  """Filter by the object’s `membershipId` field."""
+  membershipId: UUIDFilter
+
+  """Negates the expression."""
+  not: NotificationFilter
+
+  """Checks for any expressions in this list."""
+  or: [NotificationFilter!]
+
+  """Filter by the object’s `post` relation."""
+  post: PostFilter
+
+  """Filter by the object’s `postId` field."""
+  postId: UUIDFilter
+}
+
+"""A connection to a list of `Notification` values."""
+type NotificationsConnection {
+  """
+  A list of edges which contains the `Notification` and cursor to aid in pagination.
+  """
+  edges: [NotificationsEdge!]!
+
+  """A list of `Notification` objects."""
+  nodes: [Notification!]!
+
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """The count of *all* `Notification` you could get from the connection."""
+  totalCount: Int!
+}
+
+"""A `Notification` edge in the connection."""
+type NotificationsEdge {
+  """A cursor for use in pagination."""
+  cursor: Cursor
+
+  """The `Notification` at the end of the edge."""
+  node: Notification!
+}
+
+"""Methods to use when ordering `Notification`."""
+enum NotificationsOrderBy {
+  CREATED_AT_ASC
+  CREATED_AT_DESC
+  ID_ASC
+  ID_DESC
+  MEMBERSHIP_ID_ASC
+  MEMBERSHIP_ID_DESC
+  NATURAL
+  POST_ID_ASC
+  POST_ID_DESC
+}
+
 """Information about pagination in a connection."""
 type PageInfo {
   """When paginating forwards, the cursor to continue."""
@@ -2325,6 +2429,40 @@ type Post implements Node {
   """
   nodeId: ID!
 
+  """Reads and enables pagination through a set of `Notification`."""
+  notifications(
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: NotificationCondition
+
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: NotificationFilter
+
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """The method to use when ordering `Notification`."""
+    orderBy: [NotificationsOrderBy!] = [NATURAL]
+  ): NotificationsConnection!
+
   """Reads a single `Space` that is related to this `Post`."""
   space: Space
   spaceId: UUID!
@@ -2379,6 +2517,12 @@ input PostFilter {
   """Negates the expression."""
   not: PostFilter
 
+  """Filter by the object’s `notifications` relation."""
+  notifications: PostToManyNotificationFilter
+
+  """Some related `notifications` exist."""
+  notificationsExist: Boolean
+
   """Checks for any expressions in this list."""
   or: [PostFilter!]
 
@@ -2429,6 +2573,26 @@ type PostMessagePayload {
 
   """Reads a single `Space` that is related to this `Post`."""
   space: Space
+}
+
+"""
+A filter to be used against many `Notification` object types. All fields are combined with a logical ‘and.’
+"""
+input PostToManyNotificationFilter {
+  """
+  Every related `Notification` matches the filter criteria. All fields are combined with a logical ‘and.’
+  """
+  every: NotificationFilter
+
+  """
+  No related `Notification` matches the filter criteria. All fields are combined with a logical ‘and.’
+  """
+  none: NotificationFilter
+
+  """
+  Some related `Notification` matches the filter criteria. All fields are combined with a logical ‘and.’
+  """
+  some: NotificationFilter
 }
 
 """A connection to a list of `Post` values."""
@@ -2741,6 +2905,40 @@ type Query implements Node {
   The root query type must be a `Node` to work well with Relay 1 mutations. This just resolves to `query`.
   """
   nodeId: ID!
+
+  """Reads and enables pagination through a set of `Notification`."""
+  notifications(
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: NotificationCondition
+
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: NotificationFilter
+
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """The method to use when ordering `Notification`."""
+    orderBy: [NotificationsOrderBy!] = [NATURAL]
+  ): NotificationsConnection
 
   """Reads and enables pagination through a set of `Person`."""
   people(
@@ -3160,6 +3358,40 @@ type SpaceMembership implements Node {
   """
   nodeId: ID!
 
+  """Reads and enables pagination through a set of `Notification`."""
+  notificationsByMembershipId(
+    """Read all values in the set after (below) this cursor."""
+    after: Cursor
+
+    """Read all values in the set before (above) this cursor."""
+    before: Cursor
+
+    """
+    A condition to be used in determining which values should be returned by the collection.
+    """
+    condition: NotificationCondition
+
+    """
+    A filter to be used in determining which values should be returned by the collection.
+    """
+    filter: NotificationFilter
+
+    """Only read the first `n` values of the set."""
+    first: Int
+
+    """Only read the last `n` values of the set."""
+    last: Int
+
+    """
+    Skip the first `n` values from our `after` cursor, an alternative to cursor
+    based pagination. May not be used with `last`.
+    """
+    offset: Int
+
+    """The method to use when ordering `Notification`."""
+    orderBy: [NotificationsOrderBy!] = [NATURAL]
+  ): NotificationsConnection!
+
   """Reads a single `Person` that is related to this `SpaceMembership`."""
   person: Person
   personId: UUID!
@@ -3245,6 +3477,12 @@ input SpaceMembershipFilter {
   """Negates the expression."""
   not: SpaceMembershipFilter
 
+  """Filter by the object’s `notificationsByMembershipId` relation."""
+  notificationsByMembershipId: SpaceMembershipToManyNotificationFilter
+
+  """Some related `notificationsByMembershipId` exist."""
+  notificationsByMembershipIdExist: Boolean
+
   """Checks for any expressions in this list."""
   or: [SpaceMembershipFilter!]
 
@@ -3293,6 +3531,26 @@ input SpaceMembershipPatch {
   roleId: String
   spaceId: UUID
   updatedAt: Datetime
+}
+
+"""
+A filter to be used against many `Notification` object types. All fields are combined with a logical ‘and.’
+"""
+input SpaceMembershipToManyNotificationFilter {
+  """
+  Every related `Notification` matches the filter criteria. All fields are combined with a logical ‘and.’
+  """
+  every: NotificationFilter
+
+  """
+  No related `Notification` matches the filter criteria. All fields are combined with a logical ‘and.’
+  """
+  none: NotificationFilter
+
+  """
+  Some related `Notification` matches the filter criteria. All fields are combined with a logical ‘and.’
+  """
+  some: NotificationFilter
 }
 
 """
