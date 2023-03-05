@@ -2999,7 +2999,7 @@ export type Subscription = {
    */
   currentUserUpdated?: Maybe<UserSubscriptionPayload>;
   listen: ListenPayload;
-  newSpacePosts?: Maybe<PostSubscriptionPayload>;
+  posts?: Maybe<PostSubscriptionPayload>;
 };
 
 
@@ -3010,7 +3010,7 @@ export type SubscriptionListenArgs = {
 
 
 /** The root subscription type: contains realtime events you can subscribe to with the `subscription` operation. */
-export type SubscriptionNewSpacePostsArgs = {
+export type SubscriptionPostsArgs = {
   spaceId: Scalars['UUID'];
 };
 
@@ -3832,14 +3832,14 @@ export type SpacePostsQueryVariables = Exact<{
 }>;
 
 
-export type SpacePostsQuery = { __typename?: 'Query', posts?: { __typename?: 'PostsConnection', edges: Array<{ __typename?: 'PostsEdge', node: { __typename?: 'Post', id: any, body: string, membership?: { __typename?: 'SpaceMembership', id: any, person?: { __typename?: 'Person', id: any, name: string, avatarUrl: string } | null } | null } }> } | null };
+export type SpacePostsQuery = { __typename?: 'Query', posts?: { __typename?: 'PostsConnection', nodes: Array<{ __typename?: 'Post', id: any, body: string, membership?: { __typename?: 'SpaceMembership', id: any, person?: { __typename?: 'Person', id: any, name: string, avatarUrl: string } | null } | null }> } | null };
 
 export type SpacePostsAddedSubscriptionVariables = Exact<{
   spaceId: Scalars['UUID'];
 }>;
 
 
-export type SpacePostsAddedSubscription = { __typename?: 'Subscription', newSpacePosts?: { __typename?: 'PostSubscriptionPayload', event?: string | null, post?: { __typename?: 'Post', id: any, body: string } | null } | null };
+export type SpacePostsAddedSubscription = { __typename?: 'Subscription', posts?: { __typename?: 'PostSubscriptionPayload', event?: string | null, post?: { __typename?: 'Post', id: any, body: string, membership?: { __typename?: 'SpaceMembership', id: any, person?: { __typename?: 'Person', id: any, name: string, avatarUrl: string } | null } | null } | null } | null };
 
 export type FamilyMembershipItemFragment = { __typename?: 'FamilyMembership', id: any, role: string, title?: string | null, person?: { __typename?: 'Person', id: any, name: string, avatarUrl: string, user?: { __typename?: 'User', id: any } | null } | null };
 
@@ -4498,17 +4498,15 @@ export type SpaceMembershipsBySpaceIdQueryResult = Apollo.QueryResult<SpaceMembe
 export const SpacePostsDocument = gql`
     query SpacePosts($spaceId: UUID!, $limit: Int) {
   posts(condition: {spaceId: $spaceId}, last: $limit, orderBy: CREATED_AT_ASC) {
-    edges {
-      node {
+    nodes {
+      id
+      body
+      membership {
         id
-        body
-        membership {
+        person {
           id
-          person {
-            id
-            name
-            avatarUrl
-          }
+          name
+          avatarUrl
         }
       }
     }
@@ -4546,11 +4544,19 @@ export type SpacePostsLazyQueryHookResult = ReturnType<typeof useSpacePostsLazyQ
 export type SpacePostsQueryResult = Apollo.QueryResult<SpacePostsQuery, SpacePostsQueryVariables>;
 export const SpacePostsAddedDocument = gql`
     subscription SpacePostsAdded($spaceId: UUID!) {
-  newSpacePosts(spaceId: $spaceId) {
+  posts(spaceId: $spaceId) {
     event
     post {
       id
       body
+      membership {
+        id
+        person {
+          id
+          name
+          avatarUrl
+        }
+      }
     }
   }
 }

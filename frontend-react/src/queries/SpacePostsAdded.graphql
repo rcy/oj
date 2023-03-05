@@ -1,9 +1,17 @@
 subscription SpacePostsAdded($spaceId: UUID!) {
-  newSpacePosts(spaceId: $spaceId) {
+  posts(spaceId: $spaceId) {
     event
     post {
       id
       body
+      membership {
+        id
+        person {
+          id
+          name
+          avatarUrl
+        }
+      }
     }
   }
 }

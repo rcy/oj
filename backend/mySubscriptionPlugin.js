@@ -42,7 +42,7 @@ export default makeExtendSchemaPlugin(({ pgSql: sql }) => ({
       """
       currentUserUpdated: UserSubscriptionPayload @pgSubscription(topic: ${embed(currentUserTopicFromContext)})
       
-      newSpacePosts(spaceId: UUID!): PostSubscriptionPayload @pgSubscription(topic: ${embed(newSpacePostsTopic)})
+      posts(spaceId: UUID!): PostSubscriptionPayload @pgSubscription(topic: ${embed(newSpacePostsTopic)})
     }
   `,
 

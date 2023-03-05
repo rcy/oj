@@ -3872,7 +3872,7 @@ type Subscription {
   """
   currentUserUpdated: UserSubscriptionPayload
   listen(topic: String!): ListenPayload!
-  newSpacePosts(spaceId: UUID!): PostSubscriptionPayload
+  posts(spaceId: UUID!): PostSubscriptionPayload
 }
 
 type Topic implements Node {
