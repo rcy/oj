@@ -1,0 +1,10 @@
+mutation ExchangeCode($loginCodeId: UUID!, $code: String!) {
+  exchangeCode(
+    input: {
+      loginCodeId: $loginCodeId
+      code: $code
+    }
+  ) {
+    sessionKey
+  }
+}

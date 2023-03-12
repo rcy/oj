@@ -204,6 +204,52 @@ export type CreateInterestPayloadInterestEdgeArgs = {
   orderBy?: InputMaybe<Array<InterestsOrderBy>>;
 };
 
+/** All input for the `createLoginCode` mutation. */
+export type CreateLoginCodeInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  username: Scalars['String'];
+};
+
+/** The output of our `createLoginCode` mutation. */
+export type CreateLoginCodePayload = {
+  __typename?: 'CreateLoginCodePayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  loginCodeId?: Maybe<Scalars['UUID']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+/** All input for the `createLoginToken` mutation. */
+export type CreateLoginTokenInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  username: Scalars['String'];
+};
+
+/** The output of our `createLoginToken` mutation. */
+export type CreateLoginTokenPayload = {
+  __typename?: 'CreateLoginTokenPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  uuid?: Maybe<Scalars['UUID']>;
+};
+
 /** All input for the create `ManagedPerson` mutation. */
 export type CreateManagedPersonInput = {
   /**
@@ -413,6 +459,29 @@ export type CreateTopicPayloadTopicEdgeArgs = {
   orderBy?: InputMaybe<Array<TopicsOrderBy>>;
 };
 
+/** All input for the `createUsernameLoginToken` mutation. */
+export type CreateUsernameLoginTokenInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  vUsername: Scalars['String'];
+};
+
+/** The output of our `createUsernameLoginToken` mutation. */
+export type CreateUsernameLoginTokenPayload = {
+  __typename?: 'CreateUsernameLoginTokenPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  uuid?: Maybe<Scalars['UUID']>;
+};
+
 /** All input for the `currentPersonId` mutation. */
 export type CurrentPersonIdInput = {
   /**
@@ -576,6 +645,16 @@ export type DeletePersonByNodeIdInput = {
   clientMutationId?: InputMaybe<Scalars['String']>;
   /** The globally unique `ID` which will identify a single `Person` to be deleted. */
   nodeId: Scalars['ID'];
+};
+
+/** All input for the `deletePersonByUsername` mutation. */
+export type DeletePersonByUsernameInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  username: Scalars['String'];
 };
 
 /** All input for the `deletePerson` mutation. */
@@ -756,6 +835,30 @@ export type DeleteTopicPayload = {
 /** The output of our delete `Topic` mutation. */
 export type DeleteTopicPayloadTopicEdgeArgs = {
   orderBy?: InputMaybe<Array<TopicsOrderBy>>;
+};
+
+/** All input for the `exchangeCode` mutation. */
+export type ExchangeCodeInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  code: Scalars['String'];
+  loginCodeId: Scalars['UUID'];
+};
+
+/** The output of our `exchangeCode` mutation. */
+export type ExchangeCodePayload = {
+  __typename?: 'ExchangeCodePayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  sessionKey?: Maybe<Scalars['UUID']>;
 };
 
 /** A connection to a list of `Family` values. */
@@ -1072,6 +1175,29 @@ export type FamilyToManyUserFilter = {
   some?: InputMaybe<UserFilter>;
 };
 
+/** All input for the `genRandomCode` mutation. */
+export type GenRandomCodeInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  len: Scalars['Int'];
+};
+
+/** The output of our `genRandomCode` mutation. */
+export type GenRandomCodePayload = {
+  __typename?: 'GenRandomCodePayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  string?: Maybe<Scalars['String']>;
+};
+
 /** A filter to be used against Int fields. All fields are combined with a logical ‘and.’ */
 export type IntFilter = {
   /** Not equal to the specified value, treating null like an ordinary value. */
@@ -1358,6 +1484,8 @@ export type Mutation = {
   createFamilyMembership?: Maybe<CreateFamilyMembershipPayload>;
   /** Creates a single `Interest`. */
   createInterest?: Maybe<CreateInterestPayload>;
+  createLoginCode?: Maybe<CreateLoginCodePayload>;
+  createLoginToken?: Maybe<CreateLoginTokenPayload>;
   /** Creates a single `ManagedPerson`. */
   createManagedPerson?: Maybe<CreateManagedPersonPayload>;
   createNewFamilyMember?: Maybe<CreateNewFamilyMemberPayload>;
@@ -1369,6 +1497,7 @@ export type Mutation = {
   createSpaceMembership?: Maybe<CreateSpaceMembershipPayload>;
   /** Creates a single `Topic`. */
   createTopic?: Maybe<CreateTopicPayload>;
+  createUsernameLoginToken?: Maybe<CreateUsernameLoginTokenPayload>;
   currentPersonId?: Maybe<CurrentPersonIdPayload>;
   /** Deletes a single `FamilyMembership` using a unique key. */
   deleteFamilyMembership?: Maybe<DeleteFamilyMembershipPayload>;
@@ -1384,6 +1513,8 @@ export type Mutation = {
   deletePerson?: Maybe<DeletePersonPayload>;
   /** Deletes a single `Person` using its globally unique id. */
   deletePersonByNodeId?: Maybe<DeletePersonPayload>;
+  /** Deletes a single `Person` using a unique key. */
+  deletePersonByUsername?: Maybe<DeletePersonPayload>;
   /** Deletes a single `Space` using a unique key. */
   deleteSpace?: Maybe<DeleteSpacePayload>;
   /** Deletes a single `Space` using its globally unique id. */
@@ -1398,6 +1529,8 @@ export type Mutation = {
   deleteTopic?: Maybe<DeleteTopicPayload>;
   /** Deletes a single `Topic` using its globally unique id. */
   deleteTopicByNodeId?: Maybe<DeleteTopicPayload>;
+  exchangeCode?: Maybe<ExchangeCodePayload>;
+  genRandomCode?: Maybe<GenRandomCodePayload>;
   postMessage?: Maybe<PostMessagePayload>;
   /** Updates a single `FamilyMembership` using a unique key and a patch. */
   updateFamilyMembership?: Maybe<UpdateFamilyMembershipPayload>;
@@ -1413,6 +1546,8 @@ export type Mutation = {
   updatePerson?: Maybe<UpdatePersonPayload>;
   /** Updates a single `Person` using its globally unique id and a patch. */
   updatePersonByNodeId?: Maybe<UpdatePersonPayload>;
+  /** Updates a single `Person` using a unique key and a patch. */
+  updatePersonByUsername?: Maybe<UpdatePersonPayload>;
   /** Updates a single `Space` using a unique key and a patch. */
   updateSpace?: Maybe<UpdateSpacePayload>;
   /** Updates a single `Space` using its globally unique id and a patch. */
@@ -1449,6 +1584,18 @@ export type MutationCreateInterestArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
+export type MutationCreateLoginCodeArgs = {
+  input: CreateLoginCodeInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationCreateLoginTokenArgs = {
+  input: CreateLoginTokenInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
 export type MutationCreateManagedPersonArgs = {
   input: CreateManagedPersonInput;
 };
@@ -1481,6 +1628,12 @@ export type MutationCreateSpaceMembershipArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationCreateTopicArgs = {
   input: CreateTopicInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationCreateUsernameLoginTokenArgs = {
+  input: CreateUsernameLoginTokenInput;
 };
 
 
@@ -1533,6 +1686,12 @@ export type MutationDeletePersonByNodeIdArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeletePersonByUsernameArgs = {
+  input: DeletePersonByUsernameInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
 export type MutationDeleteSpaceArgs = {
   input: DeleteSpaceInput;
 };
@@ -1571,6 +1730,18 @@ export type MutationDeleteTopicArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationDeleteTopicByNodeIdArgs = {
   input: DeleteTopicByNodeIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationExchangeCodeArgs = {
+  input: ExchangeCodeInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationGenRandomCodeArgs = {
+  input: GenRandomCodeInput;
 };
 
 
@@ -1619,6 +1790,12 @@ export type MutationUpdatePersonArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationUpdatePersonByNodeIdArgs = {
   input: UpdatePersonByNodeIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdatePersonByUsernameArgs = {
+  input: UpdatePersonByUsernameInput;
 };
 
 
@@ -1820,7 +1997,9 @@ export enum PeopleOrderBy {
   PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
   PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
   UpdatedAtAsc = 'UPDATED_AT_ASC',
-  UpdatedAtDesc = 'UPDATED_AT_DESC'
+  UpdatedAtDesc = 'UPDATED_AT_DESC',
+  UsernameAsc = 'USERNAME_ASC',
+  UsernameDesc = 'USERNAME_DESC'
 }
 
 export type Person = Node & {
@@ -1842,6 +2021,7 @@ export type Person = Node & {
   updatedAt: Scalars['Datetime'];
   /** Reads a single `User` that is related to this `Person`. */
   user?: Maybe<User>;
+  username?: Maybe<Scalars['String']>;
 };
 
 
@@ -1892,6 +2072,8 @@ export type PersonCondition = {
   name?: InputMaybe<Scalars['String']>;
   /** Checks for equality with the object’s `updatedAt` field. */
   updatedAt?: InputMaybe<Scalars['Datetime']>;
+  /** Checks for equality with the object’s `username` field. */
+  username?: InputMaybe<Scalars['String']>;
 };
 
 /** A filter to be used against `Person` object types. All fields are combined with a logical ‘and.’ */
@@ -1932,6 +2114,8 @@ export type PersonFilter = {
   user?: InputMaybe<UserFilter>;
   /** A related `user` exists. */
   userExists?: InputMaybe<Scalars['Boolean']>;
+  /** Filter by the object’s `username` field. */
+  username?: InputMaybe<StringFilter>;
 };
 
 /** An input for mutations affecting `Person` */
@@ -1941,6 +2125,7 @@ export type PersonInput = {
   id?: InputMaybe<Scalars['UUID']>;
   name: Scalars['String'];
   updatedAt?: InputMaybe<Scalars['Datetime']>;
+  username?: InputMaybe<Scalars['String']>;
 };
 
 /** Represents an update to a `Person`. Fields that are set will be updated. */
@@ -1950,6 +2135,7 @@ export type PersonPatch = {
   id?: InputMaybe<Scalars['UUID']>;
   name?: InputMaybe<Scalars['String']>;
   updatedAt?: InputMaybe<Scalars['Datetime']>;
+  username?: InputMaybe<Scalars['String']>;
 };
 
 /** A filter to be used against many `Interest` object types. All fields are combined with a logical ‘and.’ */
@@ -2199,6 +2385,7 @@ export type Query = Node & {
   person?: Maybe<Person>;
   /** Reads a single `Person` using its globally unique `ID`. */
   personByNodeId?: Maybe<Person>;
+  personByUsername?: Maybe<Person>;
   post?: Maybe<Post>;
   /** Reads a single `Post` using its globally unique `ID`. */
   postByNodeId?: Maybe<Post>;
@@ -2433,6 +2620,12 @@ export type QueryPersonArgs = {
 /** The root query type which gives access points into the data universe. */
 export type QueryPersonByNodeIdArgs = {
   nodeId: Scalars['ID'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryPersonByUsernameArgs = {
+  username: Scalars['String'];
 };
 
 
@@ -3280,6 +3473,18 @@ export type UpdatePersonByNodeIdInput = {
   patch: PersonPatch;
 };
 
+/** All input for the `updatePersonByUsername` mutation. */
+export type UpdatePersonByUsernameInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  /** An object where the defined keys will be set on the `Person` being updated. */
+  patch: PersonPatch;
+  username: Scalars['String'];
+};
+
 /** All input for the `updatePerson` mutation. */
 export type UpdatePersonInput = {
   /**
@@ -3734,6 +3939,13 @@ export type CreateSpaceMutationVariables = Exact<{
 
 export type CreateSpaceMutation = { __typename?: 'Mutation', createSpace?: { __typename?: 'CreateSpacePayload', space?: { __typename?: 'Space', id: any } | null } | null };
 
+export type CreateLoginCodeMutationVariables = Exact<{
+  username: Scalars['String'];
+}>;
+
+
+export type CreateLoginCodeMutation = { __typename?: 'Mutation', createLoginCode?: { __typename?: 'CreateLoginCodePayload', loginCodeId?: any | null } | null };
+
 export type CurrentPersonQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -3758,6 +3970,14 @@ export type CurrentUserWithManagedPeopleQueryVariables = Exact<{ [key: string]: 
 
 
 export type CurrentUserWithManagedPeopleQuery = { __typename?: 'Query', currentUser?: { __typename?: 'User', id: any, name: string, person?: { __typename?: 'Person', id: any, name: string, avatarUrl: string } | null, managedPeople: { __typename?: 'ManagedPeopleConnection', nodes: Array<{ __typename?: 'ManagedPerson', id: any, person?: { __typename?: 'Person', id: any, name: string, avatarUrl: string } | null }> } } | null };
+
+export type ExchangeCodeMutationVariables = Exact<{
+  loginCodeId: Scalars['UUID'];
+  code: Scalars['String'];
+}>;
+
+
+export type ExchangeCodeMutation = { __typename?: 'Mutation', exchangeCode?: { __typename?: 'ExchangeCodePayload', sessionKey?: any | null } | null };
 
 export type JoinSpaceMutationVariables = Exact<{
   spaceId: Scalars['UUID'];
@@ -3864,11 +4084,13 @@ export const FamilyMembershipItemFragmentDoc = {"kind":"Document","definitions":
 export const AllSpacesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"AllSpaces"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"personId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UUID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"spaces"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"totalCount"}},{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"spaceMemberships"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"condition"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"personId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"personId"}}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"person"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]}}]}}]}}]}}]}}]} as unknown as DocumentNode<AllSpacesQuery, AllSpacesQueryVariables>;
 export const CreateNewFamilyMemberDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateNewFamilyMember"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"name"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"role"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createNewFamilyMember"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"Variable","name":{"kind":"Name","value":"name"}}},{"kind":"ObjectField","name":{"kind":"Name","value":"role"},"value":{"kind":"Variable","name":{"kind":"Name","value":"role"}}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"familyMembership"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"personId"}}]}}]}}]}}]} as unknown as DocumentNode<CreateNewFamilyMemberMutation, CreateNewFamilyMemberMutationVariables>;
 export const CreateSpaceDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateSpace"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"name"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createSpace"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"space"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"Variable","name":{"kind":"Name","value":"name"}}}]}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"space"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]} as unknown as DocumentNode<CreateSpaceMutation, CreateSpaceMutationVariables>;
+export const CreateLoginCodeDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateLoginCode"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"username"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createLoginCode"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"username"},"value":{"kind":"Variable","name":{"kind":"Name","value":"username"}}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"loginCodeId"}}]}}]}}]} as unknown as DocumentNode<CreateLoginCodeMutation, CreateLoginCodeMutationVariables>;
 export const CurrentPersonDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"CurrentPerson"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"currentPerson"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"avatarUrl"}}]}}]}}]} as unknown as DocumentNode<CurrentPersonQuery, CurrentPersonQueryVariables>;
 export const CurrentUserDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"CurrentUser"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"currentUser"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]} as unknown as DocumentNode<CurrentUserQuery, CurrentUserQueryVariables>;
 export const CurrentUserFamilyDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"CurrentUserFamily"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"currentUser"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"family"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"familyMemberships"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"EnumValue","value":"CREATED_AT_ASC"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"nodes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"person"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"avatarUrl"}},{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"role"}}]}}]}}]}}]}}]}}]} as unknown as DocumentNode<CurrentUserFamilyQuery, CurrentUserFamilyQueryVariables>;
 export const CurrentFamilyMembershipDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"CurrentFamilyMembership"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"currentFamilyMembership"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"role"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"family"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"person"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"avatarUrl"}},{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]}}]} as unknown as DocumentNode<CurrentFamilyMembershipQuery, CurrentFamilyMembershipQueryVariables>;
 export const CurrentUserWithManagedPeopleDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"CurrentUserWithManagedPeople"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"currentUser"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"person"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"avatarUrl"}}]}},{"kind":"Field","name":{"kind":"Name","value":"managedPeople"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"nodes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"person"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"avatarUrl"}}]}}]}}]}}]}}]}}]} as unknown as DocumentNode<CurrentUserWithManagedPeopleQuery, CurrentUserWithManagedPeopleQueryVariables>;
+export const ExchangeCodeDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"ExchangeCode"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"loginCodeId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UUID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"code"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"exchangeCode"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"loginCodeId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"loginCodeId"}}},{"kind":"ObjectField","name":{"kind":"Name","value":"code"},"value":{"kind":"Variable","name":{"kind":"Name","value":"code"}}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"sessionKey"}}]}}]}}]} as unknown as DocumentNode<ExchangeCodeMutation, ExchangeCodeMutationVariables>;
 export const JoinSpaceDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"JoinSpace"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"spaceId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UUID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"personId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UUID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createSpaceMembership"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"spaceMembership"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"personId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"personId"}}},{"kind":"ObjectField","name":{"kind":"Name","value":"spaceId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"spaceId"}}},{"kind":"ObjectField","name":{"kind":"Name","value":"roleId"},"value":{"kind":"StringValue","value":"member","block":false}}]}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"clientMutationId"}}]}}]}}]} as unknown as DocumentNode<JoinSpaceMutation, JoinSpaceMutationVariables>;
 export const PostMessageDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"PostMessage"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"membershipId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UUID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"body"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"postMessage"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"spaceMembershipId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"membershipId"}}},{"kind":"ObjectField","name":{"kind":"Name","value":"body"},"value":{"kind":"Variable","name":{"kind":"Name","value":"body"}}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"post"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]} as unknown as DocumentNode<PostMessageMutation, PostMessageMutationVariables>;
 export const SetPersonAvatarDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"SetPersonAvatar"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"personId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UUID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"avatarUrl"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updatePerson"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"personId"}}},{"kind":"ObjectField","name":{"kind":"Name","value":"patch"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"avatarUrl"},"value":{"kind":"Variable","name":{"kind":"Name","value":"avatarUrl"}}}]}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"clientMutationId"}}]}}]}}]} as unknown as DocumentNode<SetPersonAvatarMutation, SetPersonAvatarMutationVariables>;
