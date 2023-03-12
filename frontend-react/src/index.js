@@ -39,16 +39,17 @@ const wsLink = new GraphQLWsLink(createClient({
 // });
 
 const asyncSettingsLink = setContext(
-  (request) =>
+  (request) => {
+    const skey = localStorage.getItem("sessionKey");
+    const headers = skey ? {
+      "x-person-session": skey,
+    } : {}
     new Promise((success, fail) => {
       success({
-        headers: {
-          "X-PERSON-ID": JSON.parse(
-            sessionStorage.getItem("personId") || "null"
-          ),
-        },
+        headers
       });
     })
+  }
 );
 
 // The split function takes three parameters:

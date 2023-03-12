@@ -19,6 +19,7 @@ export default function TextInput({
         {label}
       </label>
       <input
+        autoComplete="off"
         name={name}
         type="text"
         className={`

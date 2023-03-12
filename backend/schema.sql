@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 14.5 (Debian 14.5-2.pgdg110+2)
+-- Dumped from database version 14.4 (Debian 14.4-1.pgdg110+1)
 -- Dumped by pg_dump version 14.7 (Ubuntu 14.7-0ubuntu0.22.04.1)
 
 SET statement_timeout = 0;
@@ -96,6 +96,40 @@ end;
 $$;
 
 
+--
+-- Name: create_login_code(text); Type: FUNCTION; Schema: app_public; Owner: -
+--
+
+CREATE FUNCTION app_public.create_login_code(username text) RETURNS uuid
+    LANGUAGE plpgsql STRICT SECURITY DEFINER
+    AS $$
+declare
+v_person_id uuid;
+v_result uuid;
+begin
+  select id
+  into v_person_id
+  from app_public.people p
+  where p.username = create_login_code.username;
+
+  if v_person_id is not null then
+    insert into app_private.login_codes(person_id, code)
+    values(v_person_id, app_public.gen_random_code(6))
+    returning id into v_result;
+  end if;
+
+  return v_result;
+end;
+$$;
+
+
+--
+-- Name: FUNCTION create_login_code(username text); Type: COMMENT; Schema: app_public; Owner: -
+--
+
+COMMENT ON FUNCTION app_public.create_login_code(username text) IS '@resultFieldName loginCodeId';
+
+
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
@@ -173,7 +207,8 @@ CREATE TABLE app_public.people (
     created_at timestamp with time zone DEFAULT now() NOT NULL,
     updated_at timestamp with time zone DEFAULT now() NOT NULL,
     name text NOT NULL,
-    avatar_url text DEFAULT 'https://www.gravatar.com/avatar/DEFAULT?f=y&d=mp'::text NOT NULL
+    avatar_url text DEFAULT 'https://www.gravatar.com/avatar/DEFAULT?f=y&d=mp'::text NOT NULL,
+    username text
 );
 
 
@@ -197,28 +232,8 @@ $$;
 CREATE FUNCTION app_public.current_person_id() RETURNS uuid
     LANGUAGE plpgsql
     AS $$
-declare
-  v_person_id uuid;
 begin
-  -- first check to see if person is managed by user
-  select person_id
-  from app_public.managed_people
-  where
-    user_id = app_public.user_id() and
-    person_id = current_setting('person.id', true)::uuid
-  into v_person_id;
-
-  if v_person_id is null then
-    -- check if person *is* user
-    select person_id
-    from app_public.users
-    where
-      id = app_public.user_id() and
-      person_id = current_setting('person.id', true)::uuid
-    into v_person_id;
-  end if;
-
-  return v_person_id;
+  return current_setting('person.id', true)::uuid;
 end;
 $$;
 
@@ -247,6 +262,62 @@ CREATE FUNCTION app_public."current_user"() RETURNS app_public.users
     LANGUAGE sql STABLE
     AS $$
   select users.* from app_public.users where id = app_public.user_id();
+$$;
+
+
+--
+-- Name: exchange_code(uuid, text); Type: FUNCTION; Schema: app_public; Owner: -
+--
+
+CREATE FUNCTION app_public.exchange_code(login_code_id uuid, code text) RETURNS uuid
+    LANGUAGE plpgsql STRICT SECURITY DEFINER
+    AS $$
+declare
+v_login_code_id uuid;
+v_person_id uuid;
+v_attempts int;
+v_result uuid;
+begin
+  select id, person_id
+    into v_login_code_id, v_person_id
+    from app_private.login_codes t
+    where id = login_code_id and t.code = exchange_code.code;
+  
+  if v_person_id is not null then
+    insert into app_private.sessions(person_id) values (v_person_id) returning id into v_result;
+    delete from app_private.login_codes where id = v_login_code_id;
+  else
+    update app_private.login_codes set attempts = attempts + 1 where id = login_code_id returning attempts into v_attempts;
+    if v_attempts >= 3 then
+      delete from app_private.login_codes where id = login_code_id;
+    end if;
+  end if;
+
+  return v_result;
+end;
+$$;
+
+
+--
+-- Name: FUNCTION exchange_code(login_code_id uuid, code text); Type: COMMENT; Schema: app_public; Owner: -
+--
+
+COMMENT ON FUNCTION app_public.exchange_code(login_code_id uuid, code text) IS '@resultFieldName sessionKey';
+
+
+--
+-- Name: gen_random_code(integer); Type: FUNCTION; Schema: app_public; Owner: -
+--
+
+CREATE FUNCTION app_public.gen_random_code(len integer) RETURNS text
+    LANGUAGE plpgsql STRICT
+    AS $$
+declare
+v_result text;
+begin
+  select into v_result array_to_string(array(select substr('0123456789',((random()*9+1)::integer),1) from generate_series(1,len)),'');
+  return v_result;
+end;     
 $$;
 
 
@@ -336,6 +407,19 @@ $$;
 
 
 --
+-- Name: login_codes; Type: TABLE; Schema: app_private; Owner: -
+--
+
+CREATE TABLE app_private.login_codes (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    person_id uuid NOT NULL,
+    attempts integer DEFAULT 0 NOT NULL,
+    code text NOT NULL
+);
+
+
+--
 -- Name: passport_sessions; Type: TABLE; Schema: app_private; Owner: -
 --
 
@@ -343,6 +427,17 @@ CREATE TABLE app_private.passport_sessions (
     sid character varying NOT NULL,
     sess json NOT NULL,
     expire timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: sessions; Type: TABLE; Schema: app_private; Owner: -
+--
+
+CREATE TABLE app_private.sessions (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    person_id uuid NOT NULL
 );
 
 
@@ -499,11 +594,27 @@ ALTER TABLE ONLY app_public.family_roles ALTER COLUMN id SET DEFAULT nextval('ap
 
 
 --
+-- Name: login_codes login_codes_pkey; Type: CONSTRAINT; Schema: app_private; Owner: -
+--
+
+ALTER TABLE ONLY app_private.login_codes
+    ADD CONSTRAINT login_codes_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: passport_sessions session_pkey; Type: CONSTRAINT; Schema: app_private; Owner: -
 --
 
 ALTER TABLE ONLY app_private.passport_sessions
     ADD CONSTRAINT session_pkey PRIMARY KEY (sid);
+
+
+--
+-- Name: sessions sessions_pkey; Type: CONSTRAINT; Schema: app_private; Owner: -
+--
+
+ALTER TABLE ONLY app_private.sessions
+    ADD CONSTRAINT sessions_pkey PRIMARY KEY (id);
 
 
 --
@@ -576,6 +687,14 @@ ALTER TABLE ONLY app_public.interests
 
 ALTER TABLE ONLY app_public.people
     ADD CONSTRAINT people_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: people people_username_key; Type: CONSTRAINT; Schema: app_public; Owner: -
+--
+
+ALTER TABLE ONLY app_public.people
+    ADD CONSTRAINT people_username_key UNIQUE (username);
 
 
 --
@@ -675,6 +794,22 @@ CREATE TRIGGER _500_notify AFTER INSERT ON app_public.posts FOR EACH ROW EXECUTE
 --
 
 CREATE TRIGGER create_post_notifications AFTER INSERT ON app_public.posts FOR EACH ROW EXECUTE FUNCTION app_public.trigger_job('create_post_notifications');
+
+
+--
+-- Name: login_codes login_codes_person_id_fkey; Type: FK CONSTRAINT; Schema: app_private; Owner: -
+--
+
+ALTER TABLE ONLY app_private.login_codes
+    ADD CONSTRAINT login_codes_person_id_fkey FOREIGN KEY (person_id) REFERENCES app_public.people(id);
+
+
+--
+-- Name: sessions sessions_person_id_fkey; Type: FK CONSTRAINT; Schema: app_private; Owner: -
+--
+
+ALTER TABLE ONLY app_private.sessions
+    ADD CONSTRAINT sessions_person_id_fkey FOREIGN KEY (person_id) REFERENCES app_public.people(id);
 
 
 --

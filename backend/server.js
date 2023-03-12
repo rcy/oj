@@ -95,8 +95,26 @@ const middlewares = [
       tableName: 'passport_sessions',
     })
   }),
-  passport.authenticate('session')
+  passport.authenticate('session'),
+  personAuthenticate({ pool: pgAppPool, header: 'x-person-session' }),
 ]
+
+function personAuthenticate({ pool, header }) {
+  const pgClient = pool.connect();
+  return async function (req, _res, next) {
+    const client = await pgClient
+    const sessionKey = req.headers[header];
+    console.log('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& begin', sessionKey, typeof sessionKey)
+    if (sessionKey) {
+      const { rows } = await client.query("select * from app_private.sessions where id = $1", [sessionKey])
+      req.personId = rows[0]?.person_id
+    } else {
+      req.personId = null
+    }
+    console.log('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& end')
+    next()
+  }
+}
 
 for (let middleware of middlewares) {
   app.use(middleware)
@@ -154,26 +172,18 @@ const postgraphileOptions = Object.assign({
     connectionFilterRelations: true,
   },
   pgSettings: async function (req) {
-    const personId = req.headers['x-person-id'];
-    console.log('**************************************************************** user/person', req.user, personId)
-    //console.log(req)
-
-    if (delay) {
-      await new Promise(function (resolve) {
-        setTimeout(resolve, delay);
-      });
-    }
+    console.log('**************************************************************** user/sessionKey', req.user, req.personId)
 
     return {
       'role': 'visitor',
       'user.id': req.user,
-      'person.id': personId,
+      'person.id': req.personId,
     }
   },
   async additionalGraphQLContextFromRequest(req) {
     return {
       userId: req.user,
-      personId: req.headers['x-person-id'],
+      personId: req.personId,
     }
   },
   websocketMiddlewares: middlewares,

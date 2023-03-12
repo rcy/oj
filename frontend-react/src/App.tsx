@@ -4,7 +4,7 @@ import { useCurrentUserQuery } from "./generated-types";
 
 function App() {
   const { loading, error, data } = useCurrentUserQuery();
-
+  
   console.log({ data });
 
   if (error) {
@@ -12,7 +12,7 @@ function App() {
   }
 
   if (loading) {
-    return null;
+    return "loading";
   }
 
   if (data?.currentUser) {
