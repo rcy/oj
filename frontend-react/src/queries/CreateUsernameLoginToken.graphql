@@ -1,0 +1,5 @@
+mutation CreateLoginCode($username: String!) {
+  createLoginCode(input: { username: $username }) {
+    loginCodeId
+  }
+}

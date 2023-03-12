@@ -205,6 +205,52 @@ export type CreateInterestPayloadInterestEdgeArgs = {
   orderBy?: InputMaybe<Array<InterestsOrderBy>>;
 };
 
+/** All input for the `createLoginCode` mutation. */
+export type CreateLoginCodeInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  username: Scalars['String'];
+};
+
+/** The output of our `createLoginCode` mutation. */
+export type CreateLoginCodePayload = {
+  __typename?: 'CreateLoginCodePayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  loginCodeId?: Maybe<Scalars['UUID']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+/** All input for the `createLoginToken` mutation. */
+export type CreateLoginTokenInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  username: Scalars['String'];
+};
+
+/** The output of our `createLoginToken` mutation. */
+export type CreateLoginTokenPayload = {
+  __typename?: 'CreateLoginTokenPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  uuid?: Maybe<Scalars['UUID']>;
+};
+
 /** All input for the create `ManagedPerson` mutation. */
 export type CreateManagedPersonInput = {
   /**
@@ -414,6 +460,29 @@ export type CreateTopicPayloadTopicEdgeArgs = {
   orderBy?: InputMaybe<Array<TopicsOrderBy>>;
 };
 
+/** All input for the `createUsernameLoginToken` mutation. */
+export type CreateUsernameLoginTokenInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  vUsername: Scalars['String'];
+};
+
+/** The output of our `createUsernameLoginToken` mutation. */
+export type CreateUsernameLoginTokenPayload = {
+  __typename?: 'CreateUsernameLoginTokenPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  uuid?: Maybe<Scalars['UUID']>;
+};
+
 /** All input for the `currentPersonId` mutation. */
 export type CurrentPersonIdInput = {
   /**
@@ -577,6 +646,16 @@ export type DeletePersonByNodeIdInput = {
   clientMutationId?: InputMaybe<Scalars['String']>;
   /** The globally unique `ID` which will identify a single `Person` to be deleted. */
   nodeId: Scalars['ID'];
+};
+
+/** All input for the `deletePersonByUsername` mutation. */
+export type DeletePersonByUsernameInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  username: Scalars['String'];
 };
 
 /** All input for the `deletePerson` mutation. */
@@ -757,6 +836,30 @@ export type DeleteTopicPayload = {
 /** The output of our delete `Topic` mutation. */
 export type DeleteTopicPayloadTopicEdgeArgs = {
   orderBy?: InputMaybe<Array<TopicsOrderBy>>;
+};
+
+/** All input for the `exchangeCode` mutation. */
+export type ExchangeCodeInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  code: Scalars['String'];
+  loginCodeId: Scalars['UUID'];
+};
+
+/** The output of our `exchangeCode` mutation. */
+export type ExchangeCodePayload = {
+  __typename?: 'ExchangeCodePayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  sessionKey?: Maybe<Scalars['UUID']>;
 };
 
 /** A connection to a list of `Family` values. */
@@ -1073,6 +1176,29 @@ export type FamilyToManyUserFilter = {
   some?: InputMaybe<UserFilter>;
 };
 
+/** All input for the `genRandomCode` mutation. */
+export type GenRandomCodeInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  len: Scalars['Int'];
+};
+
+/** The output of our `genRandomCode` mutation. */
+export type GenRandomCodePayload = {
+  __typename?: 'GenRandomCodePayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  string?: Maybe<Scalars['String']>;
+};
+
 /** A filter to be used against Int fields. All fields are combined with a logical ‘and.’ */
 export type IntFilter = {
   /** Not equal to the specified value, treating null like an ordinary value. */
@@ -1359,6 +1485,8 @@ export type Mutation = {
   createFamilyMembership?: Maybe<CreateFamilyMembershipPayload>;
   /** Creates a single `Interest`. */
   createInterest?: Maybe<CreateInterestPayload>;
+  createLoginCode?: Maybe<CreateLoginCodePayload>;
+  createLoginToken?: Maybe<CreateLoginTokenPayload>;
   /** Creates a single `ManagedPerson`. */
   createManagedPerson?: Maybe<CreateManagedPersonPayload>;
   createNewFamilyMember?: Maybe<CreateNewFamilyMemberPayload>;
@@ -1370,6 +1498,7 @@ export type Mutation = {
   createSpaceMembership?: Maybe<CreateSpaceMembershipPayload>;
   /** Creates a single `Topic`. */
   createTopic?: Maybe<CreateTopicPayload>;
+  createUsernameLoginToken?: Maybe<CreateUsernameLoginTokenPayload>;
   currentPersonId?: Maybe<CurrentPersonIdPayload>;
   /** Deletes a single `FamilyMembership` using a unique key. */
   deleteFamilyMembership?: Maybe<DeleteFamilyMembershipPayload>;
@@ -1385,6 +1514,8 @@ export type Mutation = {
   deletePerson?: Maybe<DeletePersonPayload>;
   /** Deletes a single `Person` using its globally unique id. */
   deletePersonByNodeId?: Maybe<DeletePersonPayload>;
+  /** Deletes a single `Person` using a unique key. */
+  deletePersonByUsername?: Maybe<DeletePersonPayload>;
   /** Deletes a single `Space` using a unique key. */
   deleteSpace?: Maybe<DeleteSpacePayload>;
   /** Deletes a single `Space` using its globally unique id. */
@@ -1399,6 +1530,8 @@ export type Mutation = {
   deleteTopic?: Maybe<DeleteTopicPayload>;
   /** Deletes a single `Topic` using its globally unique id. */
   deleteTopicByNodeId?: Maybe<DeleteTopicPayload>;
+  exchangeCode?: Maybe<ExchangeCodePayload>;
+  genRandomCode?: Maybe<GenRandomCodePayload>;
   postMessage?: Maybe<PostMessagePayload>;
   /** Updates a single `FamilyMembership` using a unique key and a patch. */
   updateFamilyMembership?: Maybe<UpdateFamilyMembershipPayload>;
@@ -1414,6 +1547,8 @@ export type Mutation = {
   updatePerson?: Maybe<UpdatePersonPayload>;
   /** Updates a single `Person` using its globally unique id and a patch. */
   updatePersonByNodeId?: Maybe<UpdatePersonPayload>;
+  /** Updates a single `Person` using a unique key and a patch. */
+  updatePersonByUsername?: Maybe<UpdatePersonPayload>;
   /** Updates a single `Space` using a unique key and a patch. */
   updateSpace?: Maybe<UpdateSpacePayload>;
   /** Updates a single `Space` using its globally unique id and a patch. */
@@ -1450,6 +1585,18 @@ export type MutationCreateInterestArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
+export type MutationCreateLoginCodeArgs = {
+  input: CreateLoginCodeInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationCreateLoginTokenArgs = {
+  input: CreateLoginTokenInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
 export type MutationCreateManagedPersonArgs = {
   input: CreateManagedPersonInput;
 };
@@ -1482,6 +1629,12 @@ export type MutationCreateSpaceMembershipArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationCreateTopicArgs = {
   input: CreateTopicInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationCreateUsernameLoginTokenArgs = {
+  input: CreateUsernameLoginTokenInput;
 };
 
 
@@ -1534,6 +1687,12 @@ export type MutationDeletePersonByNodeIdArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeletePersonByUsernameArgs = {
+  input: DeletePersonByUsernameInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
 export type MutationDeleteSpaceArgs = {
   input: DeleteSpaceInput;
 };
@@ -1572,6 +1731,18 @@ export type MutationDeleteTopicArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationDeleteTopicByNodeIdArgs = {
   input: DeleteTopicByNodeIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationExchangeCodeArgs = {
+  input: ExchangeCodeInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationGenRandomCodeArgs = {
+  input: GenRandomCodeInput;
 };
 
 
@@ -1620,6 +1791,12 @@ export type MutationUpdatePersonArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationUpdatePersonByNodeIdArgs = {
   input: UpdatePersonByNodeIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdatePersonByUsernameArgs = {
+  input: UpdatePersonByUsernameInput;
 };
 
 
@@ -1821,7 +1998,9 @@ export enum PeopleOrderBy {
   PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
   PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
   UpdatedAtAsc = 'UPDATED_AT_ASC',
-  UpdatedAtDesc = 'UPDATED_AT_DESC'
+  UpdatedAtDesc = 'UPDATED_AT_DESC',
+  UsernameAsc = 'USERNAME_ASC',
+  UsernameDesc = 'USERNAME_DESC'
 }
 
 export type Person = Node & {
@@ -1843,6 +2022,7 @@ export type Person = Node & {
   updatedAt: Scalars['Datetime'];
   /** Reads a single `User` that is related to this `Person`. */
   user?: Maybe<User>;
+  username?: Maybe<Scalars['String']>;
 };
 
 
@@ -1893,6 +2073,8 @@ export type PersonCondition = {
   name?: InputMaybe<Scalars['String']>;
   /** Checks for equality with the object’s `updatedAt` field. */
   updatedAt?: InputMaybe<Scalars['Datetime']>;
+  /** Checks for equality with the object’s `username` field. */
+  username?: InputMaybe<Scalars['String']>;
 };
 
 /** A filter to be used against `Person` object types. All fields are combined with a logical ‘and.’ */
@@ -1933,6 +2115,8 @@ export type PersonFilter = {
   user?: InputMaybe<UserFilter>;
   /** A related `user` exists. */
   userExists?: InputMaybe<Scalars['Boolean']>;
+  /** Filter by the object’s `username` field. */
+  username?: InputMaybe<StringFilter>;
 };
 
 /** An input for mutations affecting `Person` */
@@ -1942,6 +2126,7 @@ export type PersonInput = {
   id?: InputMaybe<Scalars['UUID']>;
   name: Scalars['String'];
   updatedAt?: InputMaybe<Scalars['Datetime']>;
+  username?: InputMaybe<Scalars['String']>;
 };
 
 /** Represents an update to a `Person`. Fields that are set will be updated. */
@@ -1951,6 +2136,7 @@ export type PersonPatch = {
   id?: InputMaybe<Scalars['UUID']>;
   name?: InputMaybe<Scalars['String']>;
   updatedAt?: InputMaybe<Scalars['Datetime']>;
+  username?: InputMaybe<Scalars['String']>;
 };
 
 /** A filter to be used against many `Interest` object types. All fields are combined with a logical ‘and.’ */
@@ -2200,6 +2386,7 @@ export type Query = Node & {
   person?: Maybe<Person>;
   /** Reads a single `Person` using its globally unique `ID`. */
   personByNodeId?: Maybe<Person>;
+  personByUsername?: Maybe<Person>;
   post?: Maybe<Post>;
   /** Reads a single `Post` using its globally unique `ID`. */
   postByNodeId?: Maybe<Post>;
@@ -2434,6 +2621,12 @@ export type QueryPersonArgs = {
 /** The root query type which gives access points into the data universe. */
 export type QueryPersonByNodeIdArgs = {
   nodeId: Scalars['ID'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryPersonByUsernameArgs = {
+  username: Scalars['String'];
 };
 
 
@@ -3281,6 +3474,18 @@ export type UpdatePersonByNodeIdInput = {
   patch: PersonPatch;
 };
 
+/** All input for the `updatePersonByUsername` mutation. */
+export type UpdatePersonByUsernameInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  /** An object where the defined keys will be set on the `Person` being updated. */
+  patch: PersonPatch;
+  username: Scalars['String'];
+};
+
 /** All input for the `updatePerson` mutation. */
 export type UpdatePersonInput = {
   /**
@@ -3735,6 +3940,13 @@ export type CreateSpaceMutationVariables = Exact<{
 
 export type CreateSpaceMutation = { __typename?: 'Mutation', createSpace?: { __typename?: 'CreateSpacePayload', space?: { __typename?: 'Space', id: any } | null } | null };
 
+export type CreateLoginCodeMutationVariables = Exact<{
+  username: Scalars['String'];
+}>;
+
+
+export type CreateLoginCodeMutation = { __typename?: 'Mutation', createLoginCode?: { __typename?: 'CreateLoginCodePayload', loginCodeId?: any | null } | null };
+
 export type CurrentPersonQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -3759,6 +3971,14 @@ export type CurrentUserWithManagedPeopleQueryVariables = Exact<{ [key: string]: 
 
 
 export type CurrentUserWithManagedPeopleQuery = { __typename?: 'Query', currentUser?: { __typename?: 'User', id: any, name: string, person?: { __typename?: 'Person', id: any, name: string, avatarUrl: string } | null, managedPeople: { __typename?: 'ManagedPeopleConnection', nodes: Array<{ __typename?: 'ManagedPerson', id: any, person?: { __typename?: 'Person', id: any, name: string, avatarUrl: string } | null }> } } | null };
+
+export type ExchangeCodeMutationVariables = Exact<{
+  loginCodeId: Scalars['UUID'];
+  code: Scalars['String'];
+}>;
+
+
+export type ExchangeCodeMutation = { __typename?: 'Mutation', exchangeCode?: { __typename?: 'ExchangeCodePayload', sessionKey?: any | null } | null };
 
 export type JoinSpaceMutationVariables = Exact<{
   spaceId: Scalars['UUID'];
@@ -3995,6 +4215,39 @@ export function useCreateSpaceMutation(baseOptions?: Apollo.MutationHookOptions<
 export type CreateSpaceMutationHookResult = ReturnType<typeof useCreateSpaceMutation>;
 export type CreateSpaceMutationResult = Apollo.MutationResult<CreateSpaceMutation>;
 export type CreateSpaceMutationOptions = Apollo.BaseMutationOptions<CreateSpaceMutation, CreateSpaceMutationVariables>;
+export const CreateLoginCodeDocument = gql`
+    mutation CreateLoginCode($username: String!) {
+  createLoginCode(input: {username: $username}) {
+    loginCodeId
+  }
+}
+    `;
+export type CreateLoginCodeMutationFn = Apollo.MutationFunction<CreateLoginCodeMutation, CreateLoginCodeMutationVariables>;
+
+/**
+ * __useCreateLoginCodeMutation__
+ *
+ * To run a mutation, you first call `useCreateLoginCodeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateLoginCodeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createLoginCodeMutation, { data, loading, error }] = useCreateLoginCodeMutation({
+ *   variables: {
+ *      username: // value for 'username'
+ *   },
+ * });
+ */
+export function useCreateLoginCodeMutation(baseOptions?: Apollo.MutationHookOptions<CreateLoginCodeMutation, CreateLoginCodeMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateLoginCodeMutation, CreateLoginCodeMutationVariables>(CreateLoginCodeDocument, options);
+      }
+export type CreateLoginCodeMutationHookResult = ReturnType<typeof useCreateLoginCodeMutation>;
+export type CreateLoginCodeMutationResult = Apollo.MutationResult<CreateLoginCodeMutation>;
+export type CreateLoginCodeMutationOptions = Apollo.BaseMutationOptions<CreateLoginCodeMutation, CreateLoginCodeMutationVariables>;
 export const CurrentPersonDocument = gql`
     query CurrentPerson {
   currentPerson {
@@ -4216,6 +4469,40 @@ export function useCurrentUserWithManagedPeopleLazyQuery(baseOptions?: Apollo.La
 export type CurrentUserWithManagedPeopleQueryHookResult = ReturnType<typeof useCurrentUserWithManagedPeopleQuery>;
 export type CurrentUserWithManagedPeopleLazyQueryHookResult = ReturnType<typeof useCurrentUserWithManagedPeopleLazyQuery>;
 export type CurrentUserWithManagedPeopleQueryResult = Apollo.QueryResult<CurrentUserWithManagedPeopleQuery, CurrentUserWithManagedPeopleQueryVariables>;
+export const ExchangeCodeDocument = gql`
+    mutation ExchangeCode($loginCodeId: UUID!, $code: String!) {
+  exchangeCode(input: {loginCodeId: $loginCodeId, code: $code}) {
+    sessionKey
+  }
+}
+    `;
+export type ExchangeCodeMutationFn = Apollo.MutationFunction<ExchangeCodeMutation, ExchangeCodeMutationVariables>;
+
+/**
+ * __useExchangeCodeMutation__
+ *
+ * To run a mutation, you first call `useExchangeCodeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useExchangeCodeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [exchangeCodeMutation, { data, loading, error }] = useExchangeCodeMutation({
+ *   variables: {
+ *      loginCodeId: // value for 'loginCodeId'
+ *      code: // value for 'code'
+ *   },
+ * });
+ */
+export function useExchangeCodeMutation(baseOptions?: Apollo.MutationHookOptions<ExchangeCodeMutation, ExchangeCodeMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ExchangeCodeMutation, ExchangeCodeMutationVariables>(ExchangeCodeDocument, options);
+      }
+export type ExchangeCodeMutationHookResult = ReturnType<typeof useExchangeCodeMutation>;
+export type ExchangeCodeMutationResult = Apollo.MutationResult<ExchangeCodeMutation>;
+export type ExchangeCodeMutationOptions = Apollo.BaseMutationOptions<ExchangeCodeMutation, ExchangeCodeMutationVariables>;
 export const JoinSpaceDocument = gql`
     mutation JoinSpace($spaceId: UUID!, $personId: UUID!) {
   createSpaceMembership(
