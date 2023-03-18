@@ -39,13 +39,13 @@ const wsLink = new GraphQLWsLink(createClient({
 // });
 
 const asyncSettingsLink = setContext(
-  (request) => {
+  (_request) => {
     const skey = localStorage.getItem("sessionKey");
     const headers = skey ? {
       "x-person-session": skey,
     } : {}
-    new Promise((success, fail) => {
-      success({
+    return new Promise((resolve, _reject) => {
+      resolve({
         headers
       });
     })
