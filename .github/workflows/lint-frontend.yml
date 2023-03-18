@@ -1,5 +1,5 @@
-name: Lint Frontend
-run-name: ${{ github.actor }} is linting the frontend
+name: Check Frontend
+run-name: ${{ github.actor }} is checking the frontend
 on: [pull_request]
 jobs:
   lint:
