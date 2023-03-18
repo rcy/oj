@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 14.4 (Debian 14.4-1.pgdg110+1)
+-- Dumped from database version 14.5 (Debian 14.5-2.pgdg110+2)
 -- Dumped by pg_dump version 14.7 (Ubuntu 14.7-0ubuntu0.22.04.1)
 
 SET statement_timeout = 0;
@@ -232,8 +232,20 @@ $$;
 CREATE FUNCTION app_public.current_person_id() RETURNS uuid
     LANGUAGE plpgsql
     AS $$
+declare
+v_person_id uuid;
 begin
-  return current_setting('person.id', true)::uuid;
+  -- if the person.id session variable is set, return that
+  -- otherwise, return the person_id associated with the user.id, if that is set
+  -- otherwise, return null
+
+  v_person_id = current_setting('person.id', true)::uuid;
+
+  if v_person_id is null then
+    select person_id from app_public.current_user() into v_person_id;
+  end if;
+
+  return v_person_id;
 end;
 $$;
 

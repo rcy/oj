@@ -14,6 +14,8 @@ export default function LoggedOutApp() {
 }
 
 function AuthButtons() {
+  const here = encodeURIComponent(window.location.href)
+
   return (
     <div className="grid h-screen place-items-center">
       <div className="flex flex-col items-center">
@@ -24,12 +26,10 @@ function AuthButtons() {
           src="octopus-junior-text.png"
         />
 
-        <Link to={`/kidsauth/login?from=${encodeURIComponent(window.location.href)}`}>
+        <Link to={`/kidsauth/login?from=${here}`}>
           <Button color="red">kids login</Button>
         </Link>
-        <a
-          href={`/auth/login?from=${encodeURIComponent(window.location.href)}`}
-        >
+        <a href={`/auth/login?from=${here}`}>
           <Button color="blue">parents login</Button>
         </a>
       </div>
