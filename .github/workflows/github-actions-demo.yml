@@ -15,4 +15,7 @@ jobs:
       - name: List files in the repository
         run: |
           ls ${{ github.workspace }}
+      - name: lint frontend code
+        run: |
+          cd frontend-react && npm run lint
       - run: echo "🍏 This job's status is ${{ job.status }}."
