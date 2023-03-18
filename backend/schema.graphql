@@ -235,31 +235,6 @@ type CreateLoginCodePayload {
   query: Query
 }
 
-"""All input for the `createLoginToken` mutation."""
-input CreateLoginTokenInput {
-  """
-  An arbitrary string value with no semantic meaning. Will be included in the
-  payload verbatim. May be used to track mutations by the client.
-  """
-  clientMutationId: String
-  username: String!
-}
-
-"""The output of our `createLoginToken` mutation."""
-type CreateLoginTokenPayload {
-  """
-  The exact same `clientMutationId` that was provided in the mutation input,
-  unchanged and unused. May be used by a client to track mutations.
-  """
-  clientMutationId: String
-
-  """
-  Our root query field type. Allows us to run any query from our mutation payload.
-  """
-  query: Query
-  uuid: UUID
-}
-
 """All input for the create `ManagedPerson` mutation."""
 input CreateManagedPersonInput {
   """
@@ -483,31 +458,6 @@ type CreateTopicPayload {
     """The method to use when ordering `Topic`."""
     orderBy: [TopicsOrderBy!] = [PRIMARY_KEY_ASC]
   ): TopicsEdge
-}
-
-"""All input for the `createUsernameLoginToken` mutation."""
-input CreateUsernameLoginTokenInput {
-  """
-  An arbitrary string value with no semantic meaning. Will be included in the
-  payload verbatim. May be used to track mutations by the client.
-  """
-  clientMutationId: String
-  vUsername: String!
-}
-
-"""The output of our `createUsernameLoginToken` mutation."""
-type CreateUsernameLoginTokenPayload {
-  """
-  The exact same `clientMutationId` that was provided in the mutation input,
-  unchanged and unused. May be used by a client to track mutations.
-  """
-  clientMutationId: String
-
-  """
-  Our root query field type. Allows us to run any query from our mutation payload.
-  """
-  query: Query
-  uuid: UUID
 }
 
 """All input for the `currentPersonId` mutation."""
@@ -1804,12 +1754,6 @@ type Mutation {
     """
     input: CreateLoginCodeInput!
   ): CreateLoginCodePayload
-  createLoginToken(
-    """
-    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
-    """
-    input: CreateLoginTokenInput!
-  ): CreateLoginTokenPayload
 
   """Creates a single `ManagedPerson`."""
   createManagedPerson(
@@ -1856,12 +1800,6 @@ type Mutation {
     """
     input: CreateTopicInput!
   ): CreateTopicPayload
-  createUsernameLoginToken(
-    """
-    The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
-    """
-    input: CreateUsernameLoginTokenInput!
-  ): CreateUsernameLoginTokenPayload
   currentPersonId(
     """
     The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.

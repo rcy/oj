@@ -227,29 +227,6 @@ export type CreateLoginCodePayload = {
   query?: Maybe<Query>;
 };
 
-/** All input for the `createLoginToken` mutation. */
-export type CreateLoginTokenInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']>;
-  username: Scalars['String'];
-};
-
-/** The output of our `createLoginToken` mutation. */
-export type CreateLoginTokenPayload = {
-  __typename?: 'CreateLoginTokenPayload';
-  /**
-   * The exact same `clientMutationId` that was provided in the mutation input,
-   * unchanged and unused. May be used by a client to track mutations.
-   */
-  clientMutationId?: Maybe<Scalars['String']>;
-  /** Our root query field type. Allows us to run any query from our mutation payload. */
-  query?: Maybe<Query>;
-  uuid?: Maybe<Scalars['UUID']>;
-};
-
 /** All input for the create `ManagedPerson` mutation. */
 export type CreateManagedPersonInput = {
   /**
@@ -457,29 +434,6 @@ export type CreateTopicPayload = {
 /** The output of our create `Topic` mutation. */
 export type CreateTopicPayloadTopicEdgeArgs = {
   orderBy?: InputMaybe<Array<TopicsOrderBy>>;
-};
-
-/** All input for the `createUsernameLoginToken` mutation. */
-export type CreateUsernameLoginTokenInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']>;
-  vUsername: Scalars['String'];
-};
-
-/** The output of our `createUsernameLoginToken` mutation. */
-export type CreateUsernameLoginTokenPayload = {
-  __typename?: 'CreateUsernameLoginTokenPayload';
-  /**
-   * The exact same `clientMutationId` that was provided in the mutation input,
-   * unchanged and unused. May be used by a client to track mutations.
-   */
-  clientMutationId?: Maybe<Scalars['String']>;
-  /** Our root query field type. Allows us to run any query from our mutation payload. */
-  query?: Maybe<Query>;
-  uuid?: Maybe<Scalars['UUID']>;
 };
 
 /** All input for the `currentPersonId` mutation. */
@@ -1485,7 +1439,6 @@ export type Mutation = {
   /** Creates a single `Interest`. */
   createInterest?: Maybe<CreateInterestPayload>;
   createLoginCode?: Maybe<CreateLoginCodePayload>;
-  createLoginToken?: Maybe<CreateLoginTokenPayload>;
   /** Creates a single `ManagedPerson`. */
   createManagedPerson?: Maybe<CreateManagedPersonPayload>;
   createNewFamilyMember?: Maybe<CreateNewFamilyMemberPayload>;
@@ -1497,7 +1450,6 @@ export type Mutation = {
   createSpaceMembership?: Maybe<CreateSpaceMembershipPayload>;
   /** Creates a single `Topic`. */
   createTopic?: Maybe<CreateTopicPayload>;
-  createUsernameLoginToken?: Maybe<CreateUsernameLoginTokenPayload>;
   currentPersonId?: Maybe<CurrentPersonIdPayload>;
   /** Deletes a single `FamilyMembership` using a unique key. */
   deleteFamilyMembership?: Maybe<DeleteFamilyMembershipPayload>;
@@ -1590,12 +1542,6 @@ export type MutationCreateLoginCodeArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
-export type MutationCreateLoginTokenArgs = {
-  input: CreateLoginTokenInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
 export type MutationCreateManagedPersonArgs = {
   input: CreateManagedPersonInput;
 };
@@ -1628,12 +1574,6 @@ export type MutationCreateSpaceMembershipArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationCreateTopicArgs = {
   input: CreateTopicInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
-export type MutationCreateUsernameLoginTokenArgs = {
-  input: CreateUsernameLoginTokenInput;
 };
 
 
