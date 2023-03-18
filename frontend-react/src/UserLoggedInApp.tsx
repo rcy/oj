@@ -3,7 +3,7 @@ import PersonPicker from "./PersonPicker";
 import MeLayout from "./routes/MeLayout";
 import useSessionStorage from "./util/useSessionStorage";
 
-export default function LoggedInApp() {
+export default function UserLoggedInApp() {
   const [personId, setPersonId] = useSessionStorage(
     "personId",
     null

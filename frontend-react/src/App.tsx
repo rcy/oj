@@ -1,4 +1,4 @@
-import UserLoggedInApp from "./LoggedInApp";
+import UserLoggedInApp from "./UserLoggedInApp";
 import PersonLoggedInApp from "./PersonLoggedInApp";
 import LoggedOutApp from "./LoggedOutApp";
 import { useCurrentPersonQuery, useCurrentUserQuery } from "./generated-types";
