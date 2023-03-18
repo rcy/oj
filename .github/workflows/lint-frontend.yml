@@ -13,4 +13,7 @@ jobs:
       - name: Lint frontend code
         run: |
           cd frontend-react && npm run lint
+      - name: Prettier check frontend code
+        run: |
+          cd frontend-react && npm run prettier
       - run: echo "🍏 This job's status is ${{ job.status }}."
