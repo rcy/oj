@@ -15,7 +15,7 @@ init:
 	npx graphile-migrate init
 
 watch:
-	npm run watch
+	npx graphile-migrate watch
 
 commit:
 	npx graphile-migrate commit
