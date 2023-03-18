@@ -149,8 +149,6 @@ app.get('/auth/logout', function(req, res, next){
   });
 });
 
-const delay = 0;
-
 // https://www.graphile.org/postgraphile/usage-library/
 const postgraphileOptions = Object.assign({
   pluginHook: makePluginHook([PgPubsub.default]),
