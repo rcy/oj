@@ -2,7 +2,7 @@ name: Lint Frontend
 run-name: ${{ github.actor }} is linting the frontend
 on: [pull_request]
 jobs:
-  Explore-GitHub-Actions:
+  lint-frontend-job:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository code
