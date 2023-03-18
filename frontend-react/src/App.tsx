@@ -19,15 +19,16 @@ function App() {
     return "loading";
   }
 
+  // a user is a google authenticated user
+  if (userQuery.data?.currentUser) {
+    return <UserLoggedInApp />;
+  }
+
   // a person (kid) can be logged in without the user being logged in (google auth)
   if (personQuery.data?.currentPerson) {
     return <PersonLoggedInApp />
   }
 
-  // a user is a google authenticated user
-  if (userQuery.data?.currentUser) {
-    return <UserLoggedInApp />;
-  }
 
   return <LoggedOutApp />;
 }

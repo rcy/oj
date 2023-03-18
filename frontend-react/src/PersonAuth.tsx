@@ -1,10 +1,12 @@
 import { useState } from "react";
 import TextInput from "./components/TextInput";
 import { useCreateLoginCodeMutation, useExchangeCodeMutation } from "./generated-types";
+import { useSearchParams } from "react-router-dom";
 
 export default function PersonAuth() {
   const [createLoginCode] = useCreateLoginCodeMutation()
   const [exchangeCode] = useExchangeCodeMutation()
+  const [searchParams] = useSearchParams()
 
   const [username, setUsername] = useState("")
   const [loginCodeId, setLoginCodeId] = useState(null)
@@ -34,7 +36,7 @@ export default function PersonAuth() {
       setCode('')
     } else {
       localStorage.setItem('sessionKey', sessionKey)
-      window.location.reload()
+      window.location.assign(searchParams.get('from') || '/')
     }
   }
 
