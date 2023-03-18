@@ -51,7 +51,7 @@ export default function Chat({ spaceId }: Props) {
         return prev;
       },
     });
-  }, [spaceId, membershipId, spacePostsQueryResult]);
+  }, [spaceId, membershipId]);
 
   const handleSubmit = async (text: string) => {
     await postMessageMutation({
