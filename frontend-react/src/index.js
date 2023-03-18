@@ -11,22 +11,26 @@ import {
   InMemoryCache,
   split,
 } from "@apollo/client";
-import { getMainDefinition } from '@apollo/client/utilities';
+import { getMainDefinition } from "@apollo/client/utilities";
 import { setContext } from "@apollo/client/link/context";
-import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
-import { createClient } from 'graphql-ws';
+import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
+import { createClient } from "graphql-ws";
 
 //import { , concat } from "apollo-link";
 
-console.log('env', process.env)
+console.log("env", process.env);
 
 const httpLink = new HttpLink({ uri: "/graphql" });
 
-const wsUrl = process.env.NODE_ENV === 'development' ? 'ws://localhost:5000/graphql' : 'wss://octopusjr.ca/graphql'
-const wsLink = new GraphQLWsLink(createClient({
-  url: wsUrl,
-}));
-
+const wsUrl =
+  process.env.NODE_ENV === "development"
+    ? "ws://localhost:5000/graphql"
+    : "wss://octopusjr.ca/graphql";
+const wsLink = new GraphQLWsLink(
+  createClient({
+    url: wsUrl,
+  })
+);
 
 // cookies are used for user auth, but we add a header for current family membership here
 // const familyMembershipMiddleware = new ApolloLink((operation, forward) => {
@@ -38,19 +42,19 @@ const wsLink = new GraphQLWsLink(createClient({
 //   return forward(operation);
 // });
 
-const asyncSettingsLink = setContext(
-  (_request) => {
-    const skey = localStorage.getItem("sessionKey");
-    const headers = skey ? {
-      "x-person-session": skey,
-    } : {}
-    return new Promise((resolve, _reject) => {
-      resolve({
-        headers
-      });
-    })
-  }
-);
+const asyncSettingsLink = setContext((_request) => {
+  const skey = localStorage.getItem("sessionKey");
+  const headers = skey
+    ? {
+        "x-person-session": skey,
+      }
+    : {};
+  return new Promise((resolve, _reject) => {
+    resolve({
+      headers,
+    });
+  });
+});
 
 // The split function takes three parameters:
 //
@@ -61,12 +65,12 @@ const splitLink = split(
   ({ query }) => {
     const definition = getMainDefinition(query);
     return (
-      definition.kind === 'OperationDefinition' &&
-      definition.operation === 'subscription'
+      definition.kind === "OperationDefinition" &&
+      definition.operation === "subscription"
     );
   },
   wsLink,
-  concat(asyncSettingsLink, httpLink),
+  concat(asyncSettingsLink, httpLink)
 );
 
 const client = new ApolloClient({

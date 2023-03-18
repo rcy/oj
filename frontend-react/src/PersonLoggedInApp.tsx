@@ -1,4 +1,4 @@
-import LogoutButton from './components/LogoutButton'
+import LogoutButton from "./components/LogoutButton";
 
 export default function PersonLoggedInApp() {
   return (
@@ -6,5 +6,5 @@ export default function PersonLoggedInApp() {
       <p>build out a kids view using bootstrap</p>
       <LogoutButton />
     </div>
-  )
+  );
 }

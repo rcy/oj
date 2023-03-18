@@ -26,9 +26,8 @@ function App() {
 
   // a person (kid) can be logged in without the user being logged in (google auth)
   if (personQuery.data?.currentPerson) {
-    return <PersonLoggedInApp />
+    return <PersonLoggedInApp />;
   }
-
 
   return <LoggedOutApp />;
 }

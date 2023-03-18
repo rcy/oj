@@ -7,7 +7,7 @@ import {
   useSpacePostsQuery,
 } from "../generated-types";
 import ChatInput from "./ChatInput";
-import beep from '../util/beep';
+import beep from "../util/beep";
 
 interface Props {
   spaceId: string;
@@ -23,7 +23,8 @@ export default function Chat({ spaceId }: Props) {
     variables: { spaceId, personId },
   });
 
-  const membershipId = membershipQueryResult.data?.spaceMembershipByPersonIdAndSpaceId?.id;
+  const membershipId =
+    membershipQueryResult.data?.spaceMembershipByPersonIdAndSpaceId?.id;
 
   useEffect(() => {
     // subscribeToMore returns its unsubscribe function
@@ -31,10 +32,9 @@ export default function Chat({ spaceId }: Props) {
       document: SpacePostsAddedDocument,
       variables: { spaceId },
       updateQuery: (prev, { subscriptionData }) => {
-        const p: any = subscriptionData.data.posts
+        const p: any = subscriptionData.data.posts;
 
         if (prev.posts) {
-
           // this could be handled by notifications in the future
           if (p.post.membership.id !== membershipId) {
             beep();
@@ -44,16 +44,13 @@ export default function Chat({ spaceId }: Props) {
             ...prev,
             posts: {
               ...prev.posts,
-              nodes: [
-                ...prev.posts.nodes,
-                p.post
-              ].slice(-10)
-            }
-          }
+              nodes: [...prev.posts.nodes, p.post].slice(-10),
+            },
+          };
         }
-        return prev
-      }
-    })
+        return prev;
+      },
+    });
   }, [spaceId, membershipId, spacePostsQueryResult]);
 
   const handleSubmit = async (text: string) => {

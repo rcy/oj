@@ -14,7 +14,7 @@ export default function LoggedOutApp() {
 }
 
 function AuthButtons() {
-  const here = encodeURIComponent(window.location.href)
+  const here = encodeURIComponent(window.location.href);
 
   return (
     <div className="grid h-screen place-items-center">
@@ -34,5 +34,5 @@ function AuthButtons() {
         </a>
       </div>
     </div>
-  )
+  );
 }

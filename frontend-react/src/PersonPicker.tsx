@@ -3,9 +3,7 @@ import { useCurrentUserWithManagedPeopleQuery } from "./generated-types";
 
 type PersonPickerType = { setPersonId: Function };
 
-export default function PersonPicker({
-  setPersonId,
-}: PersonPickerType) {
+export default function PersonPicker({ setPersonId }: PersonPickerType) {
   const { loading, data } = useCurrentUserWithManagedPeopleQuery();
 
   if (loading) {
@@ -41,10 +39,10 @@ export default function PersonPicker({
 }
 
 interface PersonCardProps {
-  person: any,
-  onClick: Function,
+  person: any;
+  onClick: Function;
 }
-function PersonCard({ person, onClick }:PersonCardProps) {
+function PersonCard({ person, onClick }: PersonCardProps) {
   return (
     <a
       href={`#${person.id}`}
@@ -52,13 +50,9 @@ function PersonCard({ person, onClick }:PersonCardProps) {
       key={person.id}
       className="rounded-lg w-72 flex bg-white items-center border-solid border-4 hover:border-orange-600"
     >
-      <img
-        className="rounded-l-sm"
-        src={person.avatarUrl}
-        alt={person.name}
-      />
+      <img className="rounded-l-sm" src={person.avatarUrl} alt={person.name} />
 
       <div className="p-3 text-xl">{person.name}</div>
     </a>
-  )
+  );
 }

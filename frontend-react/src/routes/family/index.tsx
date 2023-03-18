@@ -1,7 +1,5 @@
 import { Routes, Route, Link, useNavigate } from "react-router-dom";
-import {
-  useCurrentPersonFamilyMembershipQuery,
-} from "../../generated-types";
+import { useCurrentPersonFamilyMembershipQuery } from "../../generated-types";
 import Button from "../../Button";
 import AdminAddFamilyMember from "../../components/AdminAddFamilyMember";
 import MemberPageNotFound from "../../PageNotFound";
@@ -23,32 +21,32 @@ graphql(`
       }
     }
   }
-`)
+`);
 
 graphql(`
-query CurrentPersonFamilyMembership {
-  currentPerson {
-    id
-    familyMembership {
+  query CurrentPersonFamilyMembership {
+    currentPerson {
       id
-      role
-      family {
+      familyMembership {
         id
-        familyMemberships(orderBy: CREATED_AT_ASC) {
-          edges {
-            node {
-              ...FamilyMembershipItem
+        role
+        family {
+          id
+          familyMemberships(orderBy: CREATED_AT_ASC) {
+            edges {
+              node {
+                ...FamilyMembershipItem
+              }
             }
           }
         }
       }
     }
   }
-}
 `);
 
 export default function FamilyIndex() {
-  const query = useCurrentPersonFamilyMembershipQuery()
+  const query = useCurrentPersonFamilyMembershipQuery();
   const family = query.data?.currentPerson?.familyMembership?.family;
   const navigate = useNavigate();
   const personId = useContext(PersonIdContext);
@@ -82,20 +80,33 @@ export default function FamilyIndex() {
             path="/"
             element={
               <div>
-                {family.familyMemberships.edges.map(({ node: familyMembership }) => (
-                  <div key={familyMembership.id}>
-                    <Link
-                      to={familyMembership.person?.id === personId ? "/me" : `/people/${familyMembership.person?.id}` }
-                    >
-                      <div className="flex items-center gap-2">
-                        <img alt="avatar" src={`${familyMembership.person?.avatarUrl}&s=40`} />
-                        <div className="text-3xl">
-                          {familyMembership.title || familyMembership.person?.name} {familyMembership.person?.user?.id ? null : 'managed account'}
+                {family.familyMemberships.edges.map(
+                  ({ node: familyMembership }) => (
+                    <div key={familyMembership.id}>
+                      <Link
+                        to={
+                          familyMembership.person?.id === personId
+                            ? "/me"
+                            : `/people/${familyMembership.person?.id}`
+                        }
+                      >
+                        <div className="flex items-center gap-2">
+                          <img
+                            alt="avatar"
+                            src={`${familyMembership.person?.avatarUrl}&s=40`}
+                          />
+                          <div className="text-3xl">
+                            {familyMembership.title ||
+                              familyMembership.person?.name}{" "}
+                            {familyMembership.person?.user?.id
+                              ? null
+                              : "managed account"}
+                          </div>
                         </div>
-                      </div>
-                    </Link>
-                  </div>
-                ))}
+                      </Link>
+                    </div>
+                  )
+                )}
               </div>
             }
           />

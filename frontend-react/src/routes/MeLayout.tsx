@@ -47,14 +47,7 @@ export default function MemberLayout({ doLogout }: MemberLayoutType) {
           <main className="w-full">
             <Routes>
               <Route path="/" element={<Navigate to="/me" />} />
-              <Route
-                path="/me"
-                element={
-                  <MeIndex
-                    doLogout={doLogout}
-                  />
-                }
-              />
+              <Route path="/me" element={<MeIndex doLogout={doLogout} />} />
               <Route path="/me/pic" element={<MemberSetProfilePicture />} />
               <Route path="/spaces" element={<SpacesIndex />} />
               <Route path="/family/*" element={<FamilyIndex />} />

@@ -8,14 +8,12 @@ interface PersonHomeType {
   doLogout: Function;
 }
 
-export default function PersonHome({
-  doLogout,
-}: PersonHomeType) {
+export default function PersonHome({ doLogout }: PersonHomeType) {
   let navigate = useNavigate();
   const currentPersonQuery = useCurrentPersonQuery();
 
   if (currentPersonQuery.loading) {
-    return null
+    return null;
   }
 
   const handleLogout: MouseEventHandler = (ev) => {
