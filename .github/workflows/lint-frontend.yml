@@ -1,5 +1,5 @@
-name: Check Frontend
-run-name: ${{ github.actor }} is checking the frontend
+name: Frontend
+run-name: Frontend (${{ github.actor }})
 on: [pull_request]
 jobs:
   lint:
