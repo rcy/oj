@@ -239,7 +239,7 @@ begin
   -- otherwise, return the person_id associated with the user.id, if that is set
   -- otherwise, return null
 
-  v_person_id = current_setting('person.id', true)::uuid;
+  v_person_id = nullif(current_setting('person.id', true), '')::uuid;
 
   if v_person_id is null then
     select person_id from app_public.current_user() into v_person_id;
