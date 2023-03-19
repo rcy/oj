@@ -2,6 +2,7 @@ import { Center, Text, Heading, Box, Flex, Spacer, Container, CardBody, Card, Av
 import { BrowserRouter, Link, Route, Routes } from "react-router-dom";
 import MemberSetProfilePicture from "./routes/member/MemberSetProfilePicture";
 import { useCurrentPersonQuery } from "./generated-types";
+import NavBar from './components/NavBar'
 
 export default function PersonLoggedInApp() {
   return (
@@ -23,30 +24,6 @@ function PersonLoggedInAppInner() {
       </Routes>
     </Box>
   )
-}
-
-function NavBar() {
-  return <Box minWidth='max-content' bgGradient='linear(to-r, orange.200, purple.200)'>
-    <Container>
-      <Flex alignItems='center' py='2' mb='1em'>
-        <Heading size="xl">
-          <Link to="/">🐙</Link>
-        </Heading>
-        <Spacer />
-        <Box>
-          <Heading size="md">
-            <Link to="/">Octopus Junior</Link>
-          </Heading>
-        </Box>
-        <Spacer />
-        <Box>
-          <Link to="/profile">
-            <Avatar />
-          </Link>
-        </Box>
-      </Flex>
-    </Container >
-  </Box>
 }
 
 function Main() {
