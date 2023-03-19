@@ -1,7 +1,6 @@
+import { Avatar, Box, Button, ButtonGroup, Heading, SimpleGrid } from "@chakra-ui/react";
 import md5 from "md5";
-import { useContext, useEffect, useState } from "react";
-import Button from "../../Button";
-import { PersonIdContext } from "../../contexts";
+import { useEffect, useState } from "react";
 import {
   useCurrentPersonQuery,
   useSetPersonAvatarMutation,
@@ -16,7 +15,7 @@ const types = ["monsterid", "wavatar", "robohash", "identicon", "retro"];
 
 export default function MemberSetProfilePicture() {
   const currentPersonQuery = useCurrentPersonQuery();
-  const personId = useContext(PersonIdContext);
+  const personId = currentPersonQuery?.data?.currentPerson.id
   const [dtype, selectType] = useState(types[0]);
   const [mutation] = useSetPersonAvatarMutation();
   const [hashes, setHashes] = useState([]);
@@ -33,23 +32,25 @@ export default function MemberSetProfilePicture() {
   useEffect(shuffle, [personId]);
 
   return (
-    <div className="flex flex-col gap-5">
-      <div className="text-5xl">Change your profile picture</div>
-      <div className="flex gap-1">
+    <Box>
+      <Heading as='h1'>Change your profile picture</Heading>
+
+      <ButtonGroup gap='2' my='10'>
         {types.map((d) => (
-          <Button onClick={() => selectType(d)} key={d}>
+          <Button onClick={() => selectType(d)} key={d} colorScheme='green'>
             {d}
           </Button>
         ))}
-      </div>
-      <div className="flex flex-wrap gap-2">
+      </ButtonGroup>
+
+      <SimpleGrid minChildWidth='100px' spacing='5px'>
         {hashes.map((h) => (
-          <div key={h} className="border-solid border-4 hover:border-black">
+          <div key={h}>
             <GravImage h={h} d={dtype} s={80} onSelect={handleSelect} />
           </div>
         ))}
-      </div>
-    </div>
+      </SimpleGrid>
+    </Box>
   );
 }
 
@@ -62,10 +63,9 @@ function GravImage({ h, d, s, onSelect }) {
   }
 
   return (
-    <img
+    <Avatar
       alt="avatar"
-      width={s}
-      height={s}
+      size="xl"
       key={h}
       src={`${url}&s=${s}`}
       onClick={handleClick}
