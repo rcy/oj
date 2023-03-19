@@ -3927,7 +3927,7 @@ export type CreateLoginCodeMutation = { __typename?: 'Mutation', createLoginCode
 export type CurrentPersonQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type CurrentPersonQuery = { __typename?: 'Query', currentPerson?: { __typename?: 'Person', id: any, name: string, avatarUrl: string } | null };
+export type CurrentPersonQuery = { __typename?: 'Query', currentPerson?: { __typename?: 'Person', id: any, name: string, avatarUrl: string, username?: string | null } | null };
 
 export type CurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -4264,6 +4264,7 @@ export const CurrentPersonDocument = gql`
     id
     name
     avatarUrl
+    username
   }
 }
     `;

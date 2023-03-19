@@ -3,5 +3,6 @@ query CurrentPerson {
     id
     name
     avatarUrl
+    username
   }
 }
