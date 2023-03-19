@@ -16,6 +16,23 @@ import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
 import { createClient } from "graphql-ws";
 import { ChakraProvider } from "@chakra-ui/react";
 
+import { extendTheme } from "@chakra-ui/react";
+import { mode } from "@chakra-ui/theme-tools";
+
+const theme = extendTheme({
+  styles: {
+    global: (props) => ({
+      body: {
+        bg: mode(
+          'linear-gradient(90deg, rgba(131,58,180,1) 0%, rgba(253,29,29,1) 50%, rgba(252,176,69,1) 100%);',
+          'pink'
+        )(props)
+      }
+    })
+  }
+})
+
+
 //import { , concat } from "apollo-link";
 
 console.log("env", process.env);
@@ -82,7 +99,7 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <ApolloProvider client={client}>
-      <ChakraProvider>
+      <ChakraProvider theme={theme}>
         <App />
       </ChakraProvider>
     </ApolloProvider>
