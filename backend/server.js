@@ -170,7 +170,7 @@ const postgraphileOptions = Object.assign({
     connectionFilterRelations: true,
   },
   pgSettings: async function (req) {
-    console.log('**************************************************************** user/sessionKey', req.user, req.personId)
+    console.log('**************************************************************** userId/personId', req.user, req.personId)
 
     return {
       'role': 'visitor',
