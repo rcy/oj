@@ -3902,6 +3902,13 @@ export type BecomePersonMutationVariables = Exact<{
 
 export type BecomePersonMutation = { __typename?: 'Mutation', becomePerson?: { __typename?: 'BecomePersonPayload', sessionKey?: any | null } | null };
 
+export type CreateLoginCodeMutationVariables = Exact<{
+  username: Scalars['String'];
+}>;
+
+
+export type CreateLoginCodeMutation = { __typename?: 'Mutation', createLoginCode?: { __typename?: 'CreateLoginCodePayload', loginCodeId?: any | null } | null };
+
 export type CreateNewFamilyMemberMutationVariables = Exact<{
   name: Scalars['String'];
   role: Scalars['String'];
@@ -3917,13 +3924,6 @@ export type CreateSpaceMutationVariables = Exact<{
 
 export type CreateSpaceMutation = { __typename?: 'Mutation', createSpace?: { __typename?: 'CreateSpacePayload', space?: { __typename?: 'Space', id: any } | null } | null };
 
-export type CreateLoginCodeMutationVariables = Exact<{
-  username: Scalars['String'];
-}>;
-
-
-export type CreateLoginCodeMutation = { __typename?: 'Mutation', createLoginCode?: { __typename?: 'CreateLoginCodePayload', loginCodeId?: any | null } | null };
-
 export type CurrentPersonQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -3938,11 +3938,6 @@ export type CurrentUserFamilyQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type CurrentUserFamilyQuery = { __typename?: 'Query', currentUser?: { __typename?: 'User', id: any, name: string, family?: { __typename?: 'Family', id: any, familyMemberships: { __typename?: 'FamilyMembershipsConnection', nodes: Array<{ __typename?: 'FamilyMembership', id: any, title?: string | null, role: string, person?: { __typename?: 'Person', id: any, name: string, avatarUrl: string, user?: { __typename?: 'User', id: any } | null } | null }> } } | null } | null };
-
-export type CurrentFamilyMembershipQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type CurrentFamilyMembershipQuery = { __typename?: 'Query', currentFamilyMembership?: { __typename?: 'FamilyMembership', id: any, role: string, title?: string | null, family?: { __typename?: 'Family', id: any } | null, person?: { __typename?: 'Person', id: any, name: string, avatarUrl: string, user?: { __typename?: 'User', id: any } | null } | null } | null };
 
 export type CurrentUserWithManagedPeopleQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -4154,6 +4149,39 @@ export function useBecomePersonMutation(baseOptions?: Apollo.MutationHookOptions
 export type BecomePersonMutationHookResult = ReturnType<typeof useBecomePersonMutation>;
 export type BecomePersonMutationResult = Apollo.MutationResult<BecomePersonMutation>;
 export type BecomePersonMutationOptions = Apollo.BaseMutationOptions<BecomePersonMutation, BecomePersonMutationVariables>;
+export const CreateLoginCodeDocument = gql`
+    mutation CreateLoginCode($username: String!) {
+  createLoginCode(input: {username: $username}) {
+    loginCodeId
+  }
+}
+    `;
+export type CreateLoginCodeMutationFn = Apollo.MutationFunction<CreateLoginCodeMutation, CreateLoginCodeMutationVariables>;
+
+/**
+ * __useCreateLoginCodeMutation__
+ *
+ * To run a mutation, you first call `useCreateLoginCodeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateLoginCodeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createLoginCodeMutation, { data, loading, error }] = useCreateLoginCodeMutation({
+ *   variables: {
+ *      username: // value for 'username'
+ *   },
+ * });
+ */
+export function useCreateLoginCodeMutation(baseOptions?: Apollo.MutationHookOptions<CreateLoginCodeMutation, CreateLoginCodeMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateLoginCodeMutation, CreateLoginCodeMutationVariables>(CreateLoginCodeDocument, options);
+      }
+export type CreateLoginCodeMutationHookResult = ReturnType<typeof useCreateLoginCodeMutation>;
+export type CreateLoginCodeMutationResult = Apollo.MutationResult<CreateLoginCodeMutation>;
+export type CreateLoginCodeMutationOptions = Apollo.BaseMutationOptions<CreateLoginCodeMutation, CreateLoginCodeMutationVariables>;
 export const CreateNewFamilyMemberDocument = gql`
     mutation CreateNewFamilyMember($name: String!, $role: String!) {
   createNewFamilyMember(input: {name: $name, role: $role}) {
@@ -4225,39 +4253,6 @@ export function useCreateSpaceMutation(baseOptions?: Apollo.MutationHookOptions<
 export type CreateSpaceMutationHookResult = ReturnType<typeof useCreateSpaceMutation>;
 export type CreateSpaceMutationResult = Apollo.MutationResult<CreateSpaceMutation>;
 export type CreateSpaceMutationOptions = Apollo.BaseMutationOptions<CreateSpaceMutation, CreateSpaceMutationVariables>;
-export const CreateLoginCodeDocument = gql`
-    mutation CreateLoginCode($username: String!) {
-  createLoginCode(input: {username: $username}) {
-    loginCodeId
-  }
-}
-    `;
-export type CreateLoginCodeMutationFn = Apollo.MutationFunction<CreateLoginCodeMutation, CreateLoginCodeMutationVariables>;
-
-/**
- * __useCreateLoginCodeMutation__
- *
- * To run a mutation, you first call `useCreateLoginCodeMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateLoginCodeMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createLoginCodeMutation, { data, loading, error }] = useCreateLoginCodeMutation({
- *   variables: {
- *      username: // value for 'username'
- *   },
- * });
- */
-export function useCreateLoginCodeMutation(baseOptions?: Apollo.MutationHookOptions<CreateLoginCodeMutation, CreateLoginCodeMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CreateLoginCodeMutation, CreateLoginCodeMutationVariables>(CreateLoginCodeDocument, options);
-      }
-export type CreateLoginCodeMutationHookResult = ReturnType<typeof useCreateLoginCodeMutation>;
-export type CreateLoginCodeMutationResult = Apollo.MutationResult<CreateLoginCodeMutation>;
-export type CreateLoginCodeMutationOptions = Apollo.BaseMutationOptions<CreateLoginCodeMutation, CreateLoginCodeMutationVariables>;
 export const CurrentPersonDocument = gql`
     query CurrentPerson {
   currentPerson {
@@ -4383,53 +4378,6 @@ export function useCurrentUserFamilyLazyQuery(baseOptions?: Apollo.LazyQueryHook
 export type CurrentUserFamilyQueryHookResult = ReturnType<typeof useCurrentUserFamilyQuery>;
 export type CurrentUserFamilyLazyQueryHookResult = ReturnType<typeof useCurrentUserFamilyLazyQuery>;
 export type CurrentUserFamilyQueryResult = Apollo.QueryResult<CurrentUserFamilyQuery, CurrentUserFamilyQueryVariables>;
-export const CurrentFamilyMembershipDocument = gql`
-    query CurrentFamilyMembership {
-  currentFamilyMembership {
-    id
-    role
-    title
-    family {
-      id
-    }
-    person {
-      id
-      name
-      avatarUrl
-      user {
-        id
-      }
-    }
-  }
-}
-    `;
-
-/**
- * __useCurrentFamilyMembershipQuery__
- *
- * To run a query within a React component, call `useCurrentFamilyMembershipQuery` and pass it any options that fit your needs.
- * When your component renders, `useCurrentFamilyMembershipQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useCurrentFamilyMembershipQuery({
- *   variables: {
- *   },
- * });
- */
-export function useCurrentFamilyMembershipQuery(baseOptions?: Apollo.QueryHookOptions<CurrentFamilyMembershipQuery, CurrentFamilyMembershipQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<CurrentFamilyMembershipQuery, CurrentFamilyMembershipQueryVariables>(CurrentFamilyMembershipDocument, options);
-      }
-export function useCurrentFamilyMembershipLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CurrentFamilyMembershipQuery, CurrentFamilyMembershipQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<CurrentFamilyMembershipQuery, CurrentFamilyMembershipQueryVariables>(CurrentFamilyMembershipDocument, options);
-        }
-export type CurrentFamilyMembershipQueryHookResult = ReturnType<typeof useCurrentFamilyMembershipQuery>;
-export type CurrentFamilyMembershipLazyQueryHookResult = ReturnType<typeof useCurrentFamilyMembershipLazyQuery>;
-export type CurrentFamilyMembershipQueryResult = Apollo.QueryResult<CurrentFamilyMembershipQuery, CurrentFamilyMembershipQueryVariables>;
 export const CurrentUserWithManagedPeopleDocument = gql`
     query CurrentUserWithManagedPeople {
   currentUser {
