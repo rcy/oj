@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 14.5 (Debian 14.5-2.pgdg110+2)
+-- Dumped from database version 14.4 (Debian 14.4-1.pgdg110+1)
 -- Dumped by pg_dump version 14.7 (Ubuntu 14.7-0ubuntu0.22.04.1)
 
 SET statement_timeout = 0;
@@ -194,7 +194,7 @@ CREATE FUNCTION app_public.current_family_membership_id() RETURNS uuid
   where
     users.id = app_public.user_id() and
     m1.role = 'admin' and
-    m2.person_id = current_setting('person.id', true)::uuid;
+    m2.person_id = app_public.current_person_id();
 $$;
 
 
