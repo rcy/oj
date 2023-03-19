@@ -1,4 +1,4 @@
-import { Avatar, Box, Button, ButtonGroup, Heading, SimpleGrid } from "@chakra-ui/react";
+import { Avatar, Box, Button, Heading, SimpleGrid } from "@chakra-ui/react";
 import md5 from "md5";
 import { useEffect, useState } from "react";
 import {
@@ -35,13 +35,16 @@ export default function MemberSetProfilePicture() {
     <Box>
       <Heading as='h1'>Change your profile picture</Heading>
 
-      <ButtonGroup gap='2' my='10'>
-        {types.map((d) => (
-          <Button onClick={() => selectType(d)} key={d} colorScheme='green'>
-            {d}
-          </Button>
-        ))}
-      </ButtonGroup>
+      {types.map((d) => (
+        <Button
+          onClick={() => selectType(d)}
+          key={d}
+          colorScheme='green'
+          m={1}
+        >
+          {d}
+        </Button>
+      ))}
 
       <SimpleGrid minChildWidth='100px' spacing='5px'>
         {hashes.map((h) => (

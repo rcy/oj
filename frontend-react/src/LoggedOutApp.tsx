@@ -19,14 +19,14 @@ function AuthButtons() {
   return (
     <Center h='100vh'>
       <VStack>
-        <HStack>
+        <VStack>
           <img alt="octopus" width="300px" src="octopus1.png" />
           <img
             alt="octopus junior text"
             width="300px"
             src="octopus-junior-text.png"
           />
-        </HStack>
+        </VStack>
         <Link to={`/kidsauth/login?from=${here}`}>
           <Button color="red">kids login</Button>
         </Link>

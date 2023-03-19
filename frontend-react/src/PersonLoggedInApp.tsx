@@ -1,5 +1,5 @@
 import LogoutButton from "./components/LogoutButton";
-import { Text, Heading, Box, Flex, Spacer, Container, CardBody, Card, Avatar } from '@chakra-ui/react'
+import { Text, Heading, Box, Flex, Spacer, Container, CardBody, Card, Avatar, Wrap, WrapItem, SimpleGrid, AvatarBadge } from '@chakra-ui/react'
 import { BrowserRouter, Link, Route, Routes } from "react-router-dom";
 import MemberSetProfilePicture from "./routes/member/MemberSetProfilePicture";
 import { useCurrentPersonQuery } from "./generated-types";
@@ -16,9 +16,9 @@ export default function PersonLoggedInApp() {
 
 function PersonLoggedInAppInner() {
   return (
-    <Box minWidth='max-content'>
-      <Box minWidth='max-content' background="purple.300">
-        <Container minWidth={1000}>
+    <Box>
+      <Box minWidth='max-content' bgGradient='linear(to-r, orange.200, purple.200)'>
+        <Container>
           <Flex alignItems='center' py='2' mb='1em'>
             <Box>
               <Heading size="md">
@@ -27,18 +27,18 @@ function PersonLoggedInAppInner() {
             </Box>
             <Spacer />
             <Box>
-              <LogoutButton />
+              <Avatar />
             </Box>
           </Flex>
         </Container >
       </Box>
-      <Container minWidth={1000}>
+      <Container>
         <Routes>
           <Route path="/" element={<Main />} />
           <Route path="/pic" element={<MemberSetProfilePicture />} />
         </Routes>
       </Container>
-    </Box >
+    </Box>
   )
 }
 
@@ -52,14 +52,15 @@ function Main() {
   }
 
   return (
-    <div>
+    <SimpleGrid columns={1} gap="20px">
       <PersonCard
         name={personQuery.data?.currentPerson?.name}
         avatarUrl={personQuery.data?.currentPerson?.avatarUrl}
         username={personQuery.data?.currentPerson?.username || ''}
         title="me"
+        online
       />
-    </div>
+    </SimpleGrid>
   )
 }
 
@@ -68,12 +69,13 @@ type PersonCardProps = {
   name?: string
   avatarUrl?: string
   title?: string
+  online: boolean
 }
 
 function PersonCard(props: PersonCardProps) {
   return (
     <Link to="/pic">
-      <Card maxW='xs'>
+      <Card maxW='md'>
         <CardBody>
           <Flex>
             <Flex flex='1' gap='4' alignItems='center' flexWrap='wrap'>
@@ -81,11 +83,13 @@ function PersonCard(props: PersonCardProps) {
                 size='lg'
                 name={props.name}
                 src={props.avatarUrl}
-              />
-              <Box>
-                <Heading size='lg'>{props.username}</Heading>
-                <Text>{props.title}</Text>
-              </Box>
+              >
+                {props.online && <AvatarBadge boxSize='1em' bg='green.500' />}
+              </Avatar>
+                <Box>
+                  <Heading size='lg'>{props.username}</Heading>
+                  <Text>{props.title}</Text>
+                </Box>
             </Flex>
           </Flex>
         </CardBody>
