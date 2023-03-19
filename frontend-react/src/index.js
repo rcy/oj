@@ -24,14 +24,13 @@ const theme = extendTheme({
     global: (props) => ({
       body: {
         // bg: mode(
-//   'linear-gradient(90deg, orange 0%, purple 100%);',
-//   'pink'
-// )(props)
-      }
-    })
-  }
-})
-
+        //   'linear-gradient(90deg, orange 0%, purple 100%);',
+        //   'pink'
+        // )(props)
+      },
+    }),
+  },
+});
 
 //import { , concat } from "apollo-link";
 

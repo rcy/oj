@@ -1,5 +1,8 @@
 import { MouseEvent } from "react";
-import { useBecomePersonMutation, useCurrentUserWithManagedPeopleQuery } from "./generated-types";
+import {
+  useBecomePersonMutation,
+  useCurrentUserWithManagedPeopleQuery,
+} from "./generated-types";
 
 export default function PersonPicker() {
   const [becomePerson] = useBecomePersonMutation();

@@ -1,4 +1,11 @@
-import { Avatar, Box, Container, Button, Heading, SimpleGrid } from "@chakra-ui/react";
+import {
+  Avatar,
+  Box,
+  Container,
+  Button,
+  Heading,
+  SimpleGrid,
+} from "@chakra-ui/react";
 import md5 from "md5";
 import { useEffect, useState } from "react";
 import {
@@ -15,7 +22,7 @@ const types = ["monsterid", "wavatar", "robohash", "identicon", "retro"];
 
 export default function MemberSetProfilePicture() {
   const currentPersonQuery = useCurrentPersonQuery();
-  const personId = currentPersonQuery?.data?.currentPerson.id
+  const personId = currentPersonQuery?.data?.currentPerson.id;
   const [dtype, selectType] = useState(types[0]);
   const [mutation] = useSetPersonAvatarMutation();
   const [hashes, setHashes] = useState([]);
@@ -33,14 +40,14 @@ export default function MemberSetProfilePicture() {
 
   return (
     <Container>
-      <Heading as='h1'>Change your profile picture</Heading>
+      <Heading as="h1">Change your profile picture</Heading>
 
-      <Box py='5'>
+      <Box py="5">
         {types.map((d) => (
           <Button
             onClick={() => selectType(d)}
             key={d}
-            colorScheme='green'
+            colorScheme="green"
             m={1}
           >
             {d}
@@ -48,7 +55,7 @@ export default function MemberSetProfilePicture() {
         ))}
       </Box>
 
-      <SimpleGrid minChildWidth='100px' spacing='5px'>
+      <SimpleGrid minChildWidth="100px" spacing="5px">
         {hashes.map((h) => (
           <div key={h}>
             <GravImage h={h} d={dtype} s={80} onSelect={handleSelect} />

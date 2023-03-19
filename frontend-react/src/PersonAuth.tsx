@@ -5,7 +5,17 @@ import {
   useExchangeCodeMutation,
 } from "./generated-types";
 import { useSearchParams } from "react-router-dom";
-import { Center, Container, FormControl, FormErrorMessage, FormHelperText, FormLabel, Heading, Input, VStack } from "@chakra-ui/react";
+import {
+  Center,
+  Container,
+  FormControl,
+  FormErrorMessage,
+  FormHelperText,
+  FormLabel,
+  Heading,
+  Input,
+  VStack,
+} from "@chakra-ui/react";
 
 export default function PersonAuth() {
   const [createLoginCode] = useCreateLoginCodeMutation();
@@ -49,10 +59,14 @@ export default function PersonAuth() {
       <Center h="100vh">
         <VStack>
           <Container>
-            <Heading as='h1' className="text-xl">Hello, {username}!</Heading>
+            <Heading as="h1" className="text-xl">
+              Hello, {username}!
+            </Heading>
             <form onSubmit={submitCode}>
               <FormControl isInvalid={error.length > 0}>
-                <FormLabel>Enter the code sent to your parent's email</FormLabel>
+                <FormLabel>
+                  Enter the code sent to your parent's email
+                </FormLabel>
                 <Input
                   name="code"
                   onChange={(ev: React.ChangeEvent<HTMLInputElement>) => {
@@ -74,7 +88,9 @@ export default function PersonAuth() {
       <form onSubmit={submitUsername}>
         <VStack>
           <Container>
-            <Heading as='h1' className="text-xl">Welcome!</Heading>
+            <Heading as="h1" className="text-xl">
+              Welcome!
+            </Heading>
             <FormControl isInvalid={error.length > 0}>
               <FormLabel>What is your username?</FormLabel>
               <Input

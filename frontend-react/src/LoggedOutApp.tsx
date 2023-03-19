@@ -17,7 +17,7 @@ function AuthButtons() {
   const here = encodeURIComponent(window.location.href);
 
   return (
-    <Center h='100vh'>
+    <Center h="100vh">
       <VStack>
         <VStack>
           <img alt="octopus" width="300px" src="octopus1.png" />
