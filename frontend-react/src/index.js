@@ -14,6 +14,7 @@ import { getMainDefinition } from "@apollo/client/utilities";
 import { setContext } from "@apollo/client/link/context";
 import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
 import { createClient } from "graphql-ws";
+import { ChakraProvider } from "@chakra-ui/react";
 
 //import { , concat } from "apollo-link";
 
@@ -81,7 +82,9 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <ApolloProvider client={client}>
-      <App />
+      <ChakraProvider>
+        <App />
+      </ChakraProvider>
     </ApolloProvider>
   </React.StrictMode>
 );
