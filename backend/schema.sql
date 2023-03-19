@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 14.5 (Debian 14.5-2.pgdg110+2)
+-- Dumped from database version 14.4 (Debian 14.4-1.pgdg110+1)
 -- Dumped by pg_dump version 14.7 (Ubuntu 14.7-0ubuntu0.22.04.1)
 
 SET statement_timeout = 0;
@@ -148,9 +148,13 @@ begin
   where p.username = create_login_code.username;
 
   if v_person_id is not null then
+    -- remove all existing codes
+    delete from app_private.login_codes where person_id = v_person_id;
+
+    -- generate and insert new code
     insert into app_private.login_codes(person_id, code)
-    values(v_person_id, app_public.gen_random_code(6))
-    returning id into v_result;
+      values(v_person_id, app_public.gen_random_code(4))
+      returning id into v_result;
   end if;
 
   return v_result;
