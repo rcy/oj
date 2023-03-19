@@ -131,6 +131,29 @@ export enum AuthenticationsOrderBy {
   UserIdDesc = 'USER_ID_DESC'
 }
 
+/** All input for the `becomePerson` mutation. */
+export type BecomePersonInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  id: Scalars['UUID'];
+};
+
+/** The output of our `becomePerson` mutation. */
+export type BecomePersonPayload = {
+  __typename?: 'BecomePersonPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  sessionKey?: Maybe<Scalars['UUID']>;
+};
+
 /** All input for the create `FamilyMembership` mutation. */
 export type CreateFamilyMembershipInput = {
   /**
@@ -1435,6 +1458,7 @@ export type ManagedPersonInput = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type Mutation = {
   __typename?: 'Mutation';
+  becomePerson?: Maybe<BecomePersonPayload>;
   /** Creates a single `FamilyMembership`. */
   createFamilyMembership?: Maybe<CreateFamilyMembershipPayload>;
   /** Creates a single `Interest`. */
@@ -1521,6 +1545,12 @@ export type Mutation = {
   updateUserByNodeId?: Maybe<UpdateUserPayload>;
   /** Updates a single `User` using a unique key and a patch. */
   updateUserByPersonId?: Maybe<UpdateUserPayload>;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationBecomePersonArgs = {
+  input: BecomePersonInput;
 };
 
 
@@ -3865,6 +3895,13 @@ export type AllSpacesQueryVariables = Exact<{
 
 export type AllSpacesQuery = { __typename?: 'Query', spaces?: { __typename?: 'SpacesConnection', totalCount: number, edges: Array<{ __typename?: 'SpacesEdge', node: { __typename?: 'Space', id: any, name: string, spaceMemberships: { __typename?: 'SpaceMembershipsConnection', edges: Array<{ __typename?: 'SpaceMembershipsEdge', node: { __typename?: 'SpaceMembership', id: any, person?: { __typename?: 'Person', id: any } | null } }> } } }> } | null };
 
+export type BecomePersonMutationVariables = Exact<{
+  personId: Scalars['UUID'];
+}>;
+
+
+export type BecomePersonMutation = { __typename?: 'Mutation', becomePerson?: { __typename?: 'BecomePersonPayload', sessionKey?: any | null } | null };
+
 export type CreateNewFamilyMemberMutationVariables = Exact<{
   name: Scalars['String'];
   role: Scalars['String'];
@@ -4084,6 +4121,39 @@ export function useAllSpacesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<
 export type AllSpacesQueryHookResult = ReturnType<typeof useAllSpacesQuery>;
 export type AllSpacesLazyQueryHookResult = ReturnType<typeof useAllSpacesLazyQuery>;
 export type AllSpacesQueryResult = Apollo.QueryResult<AllSpacesQuery, AllSpacesQueryVariables>;
+export const BecomePersonDocument = gql`
+    mutation BecomePerson($personId: UUID!) {
+  becomePerson(input: {id: $personId}) {
+    sessionKey
+  }
+}
+    `;
+export type BecomePersonMutationFn = Apollo.MutationFunction<BecomePersonMutation, BecomePersonMutationVariables>;
+
+/**
+ * __useBecomePersonMutation__
+ *
+ * To run a mutation, you first call `useBecomePersonMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useBecomePersonMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [becomePersonMutation, { data, loading, error }] = useBecomePersonMutation({
+ *   variables: {
+ *      personId: // value for 'personId'
+ *   },
+ * });
+ */
+export function useBecomePersonMutation(baseOptions?: Apollo.MutationHookOptions<BecomePersonMutation, BecomePersonMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<BecomePersonMutation, BecomePersonMutationVariables>(BecomePersonDocument, options);
+      }
+export type BecomePersonMutationHookResult = ReturnType<typeof useBecomePersonMutation>;
+export type BecomePersonMutationResult = Apollo.MutationResult<BecomePersonMutation>;
+export type BecomePersonMutationOptions = Apollo.BaseMutationOptions<BecomePersonMutation, BecomePersonMutationVariables>;
 export const CreateNewFamilyMemberDocument = gql`
     mutation CreateNewFamilyMember($name: String!, $role: String!) {
   createNewFamilyMember(input: {name: $name, role: $role}) {

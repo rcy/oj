@@ -1,9 +1,8 @@
 import { MouseEvent } from "react";
-import { useCurrentUserWithManagedPeopleQuery } from "./generated-types";
+import { useBecomePersonMutation, useCurrentUserWithManagedPeopleQuery } from "./generated-types";
 
-type PersonPickerType = { setPersonId: Function };
-
-export default function PersonPicker({ setPersonId }: PersonPickerType) {
+export default function PersonPicker() {
+  const [becomePerson] = useBecomePersonMutation();
   const { loading, data } = useCurrentUserWithManagedPeopleQuery();
 
   if (loading) {
@@ -12,9 +11,21 @@ export default function PersonPicker({ setPersonId }: PersonPickerType) {
 
   const managedPeople = data?.currentUser?.managedPeople;
 
-  function become(ev: MouseEvent, id: string) {
+  async function become(ev: MouseEvent, personId: string) {
     ev.preventDefault();
-    setPersonId(id);
+
+    if (data?.currentUser?.person?.id === personId) {
+      localStorage.removeItem("sessionKey");
+    } else {
+      const result = await becomePerson({ variables: { personId } });
+      const sessionKey = result.data?.becomePerson?.sessionKey;
+      if (!sessionKey) {
+        localStorage.removeItem("sessionKey");
+      } else {
+        localStorage.setItem("sessionKey", sessionKey);
+      }
+    }
+    window.location.assign("/");
   }
 
   return (

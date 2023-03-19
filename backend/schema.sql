@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 14.4 (Debian 14.4-1.pgdg110+1)
+-- Dumped from database version 14.5 (Debian 14.5-2.pgdg110+2)
 -- Dumped by pg_dump version 14.7 (Ubuntu 14.7-0ubuntu0.22.04.1)
 
 SET statement_timeout = 0;
@@ -94,6 +94,41 @@ begin
   return user_id;
 end;
 $$;
+
+
+--
+-- Name: become_person(uuid); Type: FUNCTION; Schema: app_public; Owner: -
+--
+
+CREATE FUNCTION app_public.become_person(id uuid) RETURNS uuid
+    LANGUAGE plpgsql STRICT SECURITY DEFINER
+    AS $$
+declare
+v_id uuid;
+v_result uuid;
+begin
+  -- check that person_id is managed by the current user
+  select mp.id 
+  from app_public.managed_people mp
+  into v_id
+  where mp.person_id = become_person.id
+  and user_id = app_public.user_id();
+
+  if v_id is not null then
+    insert into app_private.sessions(person_id) values (become_person.id) returning sessions.id into v_result;
+    return v_result;
+  else
+    raise exception 'person % not managed by user %', id, app_public.user_id();
+  end if;
+end;
+$$;
+
+
+--
+-- Name: FUNCTION become_person(id uuid); Type: COMMENT; Schema: app_public; Owner: -
+--
+
+COMMENT ON FUNCTION app_public.become_person(id uuid) IS '@resultFieldName sessionKey';
 
 
 --

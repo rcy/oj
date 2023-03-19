@@ -1,0 +1,5 @@
+mutation BecomePerson($personId: UUID!) {
+  becomePerson(input: { id: $personId }) {
+    sessionKey
+  }
+}
