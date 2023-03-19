@@ -1,5 +1,4 @@
-import LogoutButton from "./components/LogoutButton";
-import { Text, Heading, Box, Flex, Spacer, Container, CardBody, Card, Avatar, Wrap, WrapItem, SimpleGrid, AvatarBadge } from '@chakra-ui/react'
+import { Center, Text, Heading, Box, Flex, Spacer, Container, CardBody, Card, Avatar, SimpleGrid, AvatarBadge } from '@chakra-ui/react'
 import { BrowserRouter, Link, Route, Routes } from "react-router-dom";
 import MemberSetProfilePicture from "./routes/member/MemberSetProfilePicture";
 import { useCurrentPersonQuery } from "./generated-types";
@@ -16,30 +15,38 @@ export default function PersonLoggedInApp() {
 
 function PersonLoggedInAppInner() {
   return (
-    <Box>
-      <Box minWidth='max-content' bgGradient='linear(to-r, orange.200, purple.200)'>
-        <Container>
-          <Flex alignItems='center' py='2' mb='1em'>
-            <Box>
-              <Heading size="md">
-                <Link to="/">Octopus Jr.</Link>
-              </Heading>
-            </Box>
-            <Spacer />
-            <Box>
-              <Avatar />
-            </Box>
-          </Flex>
-        </Container >
-      </Box>
-      <Container>
-        <Routes>
-          <Route path="/" element={<Main />} />
-          <Route path="/pic" element={<MemberSetProfilePicture />} />
-        </Routes>
-      </Container>
+    <Box background={"red.100"} minH='100vh' bgGradient='linear(to-r, orange.300, purple.300)'>
+      <NavBar />
+      <Routes>
+        <Route path="/" element={<Main />} />
+        <Route path="/profile" element={<MemberSetProfilePicture />} />
+      </Routes>
     </Box>
   )
+}
+
+function NavBar() {
+  return <Box minWidth='max-content' bgGradient='linear(to-r, orange.200, purple.200)'>
+    <Container>
+      <Flex alignItems='center' py='2' mb='1em'>
+        <Heading size="xl">
+          <Link to="/">🐙</Link>
+        </Heading>
+        <Spacer />
+        <Box>
+          <Heading size="md">
+            <Link to="/">Octopus Junior</Link>
+          </Heading>
+        </Box>
+        <Spacer />
+        <Box>
+          <Link to="/profile">
+            <Avatar />
+          </Link>
+        </Box>
+      </Flex>
+    </Container >
+  </Box>
 }
 
 function Main() {
@@ -52,15 +59,17 @@ function Main() {
   }
 
   return (
-    <SimpleGrid columns={1} gap="20px">
-      <PersonCard
-        name={personQuery.data?.currentPerson?.name}
-        avatarUrl={personQuery.data?.currentPerson?.avatarUrl}
-        username={personQuery.data?.currentPerson?.username || ''}
-        title="me"
-        online
-      />
-    </SimpleGrid>
+    <Center>
+      <SimpleGrid columns={1} gap="20px">
+        <PersonCard
+          name={personQuery.data?.currentPerson?.name}
+          avatarUrl={personQuery.data?.currentPerson?.avatarUrl}
+          username={personQuery.data?.currentPerson?.username || ''}
+          title="me"
+          online
+        />
+      </SimpleGrid>
+    </Center>
   )
 }
 
@@ -74,8 +83,8 @@ type PersonCardProps = {
 
 function PersonCard(props: PersonCardProps) {
   return (
-    <Link to="/pic">
-      <Card maxW='md'>
+    <Link to="/profile">
+      <Card w='xs'>
         <CardBody>
           <Flex>
             <Flex flex='1' gap='4' alignItems='center' flexWrap='wrap'>
