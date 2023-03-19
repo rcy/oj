@@ -16,6 +16,7 @@ graphql(`
       id
       name
       avatarUrl
+      username
       user {
         id
       }

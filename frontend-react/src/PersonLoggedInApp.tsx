@@ -12,7 +12,7 @@ import {
 } from "@chakra-ui/react";
 import { BrowserRouter, Link, Route, Routes } from "react-router-dom";
 import MemberSetProfilePicture from "./routes/member/MemberSetProfilePicture";
-import { useCurrentPersonQuery } from "./generated-types";
+import { useCurrentPersonFamilyMembershipQuery, useCurrentPersonQuery } from "./generated-types";
 import NavBar from "./components/NavBar";
 
 export default function PersonLoggedInApp() {
@@ -46,9 +46,11 @@ function Main() {
     fetchPolicy: "network-only",
   });
 
-  if (personQuery.loading) {
-    return <div></div>;
-  }
+  const membershipQuery = useCurrentPersonFamilyMembershipQuery()
+
+  const memberships = membershipQuery.data?.currentPerson?.familyMembership?.family?.familyMemberships.edges
+
+  console.log({ memberships })
 
   return (
     <Center>
@@ -60,6 +62,16 @@ function Main() {
           title="me"
           online
         />
+        {memberships?.map(m => (
+          <PersonCard
+            key={m.node.id}
+            name={m.node.person?.name}
+            avatarUrl={m.node.person?.avatarUrl}
+            username={m.node.person?.username || ""}
+            title="me"
+            online
+          />
+        ))}
       </SimpleGrid>
     </Center>
   );

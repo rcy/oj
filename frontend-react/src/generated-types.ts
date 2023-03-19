@@ -4020,12 +4020,12 @@ export type SpacePostsAddedSubscriptionVariables = Exact<{
 
 export type SpacePostsAddedSubscription = { __typename?: 'Subscription', posts?: { __typename?: 'PostSubscriptionPayload', event?: string | null, post?: { __typename?: 'Post', id: any, body: string, membership?: { __typename?: 'SpaceMembership', id: any, person?: { __typename?: 'Person', id: any, name: string, avatarUrl: string } | null } | null } | null } | null };
 
-export type FamilyMembershipItemFragment = { __typename?: 'FamilyMembership', id: any, role: string, title?: string | null, person?: { __typename?: 'Person', id: any, name: string, avatarUrl: string, user?: { __typename?: 'User', id: any } | null } | null };
+export type FamilyMembershipItemFragment = { __typename?: 'FamilyMembership', id: any, role: string, title?: string | null, person?: { __typename?: 'Person', id: any, name: string, avatarUrl: string, username?: string | null, user?: { __typename?: 'User', id: any } | null } | null };
 
 export type CurrentPersonFamilyMembershipQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type CurrentPersonFamilyMembershipQuery = { __typename?: 'Query', currentPerson?: { __typename?: 'Person', id: any, familyMembership?: { __typename?: 'FamilyMembership', id: any, role: string, family?: { __typename?: 'Family', id: any, familyMemberships: { __typename?: 'FamilyMembershipsConnection', edges: Array<{ __typename?: 'FamilyMembershipsEdge', node: { __typename?: 'FamilyMembership', id: any, role: string, title?: string | null, person?: { __typename?: 'Person', id: any, name: string, avatarUrl: string, user?: { __typename?: 'User', id: any } | null } | null } }> } } | null } | null } | null };
+export type CurrentPersonFamilyMembershipQuery = { __typename?: 'Query', currentPerson?: { __typename?: 'Person', id: any, familyMembership?: { __typename?: 'FamilyMembership', id: any, role: string, family?: { __typename?: 'Family', id: any, familyMemberships: { __typename?: 'FamilyMembershipsConnection', edges: Array<{ __typename?: 'FamilyMembershipsEdge', node: { __typename?: 'FamilyMembership', id: any, role: string, title?: string | null, person?: { __typename?: 'Person', id: any, name: string, avatarUrl: string, username?: string | null, user?: { __typename?: 'User', id: any } | null } | null } }> } } | null } | null } | null };
 
 export type CreateSpaceMembershipMutationVariables = Exact<{
   spaceId: Scalars['UUID'];
@@ -4059,6 +4059,7 @@ export const FamilyMembershipItemFragmentDoc = gql`
     id
     name
     avatarUrl
+    username
     user {
       id
     }
