@@ -8,11 +8,11 @@ function App() {
   const personQuery = useCurrentPersonQuery();
 
   if (userQuery.error) {
-    return <p>{JSON.stringify(userQuery.error, null, 2)}</p>;
+    return <pre>{JSON.stringify(userQuery.error, null, 2)}</pre>;
   }
 
   if (personQuery.error) {
-    return <p>{JSON.stringify(personQuery.error, null, 2)}</p>;
+    return <pre>{JSON.stringify(personQuery.error, null, 2)}</pre>;
   }
 
   if (userQuery.loading || personQuery.loading) {
