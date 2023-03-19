@@ -5,10 +5,18 @@ import {
   Spacer,
   Container,
   Avatar,
+  Text,
+  HStack,
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
+import { useCurrentPersonQuery } from "../generated-types";
 
 export default function NavBar() {
+  const query = useCurrentPersonQuery()
+  console.log({ query })
+
+  const person = query.data?.currentPerson
+
   return (
     <Box
       minWidth="max-content"
@@ -16,19 +24,17 @@ export default function NavBar() {
     >
       <Container>
         <Flex alignItems="center" py="2" mb="1em">
-          <Heading size="xl">
+          <Heading size="lg">
             <Link to="/">🐙</Link>
+            <Link to="/"> Octopus Jr.</Link>
           </Heading>
           <Spacer />
-          <Box>
-            <Heading size="md">
-              <Link to="/">Octopus Junior</Link>
-            </Heading>
-          </Box>
-          <Spacer />
-          <Box>
+          <Box alignContent='center'>
             <Link to="/profile">
-              <Avatar />
+              <HStack>
+                <Text>{person?.username}</Text>
+                <Avatar src={person?.avatarUrl}/>
+              </HStack>
             </Link>
           </Box>
         </Flex>
