@@ -17,11 +17,10 @@ import { createClient } from "graphql-ws";
 import { ChakraProvider } from "@chakra-ui/react";
 
 import { extendTheme } from "@chakra-ui/react";
-import { mode } from "@chakra-ui/theme-tools";
 
 const theme = extendTheme({
   styles: {
-    global: (props) => ({
+    global: (_props) => ({
       body: {
         // bg: mode(
         //   'linear-gradient(90deg, orange 0%, purple 100%);',

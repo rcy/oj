@@ -1,4 +1,4 @@
-import { Button, Center, HStack, VStack } from "@chakra-ui/react";
+import { Button, Center, VStack } from "@chakra-ui/react";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import PersonAuth from "./PersonAuth";
 

@@ -1,18 +1,12 @@
 import {
-  Center,
-  Text,
   Heading,
   Box,
   Flex,
   Spacer,
   Container,
-  CardBody,
-  Card,
   Avatar,
-  SimpleGrid,
-  AvatarBadge,
 } from "@chakra-ui/react";
-import { BrowserRouter, Link, Route, Routes } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 export default function NavBar() {
   return (

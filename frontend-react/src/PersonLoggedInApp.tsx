@@ -4,8 +4,6 @@ import {
   Heading,
   Box,
   Flex,
-  Spacer,
-  Container,
   CardBody,
   Card,
   Avatar,
