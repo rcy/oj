@@ -23,6 +23,9 @@ commit:
 uncommit:
 	npx graphile-migrate uncommit
 
+migrate:
+	npx graphile-migrate migrate
+
 reset:
 	npx graphile-migrate reset --erase
 	${MAKE} create
