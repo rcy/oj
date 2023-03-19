@@ -5,6 +5,7 @@ import {
   useExchangeCodeMutation,
 } from "./generated-types";
 import { useSearchParams } from "react-router-dom";
+import { Center, Container, FormControl, FormErrorMessage, FormHelperText, FormLabel, Heading, Input, VStack } from "@chakra-ui/react";
 
 export default function PersonAuth() {
   const [createLoginCode] = useCreateLoginCodeMutation();
@@ -45,40 +46,50 @@ export default function PersonAuth() {
 
   if (loginCodeId) {
     return (
-      <div className="grid h-screen place-items-center">
-        <div className="flex flex-col items-center">
-          <h1 className="text-xl">hello {username}</h1>
-          <form onSubmit={submitCode}>
-            <TextInput
-              label="Enter the code"
-              name="code"
-              onChange={(ev: React.ChangeEvent<HTMLInputElement>) => {
-                setCode(ev.target.value);
-              }}
-              value={code}
-            />
-            {error}
-          </form>
-        </div>
-      </div>
+      <Center h="100vh">
+        <VStack>
+          <Container>
+            <Heading as='h1' className="text-xl">Hello, {username}!</Heading>
+            <form onSubmit={submitCode}>
+              <FormControl isInvalid={error.length > 0}>
+                <FormLabel>Enter the code sent to your parent's email</FormLabel>
+                <Input
+                  name="code"
+                  onChange={(ev: React.ChangeEvent<HTMLInputElement>) => {
+                    setCode(ev.target.value);
+                  }}
+                  value={code}
+                />
+                <FormErrorMessage>{error}</FormErrorMessage>
+              </FormControl>
+            </form>
+          </Container>
+        </VStack>
+      </Center>
     );
   }
 
   return (
-    <div className="grid h-screen place-items-center">
-      <div className="flex flex-col items-center">
-        <form onSubmit={submitUsername}>
-          <TextInput
-            label="Enter your username"
-            name="username"
-            onChange={(ev: React.ChangeEvent<HTMLInputElement>) =>
-              setUsername(ev.target.value)
-            }
-            value={username}
-          />
-          {error}
-        </form>
-      </div>
-    </div>
+    <Center h="100vh">
+      <form onSubmit={submitUsername}>
+        <VStack>
+          <Container>
+            <Heading as='h1' className="text-xl">Welcome!</Heading>
+            <FormControl isInvalid={error.length > 0}>
+              <FormLabel>What is your username?</FormLabel>
+              <Input
+                name="username"
+                onChange={(ev: React.ChangeEvent<HTMLInputElement>) =>
+                  setUsername(ev.target.value)
+                }
+                value={username}
+                autoComplete="off"
+              />
+              <FormErrorMessage>{error}</FormErrorMessage>
+            </FormControl>
+          </Container>
+        </VStack>
+      </form>
+    </Center>
   );
 }
