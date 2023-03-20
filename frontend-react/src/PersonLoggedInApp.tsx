@@ -61,7 +61,7 @@ function Main() {
             avatarUrl={m.node.person?.avatarUrl}
             username={m.node.person?.username || ""}
             title="me"
-            online
+            online={false}
           />
         ))}
       </SimpleGrid>
@@ -79,22 +79,20 @@ type PersonCardProps = {
 
 function PersonCard(props: PersonCardProps) {
   return (
-    <Link to="/profile">
-      <Card w="xs">
-        <CardBody>
-          <Flex>
-            <Flex flex="1" gap="4" alignItems="center" flexWrap="wrap">
-              <Avatar size="lg" name={props.name} src={props.avatarUrl}>
-                {props.online && <AvatarBadge boxSize="1em" bg="green.500" />}
-              </Avatar>
-              <Box>
-                <Heading size="lg">{props.username}</Heading>
-                <Text>{props.title}</Text>
-              </Box>
-            </Flex>
+    <Card w="xs">
+      <CardBody>
+        <Flex>
+          <Flex flex="1" gap="4" alignItems="center" flexWrap="wrap">
+            <Avatar size="lg" name={props.name} src={props.avatarUrl}>
+              {props.online && <AvatarBadge boxSize="1em" bg="green.500" />}
+            </Avatar>
+            <Box>
+              <Heading size="lg">{props.username}</Heading>
+              <Text>{props.title}</Text>
+            </Box>
           </Flex>
-        </CardBody>
-      </Card>
-    </Link>
+        </Flex>
+      </CardBody>
+    </Card>
   );
 }
