@@ -1,5 +1,5 @@
 import {
-  Center,
+  VStack,
   Text,
   Heading,
   Box,
@@ -48,21 +48,17 @@ function Main() {
 
   const membershipQuery = useCurrentPersonFamilyMembershipQuery()
 
-  const memberships = membershipQuery.data?.currentPerson?.familyMembership?.family?.familyMemberships.edges
+  const currentPerson = membershipQuery.data?.currentPerson
+  const memberships = currentPerson?.familyMembership?.family?.familyMemberships.edges
+  const filteredMemberships = memberships?.filter(edge => edge.node.person?.id !== currentPerson?.id)
 
-  console.log({ memberships })
+    console.log({ memberships })
 
   return (
-    <Center>
+    <VStack>
+      <Heading>My Family</Heading>
       <SimpleGrid columns={1} gap="20px">
-        <PersonCard
-          name={personQuery.data?.currentPerson?.name}
-          avatarUrl={personQuery.data?.currentPerson?.avatarUrl}
-          username={personQuery.data?.currentPerson?.username || ""}
-          title="me"
-          online
-        />
-        {memberships?.map(m => (
+        {filteredMemberships?.map(m => (
           <PersonCard
             key={m.node.id}
             name={m.node.person?.name}
@@ -73,7 +69,7 @@ function Main() {
           />
         ))}
       </SimpleGrid>
-    </Center>
+    </VStack >
   );
 }
 
