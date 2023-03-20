@@ -42,10 +42,6 @@ function PersonLoggedInAppInner() {
 }
 
 function Main() {
-  const personQuery = useCurrentPersonQuery({
-    fetchPolicy: "network-only",
-  });
-
   const membershipQuery = useCurrentPersonFamilyMembershipQuery()
 
   const currentPerson = membershipQuery.data?.currentPerson
