@@ -1,7 +1,7 @@
-import { useContext, useEffect } from "react";
-import { PersonIdContext } from "../contexts";
+import { useEffect } from "react";
 import {
   SpacePostsAddedDocument,
+  useCurrentPersonQuery,
   usePostMessageMutation,
   useSpaceMembershipByPersonIdAndSpaceIdQuery,
   useSpacePostsQuery,
@@ -18,7 +18,8 @@ export default function Chat({ spaceId }: Props) {
     variables: { spaceId, limit: 10 },
   });
   const [postMessageMutation] = usePostMessageMutation();
-  const personId = useContext(PersonIdContext);
+  const personQuery = useCurrentPersonQuery();
+  const personId = personQuery.data?.currentPerson?.id;
   const membershipQueryResult = useSpaceMembershipByPersonIdAndSpaceIdQuery({
     variables: { spaceId, personId },
   });
