@@ -1,6 +1,5 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import Chat from "../../components/Chat";
-import { PersonIdContext } from "../../contexts";
 import {
   useCreateSpaceMembershipMutation,
   useCreateSpaceMutation,

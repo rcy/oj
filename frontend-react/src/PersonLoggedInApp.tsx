@@ -1,18 +1,12 @@
 import {
   VStack,
-  Text,
   Heading,
   Box,
-  Flex,
-  CardBody,
-  Card,
-  Avatar,
   SimpleGrid,
-  AvatarBadge,
 } from "@chakra-ui/react";
-import { BrowserRouter, Link, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import MemberSetProfilePicture from "./routes/member/MemberSetProfilePicture";
-import { useCurrentPersonFamilyMembershipQuery, useCurrentPersonQuery } from "./generated-types";
+import { useCurrentPersonFamilyMembershipQuery } from "./generated-types";
 import NavBar from "./components/NavBar";
 import PersonPage from "./routes/people/PersonPage";
 import { PersonCardPrimitive } from "./components/PersonCard";
