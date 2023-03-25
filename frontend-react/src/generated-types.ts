@@ -4048,7 +4048,7 @@ export type PersonPageDataQueryVariables = Exact<{
 }>;
 
 
-export type PersonPageDataQuery = { __typename?: 'Query', person?: { __typename?: 'Person', id: any, name: string, avatarUrl: string, createdAt: any } | null };
+export type PersonPageDataQuery = { __typename?: 'Query', person?: { __typename?: 'Person', id: any, name: string, username?: string | null, avatarUrl: string, createdAt: any } | null };
 
 export const FamilyMembershipItemFragmentDoc = gql`
     fragment FamilyMembershipItem on FamilyMembership {
@@ -4950,6 +4950,7 @@ export const PersonPageDataDocument = gql`
   person(id: $id) {
     id
     name
+    username
     avatarUrl
     createdAt
   }

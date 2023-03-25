@@ -1,19 +1,21 @@
 import { useParams } from "react-router-dom";
 import { usePersonPageDataQuery } from "../../generated-types";
 import ChatSection from "./ChatSection";
-import { Avatar, Box, Container } from "@chakra-ui/react";
+import { Container, Spinner } from "@chakra-ui/react";
+import PersonCard from "../../components/PersonCard";
 
 export default function PersonPage() {
   const params = useParams();
   const q = usePersonPageDataQuery({ variables: { id: params.id } });
   const pagePerson = q.data?.person;
 
+  if (q.loading) {
+    return <Spinner />
+  }
+
   return (
     <Container>
-      <Box>
-        <Avatar size="lg" src={pagePerson?.avatarUrl} />
-        <h1 className="px-2 text-6xl">{pagePerson?.name}</h1>
-      </Box>
+      <PersonCard person={pagePerson} />
       {pagePerson && <ChatSection pagePerson={pagePerson} />}
     </Container>
   );

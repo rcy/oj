@@ -41,3 +41,21 @@ export function PersonCardPrimitive(props: PersonCardPrimitiveProps) {
     </Link>
   );
 }
+
+type PersonCardProps = {
+  person: any;
+};
+
+export default function PersonCard(props: PersonCardProps) {
+  const person = props.person
+  return (
+    <PersonCardPrimitive
+      username={person.username}
+      name={person.name}
+      avatarUrl={person.avatarUrl}
+      title={person.title}
+      online={false}
+      path={`/people/${person.id}`}
+    />
+  )
+}
