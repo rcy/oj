@@ -102,9 +102,11 @@ const middlewares = [
 function personAuthenticate({ pool, header }) {
   const pgClient = pool.connect();
   return async function (req, _res, next) {
-    const client = await pgClient
-    const sessionKey = req.headers[header];
+    // the header is supplied by the http link, the connectionParams comes from the websocket link
+    const sessionKey = req.headers[header] || req.connectionParams?.sessionKey;
+
     if (sessionKey) {
+      const client = await pgClient
       const { rows } = await client.query("select * from app_private.sessions where id = $1", [sessionKey])
       req.personId = rows[0]?.person_id
     } else {

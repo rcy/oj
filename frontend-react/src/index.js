@@ -44,6 +44,9 @@ const wsUrl =
 const wsLink = new GraphQLWsLink(
   createClient({
     url: wsUrl,
+    connectionParams: () => ({
+      sessionKey: localStorage.getItem("sessionKey"),
+    })
   })
 );
 
