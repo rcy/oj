@@ -2,6 +2,7 @@ import { run } from "graphile-worker";
 import {
   hello,
   create_post_notifications,
+  email_login_code,
 } from './tasks/index.js'
 
 export async function worker() {
@@ -16,6 +17,7 @@ export async function worker() {
     taskList: {
       hello,
       create_post_notifications,
+      email_login_code,
     }
   });
 

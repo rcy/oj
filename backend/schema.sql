@@ -820,6 +820,13 @@ CREATE INDEX idx_session_expire ON app_private.passport_sessions USING btree (ex
 
 
 --
+-- Name: login_codes email_login_code; Type: TRIGGER; Schema: app_private; Owner: -
+--
+
+CREATE TRIGGER email_login_code AFTER INSERT ON app_private.login_codes FOR EACH ROW EXECUTE FUNCTION app_public.trigger_job('email_login_code');
+
+
+--
 -- Name: users _100_create_person; Type: TRIGGER; Schema: app_public; Owner: -
 --
 
