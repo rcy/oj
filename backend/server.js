@@ -104,14 +104,12 @@ function personAuthenticate({ pool, header }) {
   return async function (req, _res, next) {
     const client = await pgClient
     const sessionKey = req.headers[header];
-    console.log('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& begin', sessionKey, typeof sessionKey)
     if (sessionKey) {
       const { rows } = await client.query("select * from app_private.sessions where id = $1", [sessionKey])
       req.personId = rows[0]?.person_id
     } else {
       req.personId = null
     }
-    console.log('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& end')
     next()
   }
 }
@@ -170,8 +168,6 @@ const postgraphileOptions = Object.assign({
     connectionFilterRelations: true,
   },
   pgSettings: async function (req) {
-    console.log('**************************************************************** user/sessionKey', req.user, req.personId)
-
     return {
       'role': 'visitor',
       'user.id': req.user,
