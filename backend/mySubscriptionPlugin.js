@@ -2,7 +2,7 @@ import { makeExtendSchemaPlugin, gql, embed } from "graphile-utils";
 
 const newSpacePostsTopic = async(args, context, _resolveInfo) => {
   if (!context.personId) {
-    throw new Error("You're not logged in");
+    throw new Error("No personId in context");
   }
   return `graphql:spaceposts:${args.spaceId}`
 };
