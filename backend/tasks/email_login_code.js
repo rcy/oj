@@ -1,9 +1,10 @@
 import formData from 'form-data';
 import Mailgun from 'mailgun.js';
-const mailgun = new Mailgun(formData);
-const mg = mailgun.client({ username: 'api', key: process.env.MAILGUN_API_KEY });
 
 export async function email_login_code(payload, helpers) {
+  const mailgun = new Mailgun(formData);
+  const mg = mailgun.client({ username: 'api', key: process.env.MAILGUN_API_KEY });
+
   const { rows: [{ user_id, code }] } = await helpers.query(`
 select users.id as user_id, code
 from app_private.login_codes
