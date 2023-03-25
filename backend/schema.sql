@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 14.4 (Debian 14.4-1.pgdg110+1)
+-- Dumped from database version 14.5 (Debian 14.5-2.pgdg110+2)
 -- Dumped by pg_dump version 14.7 (Ubuntu 14.7-0ubuntu0.22.04.1)
 
 SET statement_timeout = 0;
@@ -1020,6 +1020,13 @@ CREATE POLICY insert_as_admin ON app_public.family_memberships WITH CHECK ((EXIS
 
 
 --
+-- Name: families select_all; Type: POLICY; Schema: app_public; Owner: -
+--
+
+CREATE POLICY select_all ON app_public.families FOR SELECT USING (true);
+
+
+--
 -- Name: users select_all; Type: POLICY; Schema: app_public; Owner: -
 --
 
@@ -1031,14 +1038,6 @@ CREATE POLICY select_all ON app_public.users FOR SELECT USING (true);
 --
 
 CREATE POLICY select_own ON app_public.authentications FOR SELECT USING ((user_id = app_public.user_id()));
-
-
---
--- Name: families select_own; Type: POLICY; Schema: app_public; Owner: -
---
-
-CREATE POLICY select_own ON app_public.families FOR SELECT USING ((id = ( SELECT "current_user".family_id
-   FROM app_public."current_user"() "current_user"(id, created_at, updated_at, name, avatar_url, person_id, family_id))));
 
 
 --
