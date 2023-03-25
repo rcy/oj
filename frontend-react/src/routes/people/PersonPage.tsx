@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 import { usePersonPageDataQuery } from "../../generated-types";
 import ChatSection from "./ChatSection";
+import { Avatar, Box, Container } from "@chakra-ui/react";
 
 export default function PersonPage() {
   const params = useParams();
@@ -8,13 +9,12 @@ export default function PersonPage() {
   const pagePerson = q.data?.person;
 
   return (
-    <div className="flex flex-col">
-      <header className="p-2 flex items-center">
-        <img alt="avatar" src={pagePerson?.avatarUrl} />
+    <Container>
+      <Box>
+        <Avatar size="lg" src={pagePerson?.avatarUrl} />
         <h1 className="px-2 text-6xl">{pagePerson?.name}</h1>
-      </header>
-
+      </Box>
       {pagePerson && <ChatSection pagePerson={pagePerson} />}
-    </div>
+    </Container>
   );
 }
