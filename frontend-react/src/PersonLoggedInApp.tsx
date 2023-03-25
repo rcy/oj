@@ -14,6 +14,7 @@ import { BrowserRouter, Link, Route, Routes } from "react-router-dom";
 import MemberSetProfilePicture from "./routes/member/MemberSetProfilePicture";
 import { useCurrentPersonFamilyMembershipQuery, useCurrentPersonQuery } from "./generated-types";
 import NavBar from "./components/NavBar";
+import PersonPage from "./routes/people/PersonPage";
 
 export default function PersonLoggedInApp() {
   return (
@@ -36,6 +37,7 @@ function PersonLoggedInAppInner() {
       <Routes>
         <Route path="/" element={<Main />} />
         <Route path="/profile" element={<MemberSetProfilePicture />} />
+        <Route path="/people/:id" element={<PersonPage />} />
       </Routes>
     </Box>
   );
@@ -60,8 +62,9 @@ function Main() {
             name={m.node.person?.name}
             avatarUrl={m.node.person?.avatarUrl}
             username={m.node.person?.username || ""}
-            title="me"
+            title={m.node.person?.name}
             online={false}
+            path={`/people/${m.node.person?.id}`}
           />
         ))}
       </SimpleGrid>
@@ -75,24 +78,27 @@ type PersonCardProps = {
   avatarUrl?: string;
   title?: string;
   online: boolean;
+  path: string
 };
 
 function PersonCard(props: PersonCardProps) {
   return (
-    <Card w="xs">
-      <CardBody>
-        <Flex>
-          <Flex flex="1" gap="4" alignItems="center" flexWrap="wrap">
-            <Avatar size="lg" name={props.name} src={props.avatarUrl}>
-              {props.online && <AvatarBadge boxSize="1em" bg="green.500" />}
-            </Avatar>
-            <Box>
-              <Heading size="lg">{props.username}</Heading>
-              <Text>{props.title}</Text>
-            </Box>
+    <Link to={props.path}>
+      <Card w="xs">
+        <CardBody>
+          <Flex>
+            <Flex flex="1" gap="4" alignItems="center" flexWrap="wrap">
+              <Avatar size="lg" name={props.name} src={props.avatarUrl}>
+                {props.online && <AvatarBadge boxSize="1em" bg="green.500" />}
+              </Avatar>
+              <Box>
+                <Heading size="lg">{props.username}</Heading>
+                <Text>{props.title}</Text>
+              </Box>
+            </Flex>
           </Flex>
-        </Flex>
-      </CardBody>
-    </Card>
+        </CardBody>
+      </Card>
+    </Link>
   );
 }

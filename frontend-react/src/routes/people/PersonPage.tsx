@@ -14,7 +14,7 @@ export default function PersonPage() {
         <h1 className="px-2 text-6xl">{pagePerson?.name}</h1>
       </header>
 
-      <ChatSection pagePerson={pagePerson} />
+      {pagePerson && <ChatSection pagePerson={pagePerson} />}
     </div>
   );
 }

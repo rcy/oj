@@ -4,11 +4,14 @@ import { PersonIdContext } from "../../contexts";
 import {
   useCreateSpaceMembershipMutation,
   useCreateSpaceMutation,
+  useCurrentPersonQuery,
   useSharedSpacesQuery,
 } from "../../generated-types";
 
 export default function ChatSection({ pagePerson }: any) {
-  const myPersonId = useContext(PersonIdContext);
+  const myPersonQuery = useCurrentPersonQuery();
+  const myPersonId = myPersonQuery.data?.currentPerson?.id;
+
   const [createSpace] = useCreateSpaceMutation();
   const [createSpaceMembership] = useCreateSpaceMembershipMutation();
   const sharedSpacesQuery = useSharedSpacesQuery({
