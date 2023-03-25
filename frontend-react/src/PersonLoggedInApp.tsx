@@ -1,9 +1,4 @@
-import {
-  VStack,
-  Heading,
-  Box,
-  SimpleGrid,
-} from "@chakra-ui/react";
+import { VStack, Heading, Box, SimpleGrid } from "@chakra-ui/react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import MemberSetProfilePicture from "./routes/member/MemberSetProfilePicture";
 import { useCurrentPersonFamilyMembershipQuery } from "./generated-types";
@@ -39,19 +34,22 @@ function PersonLoggedInAppInner() {
 }
 
 function Main() {
-  const membershipQuery = useCurrentPersonFamilyMembershipQuery()
+  const membershipQuery = useCurrentPersonFamilyMembershipQuery();
 
-  const currentPerson = membershipQuery.data?.currentPerson
-  const memberships = currentPerson?.familyMembership?.family?.familyMemberships.edges
-  const filteredMemberships = memberships?.filter(edge => edge.node.person?.id !== currentPerson?.id)
+  const currentPerson = membershipQuery.data?.currentPerson;
+  const memberships =
+    currentPerson?.familyMembership?.family?.familyMemberships.edges;
+  const filteredMemberships = memberships?.filter(
+    (edge) => edge.node.person?.id !== currentPerson?.id
+  );
 
-    console.log({ memberships })
+  console.log({ memberships });
 
   return (
     <VStack>
       <Heading>My Family</Heading>
       <SimpleGrid columns={1} gap="20px">
-        {filteredMemberships?.map(m => (
+        {filteredMemberships?.map((m) => (
           <PersonCardPrimitive
             key={m.node.id}
             name={m.node.person?.name}
@@ -63,6 +61,6 @@ function Main() {
           />
         ))}
       </SimpleGrid>
-    </VStack >
+    </VStack>
   );
 }

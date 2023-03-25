@@ -10,7 +10,7 @@ export default function PersonPage() {
   const pagePerson = q.data?.person;
 
   if (q.loading) {
-    return <Spinner />
+    return <Spinner />;
   }
 
   return (

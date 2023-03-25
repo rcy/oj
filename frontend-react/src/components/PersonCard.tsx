@@ -17,7 +17,7 @@ type PersonCardPrimitiveProps = {
   avatarUrl?: string;
   title?: string;
   online: boolean;
-  path: string
+  path: string;
 };
 
 export function PersonCardPrimitive(props: PersonCardPrimitiveProps) {
@@ -47,7 +47,7 @@ type PersonCardProps = {
 };
 
 export default function PersonCard(props: PersonCardProps) {
-  const person = props.person
+  const person = props.person;
   return (
     <PersonCardPrimitive
       username={person.username}
@@ -57,5 +57,5 @@ export default function PersonCard(props: PersonCardProps) {
       online={false}
       path={`/people/${person.id}`}
     />
-  )
+  );
 }

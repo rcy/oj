@@ -12,10 +12,10 @@ import { Link } from "react-router-dom";
 import { useCurrentPersonQuery } from "../generated-types";
 
 export default function NavBar() {
-  const query = useCurrentPersonQuery()
-  console.log({ query })
+  const query = useCurrentPersonQuery();
+  console.log({ query });
 
-  const person = query.data?.currentPerson
+  const person = query.data?.currentPerson;
 
   return (
     <Box
@@ -29,11 +29,11 @@ export default function NavBar() {
             <Link to="/"> Octopus Jr.</Link>
           </Heading>
           <Spacer />
-          <Box alignContent='center'>
+          <Box alignContent="center">
             <Link to="/profile">
               <HStack>
                 <Text>{person?.username}</Text>
-                <Avatar src={person?.avatarUrl}/>
+                <Avatar src={person?.avatarUrl} />
               </HStack>
             </Link>
           </Box>
