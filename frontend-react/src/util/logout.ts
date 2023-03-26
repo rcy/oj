@@ -1,4 +1,4 @@
 export function logout() {
-  localStorage.clear();
+  localStorage.removeItem("sessionKey");
   window.location.assign("/auth/logout");
 }
