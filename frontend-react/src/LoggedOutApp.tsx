@@ -4,12 +4,10 @@ import PersonAuth from "./PersonAuth";
 
 export default function LoggedOutApp() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/kidsauth/*" element={<PersonAuth />} />
-        <Route path="*" element={<AuthButtons />} />
-      </Routes>
-    </BrowserRouter>
+    <Routes>
+      <Route path="/kidsauth/*" element={<PersonAuth />} />
+      <Route path="*" element={<AuthButtons />} />
+    </Routes>
   );
 }
 

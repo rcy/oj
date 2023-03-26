@@ -17,6 +17,7 @@ import { createClient } from "graphql-ws";
 import { ChakraProvider } from "@chakra-ui/react";
 
 import { extendTheme } from "@chakra-ui/react";
+import { BrowserRouter, Router } from "react-router-dom";
 
 const theme = extendTheme({
   styles: {
@@ -101,7 +102,9 @@ root.render(
   <React.StrictMode>
     <ApolloProvider client={client}>
       <ChakraProvider theme={theme}>
-        <App />
+        <BrowserRouter >
+          <App />
+        </BrowserRouter>
       </ChakraProvider>
     </ApolloProvider>
   </React.StrictMode>

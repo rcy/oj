@@ -1,5 +1,5 @@
 import { VStack, Heading, Box, SimpleGrid } from "@chakra-ui/react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import MemberSetProfilePicture from "./routes/member/MemberSetProfilePicture";
 import { useCurrentPersonFamilyMembershipQuery } from "./generated-types";
 import NavBar from "./components/NavBar";
@@ -8,11 +8,9 @@ import { PersonCardPrimitive } from "./components/PersonCard";
 
 export default function PersonLoggedInApp() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="*" element={<PersonLoggedInAppInner />} />
-      </Routes>
-    </BrowserRouter>
+    <Routes>
+      <Route path="*" element={<PersonLoggedInAppInner />} />
+    </Routes>
   );
 }
 
