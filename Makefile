@@ -1,9 +1,18 @@
-dev: up
-	${MAKE} up
+include .env
+
+start: install up
 	npx foreman start -s
 
+bootstrap: install up
+	${MAKE} -C backend create migrate
+
 up:
-	docker compose up -d
+	podman-compose up -d
+
+install:
+	npm i
+	cd backend && npm i
+	cd frontend-react && npm i
 
 psql:
 	psql ${DATABASE_URL}
