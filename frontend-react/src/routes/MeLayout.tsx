@@ -13,6 +13,7 @@ import SpacesExplore from "./spaces/explore";
 import FamilyIndex from "./family/index";
 import MemberSetProfilePicture from "./member/MemberSetProfilePicture";
 import PeopleIndexPage from "./people";
+import { Spinner } from "@chakra-ui/react";
 
 type MemberLayoutType = { doLogout: Function };
 
@@ -25,7 +26,7 @@ export default function MemberLayout({ doLogout }: MemberLayoutType) {
     fetchPolicy: "network-only",
   });
   if (loading) {
-    return <span>loading</span>;
+    return <Spinner/>
   }
 
   return (
