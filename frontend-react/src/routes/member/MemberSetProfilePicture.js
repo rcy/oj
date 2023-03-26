@@ -12,6 +12,8 @@ import {
   useCurrentPersonQuery,
   useSetPersonAvatarMutation,
 } from "../../generated-types";
+import LoggedOutApp from "../../LoggedOutApp";
+import LogoutButton from "../../components/LogoutButton";
 
 // return a hash based on a given string and index
 function getDailyHash(str, index) {
@@ -40,6 +42,10 @@ export default function MemberSetProfilePicture() {
 
   return (
     <Container>
+      <Box textAlign="right">
+        <LogoutButton />
+      </Box>
+
       <Heading as="h1">Change your profile picture</Heading>
 
       <Box py="5">
