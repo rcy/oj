@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 14.5 (Debian 14.5-2.pgdg110+2)
--- Dumped by pg_dump version 14.7 (Ubuntu 14.7-0ubuntu0.22.04.1)
+-- Dumped from database version 14.7 (Debian 14.7-1.pgdg110+1)
+-- Dumped by pg_dump version 14.7
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -246,7 +246,7 @@ CREATE TABLE app_public.people (
     created_at timestamp with time zone DEFAULT now() NOT NULL,
     updated_at timestamp with time zone DEFAULT now() NOT NULL,
     name text NOT NULL,
-    avatar_url text DEFAULT 'https://www.gravatar.com/avatar/DEFAULT?f=y&d=mp'::text NOT NULL,
+    avatar_url text DEFAULT ''::text NOT NULL,
     username text
 );
 
