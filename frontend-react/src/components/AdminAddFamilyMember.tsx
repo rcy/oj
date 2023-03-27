@@ -1,7 +1,7 @@
 import { FormEventHandler, useState } from "react";
 import { useCreateNewFamilyMemberMutation } from "../generated-types";
 import TextInput from "./TextInput";
-import Button from "../Button";
+import { Box, Button, ButtonGroup, Flex, FormControl, FormHelperText, FormLabel, Heading, Input, Text, VStack } from "@chakra-ui/react";
 
 interface Props {
   onSuccess: Function;
@@ -9,16 +9,16 @@ interface Props {
 }
 
 export default function AdminAddFamilyMember({ onSuccess, onCancel }: Props) {
-  const [value, setValue] = useState("");
+  const [firstName, setFirstName] = useState("");
   const [addFamilyMember] = useCreateNewFamilyMemberMutation();
 
   const handleSubmit: FormEventHandler = async (ev) => {
     ev.preventDefault();
-    const trimmedValue = value.trim();
+    const trimmedValue = firstName.trim();
     if (trimmedValue.length) {
       console.log("mutating...");
       const result = await addFamilyMember({
-        variables: { name: value, role: "child" },
+        variables: { name: trimmedValue, role: "child" },
       });
       console.log("mutating...done", { result });
       if (!result.errors) {
@@ -34,26 +34,33 @@ export default function AdminAddFamilyMember({ onSuccess, onCancel }: Props) {
   };
 
   return (
-    <>
-      <h1 className="text-xl pb-10">Add Member to Family</h1>
-
+    <VStack align="stretch">
+      <Heading size="lg" mb="4">Create A Managed Account For Your Child</Heading>
       <form onSubmit={handleSubmit}>
-        <TextInput
-          label="New Family Member Name"
-          name="name"
-          onChange={(ev: React.ChangeEvent<HTMLInputElement>) =>
-            setValue(ev.target.value)
-          }
-          value={value}
-        />
+        <VStack align="stretch" spacing={10}>
+          <FormControl>
+            <FormLabel>What is your child's name?</FormLabel>
+            <Input
+              name="name"
+              onChange={(ev: React.ChangeEvent<HTMLInputElement>) =>
+                setFirstName(ev.target.value)
+              }
+              value={firstName}
+            />
+            <FormHelperText>First name only is fine</FormHelperText>
+          </FormControl>
 
-        <Button color="green" type="submit">
-          Submit
-        </Button>
-        <Button color="green" onClick={handleCancel}>
-          Cancel
-        </Button>
+          <ButtonGroup>
+            <Button colorScheme="green" type="submit">
+              Submit
+            </Button>
+
+            <Button onClick={handleCancel}>
+              Cancel
+            </Button>
+          </ButtonGroup>
+        </VStack>
       </form>
-    </>
+    </VStack>
   );
 }

@@ -1,5 +1,7 @@
 import { useEffect } from "react";
 import {
+  Person,
+  Post,
   SpacePostsAddedDocument,
   useCurrentPersonQuery,
   usePostMessageMutation,
@@ -8,6 +10,7 @@ import {
 } from "../generated-types";
 import ChatInput from "./ChatInput";
 import beep from "../util/beep";
+import { Flex,Card, Avatar, Spacer, Box } from "@chakra-ui/react";
 
 interface Props {
   spaceId: string;
@@ -26,6 +29,8 @@ export default function Chat({ spaceId }: Props) {
 
   const membershipId =
     membershipQueryResult.data?.spaceMembershipByPersonIdAndSpaceId?.id;
+
+  const person = personQuery.data?.currentPerson
 
   useEffect(() => {
     // subscribeToMore returns its unsubscribe function
@@ -70,20 +75,30 @@ export default function Chat({ spaceId }: Props) {
   };
 
   return (
-    <div>
-      {spacePostsQueryResult.data?.posts?.nodes.map((post) => (
-        <div key={post.id} className="flex">
-          <img
-            alt="avatar"
-            width="32"
-            src={post.membership?.person?.avatarUrl}
-          />
-          <b>{post.membership?.person?.name}: </b>
-          <div>{post.body}</div>
-        </div>
-      ))}
-
-      <ChatInput onSubmit={handleSubmit} />
-    </div>
+    <Flex direction="column">
+      <Box height="50vh">
+        {spacePostsQueryResult.data?.posts?.nodes.map((post) => (
+          <ChatPost key={post.id} post={post} />
+        ))}
+      </Box>
+      <Spacer/>
+      <ChatInput onSubmit={handleSubmit} person={person} />
+    </Flex>
   );
+}
+
+function ChatPost(props: any) {
+  const post: Post = props.post
+
+  const person = post.membership?.person
+
+  return (
+    <Card>
+      <Flex gap="1">
+        <Avatar size="xs" src={person?.avatarUrl} name={person?.name} />
+        <b>{person?.name}: </b>
+        <div>{post.body}</div>
+      </Flex>
+    </Card>
+  )
 }

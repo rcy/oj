@@ -22,6 +22,9 @@ import { BrowserRouter, Router } from "react-router-dom";
 const theme = extendTheme({
   styles: {
     global: (_props) => ({
+      h2: {
+        marginTop: '.5em',
+      },
       body: {
         // bg: mode(
         //   'linear-gradient(90deg, orange 0%, purple 100%);',

@@ -23,7 +23,7 @@ type PersonCardPrimitiveProps = {
 export function PersonCardPrimitive(props: PersonCardPrimitiveProps) {
   return (
     <Link to={props.path}>
-      <Card w="xs">
+      <Card>
         <CardBody>
           <Flex>
             <Flex flex="1" gap="4" alignItems="center" flexWrap="wrap">
@@ -53,7 +53,7 @@ export default function PersonCard(props: PersonCardProps) {
       username={person.username}
       name={person.name}
       avatarUrl={person.avatarUrl}
-      title={person.title}
+      title={person.title || person.name}
       online={false}
       path={`/people/${person.id}`}
     />
