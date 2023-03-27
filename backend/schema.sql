@@ -434,15 +434,15 @@ $$;
 CREATE FUNCTION app_public.trigger_job() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
-BEGIN
-  PERFORM graphile_worker.add_job(TG_ARGV[0], json_build_object(
-    'schema', TG_TABLE_SCHEMA,
-    'table', TG_TABLE_NAME,
-    'op', TG_OP,
-    'id', (CASE WHEN TG_OP = 'DELETE' THEN OLD.id ELSE NEW.id END)
+begin
+  perform graphile_worker.add_job(tg_argv[0], json_build_object(
+    'schema', tg_table_schema,
+    'table', tg_table_name,
+    'op', tg_op,
+    'id', (case when tg_op = 'delete' then old.id else new.id end)
   ));
-  RETURN NEW;
-END;
+  return new;
+end;
 $$;
 
 

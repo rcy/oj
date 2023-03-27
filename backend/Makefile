@@ -26,6 +26,9 @@ uncommit:
 migrate:
 	npx graphile-migrate migrate
 
+migrate-prod:
+	DATABASE_URL=${PROD_DATABASE_URL} npx graphile-migrate migrate
+
 reset:
 	npx graphile-migrate reset --erase
 	${MAKE} create
