@@ -1,8 +1,8 @@
 import { makeExtendSchemaPlugin, gql, embed } from "graphile-utils";
 
 const newSpacePostsTopic = async(args, context, _resolveInfo) => {
-  if (!context.personId) {
-    throw new Error("No personId in context");
+  if (!context.personId && !context.userId) {
+    throw new Error("No personId or userId in context");
   }
   return `graphql:spaceposts:${args.spaceId}`
 };
