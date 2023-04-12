@@ -4011,7 +4011,7 @@ export type SpacePostsQueryVariables = Exact<{
 }>;
 
 
-export type SpacePostsQuery = { __typename?: 'Query', posts?: { __typename?: 'PostsConnection', nodes: Array<{ __typename?: 'Post', id: any, body: string, membership?: { __typename?: 'SpaceMembership', id: any, person?: { __typename?: 'Person', id: any, name: string, avatarUrl: string } | null } | null }> } | null };
+export type SpacePostsQuery = { __typename?: 'Query', posts?: { __typename?: 'PostsConnection', nodes: Array<{ __typename?: 'Post', id: any, body: string, createdAt: any, membership?: { __typename?: 'SpaceMembership', id: any, person?: { __typename?: 'Person', id: any, name: string, avatarUrl: string } | null } | null }> } | null };
 
 export type SpacePostsAddedSubscriptionVariables = Exact<{
   spaceId: Scalars['UUID'];
@@ -4735,6 +4735,7 @@ export const SpacePostsDocument = gql`
     nodes {
       id
       body
+      createdAt
       membership {
         id
         person {

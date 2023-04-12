@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import {
-  Person,
   Post,
   SpacePostsAddedDocument,
   useCurrentPersonQuery,
@@ -10,7 +9,7 @@ import {
 } from "../generated-types";
 import ChatInput from "./ChatInput";
 import beep from "../util/beep";
-import { Flex,Card, Avatar, Spacer, Box } from "@chakra-ui/react";
+import { Flex, Text, Card, Avatar, Spacer, Box } from "@chakra-ui/react";
 
 interface Props {
   spaceId: string;
@@ -92,12 +91,20 @@ function ChatPost(props: any) {
 
   const person = post.membership?.person
 
+  const date = new Date(post.createdAt)
+  const formattedTime = date.toLocaleString('en-US', {
+    hour: "numeric",
+    minute: "numeric",
+    hour12: true
+  })
+
   return (
     <Card>
       <Flex gap="1">
         <Avatar size="xs" src={person?.avatarUrl} name={person?.name} />
-        <b>{person?.name}: </b>
-        <div>{post.body}</div>
+        <Text fontWeight="bold">{person?.name}: </Text>
+        <Text flex="1">{post.body}</Text>
+        <Text color="gray.500" flex="1" maxWidth="5em" fontSize="xs" align="right">{formattedTime}</Text>
       </Flex>
     </Card>
   )
