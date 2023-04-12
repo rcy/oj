@@ -75,7 +75,7 @@ export default function Chat({ spaceId }: Props) {
 
   return (
     <Flex direction="column">
-      <Box height="50vh">
+      <Box height="50vh" background="white" p="1" my="1" rounded="lg">
         {spacePostsQueryResult.data?.posts?.nodes.map((post) => (
           <ChatPost key={post.id} post={post} />
         ))}
@@ -99,13 +99,11 @@ function ChatPost(props: any) {
   })
 
   return (
-    <Card>
-      <Flex gap="1">
-        <Avatar size="xs" src={person?.avatarUrl} name={person?.name} />
-        <Text fontWeight="bold">{person?.name}: </Text>
-        <Text flex="1">{post.body}</Text>
-        <Text color="gray.500" flex="1" maxWidth="5em" fontSize="xs" align="right">{formattedTime}</Text>
-      </Flex>
-    </Card>
+    <Flex gap="1">
+      <Avatar size="xs" src={person?.avatarUrl} name={person?.name} />
+      <Text fontWeight="bold">{person?.name}: </Text>
+      <Text flex="1" wordBreak="break-word">{post.body}</Text>
+      <Text color="gray.500" flex="1" maxWidth="5em" fontSize="xs" align="right">{formattedTime}</Text>
+    </Flex>
   )
 }
