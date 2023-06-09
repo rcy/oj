@@ -30,6 +30,7 @@ func main() {
 	r.Route("/", func(r chi.Router) {
 		r.Use(authMiddleware)
 		r.Get("/", handlers.Home)
+		r.Get("/games", handlers.Games)
 	})
 
 	r.Get("/signup", handlers.GetSignup)
@@ -50,7 +51,6 @@ func main() {
 
 func authMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		log.Printf("doing stuff")
 		cookie, err := r.Cookie("username")
 		if err != nil {
 			if err == http.ErrNoCookie {
@@ -59,7 +59,6 @@ func authMiddleware(next http.Handler) http.Handler {
 				http.Redirect(w, r, "/signup?someothererror", 303)
 			}
 		} else {
-			log.Printf("cookie==%s", cookie.Value)
 			ctx := context.WithValue(r.Context(), "username", cookie.Value)
 			next.ServeHTTP(w, r.WithContext(ctx))
 		}

@@ -1,0 +1,29 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="https://unpkg.com/missing.css@1.0.9/dist/missing.min.css">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body>
+
+    <header class="navbar">
+      <nav aria-label="Site sections">
+        <ul role="list">
+          <li><a href="/">KidHub</a></li>
+          <li><a href="/games">Games</a></li>
+          <li><a href="/chat">Chat</a></li>
+        </ul>
+      </nav>
+      <nav aria-label="Social media links">
+        <ul role="list">
+          <li><a href="/signout">Logout</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      {{block "main" .}}{{end}}
+    </main>
+
+  </body>
+</html>
