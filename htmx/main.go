@@ -31,6 +31,7 @@ func main() {
 		r.Use(authMiddleware)
 		r.Get("/", handlers.Home)
 		r.Get("/games", handlers.Games)
+		r.Get("/chat", handlers.Chat)
 	})
 
 	r.Get("/signup", handlers.GetSignup)
