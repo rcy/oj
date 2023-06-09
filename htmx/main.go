@@ -5,10 +5,12 @@ import (
 	"errors"
 	"log"
 	"net/http"
+	"os"
+
 	"oj/handlers"
+	"oj/handlers/auth"
 	"oj/handlers/chat"
 	"oj/handlers/games"
-	"os"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -36,9 +38,7 @@ func main() {
 		r.Route("/chat", chat.Route)
 	})
 
-	r.Get("/signup", handlers.GetSignup)
-	r.Post("/signup", handlers.PostSignup)
-	r.Get("/signout", handlers.GetSignout)
+	r.Route("/auth", auth.Route)
 
 	http.Handle("/", r)
 
@@ -57,9 +57,9 @@ func authMiddleware(next http.Handler) http.Handler {
 		cookie, err := r.Cookie("username")
 		if err != nil {
 			if err == http.ErrNoCookie {
-				http.Redirect(w, r, "/signup?nocookie", 303)
+				http.Redirect(w, r, "/auth/signup?nocookie", 303)
 			} else {
-				http.Redirect(w, r, "/signup?someothererror", 303)
+				http.Redirect(w, r, "/auth/signup?someothererror", 303)
 			}
 		} else {
 			ctx := context.WithValue(r.Context(), "username", cookie.Value)
