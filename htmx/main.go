@@ -6,6 +6,8 @@ import (
 	"log"
 	"net/http"
 	"oj/handlers"
+	"oj/handlers/chat"
+	"oj/handlers/games"
 	"os"
 
 	"github.com/go-chi/chi/v5"
@@ -30,8 +32,8 @@ func main() {
 	r.Route("/", func(r chi.Router) {
 		r.Use(authMiddleware)
 		r.Get("/", handlers.Home)
-		r.Get("/games", handlers.Games)
-		r.Get("/chat", handlers.Chat)
+		r.Route("/games", games.Route)
+		r.Route("/chat", chat.Route)
 	})
 
 	r.Get("/signup", handlers.GetSignup)

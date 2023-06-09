@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-var t = template.Must(template.ParseFiles("templates/signup.html"))
+var t = template.Must(template.ParseFiles("handlers/signup.html"))
 
 func GetSignup(w http.ResponseWriter, r *http.Request) {
 	err := t.Execute(w, nil)

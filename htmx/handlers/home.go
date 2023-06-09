@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-var homeTemplate = template.Must(template.ParseFiles("templates/layout.html", "templates/index.html"))
+var homeTemplate = template.Must(template.ParseFiles("handlers/layout.html", "handlers/index.html"))
 
 func Home(w http.ResponseWriter, r *http.Request) {
 	err := homeTemplate.Execute(w, struct{ Username string }{Username: r.Context().Value("username").(string)})
