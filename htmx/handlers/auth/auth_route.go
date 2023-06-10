@@ -20,7 +20,7 @@ func signout(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/", http.StatusFound)
 }
 
-var t = template.Must(template.ParseFiles("handlers/auth/signup.html"))
+var t = template.Must(template.ParseFiles("handlers/auth/auth_signup.html"))
 
 func getSignup(w http.ResponseWriter, r *http.Request) {
 	err := t.Execute(w, nil)
