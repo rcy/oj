@@ -1,0 +1,20 @@
+{{define "chat_messages"}}
+<div id="messages">
+  {{range .Messages}}
+  {{template "chat_message" .}}
+  {{end}}
+</div>
+{{end}}
+
+{{define "chat_message"}}
+<div>
+  <b>{{.Username}}</b>:
+  {{.Body}}
+</div>
+{{end}}
+
+{{define "chat_input"}}
+<form hx-post="/chat/messages" hx-swap="outerHTML">
+  <input type="text" name="body" autofocus>
+</form>
+{{end}}
