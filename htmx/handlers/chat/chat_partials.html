@@ -1,17 +1,30 @@
 {{define "chat_messages"}}
 <div id="messages">
   {{range .Messages}}
-  {{template "chat_message" .}}
+  <div class="f-row">
+    {{if (eq $.Username .Sender.Username)}}
+    {{template "chat_message_mine" .}}
+    {{else}}
+    {{template "chat_message" .}}
+    {{end}}
+  </div>
   {{end}}
 </div>
 {{end}}
 
 {{define "chat_message"}}
-<div>
-  <b>{{.Username}}</b>:
+<div class="speech-bubble-left" style="margin:.2em">{{.Body}}</div>
+<div class="flex-grow:1" style="min-width:100px;"></div>
+{{end}}
+
+{{define "chat_message_mine"}}
+<div class="flex-grow:1" style="min-width:100px"></div>
+<div class="speech-bubble-right" style="margin:.2em">
   {{.Body}}
 </div>
 {{end}}
+
+
 
 {{define "chat_input"}}
 <form hx-post="/chat/messages" hx-swap="outerHTML">

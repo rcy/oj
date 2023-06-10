@@ -5,16 +5,20 @@ import (
 	"time"
 )
 
+type Sender struct {
+	Username string
+}
+
 type Message struct {
-	Username  string
+	Sender    Sender
 	Body      string
 	CreatedAt time.Time
 }
 
 var messages = []Message{
-	{
-		Username: "bob", Body: "the body", CreatedAt: time.Now(),
-	},
+	// {
+	// 	Sender: Sender{Username: "bob"}, Body: "the body", CreatedAt: time.Now(),
+	// },
 }
 
 func Fetch() ([]Message, error) {
@@ -24,7 +28,7 @@ func Fetch() ([]Message, error) {
 func Create(body string, username string) (Message, error) {
 	message := Message{
 		Body:      body,
-		Username:  username,
+		Sender:    Sender{Username: username},
 		CreatedAt: time.Now(),
 	}
 

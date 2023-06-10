@@ -3,6 +3,49 @@
     <link rel="stylesheet" href="https://unpkg.com/missing.css@1.0.9/dist/missing.min.css">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <style>
+     .speech-bubble-left {
+	 position: relative;
+	 background: #00fffb;
+         border-radius: .4em;
+         padding: 1em;
+     }
+     .speech-bubble-left:after {
+	 content: '';
+	 position: absolute;
+	 left: 0;
+	 top: 50%;
+	 width: 0;
+	 height: 0;
+	 border: 12px solid transparent;
+	 border-right-color: #00fffb;
+	 border-left: 0;
+	 margin-top: -12px;
+	 margin-left: -12px;
+     }
+
+     .speech-bubble-right {
+	 position: relative;
+	 background: #f948b8;
+         border-radius: .4em;
+         padding: 1em;
+     }
+     .speech-bubble-right:after {
+	 content: '';
+	 position: absolute;
+	 right: 0;
+	 top: 50%;
+	 width: 0;
+	 height: 0;
+	 border: 12px solid transparent;
+	 border-left-color: #f948b8;
+	 border-right: 0;
+	 margin-top: -12px;
+	 margin-right: -12px;
+     }
+    </style>
+
   </head>
   <body>
 

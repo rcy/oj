@@ -69,6 +69,7 @@ func postMessage(w http.ResponseWriter, r *http.Request) {
 }
 
 func getMessages(w http.ResponseWriter, r *http.Request) {
+	username := r.Context().Value("username").(string)
 	records, err := messages.Fetch()
 	if err != nil {
 		handlers.Error(w, err.Error(), 500)
@@ -76,8 +77,10 @@ func getMessages(w http.ResponseWriter, r *http.Request) {
 	}
 
 	pd := struct {
+		Username string
 		Messages []messages.Message
 	}{
+		Username: username,
 		Messages: records,
 	}
 
