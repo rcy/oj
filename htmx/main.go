@@ -11,6 +11,7 @@ import (
 	"oj/handlers/auth"
 	"oj/handlers/chat"
 	"oj/handlers/games"
+	"oj/handlers/tools"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -36,6 +37,7 @@ func main() {
 		r.Get("/", handlers.Home)
 		r.Route("/games", games.Route)
 		r.Route("/chat", chat.Route)
+		r.Route("/tools", tools.Route)
 	})
 
 	r.Route("/auth", auth.Route)

@@ -1,0 +1,157 @@
+{{define "main"}}
+<h1>gradient picker</h1>
+
+<style>
+ /* https://mikejolley.com/2019/08/02/building-a-cross-browser-compatible-multi-handle-range-slider/ */
+ .slider {
+     margin: 0;
+     padding: 0;
+     border: 0;
+     outline: none;
+     background: transparent;
+     -webkit-appearance: none;
+     -moz-appearance: none;
+     width: 100%;
+     height: 0;
+     pointer-events: none; // Prevent mouse interaction on the range slider.
+ }
+ .slider::-webkit-slider-runnable-track {
+     cursor: default;
+     height: 1px; /* Required for Samsung internet based browsers */
+     outline: 0;
+     -webkit-appearance: none;
+     // Add custom styles here..
+ }
+ .slider::-moz-range-track {
+     cursor: default;
+     -moz-appearance: none;
+     outline: 0;
+     height: 1px;
+     // Add custom styles here..
+ }
+
+ .slider::-webkit-slider-thumb {
+     -webkit-appearance: none; // Reset appearance so we can apply backgrounds/borders etc.
+     pointer-events: auto; // Re-enable pointer events so the handles can be used.
+     width: 50px;
+     height: 50px;
+     margin-top: -13px;
+     border-radius: 50%; 
+     background: white;
+     opacity: .5;
+ }
+
+ .selected .slider::-webkit-slider-thumb {
+     background: white;
+     opacity: .5;
+ }
+
+ .track {
+     /* background: linear-gradient(90deg, rgba(131,58,180,1) 0%, rgba(29,253,235,1) 52%, rgba(222,69,252,1) 100%); */
+     width: 100%;
+     height: 32px;
+     /* border-top: 10px solid black;
+        border-bottom: 10px solid black; */
+ }
+
+ .picker {
+     opacity: 0;
+     width: 100%;
+     pointer-events: none;
+ }
+ .selected .picker {
+     opacity: 1;
+     pointer-events: auto;
+ }
+ .picker {
+     transition-property: opacity;
+     transition-delay: .1s;
+     transition-duration: .2s;
+ }
+ 
+</style>
+
+{{template "picker" .}}
+
+{{end}}
+
+{{define "picker"}}
+<form hx-post="/tools/picker">
+  <button id="submit" type="submit" style="display: none">submit</button>
+
+  <div class="f-row">
+    <select
+      style="width: 100%"
+      name="gradientType"
+      _="on change log 'changed' then click() the #submit"
+    >
+      <option {{if (eq .GradientType "linear")}}selected{{end}} value="linear">Linear</option>
+      <option {{if (eq .GradientType "radial")}}selected{{end}} value="radial">Radial</option>
+      <option {{if (eq .GradientType "conic")}}selected{{end}} value="conic">Conic</option>
+    </select>    
+    <div class="f-row" style="--gap: .5em">
+      <label for="repeatingCheckbox">Repeat</label>
+      <input
+        id="repeatingCheckbox"
+        type="checkbox"
+        name="repeat"
+        {{if .Repeat}}checked{{end}}
+        _="on change log 'changed' then click() the #submit"
+      >
+    </div>
+  </div>    
+
+  <div class="f-row" style="--gap: 0px">
+    {{range .Stops}}
+    <input
+      name="color"
+      class="pickerx"
+      stylex="position: absolute;top:40"
+      type="color"
+      value="{{.Color}}"
+      style="width: 100%"
+      _="on change log 'changed' then click() the #submit"
+    >
+    {{end}}
+  </div>
+
+  <div style="position:relative">
+
+    {{range .Stops}}
+    <div class="group">
+      <input
+        name="percent"
+        style="position:absolute"
+        type="range"
+        min="0"
+        max="100"
+        value="{{.Percent}}"
+        class="slider"
+        _="on click remove .selected from .selected add .selected to the closest .group
+              on change log 'changed' then click() the #submit"
+      >
+    </div>
+    {{end}}
+
+    <div class="track" style="background: {{.GradientBar}}"></div>
+  </div>
+
+  <div class="f-row">
+    <!-- <div>Rotate&nbsp;{{.Degrees}}°</div> -->
+    <input
+      {{if (eq .GradientType "radial")}}style="visibility: hidden"{{end}}
+      name="degrees"
+      type="range"
+      min="0"
+      max="180"
+      value="{{.Degrees}}"
+      _="on change click() the #submit">
+  </div>
+
+  <div style="width: 100%; height: 480px; background: {{.GradientPreview}}"></div>
+
+  <div>
+    {{.GradientPreview}}
+  </div>
+</form>
+{{end}}
