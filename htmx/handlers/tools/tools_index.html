@@ -79,17 +79,7 @@
 <form hx-post="/tools/picker">
   <button id="submit" type="submit" style="display: none">submit</button>
 
-  <div class="f-row">
-    <div class="f-row" style="--gap: .5em">
-      <input
-        id="repeatingCheckbox"
-        type="checkbox"
-        name="repeat"
-        _="on change log 'changed' then click() the #submit"
-        {{if .Repeat}}checked{{end}}
-      >
-      <label for="repeatingCheckbox">Repeating</label>
-    </div>
+  <div class="f-row align-items:baseline">
     <select
       style="width: 100%"
       name="gradientType"
@@ -99,6 +89,16 @@
       <option {{if (eq .GradientType "radial")}}selected{{end}} value="radial">Radial</option>
       <option {{if (eq .GradientType "conic")}}selected{{end}} value="conic">Conic</option>
     </select>    
+    <label style="white-space: nowrap">
+      <input
+        id="repeatingCheckbox"
+        type="checkbox"
+        name="repeat"
+        _="on change log 'changed' then click() the #submit"
+        {{if .Repeat}}checked{{end}}
+      >
+      Repeating
+    </label>
   </div>    
 
   <div class="f-row" style="--gap: 0px">
