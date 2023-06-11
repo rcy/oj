@@ -28,8 +28,10 @@ func init() {
 	// create sqlx connection from migrated database
 	DB = sqlx.NewDb(mDB, "sqlite")
 
-	// dump schema to schema.sql -- TODO: don't do this if database didn't change (compare migration_versions before and after)
-	MustDump()
+	if os.Getenv("NO_SCHEMA_DUMP") == "" {
+		// dump schema to schema.sql -- TODO: don't do this if database didn't change (compare migration_versions before and after)
+		MustDump()
+	}
 
 	log.Printf("Connected to database: %s", dbfile)
 }

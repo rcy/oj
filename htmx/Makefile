@@ -6,3 +6,6 @@ start:
 
 sql:
 	sqlite3 ${SQLITE_DB}
+
+deploy:
+	flyctl deploy
