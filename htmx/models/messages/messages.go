@@ -1,40 +1,40 @@
 package messages
 
 import (
-	"log"
+	"oj/db"
 	"time"
 )
 
-type Sender struct {
-	Username string
-}
-
 type Message struct {
-	Sender    Sender
+	ID        int64
+	Sender    string
 	Body      string
-	CreatedAt time.Time
+	CreatedAt time.Time `db:"created_at"`
 }
 
-var messages = []Message{
-	// {
-	// 	Sender: Sender{Username: "bob"}, Body: "the body", CreatedAt: time.Now(),
-	// },
-}
-
-func Fetch() ([]Message, error) {
+func Fetch() (messages []Message, err error) {
+	err = db.DB.Select(&messages, "select * from messages")
+	if err != nil {
+		return []Message{}, err
+	}
 	return messages, nil
 }
 
 func Create(body string, username string) (Message, error) {
-	message := Message{
-		Body:      body,
-		Sender:    Sender{Username: username},
-		CreatedAt: time.Now(),
+	var message Message
+
+	result, err := db.DB.Exec("insert into messages(body, sender) values(?,?)", body, username)
+	if err != nil {
+		return Message{}, err
 	}
-
-	messages = append(messages, message)
-
-	log.Printf("messages=%v", messages)
+	id, err := result.LastInsertId()
+	if err != nil {
+		return Message{}, err
+	}
+	err = db.DB.Get(&message, "select * from messages where id = ?", id)
+	if err != nil {
+		return Message{}, err
+	}
 
 	return message, nil
 }
