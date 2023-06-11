@@ -80,6 +80,16 @@
   <button id="submit" type="submit" style="display: none">submit</button>
 
   <div class="f-row">
+    <div class="f-row" style="--gap: .5em">
+      <input
+        id="repeatingCheckbox"
+        type="checkbox"
+        name="repeat"
+        _="on change log 'changed' then click() the #submit"
+        {{if .Repeat}}checked{{end}}
+      >
+      <label for="repeatingCheckbox">Repeating</label>
+    </div>
     <select
       style="width: 100%"
       name="gradientType"
@@ -89,20 +99,14 @@
       <option {{if (eq .GradientType "radial")}}selected{{end}} value="radial">Radial</option>
       <option {{if (eq .GradientType "conic")}}selected{{end}} value="conic">Conic</option>
     </select>    
-    <div class="f-row" style="--gap: .5em">
-      <label for="repeatingCheckbox">Repeat</label>
-      <input
-        id="repeatingCheckbox"
-        type="checkbox"
-        name="repeat"
-        {{if .Repeat}}checked{{end}}
-        _="on change log 'changed' then click() the #submit"
-      >
-    </div>
   </div>    
 
   <div class="f-row" style="--gap: 0px">
-    {{range .Stops}}
+    {{if (gt (index .Stops 0).Percent 0)}}
+    <button>-1</button>
+    {{end}}
+
+    {{range $i, $e := .Stops}}
     <input
       name="color"
       class="pickerx"
@@ -112,6 +116,10 @@
       style="width: 100%"
       _="on change log 'changed' then click() the #submit"
     >
+    {{if (lt .Percent 100)}}
+    <button>{{$i}}</button>
+    {{end}}
+
     {{end}}
   </div>
 

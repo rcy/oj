@@ -26,8 +26,9 @@ type Stop struct {
 
 func index(w http.ResponseWriter, r *http.Request) {
 	stops := []Stop{
-		{Color: "#ff0000", Percent: 0},
-		{Color: "#00ff00", Percent: 50},
+		{Color: "#ffffff", Percent: 0},
+		// {Color: "#000000", Percent: 33},
+		// {Color: "#00ff00", Percent: 66},
 		{Color: "#0000ff", Percent: 100},
 	}
 	degrees := 90
