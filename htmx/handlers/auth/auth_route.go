@@ -16,7 +16,7 @@ func Route(r chi.Router) {
 }
 
 func signout(w http.ResponseWriter, r *http.Request) {
-	http.SetCookie(w, &http.Cookie{Name: "username", Path: "/", Expires: time.Now()})
+	http.SetCookie(w, &http.Cookie{Name: "username", Path: "/", Expires: time.Now().Add(-time.Hour)})
 	http.Redirect(w, r, "/", http.StatusFound)
 }
 
