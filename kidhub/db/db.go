@@ -16,7 +16,7 @@ func init() {
 
 	dbfile, ok := os.LookupEnv("SQLITE_DB")
 	if !ok {
-		panic("SQLITE_DB not defined")
+		log.Fatalf("SQLITE_DB not defined")
 	}
 
 	// migrate the database
