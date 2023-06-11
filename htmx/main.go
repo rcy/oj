@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 
+	"oj/db"
 	"oj/handlers"
 	"oj/handlers/auth"
 	"oj/handlers/chat"
@@ -23,6 +24,11 @@ func main() {
 	port, ok := os.LookupEnv("PORT")
 	if !ok {
 		port = "8080"
+	}
+
+	err = db.DB.Ping()
+	if err != nil {
+		log.Fatal("could not ping db")
 	}
 
 	r := chi.NewRouter()
