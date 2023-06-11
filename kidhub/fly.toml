@@ -5,9 +5,13 @@ kill_signal = "SIGINT"
 kill_timeout = 5
 processes = []
 
+[mounts]
+  source = "kidhub_data"
+  destination = "/data"
+
 [env]
   PORT = "8080"
-  SQLITE_DB = "/tmp/kidhub_production.db"
+  SQLITE_DB = "/data/kidhub_production.db"
   NO_SCHEMA_DUMP = "1"
 
 [experimental]
