@@ -28,7 +28,7 @@ func Route(r chi.Router) {
 
 	// r.Get("/signup", getSignup)
 	// r.Post("/signup", postSignup)
-	// r.Get("/signout", signout)
+	r.Get("/signout", signout)
 }
 
 var welcomeTemplate = template.Must(template.ParseFiles(
@@ -68,7 +68,7 @@ func welcomeParents(w http.ResponseWriter, r *http.Request) {
 }
 
 func signout(w http.ResponseWriter, r *http.Request) {
-	http.SetCookie(w, &http.Cookie{Name: "username", Path: "/", Expires: time.Now().Add(-time.Hour)})
+	http.SetCookie(w, &http.Cookie{Name: "kh_session", Path: "/", Expires: time.Now().Add(-time.Hour)})
 	http.Redirect(w, r, "/", http.StatusFound)
 }
 
