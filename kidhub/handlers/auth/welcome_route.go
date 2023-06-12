@@ -90,20 +90,20 @@ func emailRegisterAction(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// store generated code in pending registrations table along with email
-	result, err := db.DB.Exec("insert into codes(email, code) values(?, ?)", email, generateDigitCode())
+	nonce, err := generateSecureString(32)
 	if err != nil {
-		log.Printf("Error generating code: %s", err)
+		log.Printf("Error generating secure string enMJFDN8M4Z6y5p6n: %s", err)
+		http.Error(w, "Error generating code enMJFDN8M4Z6y5p6n", 500)
+		return
+	}
+	_, err = db.DB.Exec("insert into codes(nonce, email, code) values(?, ?, ?)", nonce, email, generateDigitCode())
+	if err != nil {
+		log.Printf("Error generating code YQChKPeCivnvM9P82: %s", err)
 		http.Error(w, "Error generating code YQChKPeCivnvM9P82", 500)
 		return
 	}
 
-	id, err := result.LastInsertId()
-	if err != nil {
-		log.Printf("Error getting last insert id", err)
-		http.Error(w, "Error generating code L55gtEm4JuuozWJgZ", 500)
-		return
-	}
-	http.SetCookie(w, &http.Cookie{Name: "regcodeid", Value: fmt.Sprintf("%d", id), Path: "/", Expires: time.Now().Add(time.Hour)})
+	http.SetCookie(w, &http.Cookie{Name: "kh_nonce", Value: nonce, Path: "/", Expires: time.Now().Add(time.Hour)})
 
 	// XXX: email code to user
 
@@ -129,7 +129,7 @@ func parentsCode(w http.ResponseWriter, r *http.Request) {
 func parentsCodeAction(w http.ResponseWriter, r *http.Request) {
 	var email string
 
-	cookie, err := r.Cookie("regcodeid")
+	cookie, err := r.Cookie("kh_nonce")
 	if err != nil {
 		if err != http.ErrNoCookie {
 			log.Printf("weird error 792pR3LQagv5ej3Xi %s", err)
@@ -138,12 +138,12 @@ func parentsCodeAction(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	id := cookie.Value
+	nonce := cookie.Value
 	code := r.FormValue("code")
 
 	// look up code
 	// XXX fetch by id alone, compare code, and add retry count
-	err = db.DB.Get(&email, "select email from codes where id = ? and code = ?", id, code)
+	err = db.DB.Get(&email, "select email from codes where nonce = ? and code = ?", nonce, code)
 	if err != nil {
 		if err != sql.ErrNoRows {
 			log.Printf("Error retrieving code qmNpb3qvPM8oGwmLn: %s", err)
@@ -164,14 +164,21 @@ func parentsCodeAction(w http.ResponseWriter, r *http.Request) {
 		log.Printf("user %v", user)
 		// create a new session
 		key, err := generateSecureString(32)
+		if err != nil {
+			log.Print(err)
+			handlers.Error(w, "error creating session", 500)
+			return
+		}
 		_, err = db.DB.Exec("insert into sessions(key, user_id) values(?, ?)", key, user.ID)
 		if err != nil {
 			log.Print(err)
 			handlers.Error(w, "error creating session", 500)
 			return
 		}
-		// set cookie
+		// set session cookie
 		http.SetCookie(w, &http.Cookie{Name: "kh_session", Value: key, Path: "/", Expires: time.Now().Add(30 * 24 * time.Hour)})
+		// clear nonce cookie
+		http.SetCookie(w, &http.Cookie{Name: "kh_nonce", Path: "/", Expires: time.Now().Add(-time.Hour)})
 
 		// redirect
 		http.Redirect(w, r, "/", 303)

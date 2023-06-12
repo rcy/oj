@@ -17,6 +17,7 @@ CREATE TABLE codes(
   id integer primary key,
   created_at datetime not null default current_timestamp,
   code string not null,
+  nonce string not null,
   email text check (email like '%@%') not null
 );
 CREATE TABLE sessions(
