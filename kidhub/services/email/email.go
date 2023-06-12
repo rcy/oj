@@ -2,6 +2,7 @@ package email
 
 import (
 	"context"
+	"log"
 	"os"
 	"time"
 
@@ -37,6 +38,8 @@ func Send(subject, body, recipient string) (string, string, error) {
 	if err != nil {
 		return "", "", err
 	}
+
+	log.Printf("sent email: %s %s %s; %s %s", subject, body, recipient, resp, id)
 
 	return id, resp, nil
 }

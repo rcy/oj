@@ -32,3 +32,9 @@ CREATE TABLE kids_codes(
   nonce string not null,
   user_id integer references users not null
 );
+CREATE TABLE kids_parents(
+  id integer primary key,
+  created_at datetime not null default current_timestamp,
+  kid_id integer references users not null,
+  parent_id integer references users not null
+);

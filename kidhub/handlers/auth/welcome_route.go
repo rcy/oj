@@ -161,7 +161,8 @@ func kidsUsernameAction(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Error generating code wN6Cd9vQLHYQ2euxb", 500)
 		return
 	}
-	_, err = db.DB.Exec("insert into kids_codes(nonce, user_id, code) values(?, ?, ?)", nonce, user.ID, generateDigitCode())
+	code := generateDigitCode()
+	_, err = db.DB.Exec("insert into kids_codes(nonce, user_id, code) values(?, ?, ?)", nonce, user.ID, code)
 	if err != nil {
 		log.Printf("Error generating code qYBJ24gqRrmFEJWAs: %s", err)
 		http.Error(w, "Error generating code qYBJ24gqRrmFEJWAs", 500)
@@ -170,7 +171,26 @@ func kidsUsernameAction(w http.ResponseWriter, r *http.Request) {
 
 	http.SetCookie(w, &http.Cookie{Name: "kh_nonce", Value: nonce, Path: "/", Expires: time.Now().Add(time.Hour)})
 
-	// XXX: email code to kids parent(s)
+	// email code to kids parent(s)
+	parents, err := users.GetParents(user.ID)
+	if err != nil {
+		log.Printf("Error getting parents wdEXqpGbDeTc69Ju3: %s", err)
+		http.Error(w, "Error getting parents wdEXqpGbDeTc69Ju3", 500)
+		return
+	}
+
+	if len(parents) == 0 {
+		log.Printf("No parents QNw5BhAWCEQxwQ4LE: %s", err)
+		http.Error(w, "No parents QNw5BhAWCEQxwQ4LE", 500)
+		return
+	}
+
+	for _, parent := range parents {
+		_, _, err = email.Send("code for your kid", code, *parent.Email)
+		if err != nil {
+			log.Printf("Error sending email BohZie4YoPfrTHwj4: %s", err)
+		}
+	}
 
 	// redirect to page to input code
 	http.Redirect(w, r, "/welcome/kids/code", http.StatusSeeOther)

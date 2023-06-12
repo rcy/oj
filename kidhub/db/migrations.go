@@ -40,7 +40,15 @@ create table kids_codes(
   nonce string not null,
   user_id integer references users not null
 );
+`, `
+drop table if exists kids_parents;
+create table kids_parents(
+  id integer primary key,
+  created_at datetime not null default current_timestamp,
+  kid_id integer references users not null,
+  parent_id integer references users not null
+);
 `,
 }
 
-var Current = ``
+var Current = ""

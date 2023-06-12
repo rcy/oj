@@ -14,6 +14,16 @@ type User struct {
 	Email     *string
 }
 
+func GetParents(kidUserID int64) ([]User, error) {
+	var parents []User
+
+	err := db.DB.Select(&parents, "select users.* from kids_parents join users on kids_parents.parent_id = users.id where kids_parents.kid_id = ?", kidUserID)
+	if err != nil {
+		return nil, err
+	}
+	return parents, nil
+}
+
 func Current(r *http.Request) User {
 	return r.Context().Value("user").(User)
 }
