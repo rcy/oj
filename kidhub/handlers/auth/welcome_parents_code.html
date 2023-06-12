@@ -1,0 +1,19 @@
+{{define "main"}}
+<h1>Parents Registration</h1>
+<div class="box parent">
+  <strong class="block titlebar">Verify Code</strong>
+  <p>
+    A verification code was sent to your email
+  </p>
+  <form method="post" action="/welcome/parents/code" >
+    <label>
+      Code
+      <input name="code" type="text" required>
+    </label>
+    <button type="submit">Submit</button>
+    <br/>
+    <p class="bad color">{{if .Retry}}invalid code, try again{{end}}</p>
+  </form>
+</div>
+
+{{end}}

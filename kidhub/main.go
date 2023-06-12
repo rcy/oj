@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"database/sql"
 	"errors"
 	"log"
 	"net/http"
@@ -62,16 +63,30 @@ func main() {
 
 func authMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		cookie, err := r.Cookie("username")
+		cookie, err := r.Cookie("kh_session")
 		if err != nil {
 			if err == http.ErrNoCookie {
-				http.Redirect(w, r, "/welcome", 303)
+				http.Redirect(w, r, "/welcome", http.StatusSeeOther)
+				return
 			} else {
 				log.Printf("WARNING: weirderror: %s", err)
-				http.Redirect(w, r, "/welcome?weirderror", 303)
+				http.Redirect(w, r, "/welcome?weirderror", http.StatusSeeOther)
+				return
 			}
 		} else {
-			ctx := context.WithValue(r.Context(), "username", cookie.Value)
+			var userID int64
+			err := db.DB.Get(&userID, "select user_id from sessions where key = ?", cookie.Value)
+			if err != nil {
+				if err == sql.ErrNoRows {
+					http.Redirect(w, r, "/welcome", http.StatusSeeOther)
+					return
+				} else {
+					log.Printf("WARNING: weirderror2: %s", err)
+					http.Redirect(w, r, "/welcome?weirderror2", http.StatusSeeOther)
+					return
+				}
+			}
+			ctx := context.WithValue(r.Context(), "userID", userID)
 			next.ServeHTTP(w, r.WithContext(ctx))
 		}
 	})

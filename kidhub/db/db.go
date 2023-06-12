@@ -28,10 +28,22 @@ func init() {
 	// create sqlx connection from migrated database
 	DB = sqlx.NewDb(mDB, "sqlite")
 
+	// run the current migration
+	if Current != "" {
+		tx := DB.MustBegin()
+		tx.MustExec(Current)
+		err = tx.Commit()
+		if err != nil {
+			log.Fatalf("Error executing Current %s", err)
+		}
+	}
+
 	if os.Getenv("NO_SCHEMA_DUMP") == "" {
 		// dump schema to schema.sql -- TODO: don't do this if database didn't change (compare migration_versions before and after)
 		MustDump()
 	}
+
+	DB.MustExec("pragma foreign_keys = on")
 
 	log.Printf("Connected to database: %s", dbfile)
 }
