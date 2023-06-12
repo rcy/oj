@@ -1,5 +1,4 @@
-export PORT=8080
-export SQLITE_DB=./db/kidhub_development.db
+include .env
 
 start:
 	find . -name \*.go -o -name \*.html | entr -r go run .

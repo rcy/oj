@@ -11,6 +11,7 @@ import (
 	"oj/db"
 	"oj/handlers"
 	"oj/models/users"
+	"oj/services/email"
 	"time"
 
 	"github.com/go-chi/chi/v5"
@@ -86,8 +87,8 @@ func generateDigitCode() string {
 }
 
 func emailRegisterAction(w http.ResponseWriter, r *http.Request) {
-	email := r.FormValue("email")
-	if email == "" {
+	address := r.FormValue("email")
+	if address == "" {
 		http.Redirect(w, r, "/welcome/parents", http.StatusSeeOther)
 		return
 	}
@@ -99,7 +100,8 @@ func emailRegisterAction(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Error generating code enMJFDN8M4Z6y5p6n", 500)
 		return
 	}
-	_, err = db.DB.Exec("insert into codes(nonce, email, code) values(?, ?, ?)", nonce, email, generateDigitCode())
+	code := generateDigitCode()
+	_, err = db.DB.Exec("insert into codes(nonce, email, code) values(?, ?, ?)", nonce, address, code)
 	if err != nil {
 		log.Printf("Error generating code YQChKPeCivnvM9P82: %s", err)
 		http.Error(w, "Error generating code YQChKPeCivnvM9P82", 500)
@@ -108,7 +110,13 @@ func emailRegisterAction(w http.ResponseWriter, r *http.Request) {
 
 	http.SetCookie(w, &http.Cookie{Name: "kh_nonce", Value: nonce, Path: "/", Expires: time.Now().Add(time.Hour)})
 
-	// XXX: email code to user
+	// email code to user
+	_, _, err = email.Send("hello", code, address)
+	if err != nil {
+		log.Printf("Error emailing code gYqGXoK6XfC2va3Rp: %s", err)
+		http.Error(w, "Error emailing code gYqGXoK6XfC2va3Rp", 500)
+		return
+	}
 
 	// redirect to page to input code
 	http.Redirect(w, r, "/welcome/parents/code", http.StatusSeeOther)
