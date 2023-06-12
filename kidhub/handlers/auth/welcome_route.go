@@ -72,32 +72,6 @@ func signout(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/", http.StatusFound)
 }
 
-// var t = template.Must(template.ParseFiles("handlers/auth/auth_signup.html"))
-
-// func getSignup(w http.ResponseWriter, r *http.Request) {
-// 	err := t.Execute(w, nil)
-// 	if err != nil {
-// 		handlers.Error(w, err.Error(), 500)
-// 	}
-// }
-
-// func postSignup(w http.ResponseWriter, r *http.Request) {
-// 	err := r.ParseForm()
-// 	if err != nil {
-// 		handlers.Error(w, err.Error(), 500)
-// 	}
-
-// 	username := r.FormValue("username")
-
-// 	if username == "" {
-// 		http.Redirect(w, r, "/signup", http.StatusFound)
-// 	} else {
-// 		// register the user
-
-// 		http.SetCookie(w, &http.Cookie{Name: "username", Path: "/", Value: username})
-// 		http.Redirect(w, r, "/", http.StatusFound)
-// 	}
-// }
 
 func generateCode() string {
 	return "9999" // XXX
