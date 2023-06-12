@@ -46,7 +46,7 @@ func main() {
 		r.Route("/tools", tools.Route)
 	})
 
-	r.Route("/auth", auth.Route)
+	r.Route("/welcome", auth.Route)
 
 	http.Handle("/", r)
 
@@ -65,9 +65,10 @@ func authMiddleware(next http.Handler) http.Handler {
 		cookie, err := r.Cookie("username")
 		if err != nil {
 			if err == http.ErrNoCookie {
-				http.Redirect(w, r, "/auth/signup?nocookie", 303)
+				http.Redirect(w, r, "/welcome", 303)
 			} else {
-				http.Redirect(w, r, "/auth/signup?someothererror", 303)
+				log.Printf("WARNING: weirderror: %s", err)
+				http.Redirect(w, r, "/welcome?weirderror", 303)
 			}
 		} else {
 			ctx := context.WithValue(r.Context(), "username", cookie.Value)

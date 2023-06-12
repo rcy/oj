@@ -1,0 +1,21 @@
+{{define "main"}}
+<div class="box kid big">
+  <strong class="block titlebar">Kids Login</strong>
+  <br>
+  <form method="post" action="/welcome/signup" >
+    <label>
+      Username
+      <input name="username" type="text" id="usernameInput" aria-describedby="usernameHelp">
+    </label>
+    <button class="big" type="submit">Submit</button>
+</form>
+</div>
+
+<div class="box parent">
+  <strong class="block titlebar">I am new!</strong>
+  <p>
+    If this is your first time here and you do not have a username, you will need to have a <a href="/welcome/parents">parent register</a> and create an account for you.
+  </p>
+</div>
+
+{{end}}

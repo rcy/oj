@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="https://unpkg.com/missing.css@1.0.9/dist/missing.min.css">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+     :root {
+         --kid-bg: var(--ok-bg);
+         --kid-fg: var(--ok-fg);
+         --kid-graphical-fg: var(--ok-graphical-fg);
+
+         --parent-bg: var(--info-bg);
+         --parent-fg: var(--info-fg);
+         --parent-graphical-fg: var(--info-graphical-fg);
+     }
+
+     .kid {
+         --box-bg: var(--kid-bg);
+         --accent: var(--kid-fg);
+         --graphical-fg: var(--kid-graphical-fg);
+     }
+     .parent {
+         --box-bg: var(--parent-bg);
+         --accent: var(--parent-fg);
+         --graphical-fg: var(--parent-graphical-fg);
+     }
+
+     body {
+         min-height: 100vh;
+     }
+    </style>
+  </head>
+  <body>
+    <header class="navbar">
+      <h1><a href="/">KidHub</a></h1>
+    </header>
+    <main>
+      {{block "main" .}}{{end}}      
+    </main>
+  </body>
+</html>
