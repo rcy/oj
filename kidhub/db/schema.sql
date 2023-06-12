@@ -25,3 +25,10 @@ CREATE TABLE sessions(
   user_id integer references users not null,
   key string unique not null
 );
+CREATE TABLE kids_codes(
+  id integer primary key,
+  created_at datetime not null default current_timestamp,
+  code string not null,
+  nonce string not null,
+  user_id integer references users not null
+);

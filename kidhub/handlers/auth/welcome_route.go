@@ -18,13 +18,16 @@ import (
 
 func Route(r chi.Router) {
 	r.Get("/", welcome)
-	r.Get("/kids", welcomeKids)
 
 	r.Get("/parents", welcomeParents)
 	r.Post("/parents/email", emailRegisterAction)
-
 	r.Get("/parents/code", parentsCode)
 	r.Post("/parents/code", parentsCodeAction)
+
+	r.Get("/kids", welcomeKids)
+	r.Post("/kids/username", kidsUsernameAction)
+	r.Get("/kids/code", kidsCode)
+	r.Post("/kids/code", kidsCodeAction)
 
 	// r.Get("/signup", getSignup)
 	// r.Post("/signup", postSignup)
@@ -123,6 +126,123 @@ func parentsCode(w http.ResponseWriter, r *http.Request) {
 	err := welcomeParentsCodeTemplate.Execute(w, struct{ Retry bool }{Retry: retry})
 	if err != nil {
 		handlers.Error(w, err.Error(), 500)
+	}
+}
+
+func kidsUsernameAction(w http.ResponseWriter, r *http.Request) {
+	username := r.FormValue("username")
+	if username == "" {
+		http.Redirect(w, r, "/welcome/kids", http.StatusSeeOther)
+		return
+	}
+
+	user, err := users.FindByUsername(username)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			http.Redirect(w, r, "/welcome/kids?badusername", http.StatusSeeOther)
+			return
+		}
+		http.Redirect(w, r, "/welcome/kids?weirderror", http.StatusSeeOther)
+		return
+	}
+
+	// store generated code in pending registrations table along with email
+	nonce, err := generateSecureString(32)
+	if err != nil {
+		log.Printf("Error generating secure string wN6Cd9vQLHYQ2euxb: %s", err)
+		http.Error(w, "Error generating code wN6Cd9vQLHYQ2euxb", 500)
+		return
+	}
+	_, err = db.DB.Exec("insert into kids_codes(nonce, user_id, code) values(?, ?, ?)", nonce, user.ID, generateDigitCode())
+	if err != nil {
+		log.Printf("Error generating code qYBJ24gqRrmFEJWAs: %s", err)
+		http.Error(w, "Error generating code qYBJ24gqRrmFEJWAs", 500)
+		return
+	}
+
+	http.SetCookie(w, &http.Cookie{Name: "kh_nonce", Value: nonce, Path: "/", Expires: time.Now().Add(time.Hour)})
+
+	// XXX: email code to kids parent(s)
+
+	// redirect to page to input code
+	http.Redirect(w, r, "/welcome/kids/code", http.StatusSeeOther)
+}
+
+var welcomeKidsCodeTemplate = template.Must(template.ParseFiles(
+	"handlers/auth/layout.html",
+	"handlers/auth/welcome_kids_code.html",
+))
+
+func kidsCode(w http.ResponseWriter, r *http.Request) {
+	retry := r.URL.Query().Has("retry")
+	log.Printf("retry(%v)", retry)
+
+	err := welcomeKidsCodeTemplate.Execute(w, struct{ Retry bool }{Retry: retry})
+	if err != nil {
+		handlers.Error(w, err.Error(), 500)
+	}
+}
+
+func kidsCodeAction(w http.ResponseWriter, r *http.Request) {
+	var userID int64
+
+	cookie, err := r.Cookie("kh_nonce")
+	if err != nil {
+		if err != http.ErrNoCookie {
+			log.Printf("weird error 792pR3LQagv5ej3Xi %s", err)
+		}
+		http.Redirect(w, r, "/welcome/parents", 303)
+		return
+	}
+
+	nonce := cookie.Value
+	code := r.FormValue("code")
+
+	// look up code
+	// XXX fetch by id alone, compare code, and add retry count
+	err = db.DB.Get(&userID, "select user_id from kids_codes where nonce = ? and code = ?", nonce, code)
+	if err != nil {
+		if err != sql.ErrNoRows {
+			log.Printf("Error retrieving code RkfeaQB4rAX7uxdY3: %s", err)
+			http.Error(w, "Error retrieving code RkfeaQB4rAX7uxdY3", 500)
+			return
+		}
+	}
+
+	if userID != 0 {
+		log.Println("code is good")
+		// found email, code is good
+		// create user if not exists
+		user, err := users.FindById(userID)
+		if err != nil {
+			handlers.Error(w, "error getting user", 500)
+			return
+		}
+		log.Printf("user %v", user)
+		// create a new session
+		key, err := generateSecureString(32)
+		if err != nil {
+			log.Print(err)
+			handlers.Error(w, "error creating session", 500)
+			return
+		}
+		_, err = db.DB.Exec("insert into sessions(key, user_id) values(?, ?)", key, user.ID)
+		if err != nil {
+			log.Print(err)
+			handlers.Error(w, "error creating session", 500)
+			return
+		}
+		// set session cookie
+		http.SetCookie(w, &http.Cookie{Name: "kh_session", Value: key, Path: "/", Expires: time.Now().Add(30 * 24 * time.Hour)})
+		// clear nonce cookie
+		http.SetCookie(w, &http.Cookie{Name: "kh_nonce", Path: "/", Expires: time.Now().Add(-time.Hour)})
+
+		// redirect
+		http.Redirect(w, r, "/", 303)
+	} else {
+		log.Println("code is bad")
+		// code is bad
+		http.Redirect(w, r, "/welcome/kids/code?retry", 303)
 	}
 }
 

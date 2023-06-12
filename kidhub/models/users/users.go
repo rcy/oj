@@ -39,6 +39,16 @@ func FindByEmail(email string) (*User, error) {
 	return &user, nil
 }
 
+func FindByUsername(username string) (*User, error) {
+	var user User
+
+	err := db.DB.Get(&user, "select id, created_at, username, email from users where username = ?", username)
+	if err != nil {
+		return nil, err
+	}
+	return &user, nil
+}
+
 func Create(email string, username string) (*User, error) {
 	result, err := db.DB.Exec("insert into users(email, username) values(?, ?)", email, username)
 	if err != nil {
