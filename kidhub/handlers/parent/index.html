@@ -1,0 +1,15 @@
+{{define "main"}}
+<h2>hello parent {{.User.Email}}</h2>
+
+<form action="/parent/kids" method="post">
+  <label>
+    Kid's Username
+    <input type="text" name="username">
+  </label>
+</form>
+
+{{range .Kids}}
+{{.Username}}
+{{end}}
+
+{{end}}

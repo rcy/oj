@@ -14,6 +14,14 @@ type User struct {
 	Email     *string
 }
 
+func (u User) IsParent() bool {
+	return u.Email != nil
+}
+
+func (u User) Parents() ([]User, error) {
+	return GetParents(u.ID)
+}
+
 func GetParents(kidUserID int64) ([]User, error) {
 	var parents []User
 
@@ -22,6 +30,55 @@ func GetParents(kidUserID int64) ([]User, error) {
 		return nil, err
 	}
 	return parents, nil
+}
+
+func (u User) Kids() ([]User, error) {
+	return GetKids(u.ID)
+}
+
+func (u User) CreateKid(username string) (*User, error) {
+	tx, err := db.DB.Beginx()
+	if err != nil {
+		return nil, err
+	}
+
+	result, err := tx.Exec("insert into users(username) values(?)", username)
+	if err != nil {
+		return nil, err
+	}
+
+	kidID, err := result.LastInsertId()
+	if err != nil {
+		return nil, err
+	}
+
+	result, err = tx.Exec("insert into kids_parents(kid_id, parent_id) values(?, ?)", kidID, u.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	err = tx.Commit()
+	if err != nil {
+		return nil, err
+	}
+
+	var kid User
+	err = db.DB.Get(&kid, "select * from users where id = ?", kidID)
+	if err != nil {
+		return nil, err
+	}
+
+	return &kid, nil
+}
+
+func GetKids(parentUserID int64) ([]User, error) {
+	var kids []User
+
+	err := db.DB.Select(&kids, "select users.* from kids_parents join users on kids_parents.kid_id = users.id where kids_parents.parent_id = ?", parentUserID)
+	if err != nil {
+		return nil, err
+	}
+	return kids, nil
 }
 
 func Current(r *http.Request) User {
@@ -59,7 +116,7 @@ func FindByUsername(username string) (*User, error) {
 	return &user, nil
 }
 
-func Create(email string, username string) (*User, error) {
+func Create(email *string, username string) (*User, error) {
 	result, err := db.DB.Exec("insert into users(email, username) values(?, ?)", email, username)
 	if err != nil {
 		return nil, err
@@ -73,7 +130,7 @@ func FindOrCreateByEmail(email string) (*User, error) {
 	if err != nil {
 		if err == sql.ErrNoRows {
 			// we don't have a username here, so use the email, they can change it later
-			return Create(email, email)
+			return Create(&email, email)
 		}
 		return nil, err
 	}
