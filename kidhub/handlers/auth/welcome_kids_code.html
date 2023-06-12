@@ -1,16 +1,16 @@
 {{define "main"}}
 <h1>Kids Login</h1>
-<div class="box kid">
-  <strong class="block titlebar">Verify Code</strong>
+<div class="box kid big">
+  <strong class="block titlebar">Step 2: Enter Code</strong>
   <p>
-    Please enter the code that was sent to your parent's email
+    Please enter the four numbers sent to your parent's email
   </p>
   <form method="post" action="/welcome/kids/code" >
     <label>
       Code
       <input name="code" type="text" required>
     </label>
-    <button type="submit">Submit</button>
+    <button class="big" type="submit">Submit</button>
     <br/>
     <p class="bad color">{{if .Retry}}invalid code, try again{{end}}</p>
   </form>
