@@ -35,7 +35,6 @@ func index(w http.ResponseWriter, r *http.Request) {
 	repeat := false
 
 	err := t.Execute(w, struct {
-		Username        string
 		GradientType    string
 		Repeat          bool
 		Stops           []Stop
@@ -43,7 +42,6 @@ func index(w http.ResponseWriter, r *http.Request) {
 		GradientBar     template.CSS
 		GradientPreview template.CSS
 	}{
-		Username:        r.Context().Value("username").(string),
 		GradientType:    "linear",
 		Repeat:          repeat,
 		Stops:           stops,

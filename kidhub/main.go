@@ -14,6 +14,7 @@ import (
 	"oj/handlers/chat"
 	"oj/handlers/games"
 	"oj/handlers/tools"
+	"oj/models/users"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -74,8 +75,8 @@ func authMiddleware(next http.Handler) http.Handler {
 				return
 			}
 		} else {
-			var userID int64
-			err := db.DB.Get(&userID, "select user_id from sessions where key = ?", cookie.Value)
+			var user users.User
+			err := db.DB.Get(&user, "select users.* from sessions join users on sessions.user_id = users.id where sessions.key = ?", cookie.Value)
 			if err != nil {
 				if err == sql.ErrNoRows {
 					http.Redirect(w, r, "/welcome", http.StatusSeeOther)
@@ -86,7 +87,7 @@ func authMiddleware(next http.Handler) http.Handler {
 					return
 				}
 			}
-			ctx := context.WithValue(r.Context(), "userID", userID)
+			ctx := context.WithValue(r.Context(), "user", user)
 			next.ServeHTTP(w, r.WithContext(ctx))
 		}
 	})

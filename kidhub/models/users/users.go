@@ -2,6 +2,7 @@ package users
 
 import (
 	"database/sql"
+	"net/http"
 	"oj/db"
 	"time"
 )
@@ -11,6 +12,10 @@ type User struct {
 	CreatedAt time.Time `db:"created_at"`
 	Username  string
 	Email     *string
+}
+
+func Current(r *http.Request) User {
+	return r.Context().Value("user").(User)
 }
 
 func FindById(id int64) (*User, error) {

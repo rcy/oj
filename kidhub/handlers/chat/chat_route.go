@@ -6,6 +6,7 @@ import (
 	"oj/handlers"
 
 	"oj/models/messages"
+	"oj/models/users"
 
 	"github.com/go-chi/chi/v5"
 )
@@ -28,7 +29,7 @@ func Route(r chi.Router) {
 }
 
 func index(w http.ResponseWriter, r *http.Request) {
-	username := r.Context().Value("username").(string)
+	user := users.Current(r)
 
 	records, err := messages.Fetch()
 	if err != nil {
@@ -40,7 +41,7 @@ func index(w http.ResponseWriter, r *http.Request) {
 		Username string
 		Messages []messages.Message
 	}{
-		Username: username,
+		Username: user.Username,
 		Messages: records,
 	}
 
@@ -51,10 +52,10 @@ func index(w http.ResponseWriter, r *http.Request) {
 }
 
 func postMessage(w http.ResponseWriter, r *http.Request) {
-	username := r.Context().Value("username").(string)
+	user := users.Current(r)
 	body := r.FormValue("body")
 
-	message, err := messages.Create(body, username)
+	message, err := messages.Create(body, user.Username)
 	if err != nil {
 		handlers.Error(w, err.Error(), 500)
 		return
@@ -69,7 +70,7 @@ func postMessage(w http.ResponseWriter, r *http.Request) {
 }
 
 func getMessages(w http.ResponseWriter, r *http.Request) {
-	username := r.Context().Value("username").(string)
+	user := users.Current(r)
 	records, err := messages.Fetch()
 	if err != nil {
 		handlers.Error(w, err.Error(), 500)
@@ -80,7 +81,7 @@ func getMessages(w http.ResponseWriter, r *http.Request) {
 		Username string
 		Messages []messages.Message
 	}{
-		Username: username,
+		Username: user.Username,
 		Messages: records,
 	}
 
