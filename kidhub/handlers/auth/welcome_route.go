@@ -1,12 +1,12 @@
 package auth
 
 import (
-	"crypto/rand"
 	"database/sql"
 	"encoding/base64"
 	"fmt"
 	"html/template"
 	"log"
+	"math/rand"
 	"net/http"
 	"oj/db"
 	"oj/handlers"
@@ -72,9 +72,14 @@ func signout(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/", http.StatusFound)
 }
 
+func generateDigitCode() string {
+	code := ""
+	for i := 0; i < 4; i++ {
+		digit := rand.Intn(10)
+		code += fmt.Sprint(digit)
+	}
 
-func generateCode() string {
-	return "9999" // XXX
+	return code
 }
 
 func emailRegisterAction(w http.ResponseWriter, r *http.Request) {
@@ -85,7 +90,7 @@ func emailRegisterAction(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// store generated code in pending registrations table along with email
-	result, err := db.DB.Exec("insert into codes(email, code) values(?, ?)", email, generateCode())
+	result, err := db.DB.Exec("insert into codes(email, code) values(?, ?)", email, generateDigitCode())
 	if err != nil {
 		log.Printf("Error generating code: %s", err)
 		http.Error(w, "Error generating code YQChKPeCivnvM9P82", 500)
