@@ -38,25 +38,32 @@ func index(w http.ResponseWriter, r *http.Request) {
 	repeat := false
 
 	err := t.Execute(w, struct {
-		User            users.User
-		GradientType    string
-		Repeat          bool
-		Stops           []Stop
-		Degrees         int
+		User     users.User
+		Gradient Gradient
+
 		GradientBar     template.CSS
 		GradientPreview template.CSS
 	}{
-		User:            user,
-		GradientType:    "linear",
-		Repeat:          repeat,
-		Stops:           stops,
-		Degrees:         degrees,
+		User: user,
+		Gradient: Gradient{
+			Type:    "linear",
+			Repeat:  repeat,
+			Stops:   stops,
+			Degrees: degrees,
+		},
 		GradientBar:     gradientFromStops("linear", false, 90, stops),
 		GradientPreview: gradientFromStops("linear", repeat, degrees, stops),
 	})
 	if err != nil {
 		handlers.Error(w, err.Error(), 500)
 	}
+}
+
+type Gradient struct {
+	Type    string
+	Repeat  bool
+	Stops   []Stop
+	Degrees int
 }
 
 func picker(w http.ResponseWriter, r *http.Request) {
@@ -80,17 +87,16 @@ func picker(w http.ResponseWriter, r *http.Request) {
 	}
 
 	t.ExecuteTemplate(w, "picker", struct {
-		GradientType    string
-		Repeat          bool
-		Stops           []Stop
-		Degrees         int
+		Gradient        Gradient
 		GradientBar     template.CSS
 		GradientPreview template.CSS
 	}{
-		GradientType:    gradientType,
-		Repeat:          repeat,
-		Stops:           stops,
-		Degrees:         degrees,
+		Gradient: Gradient{
+			Type:    gradientType,
+			Repeat:  repeat,
+			Stops:   stops,
+			Degrees: degrees,
+		},
 		GradientBar:     gradientFromStops("linear", false, 90, stops),
 		GradientPreview: gradientFromStops(gradientType, repeat, degrees, stops),
 	})

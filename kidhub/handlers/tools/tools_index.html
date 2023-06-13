@@ -88,9 +88,9 @@
       name="gradientType"
       _="on change log 'changed' then click() the #submit"
     >
-      <option {{if (eq .GradientType "linear")}}selected{{end}} value="linear">Linear</option>
-      <option {{if (eq .GradientType "radial")}}selected{{end}} value="radial">Radial</option>
-      <option {{if (eq .GradientType "conic")}}selected{{end}} value="conic">Conic</option>
+      <option {{if (eq .Gradient.Type "linear")}}selected{{end}} value="linear">Linear</option>
+      <option {{if (eq .Gradient.Type "radial")}}selected{{end}} value="radial">Radial</option>
+      <option {{if (eq .Gradient.Type "conic")}}selected{{end}} value="conic">Conic</option>
     </select>
     <label style="white-space: nowrap">
       <input
@@ -98,18 +98,18 @@
         type="checkbox"
         name="repeat"
         _="on change log 'changed' then click() the #submit"
-        {{if .Repeat}}checked{{end}}
+        {{if .Gradient.Repeat}}checked{{end}}
       >
       Repeating
     </label>
   </div>    
 
   <div class="f-row" style="--gap: 0px">
-    {{if (gt (index .Stops 0).Percent 0)}}
+    {{if (gt (index .Gradient.Stops 0).Percent 0)}}
     <button>-1</button>
     {{end}}
 
-    {{range $i, $e := .Stops}}
+    {{range $i, $e := .Gradient.Stops}}
     <input
       name="color"
       class="pickerx"
@@ -128,7 +128,7 @@
 
   <div style="position:relative">
 
-    {{range .Stops}}
+    {{range .Gradient.Stops}}
     <div class="group">
       <input
         name="percent"
@@ -148,14 +148,13 @@
   </div>
 
   <div class="f-row">
-    <!-- <div>Rotate&nbsp;{{.Degrees}}°</div> -->
     <input
-      {{if (eq .GradientType "radial")}}style="visibility: hidden"{{end}}
+      {{if (eq .Gradient.Type "radial")}}style="visibility: hidden"{{end}}
       name="degrees"
       type="range"
       min="0"
       max="180"
-      value="{{.Degrees}}"
+      value="{{.Gradient.Degrees}}"
       _="on change click() the #submit">
   </div>
 
