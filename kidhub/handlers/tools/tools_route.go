@@ -1,13 +1,11 @@
 package tools
 
 import (
-	"fmt"
 	"html/template"
 	"net/http"
 	"oj/handlers"
 	"oj/models/users"
 	"strconv"
-	"strings"
 
 	"github.com/go-chi/chi/v5"
 )
@@ -20,11 +18,6 @@ func Route(r chi.Router) {
 }
 
 var t = template.Must(template.ParseFiles("handlers/layout.html", "handlers/tools/tools_index.html"))
-
-type Stop struct {
-	Color   string
-	Percent int
-}
 
 func index(w http.ResponseWriter, r *http.Request) {
 	user := users.Current(r)
@@ -40,9 +33,6 @@ func index(w http.ResponseWriter, r *http.Request) {
 	err := t.Execute(w, struct {
 		User     users.User
 		Gradient Gradient
-
-		GradientBar     template.CSS
-		GradientPreview template.CSS
 	}{
 		User: user,
 		Gradient: Gradient{
@@ -51,19 +41,10 @@ func index(w http.ResponseWriter, r *http.Request) {
 			Stops:   stops,
 			Degrees: degrees,
 		},
-		GradientBar:     gradientFromStops("linear", false, 90, stops),
-		GradientPreview: gradientFromStops("linear", repeat, degrees, stops),
 	})
 	if err != nil {
 		handlers.Error(w, err.Error(), 500)
 	}
-}
-
-type Gradient struct {
-	Type    string
-	Repeat  bool
-	Stops   []Stop
-	Degrees int
 }
 
 func picker(w http.ResponseWriter, r *http.Request) {
@@ -87,9 +68,7 @@ func picker(w http.ResponseWriter, r *http.Request) {
 	}
 
 	t.ExecuteTemplate(w, "picker", struct {
-		Gradient        Gradient
-		GradientBar     template.CSS
-		GradientPreview template.CSS
+		Gradient Gradient
 	}{
 		Gradient: Gradient{
 			Type:    gradientType,
@@ -97,55 +76,7 @@ func picker(w http.ResponseWriter, r *http.Request) {
 			Stops:   stops,
 			Degrees: degrees,
 		},
-		GradientBar:     gradientFromStops("linear", false, 90, stops),
-		GradientPreview: gradientFromStops(gradientType, repeat, degrees, stops),
 	})
-}
-
-func gradientFromStops(gradientType string, repeating bool, deg int, stops []Stop) template.CSS {
-	var params []string
-
-	if repeating {
-		gradientType = "repeating-" + gradientType
-	}
-
-	switch gradientType {
-	case "linear":
-		for _, s := range stops {
-			params = append(params, fmt.Sprintf("%s %d%%", s.Color, s.Percent))
-		}
-		return template.CSS(fmt.Sprintf(`linear-gradient(%ddeg, %s)`, deg, strings.Join(params, ",")))
-
-	case "radial":
-		for _, s := range stops {
-			params = append(params, fmt.Sprintf("%s %d%%", s.Color, s.Percent))
-		}
-		return template.CSS(fmt.Sprintf(`radial-gradient(%s)`, strings.Join(params, ",")))
-
-	case "conic":
-		for _, s := range stops {
-			params = append(params, fmt.Sprintf("%s %d%%", s.Color, s.Percent))
-		}
-		return template.CSS(fmt.Sprintf(`conic-gradient(from %ddeg, %s)`, deg, strings.Join(params, ",")))
-
-	case "repeating-linear":
-		for _, s := range stops {
-			params = append(params, fmt.Sprintf("%s %dpx", s.Color, s.Percent))
-		}
-		return template.CSS(fmt.Sprintf(`repeating-linear-gradient(%ddeg, %s)`, deg, strings.Join(params, ",")))
-	case "repeating-radial":
-		for _, s := range stops {
-			params = append(params, fmt.Sprintf("%s %dpx", s.Color, s.Percent))
-		}
-		return template.CSS(fmt.Sprintf(`repeating-radial-gradient(%s)`, strings.Join(params, ",")))
-	case "repeating-conic":
-		for _, s := range stops {
-			params = append(params, fmt.Sprintf("%s %d%%", s.Color, s.Percent/4))
-		}
-		return template.CSS(fmt.Sprintf(`repeating-conic-gradient(from %ddeg, %s)`, deg, strings.Join(params, ",")))
-	default:
-		return template.CSS("black")
-	}
 }
 
 func setBackground(w http.ResponseWriter, r *http.Request) {

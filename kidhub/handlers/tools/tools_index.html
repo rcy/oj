@@ -144,7 +144,7 @@
     </div>
     {{end}}
 
-    <div class="track" style="background: {{.GradientBar}}"></div>
+    <div class="track" style="background: {{.Gradient.RenderBar}}"></div>
   </div>
 
   <div class="f-row">
@@ -158,11 +158,11 @@
       _="on change click() the #submit">
   </div>
 
-  <div style="width: 100%; height: 480px; background: {{.GradientPreview}}"></div>
+  <div style="width: 100%; height: 480px; background: {{.Gradient.Render}}"></div>
 
   <div class="f-row justify-content:space-between">
     <div>
-      {{.GradientPreview}}
+      {{.Gradient.Render}}
     </div>
 
     <button
