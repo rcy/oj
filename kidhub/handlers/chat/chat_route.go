@@ -3,8 +3,10 @@ package chat
 import (
 	"html/template"
 	"net/http"
+	"oj/element/gradient"
 	"oj/handlers"
 
+	"oj/models/gradients"
 	"oj/models/messages"
 	"oj/models/users"
 
@@ -31,6 +33,12 @@ func Route(r chi.Router) {
 func index(w http.ResponseWriter, r *http.Request) {
 	user := users.Current(r)
 
+	backgroundGradient, err := gradients.UserBackground(user.ID)
+	if err != nil {
+		handlers.Error(w, err.Error(), 500)
+		return
+	}
+
 	records, err := messages.Fetch()
 	if err != nil {
 		handlers.Error(w, err.Error(), 500)
@@ -38,11 +46,13 @@ func index(w http.ResponseWriter, r *http.Request) {
 	}
 
 	pd := struct {
-		User     users.User
-		Messages []messages.Message
+		User               users.User
+		BackgroundGradient gradient.Gradient
+		Messages           []messages.Message
 	}{
-		User:     user,
-		Messages: records,
+		User:               user,
+		BackgroundGradient: backgroundGradient,
+		Messages:           records,
 	}
 
 	err = chatTemplate.Execute(w, pd)

@@ -5,7 +5,9 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"oj/element/gradient"
 	"oj/handlers"
+	"oj/models/gradients"
 	"oj/models/users"
 
 	"github.com/go-chi/chi/v5"
@@ -21,13 +23,22 @@ var t = template.Must(template.ParseFiles("handlers/layout.html", "handlers/pare
 
 func index(w http.ResponseWriter, r *http.Request) {
 	user := users.Current(r)
+
+	backgroundGradient, err := gradients.UserBackground(user.ID)
+	if err != nil {
+		handlers.Error(w, err.Error(), 500)
+		return
+	}
+
 	kids, _ := user.Kids()
-	err := t.Execute(w, struct {
-		User users.User
-		Kids []users.User
+	err = t.Execute(w, struct {
+		User               users.User
+		BackgroundGradient gradient.Gradient
+		Kids               []users.User
 	}{
-		User: user,
-		Kids: kids,
+		User:               user,
+		BackgroundGradient: backgroundGradient,
+		Kids:               kids,
 	})
 	if err != nil {
 		handlers.Error(w, err.Error(), 500)

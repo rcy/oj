@@ -9,6 +9,7 @@ import (
 	"oj/db"
 	"oj/element/gradient"
 	"oj/handlers"
+	"oj/models/gradients"
 	"oj/models/users"
 	"strconv"
 
@@ -26,12 +27,20 @@ var t = template.Must(template.ParseFiles("handlers/layout.html", "handlers/tool
 func index(w http.ResponseWriter, r *http.Request) {
 	user := users.Current(r)
 
-	err := t.Execute(w, struct {
-		User     users.User
-		Gradient gradient.Gradient
+	backgroundGradient, err := gradients.UserBackground(user.ID)
+	if err != nil {
+		handlers.Error(w, err.Error(), 500)
+		return
+	}
+
+	err = t.Execute(w, struct {
+		User               users.User
+		BackgroundGradient gradient.Gradient
+		Gradient           gradient.Gradient
 	}{
-		User:     user,
-		Gradient: gradient.Random(),
+		User:               user,
+		BackgroundGradient: backgroundGradient,
+		Gradient:           backgroundGradient,
 	})
 	if err != nil {
 		handlers.Error(w, err.Error(), 500)

@@ -38,3 +38,9 @@ CREATE TABLE kids_parents(
   kid_id integer references users not null,
   parent_id integer references users not null
 );
+CREATE TABLE gradients(
+  id integer primary key,
+  created_at text not null default current_timestamp,
+  user_id integer references users not null,
+  gradient blob not null
+);
