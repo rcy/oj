@@ -3,7 +3,6 @@ package tools
 import (
 	"fmt"
 	"html/template"
-	"log"
 	"net/http"
 	"oj/handlers"
 	"oj/models/users"
@@ -71,8 +70,6 @@ func picker(w http.ResponseWriter, r *http.Request) {
 	degrees, _ := strconv.Atoi(r.PostForm.Get("degrees"))
 
 	stops := []Stop{}
-
-	log.Printf("%v", r.PostForm)
 
 	// zip colors and percents into stops
 	for i, c := range colors {
