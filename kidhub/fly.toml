@@ -1,4 +1,4 @@
-# fly.toml file generated for kidhub on 2023-06-11T12:24:45-07:00
+# fly.toml file generated for oj on 2023-06-11T12:24:45-07:00
 
 app = "kidhub"
 kill_signal = "SIGINT"

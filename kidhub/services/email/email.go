@@ -24,7 +24,7 @@ func Send(subject, body, recipient string) (string, string, error) {
 	//When you have an EU-domain, you must specify the endpoint:
 	//mg.SetAPIBase("https://api.eu.mailgun.net/v3")
 
-	sender := "KidHub <mailgun@mg.ryanyeske.com>"
+	sender := "Octopus Jr <mailgun@mg.ryanyeske.com>"
 
 	// The message object allows you to add attachments and Bcc recipients
 	message := mg.NewMessage(sender, subject, body, recipient)
