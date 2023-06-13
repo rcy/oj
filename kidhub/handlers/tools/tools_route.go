@@ -6,7 +6,6 @@ import (
 	"oj/element/gradient"
 	"oj/handlers"
 	"oj/models/users"
-	"strconv"
 
 	"github.com/go-chi/chi/v5"
 )
@@ -14,7 +13,6 @@ import (
 func Route(r chi.Router) {
 	r.Get("/", index)
 	r.Post("/picker", picker)
-
 	r.Post("/set-background", setBackground)
 }
 
@@ -41,22 +39,16 @@ func picker(w http.ResponseWriter, r *http.Request) {
 		handlers.Error(w, err.Error(), 500)
 	}
 
-	repeat := r.PostForm.Get("repeat") == "on"
-	gradientType := r.PostForm.Get("gradientType")
-	colors := r.PostForm["color"]
-	positions := r.PostForm["percent"]
-	degrees, _ := strconv.Atoi(r.PostForm.Get("degrees"))
+	g, err := gradient.ParseForm(r.PostForm)
+	if err != nil {
+		handlers.Error(w, err.Error(), 500)
+		return
+	}
 
 	t.ExecuteTemplate(w, "picker", struct {
 		Gradient gradient.Gradient
 	}{
-		Gradient: gradient.Gradient{
-			Type:      gradientType,
-			Repeat:    repeat,
-			Degrees:   degrees,
-			Colors:    colors,
-			Positions: positions,
-		},
+		Gradient: g,
 	})
 }
 
