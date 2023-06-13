@@ -1,10 +1,12 @@
 package tools
 
 import (
+	"encoding/json"
 	"fmt"
 	"html/template"
 	"net/http"
 	"net/url"
+	"oj/db"
 	"oj/element/gradient"
 	"oj/handlers"
 	"oj/models/users"
@@ -56,12 +58,21 @@ func picker(w http.ResponseWriter, r *http.Request) {
 }
 
 func setBackground(w http.ResponseWriter, r *http.Request) {
+	user := users.Current(r)
+
 	err := r.ParseForm()
 	if err != nil {
 		handlers.Error(w, err.Error(), 500)
 	}
 
 	g, err := gradientFromUrlValues(r.PostForm)
+	if err != nil {
+		handlers.Error(w, err.Error(), 500)
+		return
+	}
+
+	encodedGradient, _ := json.Marshal(g)
+	_, err = db.DB.Exec("insert into gradients(user_id, gradient) values(?, ?)", user.ID, encodedGradient)
 	if err != nil {
 		handlers.Error(w, err.Error(), 500)
 		return
