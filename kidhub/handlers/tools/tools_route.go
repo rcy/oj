@@ -15,6 +15,8 @@ import (
 func Route(r chi.Router) {
 	r.Get("/", index)
 	r.Post("/picker", picker)
+
+	r.Post("/set-background", setBackground)
 }
 
 var t = template.Must(template.ParseFiles("handlers/layout.html", "handlers/tools/tools_index.html"))
@@ -138,4 +140,8 @@ func gradientFromStops(gradientType string, repeating bool, deg int, stops []Sto
 	default:
 		return template.CSS("black")
 	}
+}
+
+func setBackground(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte(`body { background: red; }`))
 }
