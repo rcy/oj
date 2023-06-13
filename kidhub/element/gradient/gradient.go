@@ -1,32 +1,46 @@
-package element
+package gradient
 
 import (
 	"fmt"
 	"html/template"
+	"strconv"
 	"strings"
 )
 
-type Stop struct {
+type stop struct {
 	Color   string
 	Percent int
 }
 
 type Gradient struct {
-	Type    string
-	Repeat  bool
-	Stops   []Stop
-	Degrees int
+	Type      string
+	Repeat    bool
+	Degrees   int
+	Colors    []string
+	Positions []string // XXX this should be int
+}
+
+func (g Gradient) Stops() []stop {
+	var stops []stop
+
+	// zip colors and positions into stops
+	for i, c := range g.Colors {
+		p, _ := strconv.Atoi(g.Positions[i])
+		stops = append(stops, stop{Color: c, Percent: p})
+	}
+
+	return stops
 }
 
 func (g Gradient) Render() template.CSS {
-	return g.render(g.Type, g.Repeat, g.Degrees, g.Stops)
+	return g.render(g.Type, g.Repeat, g.Degrees, g.Stops())
 }
 
 func (g Gradient) RenderBar() template.CSS {
-	return g.render("linear", false, 90, g.Stops)
+	return g.render("linear", false, 90, g.Stops())
 }
 
-func (g Gradient) render(gradientType string, repeating bool, deg int, stops []Stop) template.CSS {
+func (g Gradient) render(gradientType string, repeating bool, deg int, stops []stop) template.CSS {
 	var params []string
 
 	if repeating {
