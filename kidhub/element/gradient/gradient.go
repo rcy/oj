@@ -3,7 +3,6 @@ package gradient
 import (
 	"fmt"
 	"html/template"
-	"strconv"
 	"strings"
 )
 
@@ -17,7 +16,7 @@ type Gradient struct {
 	Repeat    bool
 	Degrees   int
 	Colors    []string
-	Positions []string // XXX this should be int
+	Positions []int
 }
 
 var Default = Gradient{
@@ -25,7 +24,7 @@ var Default = Gradient{
 	Repeat:    false,
 	Degrees:   90,
 	Colors:    []string{"#ff00ff", "#ffff00", "#00ffff"},
-	Positions: []string{"0", "50", "100"},
+	Positions: []int{0, 50, 100},
 }
 
 func (g Gradient) Stops() []stop {
@@ -33,7 +32,7 @@ func (g Gradient) Stops() []stop {
 
 	// zip colors and positions into stops
 	for i, c := range g.Colors {
-		p, _ := strconv.Atoi(g.Positions[i])
+		p := g.Positions[i]
 		stops = append(stops, stop{Color: c, Percent: p})
 	}
 

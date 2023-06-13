@@ -77,7 +77,17 @@ func gradientFromUrlValues(f url.Values) (gradient.Gradient, error) {
 	gradientType := f.Get("gradientType")
 	repeat := f.Get("repeat") == "on"
 	colors := f["color"]
-	positions := f["percent"]
+
+	// convert []string to []int
+	positions := make([]int, len(f["percent"]))
+	for i, p := range f["percent"] {
+		positions[i], _ = strconv.Atoi(p)
+	}
+
+	if len(colors) != len(positions) {
+		return gradient.Gradient{}, fmt.Errorf("colors/positions length mismatch")
+	}
+
 	degrees, err := strconv.Atoi(f.Get("degrees"))
 	if err != nil {
 		return gradient.Gradient{}, err
