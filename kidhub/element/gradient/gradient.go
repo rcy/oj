@@ -39,10 +39,12 @@ func (g Gradient) Stops() []stop {
 	return stops
 }
 
+// Render the gradient as a css value
 func (g Gradient) Render() template.CSS {
 	return g.render(g.Type, g.Repeat, g.Degrees, g.Stops())
 }
 
+// Render a gradient as a css value that can be used as a horizontal slider bar
 func (g Gradient) RenderBar() template.CSS {
 	return g.render("linear", false, 90, g.Stops())
 }
