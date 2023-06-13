@@ -3,6 +3,7 @@ package tools
 import (
 	"html/template"
 	"net/http"
+	"oj/element"
 	"oj/handlers"
 	"oj/models/users"
 	"strconv"
@@ -21,7 +22,7 @@ var t = template.Must(template.ParseFiles("handlers/layout.html", "handlers/tool
 
 func index(w http.ResponseWriter, r *http.Request) {
 	user := users.Current(r)
-	stops := []Stop{
+	stops := []element.Stop{
 		{Color: "#ffffff", Percent: 0},
 		// {Color: "#000000", Percent: 33},
 		// {Color: "#00ff00", Percent: 66},
@@ -32,10 +33,10 @@ func index(w http.ResponseWriter, r *http.Request) {
 
 	err := t.Execute(w, struct {
 		User     users.User
-		Gradient Gradient
+		Gradient element.Gradient
 	}{
 		User: user,
-		Gradient: Gradient{
+		Gradient: element.Gradient{
 			Type:    "linear",
 			Repeat:  repeat,
 			Stops:   stops,
@@ -59,18 +60,18 @@ func picker(w http.ResponseWriter, r *http.Request) {
 	percents := r.PostForm["percent"]
 	degrees, _ := strconv.Atoi(r.PostForm.Get("degrees"))
 
-	stops := []Stop{}
+	stops := []element.Stop{}
 
 	// zip colors and percents into stops
 	for i, c := range colors {
 		p, _ := strconv.Atoi(percents[i])
-		stops = append(stops, Stop{Color: c, Percent: p})
+		stops = append(stops, element.Stop{Color: c, Percent: p})
 	}
 
 	t.ExecuteTemplate(w, "picker", struct {
-		Gradient Gradient
+		Gradient element.Gradient
 	}{
-		Gradient: Gradient{
+		Gradient: element.Gradient{
 			Type:    gradientType,
 			Repeat:  repeat,
 			Stops:   stops,
