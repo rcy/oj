@@ -66,6 +66,12 @@
      transition-duration: .2s;
  }
  
+ .preview {
+     width: 100%;
+     height: 480px;
+     border: 1px solid black;
+ }
+
 </style>
 
 {{template "picker" .}}
@@ -155,7 +161,7 @@
       _="on change click() the #submit">
   </div>
 
-  <div style="width: 100%; height: 480px; background: {{.Gradient.Render}}"></div>
+  <div class="preview" style="background: {{.Gradient.Render}}"></div>
 
   <div class="f-row justify-content:space-between">
     <code>
