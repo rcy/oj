@@ -3,6 +3,8 @@ package gradient
 import (
 	"fmt"
 	"html/template"
+	"math/rand"
+	"sort"
 	"strings"
 )
 
@@ -27,6 +29,39 @@ var Default = Gradient{
 	Positions: []int{0, 50, 100},
 }
 
+var Black = Gradient{
+	Type:      "linear",
+	Repeat:    false,
+	Degrees:   90,
+	Colors:    []string{"#000000"},
+	Positions: []int{50},
+}
+
+func Random() Gradient {
+	n := rand.Intn(3) + 2
+	colors := make([]string, n)
+	positions := make([]int, n)
+	for i := 0; i < n; i += 1 {
+		colors[i] = randHexColor()
+		positions[i] = rand.Intn(100)
+	}
+	// colors[n-1] = colors[0]
+	// positions[n-1] = 100
+	// positions[0] = 0
+
+	return Gradient{
+		Type:      []string{"linear", "radial", "conic"}[rand.Intn(3)],
+		Repeat:    []bool{false, true}[rand.Intn(2)],
+		Degrees:   rand.Intn(180),
+		Colors:    colors,
+		Positions: positions,
+	}
+}
+
+func randHexColor() string {
+	return fmt.Sprintf("#%x", rand.Uint32())[0:7]
+}
+
 func (g Gradient) Stops() []stop {
 	var stops []stop
 
@@ -35,6 +70,11 @@ func (g Gradient) Stops() []stop {
 		p := g.Positions[i]
 		stops = append(stops, stop{Color: c, Percent: p})
 	}
+
+	// sort the stops by position
+	sort.Slice(stops, func(i, j int) bool {
+		return stops[i].Percent < stops[j].Percent
+	})
 
 	return stops
 }

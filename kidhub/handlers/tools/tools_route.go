@@ -31,7 +31,7 @@ func index(w http.ResponseWriter, r *http.Request) {
 		Gradient gradient.Gradient
 	}{
 		User:     user,
-		Gradient: gradient.Default,
+		Gradient: gradient.Random(),
 	})
 	if err != nil {
 		handlers.Error(w, err.Error(), 500)

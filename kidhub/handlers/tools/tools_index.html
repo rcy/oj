@@ -95,7 +95,7 @@
   </div>    
 
   <div class="f-row" style="--gap: 0px">
-    {{if (gt (index .Gradient.Positions 0) 0)}}
+    {{if (gt (index .Gradient.Stops 0).Percent 0)}}
     <button>-1</button>
     {{end}}
 
@@ -117,7 +117,7 @@
 
   <div style="position:relative">
 
-    {{range $pos := .Gradient.Positions}}
+    {{range $stop := .Gradient.Stops}}
     <div class="group">
       <input
         name="percent"
@@ -125,7 +125,7 @@
         type="range"
         min="0"
         max="100"
-        value="{{$pos}}"
+        value="{{$stop.Percent}}"
         class="slider"
         _="on click remove .selected from .selected add .selected to the closest .group
               on change log 'changed' then click() the #submit"
