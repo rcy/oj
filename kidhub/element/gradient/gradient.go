@@ -20,6 +20,14 @@ type Gradient struct {
 	Positions []string // XXX this should be int
 }
 
+var Default = Gradient{
+	Type:      "linear",
+	Repeat:    false,
+	Degrees:   90,
+	Colors:    []string{"#ff00ff", "#ffff00", "#00ffff"},
+	Positions: []string{"0", "50", "100"},
+}
+
 func (g Gradient) Stops() []stop {
 	var stops []stop
 

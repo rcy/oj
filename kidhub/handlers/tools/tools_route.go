@@ -23,20 +23,12 @@ var t = template.Must(template.ParseFiles("handlers/layout.html", "handlers/tool
 func index(w http.ResponseWriter, r *http.Request) {
 	user := users.Current(r)
 
-	g := gradient.Gradient{
-		Type:      "linear",
-		Repeat:    false,
-		Degrees:   90,
-		Colors:    []string{"#fffff0", "#0fffff"},
-		Positions: []string{"0", "100"},
-	}
-
 	err := t.Execute(w, struct {
 		User     users.User
 		Gradient gradient.Gradient
 	}{
 		User:     user,
-		Gradient: g,
+		Gradient: gradient.Default,
 	})
 	if err != nil {
 		handlers.Error(w, err.Error(), 500)
