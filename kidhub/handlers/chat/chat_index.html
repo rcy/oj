@@ -1,5 +1,5 @@
 {{define "main"}}
-<h1>{{.Username}}</h1>
+<h1>{{.User.Username}}</h1>
 
 <div hx-get="/chat/messages" hx-trigger="every 1s, newMessage from:body">
   {{template "chat_messages" .}}

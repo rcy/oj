@@ -2,7 +2,7 @@
 <div id="messages">
   {{range .Messages}}
   <div class="f-row">
-    {{if (eq $.Username .Sender)}}
+    {{if (eq $.User.Username .Sender)}}
     {{template "chat_message_mine" .}}
     {{else}}
     {{template "chat_message" .}}

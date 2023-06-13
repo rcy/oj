@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"oj/handlers"
+	"oj/models/users"
 	"strconv"
 	"strings"
 
@@ -25,6 +26,7 @@ type Stop struct {
 }
 
 func index(w http.ResponseWriter, r *http.Request) {
+	user := users.Current(r)
 	stops := []Stop{
 		{Color: "#ffffff", Percent: 0},
 		// {Color: "#000000", Percent: 33},
@@ -35,6 +37,7 @@ func index(w http.ResponseWriter, r *http.Request) {
 	repeat := false
 
 	err := t.Execute(w, struct {
+		User            users.User
 		GradientType    string
 		Repeat          bool
 		Stops           []Stop
@@ -42,6 +45,7 @@ func index(w http.ResponseWriter, r *http.Request) {
 		GradientBar     template.CSS
 		GradientPreview template.CSS
 	}{
+		User:            user,
 		GradientType:    "linear",
 		Repeat:          repeat,
 		Stops:           stops,

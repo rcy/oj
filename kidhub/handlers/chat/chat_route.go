@@ -38,10 +38,10 @@ func index(w http.ResponseWriter, r *http.Request) {
 	}
 
 	pd := struct {
-		Username string
+		User     users.User
 		Messages []messages.Message
 	}{
-		Username: user.Username,
+		User:     user,
 		Messages: records,
 	}
 
@@ -78,10 +78,10 @@ func getMessages(w http.ResponseWriter, r *http.Request) {
 	}
 
 	pd := struct {
-		Username string
+		User     users.User
 		Messages []messages.Message
 	}{
-		Username: user.Username,
+		User:     user,
 		Messages: records,
 	}
 
