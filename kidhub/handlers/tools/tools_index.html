@@ -95,20 +95,20 @@
   </div>    
 
   <div class="f-row" style="--gap: 0px">
-    {{if (gt (index .Gradient.Stops 0).Percent 0)}}
+    {{if (gt (index .Gradient.Positions 0) 0)}}
     <button>-1</button>
     {{end}}
 
-    {{range $i, $e := .Gradient.Stops}}
+    {{range $i, $stop := .Gradient.Stops}}
     <input
       name="color"
       stylex="position: absolute;top:40"
       type="color"
-      value="{{.Color}}"
+      value="{{$stop.Color}}"
       style="width: 100%"
       _="on change log 'changed' then click() the #submit"
     >
-    {{if (lt .Percent 100)}}
+    {{if (lt $stop.Percent 100)}}
     <button>{{$i}}</button>
     {{end}}
 
@@ -117,7 +117,7 @@
 
   <div style="position:relative">
 
-    {{range .Gradient.Stops}}
+    {{range $pos := .Gradient.Positions}}
     <div class="group">
       <input
         name="percent"
@@ -125,7 +125,7 @@
         type="range"
         min="0"
         max="100"
-        value="{{.Percent}}"
+        value="{{$pos}}"
         class="slider"
         _="on click remove .selected from .selected add .selected to the closest .group
               on change log 'changed' then click() the #submit"
