@@ -3,7 +3,6 @@ package gradient
 import (
 	"fmt"
 	"html/template"
-	"net/url"
 	"strconv"
 	"strings"
 )
@@ -27,24 +26,6 @@ var Default = Gradient{
 	Degrees:   90,
 	Colors:    []string{"#ff00ff", "#ffff00", "#00ffff"},
 	Positions: []string{"0", "50", "100"},
-}
-
-func ParseForm(f url.Values) (Gradient, error) {
-	gradientType := f.Get("gradientType")
-	repeat := f.Get("repeat") == "on"
-	colors := f["color"]
-	positions := f["percent"]
-	degrees, err := strconv.Atoi(f.Get("degrees"))
-	if err != nil {
-		return Gradient{}, err
-	}
-	return Gradient{
-		Type:      gradientType,
-		Repeat:    repeat,
-		Degrees:   degrees,
-		Colors:    colors,
-		Positions: positions,
-	}, nil
 }
 
 func (g Gradient) Stops() []stop {

@@ -1,11 +1,14 @@
 package tools
 
 import (
+	"fmt"
 	"html/template"
 	"net/http"
+	"net/url"
 	"oj/element/gradient"
 	"oj/handlers"
 	"oj/models/users"
+	"strconv"
 
 	"github.com/go-chi/chi/v5"
 )
@@ -39,7 +42,7 @@ func picker(w http.ResponseWriter, r *http.Request) {
 		handlers.Error(w, err.Error(), 500)
 	}
 
-	g, err := gradient.ParseForm(r.PostForm)
+	g, err := gradientFromUrlValues(r.PostForm)
 	if err != nil {
 		handlers.Error(w, err.Error(), 500)
 		return
@@ -53,5 +56,37 @@ func picker(w http.ResponseWriter, r *http.Request) {
 }
 
 func setBackground(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte(`body { background: red; }`))
+	err := r.ParseForm()
+	if err != nil {
+		handlers.Error(w, err.Error(), 500)
+	}
+
+	g, err := gradientFromUrlValues(r.PostForm)
+	if err != nil {
+		handlers.Error(w, err.Error(), 500)
+		return
+	}
+
+	style := fmt.Sprintf("body { background: %s; }", g.Render())
+
+	w.Write([]byte(style))
+}
+
+// Return a Gradient from a parsed form
+func gradientFromUrlValues(f url.Values) (gradient.Gradient, error) {
+	gradientType := f.Get("gradientType")
+	repeat := f.Get("repeat") == "on"
+	colors := f["color"]
+	positions := f["percent"]
+	degrees, err := strconv.Atoi(f.Get("degrees"))
+	if err != nil {
+		return gradient.Gradient{}, err
+	}
+	return gradient.Gradient{
+		Type:      gradientType,
+		Repeat:    repeat,
+		Degrees:   degrees,
+		Colors:    colors,
+		Positions: positions,
+	}, nil
 }
