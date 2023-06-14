@@ -12,7 +12,6 @@ import (
 	"oj/handlers"
 	"oj/handlers/auth"
 	"oj/handlers/chat"
-	"oj/handlers/games"
 	"oj/handlers/parent"
 	"oj/handlers/tools"
 	"oj/models/users"
@@ -46,7 +45,6 @@ func main() {
 		r.Get("/", handlers.Home)
 
 		r.Route("/parent", parent.Route)
-		r.Route("/games", games.Route)
 		r.Route("/chat", chat.Route)
 		r.Route("/tools", tools.Route)
 	})
