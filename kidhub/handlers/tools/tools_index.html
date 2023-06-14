@@ -2,7 +2,7 @@
 <style>
  /* https://mikejolley.com/2019/08/02/building-a-cross-browser-compatible-multi-handle-range-slider/ */
  .slider {
-     margin: 0;
+     margin: 0px;
      padding: 0;
      border: 0;
      outline: none;
@@ -31,17 +31,15 @@
  .slider::-webkit-slider-thumb {
      -webkit-appearance: none; // Reset appearance so we can apply backgrounds/borders etc.
      pointer-events: auto; // Re-enable pointer events so the handles can be used.
-     width: 50px;
-     height: 50px;
-     margin-top: -13px;
-     border-radius: 50%; 
-     background: white;
-     opacity: .5;
+     width: 32px;
+     height: 32px;
+     margin-top: -5px;
+     border-radius: 100%; 
+     background: radial-gradient(rgba(255,255,255,0) 32%,#000000 46%,#ffffff 54%,#000000 60%);
  }
 
- .selected .slider::-webkit-slider-thumb {
-     background: white;
-     opacity: .5;
+ .slider::-webkit-slider-thumb:hover {
+     background: radial-gradient(rgba(255,255,255,0) 32%,#000000 46%,#ffffff 54%,#000000 60%);
  }
 
  .track {
@@ -56,7 +54,7 @@
  }
 
  .picker {
-     background: lightgray;
+     background: #ddd;
      padding: 1em;
  }
 </style>
