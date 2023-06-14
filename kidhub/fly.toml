@@ -1,17 +1,17 @@
 # fly.toml file generated for oj on 2023-06-11T12:24:45-07:00
 
-app = "kidhub"
+app = "octopusjr"
 kill_signal = "SIGINT"
 kill_timeout = 5
 processes = []
 
 [mounts]
-  source = "kidhub_data"
+  source = "oj_data_0"
   destination = "/data"
 
 [env]
   PORT = "8080"
-  SQLITE_DB = "/data/kidhub_production.db"
+  SQLITE_DB = "/data/oj_production.db"
   NO_SCHEMA_DUMP = "1"
 
 [experimental]

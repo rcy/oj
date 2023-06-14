@@ -1,6 +1,6 @@
 # fly.toml file generated for octopusjr on 2022-10-30T20:32:11-07:00
 
-app = "octopusjr"
+app = "octopusjr_deprecated"
 kill_signal = "SIGINT"
 kill_timeout = 5
 processes = []
