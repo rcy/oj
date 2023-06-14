@@ -1,6 +1,13 @@
 {{define "main"}}
 <style>
  /* https://mikejolley.com/2019/08/02/building-a-cross-browser-compatible-multi-handle-range-slider/ */
+ .rotation {
+     background: transparent;
+     -webkit-appearance: none;
+     -moz-appearance: none;
+     appearance: none;
+ }
+
  .slider {
      margin: 0px;
      padding: 0;
@@ -22,9 +29,9 @@
  }
  .slider::-moz-range-track {
      cursor: default;
-     -moz-appearance: none;
-     outline: 0;
      height: 1px;
+     outline: 0;
+     -moz-appearance: none;
  }
 
  .slider::-webkit-slider-thumb {
@@ -32,15 +39,29 @@
      pointer-events: auto; /* Re-enable pointer events so the handles can be used. */
      width: 32px;
      height: 32px;
-     margin-top: -5px;
+     margin-top: -15px;
      border-radius: 100%; 
      background: radial-gradient(rgba(255,255,255,0) 32%,#000000 46%,#ffffff 54%,#000000 60%);
  }
 
- .slider::-webkit-slider-thumb:hover {
+ .slider::-moz-range-thumb {
+     -moz-appearance: none; /* Reset appearance so we can apply backgrounds/borders etc. */
+     pointer-events: auto; /* Re-enable pointer events so the handles can be used. */
+     width: 32px;
+     height: 32px;
+     /* margin-top: -50px; */
+     border-radius: 100%; 
      background: radial-gradient(rgba(255,255,255,0) 32%,#000000 46%,#ffffff 54%,#000000 60%);
  }
 
+ .slider {
+     margin-top: 10px;
+ }
+
+ /* .slider::-webkit-slider-thumb:hover {
+     background: radial-gradient(rgba(255,255,255,0) 32%,#000000 46%,#ffffff 54%,#000000 60%);
+ }
+ */
  .track {
      width: 100%;
      height: 32px;
@@ -135,6 +156,7 @@
 
   <div class="f-row">
     <input
+      class="rotation"
       {{if (eq .Gradient.Type "radial")}}style="visibility: hidden"{{end}}
       name="degrees"
       type="range"
