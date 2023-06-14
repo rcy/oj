@@ -5,9 +5,8 @@ import (
 	"html/template"
 	"log"
 	"net/http"
-	"oj/element/gradient"
-	"oj/handlers"
-	"oj/models/gradients"
+	"oj/handlers/layout"
+	"oj/handlers/render"
 	"oj/models/users"
 
 	"github.com/go-chi/chi/v5"
@@ -19,29 +18,32 @@ func Route(r chi.Router) {
 	r.Post("/kids", createKid)
 }
 
-var t = template.Must(template.ParseFiles("handlers/layout.html", "handlers/parent/index.html"))
+var t = template.Must(template.ParseFiles(layout.File, "handlers/parent/index.html"))
 
 func index(w http.ResponseWriter, r *http.Request) {
-	user := users.Current(r)
-
-	backgroundGradient, err := gradients.UserBackground(user.ID)
+	l, err := layout.GetData(r)
 	if err != nil {
-		handlers.Error(w, err.Error(), 500)
+		render.Error(w, err.Error(), 500)
 		return
 	}
 
-	kids, _ := user.Kids()
+	kids, _ := l.User.Kids()
+	if err != nil {
+		render.Error(w, err.Error(), 500)
+		return
+	}
+
 	err = t.Execute(w, struct {
-		User               users.User
-		BackgroundGradient gradient.Gradient
-		Kids               []users.User
+		Layout layout.Data
+		User   users.User
+		Kids   []users.User
 	}{
-		User:               user,
-		BackgroundGradient: backgroundGradient,
-		Kids:               kids,
+		Layout: l,
+		User:   l.User,
+		Kids:   kids,
 	})
 	if err != nil {
-		handlers.Error(w, err.Error(), 500)
+		render.Error(w, err.Error(), 500)
 	}
 }
 

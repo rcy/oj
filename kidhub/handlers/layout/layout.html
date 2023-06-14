@@ -6,7 +6,7 @@
 
     <style id="user-style">
      body {
-         background: {{.BackgroundGradient.Render}}
+         background: {{.Layout.BackgroundGradient.Render}}
      }
     </style>    
 
@@ -69,7 +69,7 @@
           <li><a href="/">🐙 OJ</a></li>
           <li><a href="/chat">Chat</a></li>
           <li><a href="/tools">Background</a></li>
-          <li>{{.User.Username}}</li>
+          <li>{{.Layout.User.Username}}</li>
           <!-- <li><a href="/welcome/signout">Logout</a></li> -->
         </ul>
       </nav>
@@ -78,7 +78,6 @@
     <main>
       {{block "main" .}}{{end}}
     </main>
-
 
     <script src="https://unpkg.com/htmx.org@1.9.2" integrity="sha384-L6OqL9pRWyyFU3+/bjdSri+iIphTN/bvYyM37tICVyOJkWZLpP2vGn6VUEXgzg6h" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/hyperscript.org@0.9.8"></script>

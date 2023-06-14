@@ -8,8 +8,8 @@ import (
 	"net/url"
 	"oj/db"
 	"oj/element/gradient"
-	"oj/handlers"
-	"oj/models/gradients"
+	"oj/handlers/layout"
+	"oj/handlers/render"
 	"oj/models/users"
 	"strconv"
 
@@ -22,40 +22,33 @@ func Route(r chi.Router) {
 	r.Post("/set-background", setBackground)
 }
 
-var t = template.Must(template.ParseFiles("handlers/layout.html", "handlers/tools/tools_index.html"))
+var t = template.Must(template.ParseFiles(layout.File, "handlers/tools/tools_index.html"))
 
 func index(w http.ResponseWriter, r *http.Request) {
-	user := users.Current(r)
-
-	backgroundGradient, err := gradients.UserBackground(user.ID)
+	l, err := layout.GetData(r)
 	if err != nil {
-		handlers.Error(w, err.Error(), 500)
+		render.Error(w, err.Error(), 500)
 		return
 	}
 
-	err = t.Execute(w, struct {
-		User               users.User
-		BackgroundGradient gradient.Gradient
-		Gradient           gradient.Gradient
+	render.Execute(w, t, struct {
+		Layout   layout.Data
+		Gradient gradient.Gradient
 	}{
-		User:               user,
-		BackgroundGradient: backgroundGradient,
-		Gradient:           backgroundGradient,
+		Layout:   l,
+		Gradient: l.BackgroundGradient,
 	})
-	if err != nil {
-		handlers.Error(w, err.Error(), 500)
-	}
 }
 
 func picker(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
 	if err != nil {
-		handlers.Error(w, err.Error(), 500)
+		render.Error(w, err.Error(), 500)
 	}
 
 	g, err := gradientFromUrlValues(r.PostForm)
 	if err != nil {
-		handlers.Error(w, err.Error(), 500)
+		render.Error(w, err.Error(), 500)
 		return
 	}
 
@@ -71,19 +64,19 @@ func setBackground(w http.ResponseWriter, r *http.Request) {
 
 	err := r.ParseForm()
 	if err != nil {
-		handlers.Error(w, err.Error(), 500)
+		render.Error(w, err.Error(), 500)
 	}
 
 	g, err := gradientFromUrlValues(r.PostForm)
 	if err != nil {
-		handlers.Error(w, err.Error(), 500)
+		render.Error(w, err.Error(), 500)
 		return
 	}
 
 	encodedGradient, _ := json.Marshal(g)
 	_, err = db.DB.Exec("insert into gradients(user_id, gradient) values(?, ?)", user.ID, encodedGradient)
 	if err != nil {
-		handlers.Error(w, err.Error(), 500)
+		render.Error(w, err.Error(), 500)
 		return
 	}
 

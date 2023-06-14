@@ -3,10 +3,9 @@ package chat
 import (
 	"html/template"
 	"net/http"
-	"oj/element/gradient"
-	"oj/handlers"
+	"oj/handlers/layout"
+	"oj/handlers/render"
 
-	"oj/models/gradients"
 	"oj/models/messages"
 	"oj/models/users"
 
@@ -15,7 +14,7 @@ import (
 
 var chatTemplate = template.Must(
 	template.ParseFiles(
-		"handlers/layout.html",
+		layout.File,
 		"handlers/chat/chat_index.html",
 		"handlers/chat/chat_partials.html",
 	))
@@ -31,34 +30,29 @@ func Route(r chi.Router) {
 }
 
 func index(w http.ResponseWriter, r *http.Request) {
-	user := users.Current(r)
-
-	backgroundGradient, err := gradients.UserBackground(user.ID)
+	l, err := layout.GetData(r)
 	if err != nil {
-		handlers.Error(w, err.Error(), 500)
+		render.Error(w, err.Error(), 500)
 		return
 	}
 
 	records, err := messages.Fetch()
 	if err != nil {
-		handlers.Error(w, err.Error(), 500)
+		render.Error(w, err.Error(), 500)
 		return
 	}
 
 	pd := struct {
-		User               users.User
-		BackgroundGradient gradient.Gradient
-		Messages           []messages.Message
+		Layout   layout.Data
+		User     users.User
+		Messages []messages.Message
 	}{
-		User:               user,
-		BackgroundGradient: backgroundGradient,
-		Messages:           records,
+		Layout:   l,
+		User:     l.User,
+		Messages: records,
 	}
 
-	err = chatTemplate.Execute(w, pd)
-	if err != nil {
-		handlers.Error(w, err.Error(), 500)
-	}
+	render.Execute(w, chatTemplate, pd)
 }
 
 func postMessage(w http.ResponseWriter, r *http.Request) {
@@ -67,7 +61,7 @@ func postMessage(w http.ResponseWriter, r *http.Request) {
 
 	message, err := messages.Create(body, user.Username)
 	if err != nil {
-		handlers.Error(w, err.Error(), 500)
+		render.Error(w, err.Error(), 500)
 		return
 	}
 
@@ -75,7 +69,7 @@ func postMessage(w http.ResponseWriter, r *http.Request) {
 
 	err = partials.ExecuteTemplate(w, "chat_input", message)
 	if err != nil {
-		handlers.Error(w, err.Error(), 500)
+		render.Error(w, err.Error(), 500)
 	}
 }
 
@@ -83,7 +77,7 @@ func getMessages(w http.ResponseWriter, r *http.Request) {
 	user := users.Current(r)
 	records, err := messages.Fetch()
 	if err != nil {
-		handlers.Error(w, err.Error(), 500)
+		render.Error(w, err.Error(), 500)
 		return
 	}
 
@@ -97,6 +91,6 @@ func getMessages(w http.ResponseWriter, r *http.Request) {
 
 	err = chatTemplate.ExecuteTemplate(w, "chat_messages", pd)
 	if err != nil {
-		handlers.Error(w, err.Error(), 500)
+		render.Error(w, err.Error(), 500)
 	}
 }

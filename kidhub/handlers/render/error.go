@@ -1,4 +1,4 @@
-package handlers
+package render
 
 import (
 	"log"

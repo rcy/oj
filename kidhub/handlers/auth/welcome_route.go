@@ -9,7 +9,7 @@ import (
 	"math/rand"
 	"net/http"
 	"oj/db"
-	"oj/handlers"
+	"oj/handlers/render"
 	"oj/models/users"
 	"oj/services/email"
 	"time"
@@ -43,7 +43,7 @@ var welcomeTemplate = template.Must(template.ParseFiles(
 func welcome(w http.ResponseWriter, r *http.Request) {
 	err := welcomeTemplate.Execute(w, nil)
 	if err != nil {
-		handlers.Error(w, err.Error(), 500)
+		render.Error(w, err.Error(), 500)
 	}
 }
 
@@ -55,7 +55,7 @@ var welcomeKidsTemplate = template.Must(template.ParseFiles(
 func welcomeKids(w http.ResponseWriter, r *http.Request) {
 	err := welcomeKidsTemplate.Execute(w, nil)
 	if err != nil {
-		handlers.Error(w, err.Error(), 500)
+		render.Error(w, err.Error(), 500)
 	}
 }
 
@@ -67,7 +67,7 @@ var welcomeParentsTemplate = template.Must(template.ParseFiles(
 func welcomeParents(w http.ResponseWriter, r *http.Request) {
 	err := welcomeParentsTemplate.Execute(w, nil)
 	if err != nil {
-		handlers.Error(w, err.Error(), 500)
+		render.Error(w, err.Error(), 500)
 	}
 }
 
@@ -133,7 +133,7 @@ func parentsCode(w http.ResponseWriter, r *http.Request) {
 
 	err := welcomeParentsCodeTemplate.Execute(w, struct{ Retry bool }{Retry: retry})
 	if err != nil {
-		handlers.Error(w, err.Error(), 500)
+		render.Error(w, err.Error(), 500)
 	}
 }
 
@@ -207,7 +207,7 @@ func kidsCode(w http.ResponseWriter, r *http.Request) {
 
 	err := welcomeKidsCodeTemplate.Execute(w, struct{ Retry bool }{Retry: retry})
 	if err != nil {
-		handlers.Error(w, err.Error(), 500)
+		render.Error(w, err.Error(), 500)
 	}
 }
 
@@ -243,21 +243,19 @@ func kidsCodeAction(w http.ResponseWriter, r *http.Request) {
 		// create user if not exists
 		user, err := users.FindById(userID)
 		if err != nil {
-			handlers.Error(w, "error getting user", 500)
+			render.Error(w, "error getting user", 500)
 			return
 		}
 		log.Printf("user %v", user)
 		// create a new session
 		key, err := generateSecureString(32)
 		if err != nil {
-			log.Print(err)
-			handlers.Error(w, "error creating session", 500)
+			render.Error(w, "error creating session", 500)
 			return
 		}
 		_, err = db.DB.Exec("insert into sessions(key, user_id) values(?, ?)", key, user.ID)
 		if err != nil {
-			log.Print(err)
-			handlers.Error(w, "error creating session", 500)
+			render.Error(w, "error creating session", 500)
 			return
 		}
 		// set session cookie
@@ -306,21 +304,19 @@ func parentsCodeAction(w http.ResponseWriter, r *http.Request) {
 		// create user if not exists
 		user, err := users.FindOrCreateByEmail(email)
 		if err != nil {
-			handlers.Error(w, "error getting user", 500)
+			render.Error(w, "error getting user", 500)
 			return
 		}
 		log.Printf("user %v", user)
 		// create a new session
 		key, err := generateSecureString(32)
 		if err != nil {
-			log.Print(err)
-			handlers.Error(w, "error creating session", 500)
+			render.Error(w, "error creating session", 500)
 			return
 		}
 		_, err = db.DB.Exec("insert into sessions(key, user_id) values(?, ?)", key, user.ID)
 		if err != nil {
-			log.Print(err)
-			handlers.Error(w, "error creating session", 500)
+			render.Error(w, "error creating session", 500)
 			return
 		}
 		// set session cookie

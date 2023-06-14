@@ -14,6 +14,8 @@ import (
 	"oj/handlers/chat"
 	"oj/handlers/parent"
 	"oj/handlers/tools"
+	"oj/handlers/u"
+
 	"oj/models/users"
 
 	"github.com/go-chi/chi/v5"
@@ -47,6 +49,8 @@ func main() {
 		r.Route("/parent", parent.Route)
 		r.Route("/chat", chat.Route)
 		r.Route("/tools", tools.Route)
+
+		r.Get("/u/{username}", u.UserPage)
 	})
 
 	r.Route("/welcome", auth.Route)
