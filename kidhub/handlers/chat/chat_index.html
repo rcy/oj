@@ -1,12 +1,11 @@
 {{define "main"}}
-<h1>{{.User.Username}}</h1>
+<div class="box" style="height: 80vh; overflow-y: scroll">
+  <div hx-get="/chat/messages" hx-trigger="every 10s, newMessage from:body">
+    {{template "chat_messages" .}}
+  </div>
 
-<div hx-get="/chat/messages" hx-trigger="every 1s, newMessage from:body">
-  {{template "chat_messages" .}}
+  <div>
+    {{template "chat_input" .}}
+  </div>
 </div>
-
-<div>
-  {{template "chat_input" .}}
-</div>
-
 {{end}}
