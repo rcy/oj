@@ -12,19 +12,11 @@ import (
 	"oj/handlers/render"
 	"oj/models/users"
 	"strconv"
-
-	"github.com/go-chi/chi/v5"
 )
-
-func Route(r chi.Router) {
-	r.Get("/", index)
-	r.Post("/picker", picker)
-	r.Post("/set-background", setBackground)
-}
 
 var t = template.Must(template.ParseFiles(layout.File, "handlers/tools/tools_index.html"))
 
-func index(w http.ResponseWriter, r *http.Request) {
+func Index(w http.ResponseWriter, r *http.Request) {
 	l, err := layout.GetData(r)
 	if err != nil {
 		render.Error(w, err.Error(), 500)
@@ -40,7 +32,7 @@ func index(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func picker(w http.ResponseWriter, r *http.Request) {
+func Picker(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
 	if err != nil {
 		render.Error(w, err.Error(), 500)
@@ -59,7 +51,7 @@ func picker(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func setBackground(w http.ResponseWriter, r *http.Request) {
+func SetBackground(w http.ResponseWriter, r *http.Request) {
 	user := users.Current(r)
 
 	err := r.ParseForm()

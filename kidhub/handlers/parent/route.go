@@ -8,19 +8,11 @@ import (
 	"oj/handlers/layout"
 	"oj/handlers/render"
 	"oj/models/users"
-
-	"github.com/go-chi/chi/v5"
 )
-
-func Route(r chi.Router) {
-	r.Get("/", index)
-
-	r.Post("/kids", createKid)
-}
 
 var t = template.Must(template.ParseFiles(layout.File, "handlers/parent/index.html"))
 
-func index(w http.ResponseWriter, r *http.Request) {
+func Index(w http.ResponseWriter, r *http.Request) {
 	l, err := layout.GetData(r)
 	if err != nil {
 		render.Error(w, err.Error(), 500)
@@ -47,7 +39,7 @@ func index(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func createKid(w http.ResponseWriter, r *http.Request) {
+func CreateKid(w http.ResponseWriter, r *http.Request) {
 	user := users.Current(r)
 	err := r.ParseForm()
 	if err != nil {

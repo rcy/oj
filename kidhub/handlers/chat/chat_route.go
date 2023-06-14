@@ -8,8 +8,6 @@ import (
 
 	"oj/models/messages"
 	"oj/models/users"
-
-	"github.com/go-chi/chi/v5"
 )
 
 var chatTemplate = template.Must(
@@ -23,13 +21,7 @@ var partials = template.Must(
 	template.ParseFiles("handlers/chat/chat_partials.html"),
 )
 
-func Route(r chi.Router) {
-	r.Get("/", index)
-	r.Post("/messages", postMessage)
-	r.Get("/messages", getMessages)
-}
-
-func index(w http.ResponseWriter, r *http.Request) {
+func Index(w http.ResponseWriter, r *http.Request) {
 	l, err := layout.GetData(r)
 	if err != nil {
 		render.Error(w, err.Error(), 500)
@@ -55,7 +47,7 @@ func index(w http.ResponseWriter, r *http.Request) {
 	render.Execute(w, chatTemplate, pd)
 }
 
-func postMessage(w http.ResponseWriter, r *http.Request) {
+func PostMessage(w http.ResponseWriter, r *http.Request) {
 	user := users.Current(r)
 	body := r.FormValue("body")
 
@@ -73,7 +65,7 @@ func postMessage(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func getMessages(w http.ResponseWriter, r *http.Request) {
+func GetMessages(w http.ResponseWriter, r *http.Request) {
 	user := users.Current(r)
 	records, err := messages.Fetch()
 	if err != nil {

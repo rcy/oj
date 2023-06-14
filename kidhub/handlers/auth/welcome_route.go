@@ -30,8 +30,6 @@ func Route(r chi.Router) {
 	r.Get("/kids/code", kidsCode)
 	r.Post("/kids/code", kidsCodeAction)
 
-	// r.Get("/signup", getSignup)
-	// r.Post("/signup", postSignup)
 	r.Get("/signout", signout)
 }
 
