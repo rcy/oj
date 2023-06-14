@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"oj/handlers/layout"
 	"oj/handlers/render"
+	"oj/models/users"
 )
 
 var t = template.Must(template.ParseFiles(layout.File, "handlers/u/user_page.html"))
@@ -18,10 +19,10 @@ func UserPage(w http.ResponseWriter, r *http.Request) {
 
 	d := struct {
 		Layout layout.Data
-		Foo    string
+		User   users.User
 	}{
 		Layout: l,
-		Foo:    "some foo string thing",
+		User:   l.User,
 	}
 
 	render.Execute(w, t, d)
