@@ -9,5 +9,6 @@ mkShell {
     golangci-lint
     entr
     google-cloud-sdk
+    nodejs
   ];
 }
