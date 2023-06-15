@@ -1,0 +1,13 @@
+{{define "main"}}
+<h1>people</h1>
+
+<div class="box">
+  <ul>
+    {{range .AllUsers}}
+    <li>
+      <a href="/u/{{.Username}}">{{.Username}}</a>
+    </li>
+    {{end}}
+  </ul>
+</div>
+{{end}}

@@ -41,6 +41,7 @@ func Router() *chi.Mux {
 		r.Post("/tools/picker", tools.Picker)
 		r.Post("/tools/set-background", tools.SetBackground)
 
+		r.Get("/u", u.UserIndex)
 		r.Get("/u/{username}", u.UserPage)
 	})
 

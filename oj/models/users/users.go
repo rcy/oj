@@ -136,3 +136,12 @@ func FindOrCreateByEmail(email string) (*User, error) {
 	}
 	return user, nil
 }
+
+func FindAll() ([]User, error) {
+	var result []User
+	err := db.DB.Select(&result, "select * from users")
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
+}
