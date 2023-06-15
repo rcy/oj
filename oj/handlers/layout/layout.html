@@ -8,7 +8,7 @@
      body {
          background: {{.Layout.BackgroundGradient.Render}}
      }
-    </style>    
+    </style>
 
     <style>
      body {
@@ -23,66 +23,78 @@
      }
 
      /* https://projects.verou.me/bubbly/ */
-     .speech-bubble-left {
+     .speech-bubble {
+         margin-top: 1em;
 	 position: relative;
-	 background: #00fffb;
          border-radius: .4em;
          padding: 1em;
+         --shadow-rgb: 0,0,255;
+         box-shadow: 1px 2px 0px rgba(var(--shadow-rgb),.13);
      }
-     .speech-bubble-left:after {
+
+     .speech-bubble.left {
+	 background: #ffffff;
+         margin-left: 12px;
+     }
+     .speech-bubble.right {
+	 background: #d9fdd3;
+         margin-right: 12px;
+     }
+
+     .speech-bubble:after {
 	 content: '';
 	 position: absolute;
-	 left: 0;
 	 top: 50%;
 	 width: 0;
 	 height: 0;
 	 border: 12px solid transparent;
-	 border-right-color: #00fffb;
-	 border-left: 0;
 	 margin-top: -12px;
+     }
+
+     .speech-bubble.left:after {
+	 left: 0;
+	 border-right-color: #ffffff;
+	 border-left: 0;
 	 margin-left: -12px;
      }
 
-     .speech-bubble-right {
-	 position: relative;
-	 background: #f948b8;
-         border-radius: .4em;
-         padding: 1em;
-     }
-     .speech-bubble-right:after {
-	 content: '';
-	 position: absolute;
+     .speech-bubble.right:after {
 	 right: 0;
-	 top: 50%;
-	 width: 0;
-	 height: 0;
-	 border: 12px solid transparent;
-	 border-left-color: #f948b8;
+	 border-left-color: #d9fdd3;
 	 border-right: 0;
-	 margin-top: -12px;
 	 margin-right: -12px;
      }
     </style>
 
   </head>
-  <body>
+  <body style="height: 100vh">
+    <div class="f-col height:100%" style="--gap: 0">
+      <div>
+        <header class="navbar" style="--gap: 0">
+          <nav aria-label="Site sections">
+            <ul role="list">
+              <li><a href="/">🐙 OJ</a></li>
+              <li><a href="/u">People</a></li>
+              <li><a href="/chat">Chat</a></li>
+              <li><a href="/tools">Background</a></li>
+              <li><a href="/u/{{.Layout.User.Username}}">{{.Layout.User.Username}}</a></li>
+            </ul>
+          </nav>
+        </header>
+      </div>
 
-    <header class="navbar">
-      <nav aria-label="Site sections">
-        <ul role="list">
-          <li><a href="/">🐙 OJ</a></li>
-          <li><a href="/u">People</a></li>          
-          <li><a href="/chat">Chat</a></li>
-          <li><a href="/tools">Background</a></li>
-          <li><a href="/u/{{.Layout.User.Username}}">{{.Layout.User.Username}}</a></li>
-        </ul>
-      </nav>
-    </header>
+      <div class="flex-grow:1 align-self:stretch height:100%" style="overflow-y: hidden">
+        <main class="height:100%">
+          <div class="height:100%" style="overflow:auto">
+            {{block "main" .}}{{end}}
+          </div>
+        </main>
+      </div>
 
-    <main>
-      {{block "main" .}}{{end}}
-    </main>
-
+      <div class="flex-grow:0">
+        footer
+      </div>
+    </div>
     <script src="https://unpkg.com/htmx.org@1.9.2" integrity="sha384-L6OqL9pRWyyFU3+/bjdSri+iIphTN/bvYyM37tICVyOJkWZLpP2vGn6VUEXgzg6h" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/hyperscript.org@0.9.8"></script>
 

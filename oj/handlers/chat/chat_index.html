@@ -1,6 +1,6 @@
 {{define "main"}}
-<div class="box" style="height: 80vh; overflow-y: scroll">
-  <div hx-get="/chat/messages" hx-trigger="every 10s, newMessage from:body">
+<div class="f-col height:100%">
+  <div hx-get="/chat/messages" hx-trigger="every 10s, newMessage from:body" class="overflow:auto">
     {{template "chat_messages" .}}
   </div>
 
