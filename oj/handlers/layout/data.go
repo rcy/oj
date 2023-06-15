@@ -24,6 +24,6 @@ func GetData(r *http.Request) (Data, error) {
 
 	return Data{
 		User:               user,
-		BackgroundGradient: backgroundGradient,
+		BackgroundGradient: *backgroundGradient,
 	}, nil
 }
