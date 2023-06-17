@@ -86,7 +86,7 @@ eventLoop:
 
 		json.Unmarshal(messageBytes, &messageData)
 
-		message, err := messages.Create(messageData.Body, user.Username)
+		message, err := messages.Create(roomID, messageData.Body, user.Username)
 		if err != nil {
 			log.Printf("error creating message: %s", err)
 			continue eventLoop

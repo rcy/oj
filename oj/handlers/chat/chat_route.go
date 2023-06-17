@@ -48,13 +48,13 @@ func DM(w http.ResponseWriter, r *http.Request) {
 	// override layout gradient to show the page user's not the request user's
 	l.BackgroundGradient = *ug
 
-	records, err := messages.Fetch()
+	roomID := users.MakeRoomId(l.User.ID, user.ID)
+
+	records, err := messages.Fetch(roomID)
 	if err != nil {
 		render.Error(w, err.Error(), 500)
 		return
 	}
-
-	roomID := users.MakeRoomId(l.User.ID, user.ID)
 
 	pd := struct {
 		Layout   layout.Data
@@ -75,7 +75,7 @@ func PostMessage(w http.ResponseWriter, r *http.Request) {
 	user := users.Current(r)
 	body := r.FormValue("body")
 
-	message, err := messages.Create(body, user.Username)
+	message, err := messages.Create("dummy-room-id", body, user.Username)
 	if err != nil {
 		render.Error(w, err.Error(), 500)
 		return
@@ -84,28 +84,6 @@ func PostMessage(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("HX-Trigger", "newMessage")
 
 	err = partials.ExecuteTemplate(w, "chat_input", message)
-	if err != nil {
-		render.Error(w, err.Error(), 500)
-	}
-}
-
-func GetMessages(w http.ResponseWriter, r *http.Request) {
-	user := users.Current(r)
-	records, err := messages.Fetch()
-	if err != nil {
-		render.Error(w, err.Error(), 500)
-		return
-	}
-
-	pd := struct {
-		User     users.User
-		Messages []messages.Message
-	}{
-		User:     user,
-		Messages: records,
-	}
-
-	err = chatTemplate.ExecuteTemplate(w, "chat_messages", pd)
 	if err != nil {
 		render.Error(w, err.Error(), 500)
 	}

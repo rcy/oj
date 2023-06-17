@@ -56,7 +56,15 @@ create table gradients(
   user_id integer references users not null,
   gradient blob not null
 );
-`,
+`, `
+drop table if exists messages;
+create table messages(
+  id integer primary key,
+  created_at datetime not null default current_timestamp,
+  room_id text not null,
+  body text not null,
+  sender text not null
+)`,
 }
 
 var Current = ``

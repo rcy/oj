@@ -34,7 +34,6 @@ func Router() *chi.Mux {
 		r.Post("/parent/kids", parent.CreateKid)
 
 		//r.Get("/chat/{roomID}", chat.Index)        // deprecated
-		r.Get("/chat/messages", chat.GetMessages)  // deprecated
 		r.Post("/chat/messages", chat.PostMessage) // deprecated
 		r.HandleFunc("/chat/socket/{roomID}", chat.ChatServer)
 

@@ -1,12 +1,6 @@
 CREATE TABLE migration_version (
 			version INTEGER
 		);
-CREATE TABLE messages(
-  id integer primary key,
-  body text not null,
-  sender text not null,
-  created_at datetime not null default current_timestamp
-);
 CREATE TABLE users (
   id integer primary key,
   created_at datetime not null default current_timestamp,
@@ -43,4 +37,11 @@ CREATE TABLE gradients(
   created_at text not null default current_timestamp,
   user_id integer references users not null,
   gradient blob not null
+);
+CREATE TABLE messages(
+  id integer primary key,
+  created_at datetime not null default current_timestamp,
+  room_id text not null,
+  body text not null,
+  sender text not null
 );
