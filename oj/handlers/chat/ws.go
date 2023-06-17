@@ -35,7 +35,7 @@ func (rs RoomSubscriptions) remove(roomID string, conn *websocket.Conn) {
 
 var subs = RoomSubscriptions{}
 
-var messageTemplate = template.Must(template.New("").Parse(`<div id="chat_room" hx-swap-oob="beforeend"><div>{{.Body}}</div></div>`))
+var messageTemplate = template.Must(template.New("").Parse(`<div id="chat_room" hx-swap-oob="beforeend"><div>{{.Sender}}: {{.Body}}</div></div>`))
 
 func ChatServer(w http.ResponseWriter, r *http.Request) {
 	user := users.Current(r)

@@ -3,7 +3,12 @@
   <h1>Chat with {{.User.Username}}</h1>
 
   <div id="chat_room">
-    chat_room:{{.RoomID}}
+    {{range .Messages}}
+
+    <div>
+      {{.Sender}}: {{.Body}}
+    </div>
+    {{end}}
   </div>
 
   <form id="form" ws-send _="on submit reset() me" hx-boost="false">
