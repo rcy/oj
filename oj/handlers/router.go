@@ -33,9 +33,10 @@ func Router() *chi.Mux {
 		r.Get("/parent", parent.Index)
 		r.Post("/parent/kids", parent.CreateKid)
 
-		r.Get("/chat", chat.Index)
-		r.Get("/chat/messages", chat.GetMessages)
-		r.Post("/chat/messages", chat.PostMessage)
+		//r.Get("/chat/{roomID}", chat.Index)        // deprecated
+		r.Get("/chat/messages", chat.GetMessages)  // deprecated
+		r.Post("/chat/messages", chat.PostMessage) // deprecated
+		r.HandleFunc("/chat/socket/{roomID}", chat.ChatServer)
 
 		r.Get("/tools", tools.Index)
 		r.Post("/tools/picker", tools.Picker)
@@ -43,6 +44,7 @@ func Router() *chi.Mux {
 
 		r.Get("/u", u.UserIndex)
 		r.Get("/u/{username}", u.UserPage)
+		r.Get("/u/{username}/chat", chat.DM)
 	})
 
 	// non authenticated routes

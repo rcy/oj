@@ -1,5 +1,10 @@
 <html>
   <head>
+    <script src="https://unpkg.com/htmx.org@1.9.2" integrity="sha384-L6OqL9pRWyyFU3+/bjdSri+iIphTN/bvYyM37tICVyOJkWZLpP2vGn6VUEXgzg6h" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/htmx.org/dist/ext/ws.js"></script>
+    <script src="https://unpkg.com/hyperscript.org@0.9.8"></script>
+    <script src="https://unpkg.com/hyperscript.org@0.9.8/dist/socket.js"></script>
+
     <link rel="stylesheet" href="https://unpkg.com/missing.css@1.0.9/dist/missing.min.css">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -65,17 +70,15 @@
 	 margin-right: -12px;
      }
     </style>
-
   </head>
-  <body style="height: 100vh">
+  <body style="height: 100vh" hx-ext="ws" hx-boost="false">
     <div class="f-col height:100%" style="--gap: 0">
       <div>
         <header class="navbar" style="--gap: 0">
           <nav aria-label="Site sections">
             <ul role="list">
               <li><a href="/">🐙 OJ</a></li>
-              <li><a href="/u">People</a></li>
-              <li><a href="/chat">Chat</a></li>
+              <li><a href="/u">Friends</a></li>
               <li><a href="/tools">Background</a></li>
               <li><a href="/u/{{.Layout.User.Username}}">{{.Layout.User.Username}}</a></li>
             </ul>
@@ -92,11 +95,16 @@
       </div>
 
       <div class="flex-grow:0">
-        footer
+        <button _="on click call sock.send({'foo':123})">click this</button>
       </div>
     </div>
-    <script src="https://unpkg.com/htmx.org@1.9.2" integrity="sha384-L6OqL9pRWyyFU3+/bjdSri+iIphTN/bvYyM37tICVyOJkWZLpP2vGn6VUEXgzg6h" crossorigin="anonymous"></script>
-    <script src="https://unpkg.com/hyperscript.org@0.9.8"></script>
 
+    <!-- <script type="text/hyperscript">
+         socket MySocket /realtime
+         on message as text
+         log message
+         end
+         </script>
+    -->
   </body>
 </html>

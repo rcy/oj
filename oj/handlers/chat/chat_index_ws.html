@@ -1,0 +1,14 @@
+{{define "main"}}
+<div class="f-col height:100%" ws-connect="/chat/socket/{{.RoomID}}">
+  <h1>Chat with {{.User.Username}}</h1>
+
+  <div id="chat_room">
+    chat_room:{{.RoomID}}
+  </div>
+
+  <form id="form" ws-send _="on submit reset() me" hx-boost="false">
+    <input name="chat_message" type="text" autofocus>
+    <input name="extrastuff" value="moo" type="hidden">
+  </form>
+</div>
+{{end}}

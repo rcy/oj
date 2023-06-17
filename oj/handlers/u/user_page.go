@@ -38,11 +38,13 @@ func UserPage(w http.ResponseWriter, r *http.Request) {
 	l.BackgroundGradient = *ug
 
 	d := struct {
-		Layout layout.Data
-		User   users.User
+		Layout  layout.Data
+		ChatURL string
+		User    users.User
 	}{
-		Layout: l,
-		User:   *user,
+		Layout:  l,
+		ChatURL: "/chat/" + users.MakeRoomId(user.ID, l.User.ID),
+		User:    *user,
 	}
 
 	render.Execute(w, t, d)
