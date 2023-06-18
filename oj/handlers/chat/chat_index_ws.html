@@ -1,23 +1,29 @@
 {{define "main"}}
 <div class="f-col height:100%" ws-connect="/chat/socket/{{.RoomID}}">
-  <h1>Chat with {{.User.Username}}</h1>
+  <div class="f-col height:100%">
+    <h1>Chat with {{.User.Username}}</h1>
 
-  <div id="chat_room">
-    {{range .Messages}}
+    <div class="flex-grow:1 overflow:auto height:100%">
+      <div class="scroller height:100%" style="display: flex; flex-direction: column-reverse; overflow: auto">
+        <div id="chat_room" >
+          {{range .Messages}}
 
-    {{if (eq .Sender $.User.Username)}}
-    {{template "myMessage" .}}
-    {{else}}
-    {{template "theirMessage" .}}
-    {{end}}
+          {{if (eq .Sender $.Layout.User.Username)}}
+          {{template "chat_message_mine" .}}
+          {{else}}
+          {{template "chat_message_other" .}}
+          {{end}}
 
-    {{end}}
+          {{end}}
+        </div>
+      </div>
+    </div>
+
+    <form id="form" ws-send _="on submit reset() me" hx-boost="false">
+      <input name="chat_message" type="text" autofocus required>
+      <input name="extrastuff" value="moo" type="hidden">
+    </form>
   </div>
-
-  <form id="form" ws-send _="on submit reset() me" hx-boost="false">
-    <input name="chat_message" type="text" autofocus required>
-    <input name="extrastuff" value="moo" type="hidden">
-  </form>
 </div>
 {{end}}
 
