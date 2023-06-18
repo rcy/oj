@@ -5,9 +5,12 @@
   <div id="chat_room">
     {{range .Messages}}
 
-    <div>
-      {{.Sender}}: {{.Body}}
-    </div>
+    {{if (eq .Sender $.User.Username)}}
+    {{template "myMessage" .}}
+    {{else}}
+    {{template "theirMessage" .}}
+    {{end}}
+
     {{end}}
   </div>
 
@@ -15,5 +18,18 @@
     <input name="chat_message" type="text" autofocus required>
     <input name="extrastuff" value="moo" type="hidden">
   </form>
+</div>
+{{end}}
+
+{{define "theirMessage"}}
+<div class="f-row">
+  <div class="speech-bubble left">{{.Body}}</div>
+</div>
+{{end}}
+
+{{define "myMessage"}}
+<div class="f-row">
+  <div class="flex-grow:1"></div>
+  <div class="speech-bubble right">{{.Body}}</div>
 </div>
 {{end}}

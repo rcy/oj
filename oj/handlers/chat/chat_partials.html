@@ -4,13 +4,13 @@
   {{if (eq $.User.Username .Sender)}}
   {{template "chat_message_mine" .}}
   {{else}}
-  {{template "chat_message" .}}
+  {{template "chat_message_other" .}}
   {{end}}
 {{end}}
 </div>
 {{end}}
 
-{{define "chat_message"}}
+{{define "chat_message_other"}}
 <div class="f-row">
   <div class="speech-bubble left">
     {{.Body}}

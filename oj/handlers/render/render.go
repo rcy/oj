@@ -23,3 +23,12 @@ func ExecuteToBytes(t *template.Template, data any) ([]byte, error) {
 	}
 	return buf.Bytes(), err
 }
+
+func ExecuteNamedToBytes(t *template.Template, name string, data any) ([]byte, error) {
+	buf := &bytes.Buffer{}
+	err := t.ExecuteTemplate(buf, name, data)
+	if err != nil {
+		return nil, err
+	}
+	return buf.Bytes(), err
+}

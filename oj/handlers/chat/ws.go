@@ -3,6 +3,7 @@ package chat
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -35,7 +36,7 @@ func (rs RoomSubscriptions) remove(roomID string, conn *websocket.Conn) {
 
 var subs = RoomSubscriptions{}
 
-var messageTemplate = template.Must(template.New("").Parse(`<div id="chat_room" hx-swap-oob="beforeend"><div>{{.Sender}}: {{.Body}}</div></div>`))
+var messageTemplate = template.Must(template.ParseFiles("handlers/chat/chat_partials.html"))
 
 func ChatServer(w http.ResponseWriter, r *http.Request) {
 	user := users.Current(r)
@@ -61,7 +62,7 @@ func ChatServer(w http.ResponseWriter, r *http.Request) {
 
 eventLoop:
 	for {
-		messageType, messageBytes, err := conn.ReadMessage()
+		_, messageBytes, err := conn.ReadMessage()
 		if err != nil {
 			var closeError *websocket.CloseError
 			if errors.As(err, &closeError) {
@@ -92,16 +93,38 @@ eventLoop:
 			continue eventLoop
 		}
 
-		outMsg, err := render.ExecuteToBytes(messageTemplate, message)
+		log.Printf("%s, %s, templates: %s",
+			message.Sender,
+			user.Username,
+			messageTemplate.DefinedTemplates())
+
+		// XXX move these to build time:
+		myMsg, err := render.ExecuteNamedToBytes(messageTemplate, "chat_message_mine", message)
 		if err != nil {
-			log.Printf("error creating message: %s", err)
+			log.Printf("error rendering message: %s", err)
 			continue eventLoop
 		}
+		myMsg = []byte(fmt.Sprintf(`<div id="chat_room" hx-swap-oob="beforeend">%s</div>`, myMsg))
 
-		for conn := range subs[roomID] {
-			err = conn.WriteMessage(messageType, outMsg)
+		theirMsg, err := render.ExecuteNamedToBytes(messageTemplate, "chat_message_other", message)
+		if err != nil {
+			log.Printf("error rendering message: %s", err)
+			continue eventLoop
+		}
+		theirMsg = []byte(fmt.Sprintf(`<div id="chat_room" hx-swap-oob="beforeend">%s</div>`, theirMsg))
+
+		// send message to connections
+		for c := range subs[roomID] {
+			var msg []byte
+			if conn == c {
+				msg = myMsg
+			} else {
+				msg = theirMsg
+			}
+			err = c.WriteMessage(websocket.TextMessage, msg)
 			if err != nil {
-				log.Println("Error during message writing:", err)
+				log.Printf("error sending %s to %v", msg, conn)
+				// nothing we can really do without a queuing system with retries, etc
 			}
 		}
 	}
