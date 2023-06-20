@@ -38,10 +38,36 @@ CREATE TABLE gradients(
   user_id integer references users not null,
   gradient blob not null
 );
+CREATE TABLE rooms(
+  id integer primary key,
+  created_at datetime not null default current_timestamp,
+  key text not null
+);
 CREATE TABLE messages(
   id integer primary key,
   created_at datetime not null default current_timestamp,
-  room_id text not null,
-  body text not null,
-  sender text not null
+  sender_id integer references users not null,
+  room_id text not null references rooms not null,
+  body text not null
+);
+CREATE TABLE reads(
+  id integer primary key,
+  created_at datetime not null default current_timestamp,
+  delivery_id integer references deliveries not null
+);
+CREATE TABLE room_users(
+  id integer primary key,
+  created_at datetime not null default current_timestamp,
+  room_id integer references rooms not null,
+  user_id integer references users not null,
+  unique(room_id, user_id)
+);
+CREATE TABLE deliveries(
+  id integer primary key,
+  created_at datetime not null default current_timestamp,
+  message_id integer references messages not null,
+  recipient_id integer references users not null,
+  sent_at datetime,
+  read_at datetime,
+  unique(message_id, recipient_id)
 );

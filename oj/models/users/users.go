@@ -2,8 +2,6 @@ package users
 
 import (
 	"database/sql"
-	"fmt"
-	"math"
 	"net/http"
 	"oj/db"
 	"time"
@@ -146,12 +144,4 @@ func FindAll() ([]User, error) {
 		return nil, err
 	}
 	return result, nil
-}
-
-// Generate a string to be used as a roomID given 2 user IDs
-func MakeRoomId(id1, id2 int64) string {
-	min := int64(math.Min(float64(id1), float64(id2)))
-	max := int64(math.Max(float64(id1), float64(id2)))
-
-	return fmt.Sprintf("dm-%d-%d", min, max)
 }

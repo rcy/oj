@@ -8,6 +8,7 @@ import (
 	"oj/db"
 	"oj/handlers/auth"
 	"oj/handlers/chat"
+	"oj/handlers/eventsource"
 	"oj/handlers/parent"
 	"oj/handlers/tools"
 	"oj/handlers/u"
@@ -34,8 +35,8 @@ func Router() *chi.Mux {
 		r.Post("/parent/kids", parent.CreateKid)
 
 		//r.Get("/chat/{roomID}", chat.Index)        // deprecated
-		r.Post("/chat/messages", chat.PostMessage) // deprecated
-		r.HandleFunc("/chat/socket/{roomID}", chat.ChatServer)
+		r.Post("/chat/messages", chat.PostChatMessage)
+		r.Mount("/es", eventsource.SSE)
 
 		r.Get("/tools", tools.Index)
 		r.Post("/tools/picker", tools.Picker)
@@ -43,7 +44,7 @@ func Router() *chi.Mux {
 
 		r.Get("/u", u.UserIndex)
 		r.Get("/u/{username}", u.UserPage)
-		r.Get("/u/{username}/chat", chat.DM)
+		r.Get("/u/{username}/chat", chat.UserChatPage)
 	})
 
 	// non authenticated routes

@@ -12,5 +12,8 @@ build:
 sql:
 	sqlite3 ${SQLITE_DB}
 
+version.%:
+	echo "update migration_version set version = $*" | sqlite3 ${SQLITE_DB}
+
 deploy:
 	flyctl deploy

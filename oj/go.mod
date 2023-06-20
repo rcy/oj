@@ -4,8 +4,8 @@ go 1.20
 
 require (
 	github.com/BurntSushi/migration v0.0.0-20140125045755-c45b897f1335
+	github.com/alexandrevicenzi/go-sse v1.6.0
 	github.com/go-chi/chi/v5 v5.0.8
-	github.com/gorilla/websocket v1.5.0
 	github.com/jmoiron/sqlx v1.3.5
 	github.com/mailgun/mailgun-go/v4 v4.9.0
 	modernc.org/sqlite v1.23.1

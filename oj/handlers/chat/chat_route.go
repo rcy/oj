@@ -4,11 +4,13 @@ import (
 	"database/sql"
 	"html/template"
 	"net/http"
+	"oj/db"
 	"oj/handlers/layout"
 	"oj/handlers/render"
 
 	"oj/models/gradients"
 	"oj/models/messages"
+	"oj/models/rooms"
 	"oj/models/users"
 
 	"github.com/go-chi/chi/v5"
@@ -18,14 +20,9 @@ var chatTemplate = template.Must(
 	template.ParseFiles(
 		layout.File,
 		"handlers/chat/chat_index_ws.html",
-		"handlers/chat/chat_partials.html",
 	))
 
-var partials = template.Must(
-	template.ParseFiles("handlers/chat/chat_partials.html"),
-)
-
-func DM(w http.ResponseWriter, r *http.Request) {
+func UserChatPage(w http.ResponseWriter, r *http.Request) {
 	l, err := layout.GetData(r)
 	if err != nil {
 		render.Error(w, err.Error(), 500)
@@ -48,43 +45,42 @@ func DM(w http.ResponseWriter, r *http.Request) {
 	// override layout gradient to show the page user's not the request user's
 	l.BackgroundGradient = *ug
 
-	roomID := users.MakeRoomId(l.User.ID, user.ID)
-
-	records, err := messages.Fetch(roomID)
+	room, err := rooms.FindOrCreateByUserIDs(l.User.ID, user.ID)
 	if err != nil {
 		render.Error(w, err.Error(), 500)
 		return
 	}
+
+	var records []messages.Message
+	err = db.DB.Select(&records, `
+select * from
+(
+ select messages.* from deliveries
+   join messages on messages.id = deliveries.message_id
+   where messages.room_id = ? and recipient_id = ?
+   order by created_at desc
+   limit 1000
+)
+order by created_at asc
+`, room.ID, user.ID)
+	if err != nil {
+		render.Error(w, "selecting deliveries: "+err.Error(), 500)
+		return
+	}
+
+	// XXX mark stuff as read here
 
 	pd := struct {
 		Layout   layout.Data
 		User     users.User
-		RoomID   string
+		RoomID   int64
 		Messages []messages.Message
 	}{
 		Layout:   l,
 		User:     *user,
-		RoomID:   roomID,
+		RoomID:   room.ID,
 		Messages: records,
 	}
 
 	render.Execute(w, chatTemplate, pd)
-}
-
-func PostMessage(w http.ResponseWriter, r *http.Request) {
-	user := users.Current(r)
-	body := r.FormValue("body")
-
-	message, err := messages.Create("dummy-room-id", body, user.Username)
-	if err != nil {
-		render.Error(w, err.Error(), 500)
-		return
-	}
-
-	w.Header().Add("HX-Trigger", "newMessage")
-
-	err = partials.ExecuteTemplate(w, "chat_input", message)
-	if err != nil {
-		render.Error(w, err.Error(), 500)
-	}
 }
