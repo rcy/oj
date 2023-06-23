@@ -47,6 +47,8 @@ func UserPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	canEdit := l.User.ID == user.ID
+
 	d := struct {
 		Layout  layout.Data
 		User    users.User
@@ -56,36 +58,7 @@ func UserPage(w http.ResponseWriter, r *http.Request) {
 		Layout:  l,
 		User:    *user,
 		Bio:     *bio,
-		CanEdit: false,
-	}
-
-	render.Execute(w, t, d)
-}
-
-func MePage(w http.ResponseWriter, r *http.Request) {
-	l, err := layout.GetData(r)
-	if err != nil {
-		render.Error(w, err.Error(), 500)
-		return
-	}
-
-	bio, err := getBio(l.User.ID)
-	if err != nil {
-		log.Print("err(R2Hd): ", err)
-		http.Error(w, "internal error", http.StatusInternalServerError)
-		return
-	}
-
-	d := struct {
-		Layout  layout.Data
-		User    users.User
-		Bio     Bio
-		CanEdit bool
-	}{
-		Layout:  l,
-		User:    l.User,
-		Bio:     *bio,
-		CanEdit: true,
+		CanEdit: canEdit,
 	}
 
 	render.Execute(w, t, d)
