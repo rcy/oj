@@ -71,3 +71,9 @@ CREATE TABLE deliveries(
   read_at datetime,
   unique(message_id, recipient_id)
 );
+CREATE TABLE bios(
+  id integer primary key,
+  created_at datetime not null default current_timestamp,
+  user_id references users not null,
+  text string not null default ''
+);

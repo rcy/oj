@@ -108,4 +108,12 @@ create table deliveries(
   read_at datetime,
   unique(message_id, recipient_id)
 );`,
+	`--12 add bios table
+drop table if exists bios;
+create table bios(
+  id integer primary key,
+  created_at datetime not null default current_timestamp,
+  user_id references users not null,
+  text string not null default ''
+);`,
 }
