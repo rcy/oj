@@ -1,12 +1,18 @@
 <html>
   <head>
     <script src="https://unpkg.com/htmx.org@1.9.2" integrity="sha384-L6OqL9pRWyyFU3+/bjdSri+iIphTN/bvYyM37tICVyOJkWZLpP2vGn6VUEXgzg6h" crossorigin="anonymous"></script>
-    <script src="https://unpkg.com/htmx.org/dist/ext/ws.js"></script>
     <script src="https://unpkg.com/hyperscript.org@0.9.8"></script>
-    <script src="https://unpkg.com/hyperscript.org@0.9.8/dist/socket.js"></script>
     <script src="https://unpkg.com/hyperscript.org@0.9.8/dist/eventsource.js"></script>
 
-    <link rel="stylesheet" href="https://unpkg.com/missing.css@1.0.9/dist/missing.min.css">
+    <link href="https://unpkg.com/nes.css@latest/css/nes.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
+
+    <style>
+     html, body, pre, code, kbd, samp {
+         font-family: 'Press Start 2P';
+     }
+    </style>
+
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -19,13 +25,8 @@
     <style>
      body {
          height: 100vh;
-     }
-
-     main {
-         border: solid 2px black;
-         border-radius: 10px;
-         background: rgba(255,255,255,.2);
-         padding: 1em;
+         max-width: 960px;
+         margin: 0 auto;
      }
 
      /* https://projects.verou.me/bubbly/ */
@@ -72,20 +73,16 @@
      }
     </style>
   </head>
-  <body style="height: 100vh" hx-ext="ws" hx-boost="false">
-    <div class="f-col height:100%" style="--gap: 0">
-      <div>
-        <header class="navbar" style="--gap: 0">
-          <nav aria-label="Site sections">
-            <ul role="list">
-              <li><a href="/">🐙 OJ</a></li>
-              <li><a href="/u">Friends</a></li>
-              <li><a href="/tools">Background</a></li>
-              <li><a href="/u/{{.Layout.User.Username}}">{{.Layout.User.Username}}</a></li>
-            </ul>
-          </nav>
-        </header>
-      </div>
+  <body style="height: 100vh" hx-boost="false">
+    <div style="display:flex; flex-direction: column; gap: 1em">
+
+      <header style="display:flex;gap:1em" class="nes-container is-dark">
+          <a class="nes-btn is-primary" href="/">OJ</a>
+          <a class="nes-btn is-success" href="/u">Friends</a>
+          <a class="nes-btn is-warning" href="/tools">Background</a>
+          <span style="flex-grow:1"></span>
+          <a class="nes-btn is-error" href="/u/{{.Layout.User.Username}}">{{.Layout.User.Username}}</a>
+      </header>
 
       <div class="flex-grow:1 align-self:stretch height:100%" style="overflow-y: hidden">
         <main class="height:100%">
@@ -94,18 +91,6 @@
           </div>
         </main>
       </div>
-
-      <div class="flex-grow:0">
-        <button _="on click call sock.send({'foo':123})">click this</button>
-      </div>
     </div>
-
-    <!-- <script type="text/hyperscript">
-         socket MySocket /realtime
-         on message as text
-         log message
-         end
-         </script>
-    -->
   </body>
 </html>

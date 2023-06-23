@@ -1,27 +1,82 @@
 {{define "main"}}
-<div class="box" >
-  <div class="f-row">
-    <div class="f-col">
-      <img src="https://www.gravatar.com/avatar/YbmqdkSAup84nP3Q3?f=y&d=robohash">
-      <button>change my avatar</button>
-    </div>
-    <div class="f-col">
+<style>
+ .ghost {
+     background:rgba(255,255,255,1.0);
+ }
+</style>
+
+<div style="display:flex;flex-direction:column;gap:1em;">
+
+  <section class="nes-container ghost" style="display: flex; align-items: top; gap: 1em" >
+    <figure style="width:80px; height:80px;">
+      <img src="https://www.gravatar.com/avatar/YbmqdkSAup84nP3Q3?f=y&d=retro">
+    </figure>
+    <div style="display: flex; flex-direction: column">
       <h1>{{.User.Username}}</h1>
-      <button>change my username</button>
+      <div>Joined {{.User.CreatedAt}}</div>
     </div>
-  </div>
+  </section>
+
+  <section class="nes-container ghost">
+    {{template "about" .}}
+  </section>
+
+  <section class="nes-container ghost">
+    <div class="tabs is-large is-boxed ">
+      <ul>
+        <li class="is-active">
+          <a href="#">
+            <span class="icon is-large">
+              <ion-icon name="person-outline"></ion-icon>
+            </span>
+            <span>profile</span>
+          </a>
+        </li>
+        <li>
+          <a href="#">
+            <span class="icon is-large">
+              <ion-icon name="chatbubble-ellipses-outline"></ion-icon>
+            </span>
+            <span>chat</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+    <div>
+      <h1>This is the content for the first tab</h1>
+      <p>more text</p>
+    </div>
+    <a class="<button>" href="/u/{{.User.Username}}/chat">chat with {{.User.Username}}</a>
+  </section>
+
+  <section>
+    <h3>Friends</h3>
+  </section>
 </div>
+{{end}}
 
-<a href="/u/{{.User.Username}}/chat">chat with {{.User.Username}}</a>
-
-<div class="box">
+{{define "about"}}
+<div style="display:flex; align-items:top; justify-content:space-between; gap:1em;">
   <h3>About me</h3>
-  <textarea style="width: 100%"></textarea>
-  <button>save</button>
+  {{if .CanEdit}}
+  <a href="#" hx-get="/bio/edit" hx-target="closest section">edit</a>
+  {{end}}
 </div>
+<p>{{.Bio.Text}}</p>
+{{end}}
 
-<div class="box">
-  <h3>My Family</h3>
-</div>
-
+{{define "about-edit"}}
+<h3>Editing About me</h3>
+<form hx-put="/bio" hx-target="closest section">
+  <textarea
+    name="text"
+    class="nes-textarea"
+    placeholder="Write something here..."
+    autofocus
+  >{{.Bio.Text}}</textarea>
+  <div>
+    <button type="submit" class="nes-btn is-primary">save</button>
+    <button type="reset" class="nes-btn" hx-get="/bio">cancel</button>
+  </div>
+</form>
 {{end}}

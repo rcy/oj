@@ -44,7 +44,12 @@ func Router() *chi.Mux {
 
 		r.Get("/u", u.UserIndex)
 		r.Get("/u/{username}", u.UserPage)
+		r.Get("/me", u.MePage)
 		r.Get("/u/{username}/chat", chat.UserChatPage)
+
+		r.Get("/bio", u.GetAbout)
+		r.Get("/bio/edit", u.GetAboutEdit)
+		r.Put("/bio", u.PutAbout)
 	})
 
 	// non authenticated routes
