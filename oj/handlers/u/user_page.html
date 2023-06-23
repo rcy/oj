@@ -7,19 +7,8 @@
 
 <div style="display:flex;flex-direction:column;gap:1em;">
 
-  <section class="nes-container ghost" style="display: flex; align-items: top; gap: 1em" >
-    <figure style="width:80px; height:80px;">
-      <img src="https://www.gravatar.com/avatar/YbmqdkSAup84nP3Q3?f=y&d=retro">
-    </figure>
-    <div style="display: flex; flex-direction: column">
-      <h1>{{.User.Username}}</h1>
-      <div>Joined {{.User.CreatedAt}}</div>
-    </div>
-  </section>
-
-  <section class="nes-container ghost">
-    {{template "about" .}}
-  </section>
+  {{template "card" .}}
+  {{template "about" .}}
 
   <section class="nes-container ghost">
     <div class="tabs is-large is-boxed ">
@@ -55,28 +44,49 @@
 </div>
 {{end}}
 
+{{define "edit-section-button"}}
+<button hx-get={{.}} hx-target="closest section" class="nes-btn" style="position: absolute; right:4px; top:4px; ">
+  edit
+</button>
+{{end}}
+
+{{define "card"}}
+<section class="nes-container ghost">
+  <div style="display: flex; align-items: top; gap: 1em" >
+    <figure style="width:80px; height:80px;">
+      <img src="https://www.gravatar.com/avatar/YbmqdkSAup84nP3Q3?f=y&d=retro">
+    </figure>
+
+    <div style="display: flex; flex-direction: column">
+      <h1>{{.User.Username}}</h1>
+      <div>Joined {{.User.CreatedAt}}</div>
+    </div>
+  </div>
+</section>
+{{end}}
+
 {{define "about"}}
-<div style="display:flex; align-items:top; justify-content:space-between; gap:1em;">
+<section class="nes-container ghost" hx-swap="outerHTML">
   <h3>About me</h3>
-  {{if .CanEdit}}
-  <a href="#" hx-get="/bio/edit" hx-target="closest section">edit</a>
-  {{end}}
-</div>
-<p>{{.Bio.Text}}</p>
+  <p>{{.Bio.Text}}</p>
+  {{if .CanEdit}}{{template "edit-section-button" "/bio/edit"}}{{end}}
+</section>
 {{end}}
 
 {{define "about-edit"}}
-<h3>Editing About me</h3>
-<form hx-put="/bio" hx-target="closest section">
-  <textarea
-    name="text"
-    class="nes-textarea"
-    placeholder="Write something here..."
-    autofocus
-  >{{.Bio.Text}}</textarea>
-  <div>
-    <button type="submit" class="nes-btn is-primary">save</button>
-    <button type="reset" class="nes-btn" hx-get="/bio">cancel</button>
-  </div>
-</form>
+<section class="nes-container ghost" hx-swap="outerHTML">
+  <h3>Editing About me</h3>
+  <form hx-put="/bio" hx-target="closest section" style="display: flex; flex-direction: column; gap: 1em">
+    <textarea
+      name="text"
+      class="nes-textarea"
+      placeholder="Write something here..."
+      autofocus
+    >{{.Bio.Text}}</textarea>
+    <div>
+      <button type="submit" class="nes-btn is-primary">save</button>
+      <button type="reset" class="nes-btn" hx-get="/bio">cancel</button>
+    </div>
+  </form>
+</section>
 {{end}}
