@@ -1,46 +1,14 @@
 {{define "main"}}
-<style>
- .ghost {
-     background:rgba(255,255,255,1.0);
- }
-</style>
-
 <div style="display:flex;flex-direction:column;gap:1em;">
 
   {{template "card" .}}
   {{template "about" .}}
 
+  {{if (not (eq .User.ID .Layout.User.ID))}}
   <section class="nes-container ghost">
-    <div class="tabs is-large is-boxed ">
-      <ul>
-        <li class="is-active">
-          <a href="#">
-            <span class="icon is-large">
-              <ion-icon name="person-outline"></ion-icon>
-            </span>
-            <span>profile</span>
-          </a>
-        </li>
-        <li>
-          <a href="#">
-            <span class="icon is-large">
-              <ion-icon name="chatbubble-ellipses-outline"></ion-icon>
-            </span>
-            <span>chat</span>
-          </a>
-        </li>
-      </ul>
-    </div>
-    <div>
-      <h1>This is the content for the first tab</h1>
-      <p>more text</p>
-    </div>
-    <a class="<button>" href="/u/{{.User.Username}}/chat">chat with {{.User.Username}}</a>
+    <a class="nes-btn" href="/u/{{.User.ID}}/chat">chat with {{.User.Username}}</a>
   </section>
-
-  <section>
-    <h3>Friends</h3>
-  </section>
+  {{end}}
 </div>
 {{end}}
 
@@ -51,7 +19,7 @@
 {{end}}
 
 {{define "card"}}
-<section class="nes-container ghost">
+<section id="card" class="nes-container ghost" hx-swap="outerHTML">
   <div style="display: flex; align-items: top; gap: 1em" >
     <figure style="width:80px; height:80px;">
       <img src="https://www.gravatar.com/avatar/YbmqdkSAup84nP3Q3?f=y&d=retro">
@@ -62,6 +30,24 @@
       <div>Joined {{.User.CreatedAt}}</div>
     </div>
   </div>
+  {{if .CanEdit}}{{template "edit-section-button" "/card/edit"}}{{end}}
+</section>
+{{end}}
+
+{{define "card-edit"}}
+<section class="nes-container is-dark" hx-swap="outerHTML" hx-target="closest section">
+  <h3>Editing User</h3>
+
+  <form hx-patch="/user" style="display: flex; flex-direction: column; gap: 1em">
+    <div class="nes-field xis-inline">
+      <label for="username-field">username</label>
+      <input id="username-field" class="nes-input" name="username" type="text" value="{{.User.Username}}"/>
+    </div>
+    <div style="display:flex; justify-content:space-between;">
+      <button type="submit" class="nes-btn is-primary">save</button>
+      <button type="reset" class="nes-btn" hx-get="" hx-select="#card">cancel</button>
+    </div>
+  </form>
 </section>
 {{end}}
 
@@ -74,16 +60,15 @@
 {{end}}
 
 {{define "about-edit"}}
-<section class="nes-container ghost" hx-swap="outerHTML">
+<section class="nes-container is-dark" hx-swap="outerHTML">
   <h3>Editing About me</h3>
   <form hx-put="/bio" hx-target="closest section" style="display: flex; flex-direction: column; gap: 1em">
     <textarea
       name="text"
       class="nes-textarea"
       placeholder="Write something here..."
-      autofocus
     >{{.Bio.Text}}</textarea>
-    <div>
+    <div style="display:flex; justify-content:space-between;">
       <button type="submit" class="nes-btn is-primary">save</button>
       <button type="reset" class="nes-btn" hx-get="/bio">cancel</button>
     </div>

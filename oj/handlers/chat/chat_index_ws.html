@@ -2,60 +2,79 @@
 <script>
   const es = new EventSource("/es/room-{{.RoomID}}");
 
-  // dispatch event to <body> for use by hx-trigger
+  // dispatch event for use by hx-trigger
   es.addEventListener("NEW_MESSAGE", (e) => {
     document.getElementsByTagName('body')[0].dispatchEvent(new Event("NEW_MESSAGE"))
   })
 </script>
 
-<div class="f-col height:100%">
-  <div class="f-col height:100%">
-    <h1>Chat with {{.User.Username}}</h1>
+<style>
+</style>
 
-    <div class="flex-grow:1 overflow:auto height:100%">
-      <div class="scroller height:100%" style="display: flex; flex-direction: column-reverse; overflow: auto">
-        <div id="chat_room" hx-get="/u/{{.User.Username}}/chat" hx-trigger="NEW_MESSAGE from:body" hx-select="#chat_room" hx-swap="outerHTML">
-          {{range .Messages}}
-
-          {{if (eq .SenderID $.Layout.User.ID)}}
-          {{template "chat_message_mine" .}}
-          {{else}}
-          {{template "chat_message_other" .}}
-          {{end}}
-
-          {{end}}
+<div class="nes-container">
+  <h1>chatting with {{.User.Username}}</h1>
+  <div style="height: 400px; display:flex; flex-direction: column; background: rgba(255,255,255,.1)">
+    <div class="is-dark" style="flex-grow: 1; height: 100%">
+      <div style="display:flex; flex-direction: column; height: 100%; gap: 1em">
+        <div style="flex:1; overflow-y: scroll; display:flex; flex-direction: column-reverse;">
+          {{template "chatMessages" .}}
+        </div>
+        <div>
+          {{template "chatInput" .}}
         </div>
       </div>
     </div>
-
-    {{template "chatInput" .}}
   </div>
+</div>
+{{end}}
+
+{{define "chatMessages"}}
+<div
+  hx-get="/u/{{.User.ID}}/chat"
+  hx-trigger="NEW_MESSAGE from:body"
+  id="messages-{{.User.ID}}"
+  hx-select="#messages-{{.User.ID}}"
+  hx-swap="outerHTML"
+>
+  {{range .Messages}}
+
+  {{if (eq .SenderID $.Layout.User.ID)}}
+  {{template "chat_message_mine" .}}
+  {{else}}
+  {{template "chat_message_other" .}}
+  {{end}}
+  {{end}}
 </div>
 {{end}}
 
 {{define "chat_message_other"}}
-<div class="f-row">
-  <div class="speech-bubble left">
+<div style="display:flex">
+  <img class="nes-avatar is-large" src="https://www.gravatar.com/avatar/hJH6fHDXY5Rf5n3w?f=y&d=retro">
+  <div class="nes-balloon from-left">
     {{.Body}}
   </div>
-  <div class="flex-grow:1" style="min-width:100px;"></div>
+  <div style="flex:1; min-width:100px;"></div>
 </div>
 {{end}}
 
 {{define "chat_message_mine"}}
-<div class="f-row">
-  <div class="flex-grow:1" style="min-width:100px"></div>
-  <div class="speech-bubble right">
+<div style="display:flex; align-items: center">
+  <div style="flex:1; min-width:100px"></div>
+  <div class="nes-balloon from-right">
     {{.Body}}
   </div>
+  <img class="nes-avatar is-large" src="https://www.gravatar.com/avatar/YbmqdkSAup84nP3Q3?f=y&d=retro">
 </div>
 {{end}}
 
 {{define "chatInput"}}
 <form id="form2" class="f-row" hx-post="/chat/messages" hx-swap="outerHTML"
       _="on submit add @disabled to #inp">
-  <input id="inp" name="body" type="text" autofocus required class="flex-grow:1" placeholder="Type a message">
   <input name="roomID" value="{{.RoomID}}" type="hidden">
-  <button>Send</button>
+
+  <div style="display:flex">
+    <input id="inp" name="body" type="text" autofocus required class="nes-input" placeholder="Type a message">
+    <button class="nes-btn is-primary">Send</button>
+  </div>
 </form>
 {{end}}

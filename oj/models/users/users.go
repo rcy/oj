@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"net/http"
 	"oj/db"
+	"strconv"
 	"time"
 )
 
@@ -94,6 +95,14 @@ func FindById(id int64) (*User, error) {
 	}
 
 	return &user, nil
+}
+
+func FindByStringId(stringID string) (*User, error) {
+	id, err := strconv.Atoi(stringID)
+	if err != nil {
+		return nil, err
+	}
+	return FindById(int64(id))
 }
 
 func FindByEmail(email string) (*User, error) {

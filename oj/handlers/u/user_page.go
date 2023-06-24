@@ -24,8 +24,8 @@ func UserPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	username := chi.URLParam(r, "username")
-	user, err := users.FindByUsername(username)
+	userID := chi.URLParam(r, "userID")
+	user, err := users.FindByStringId(userID)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			render.Error(w, "User not found", 404)
@@ -134,4 +134,37 @@ func getBio(userID int64) (*Bio, error) {
 		}
 	}
 	return &bio, nil
+}
+
+func GetCardEdit(w http.ResponseWriter, r *http.Request) {
+	user := users.Current(r)
+	render.ExecuteNamed(w, t, "card-edit", struct{ User users.User }{User: user})
+}
+
+func PatchUser(w http.ResponseWriter, r *http.Request) {
+	user := users.Current(r)
+	username := r.FormValue("username")
+
+	_, err := db.DB.Exec("update users set username=? where id=?", username, user.ID)
+	if err != nil {
+		log.Print("err(aPvk): ", err)
+		http.Error(w, "internal error", http.StatusInternalServerError)
+		return
+	}
+
+	updatedUser, err := users.FindById(user.ID)
+	if err != nil {
+		log.Print("err(dr9s): ", err)
+		http.Error(w, "internal error", http.StatusInternalServerError)
+		return
+	}
+	log.Printf("user: %v %v", user, updatedUser)
+
+	render.ExecuteNamed(w, t, "card", struct {
+		User    users.User
+		CanEdit bool
+	}{
+		User:    *updatedUser,
+		CanEdit: true,
+	})
 }

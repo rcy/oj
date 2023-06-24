@@ -29,8 +29,8 @@ func UserChatPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	username := chi.URLParam(r, "username")
-	user, err := users.FindByUsername(username)
+	userID := chi.URLParam(r, "userID")
+	user, err := users.FindByStringId(userID)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			render.Error(w, "User not found", 404)

@@ -23,74 +23,32 @@
     </style>
 
     <style>
+     .ghost {
+         background:rgba(255,255,255,1.0);
+     }
+    </style>
+
+    <style>
      body {
          height: 100vh;
          max-width: 960px;
          margin: 0 auto;
      }
-
-     /* https://projects.verou.me/bubbly/ */
-     .speech-bubble {
-         margin-top: 1em;
-	 position: relative;
-         border-radius: .4em;
-         padding: 1em;
-         --shadow-rgb: 0,0,255;
-         box-shadow: 1px 2px 0px rgba(var(--shadow-rgb),.13);
-     }
-
-     .speech-bubble.left {
-	 background: #ffffff;
-         margin-left: 12px;
-     }
-     .speech-bubble.right {
-	 background: #d9fdd3;
-         margin-right: 12px;
-     }
-
-     .speech-bubble:after {
-	 content: '';
-	 position: absolute;
-	 top: 50%;
-	 width: 0;
-	 height: 0;
-	 border: 12px solid transparent;
-	 margin-top: -12px;
-     }
-
-     .speech-bubble.left:after {
-	 left: 0;
-	 border-right-color: #ffffff;
-	 border-left: 0;
-	 margin-left: -12px;
-     }
-
-     .speech-bubble.right:after {
-	 right: 0;
-	 border-left-color: #d9fdd3;
-	 border-right: 0;
-	 margin-right: -12px;
-     }
     </style>
   </head>
-  <body style="height: 100vh" hx-boost="false">
+  <body style="xheight: 100vh" hx-boost="false">
     <div style="display:flex; flex-direction: column; gap: 1em">
-
       <header style="display:flex;gap:1em" class="nes-container is-dark">
-          <a class="nes-btn is-primary" href="/">OJ</a>
-          <a class="nes-btn is-success" href="/u">Friends</a>
-          <a class="nes-btn is-warning" href="/tools">Background</a>
-          <span style="flex-grow:1"></span>
-          <a class="nes-btn is-error" href="/u/{{.Layout.User.Username}}">{{.Layout.User.Username}}</a>
+        <a class="nes-btn is-primary" href="/">OJ</a>
+        <a class="nes-btn is-success" href="/u">Friends</a>
+        <a class="nes-btn is-warning" href="/tools">Background</a>
+        <span style="flex-grow:1"></span>
+        <a class="nes-btn is-error" href="/u/{{.Layout.User.ID}}">{{.Layout.User.Username}}</a>
       </header>
 
-      <div class="flex-grow:1 align-self:stretch height:100%" style="overflow-y: hidden">
-        <main class="height:100%">
-          <div class="height:100%" style="overflow:auto">
-            {{block "main" .}}{{end}}
-          </div>
-        </main>
-      </div>
+      <main>
+        {{block "main" .}}{{end}}
+      </main>
     </div>
   </body>
 </html>
