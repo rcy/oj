@@ -55,8 +55,9 @@ func UserChatPage(w http.ResponseWriter, r *http.Request) {
 	err = db.DB.Select(&records, `
 select * from
 (
- select messages.* from deliveries
+ select messages.*, users.avatar_url as sender_avatar_url from deliveries
    join messages on messages.id = deliveries.message_id
+   join users on messages.sender_id = users.id
    where messages.room_id = ? and recipient_id = ?
    order by created_at desc
    limit 1000

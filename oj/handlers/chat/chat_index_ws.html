@@ -49,7 +49,7 @@
 
 {{define "chat_message_other"}}
 <div style="display:flex">
-  <img class="nes-avatar is-large" src="https://www.gravatar.com/avatar/hJH6fHDXY5Rf5n3w?f=y&d=retro">
+  <img class="nes-avatar is-large" src="{{.SenderAvatarURL}}">
   <div class="nes-balloon from-left">
     {{.Body}}
   </div>
@@ -63,7 +63,7 @@
   <div class="nes-balloon from-right">
     {{.Body}}
   </div>
-  <img class="nes-avatar is-large" src="https://www.gravatar.com/avatar/YbmqdkSAup84nP3Q3?f=y&d=retro">
+  <img class="nes-avatar is-large" src="{{.SenderAvatarURL}}">
 </div>
 {{end}}
 

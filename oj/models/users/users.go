@@ -13,6 +13,7 @@ type User struct {
 	CreatedAt time.Time `db:"created_at"`
 	Username  string
 	Email     *string
+	AvatarURL string `db:"avatar_url"`
 }
 
 func (u User) IsParent() bool {
@@ -89,7 +90,7 @@ func Current(r *http.Request) User {
 func FindById(id int64) (*User, error) {
 	var user User
 
-	err := db.DB.Get(&user, "select id, created_at, username, email from users where id = ?", id)
+	err := db.DB.Get(&user, "select * from users where id = ?", id)
 	if err != nil {
 		return nil, err
 	}
@@ -108,7 +109,7 @@ func FindByStringId(stringID string) (*User, error) {
 func FindByEmail(email string) (*User, error) {
 	var user User
 
-	err := db.DB.Get(&user, "select id, created_at, username, email from users where email = ?", email)
+	err := db.DB.Get(&user, "select * from users where email = ?", email)
 	if err != nil {
 		return nil, err
 	}
@@ -118,7 +119,7 @@ func FindByEmail(email string) (*User, error) {
 func FindByUsername(username string) (*User, error) {
 	var user User
 
-	err := db.DB.Get(&user, "select id, created_at, username, email from users where username = ?", username)
+	err := db.DB.Get(&user, "select * from users where username = ?", username)
 	if err != nil {
 		return nil, err
 	}
