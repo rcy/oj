@@ -6,7 +6,7 @@ CREATE TABLE users (
   created_at datetime not null default current_timestamp,
   username text not null unique check(length(username) > 0),
   email text check (email like '%@%') unique
-, avatar_url not null default 'http://www.gravatar.com/avatar/?d=mp');
+, avatar_url not null default 'https://www.gravatar.com/avatar/?d=mp');
 CREATE TABLE codes(
   id integer primary key,
   created_at datetime not null default current_timestamp,

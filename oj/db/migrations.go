@@ -119,4 +119,8 @@ create table bios(
 	`--13 add avatar_url
 alter table users add column avatar_url not null default 'http://www.gravatar.com/avatar/?d=mp'
 `,
+	`--14 fix default avatar_url domain
+alter table users drop column avatar_url;
+alter table users add column avatar_url not null default 'https://www.gravatar.com/avatar/?d=mp';
+`,
 }
