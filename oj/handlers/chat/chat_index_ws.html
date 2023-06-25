@@ -2,9 +2,17 @@
 <script>
   const es = new EventSource("/es/room-{{.RoomID}}");
 
-  // dispatch event for use by hx-trigger
+  function beep() {
+    if (!document.hasFocus()) {
+      const snd = new Audio("/public/chat-alert.mp3");
+      snd.play();
+    }
+  }
+
   es.addEventListener("NEW_MESSAGE", (e) => {
+    // dispatch event for use by hx-trigger
     document.getElementsByTagName('body')[0].dispatchEvent(new Event("NEW_MESSAGE"))
+    beep();
   })
 </script>
 

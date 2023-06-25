@@ -25,6 +25,7 @@ func listenAndServe(port string, handler http.Handler) {
 	}
 
 	http.Handle("/", handler)
+	http.Handle("/public/", http.StripPrefix("/public/", http.FileServer(http.Dir("public"))))
 
 	log.Printf("listening on port %s", port)
 	err := http.ListenAndServe(":"+port, nil)
