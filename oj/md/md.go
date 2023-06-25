@@ -14,7 +14,7 @@ func RenderString(text string) template.HTML {
 	r := html.NewRenderer(html.RendererOptions{Flags: html.HrefTargetBlank | html.SkipImages})
 	bm := bluemonday.NewPolicy()
 	bm.AllowStandardURLs()
-	bm.AllowAttrs("href").OnElements("a")
+	bm.AllowAttrs("href", "target").OnElements("a")
 	bm.AllowElements("p")
 
 	bytes := markdown.ToHTML([]byte(text), p, r)
