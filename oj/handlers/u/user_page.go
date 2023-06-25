@@ -86,7 +86,7 @@ func PutAbout(w http.ResponseWriter, r *http.Request) {
 	var bio Bio
 	err := db.DB.Get(&bio, "insert into bios(user_id,text) values(?,?) returning *", user.ID, text)
 	if err != nil {
-		render.Error(w, "unknown error", http.StatusInternalServerError)
+		render.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
@@ -103,7 +103,7 @@ func GetAbout(w http.ResponseWriter, r *http.Request) {
 	user := users.Current(r)
 	bio, err := getBio(user.ID)
 	if err != nil {
-		render.Error(w, "internal error", http.StatusInternalServerError)
+		render.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
