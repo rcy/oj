@@ -27,6 +27,7 @@ func init() {
 
 	// create sqlx connection from migrated database
 	DB = sqlx.NewDb(mDB, "sqlite")
+	DB.MustExec("pragma journal_mode = wal")
 	DB.MustExec("pragma foreign_keys = on")
 
 	// run the current migration
