@@ -31,6 +31,8 @@ func UserPage(w http.ResponseWriter, r *http.Request) {
 			render.Error(w, "User not found", http.StatusNotFound)
 			return
 		}
+		render.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 	ug, err := gradients.UserBackground(user.ID)
 	if err != nil {
