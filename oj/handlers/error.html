@@ -1,0 +1,47 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="https://unpkg.com/nes.css@latest/css/nes.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
+    <style>
+     html, body, pre, code, kbd, samp {
+         font-family: 'Press Start 2P';
+     }
+    </style>
+  </head>  
+  </head>
+
+  <body style="max-width: 960px; margin: 0 auto">
+    {{if (not (eq .Code 404))}}
+    <div  style="display:flex; flex-direction: column; gap:1em">
+      <div class="nes-container is-dark">
+        <div style="display:flex; gap: 1em">
+          <div style="flex:1">
+            <h2 class="nes-text is-error">ERROR: {{.Code}}</h2>
+
+            <p>{{.Message}}</p>
+          </div>
+          <i class="nes-charmander"></i>
+        </div>
+      </div>
+      <a class="nes-btn is-error" href="/">go back to safety</a>
+    </div>
+    {{else}}
+    <div  style="display:flex; flex-direction: column; gap:1em">
+      <div class="nes-container">
+        <div style="display:flex; gap: 1em">
+          <div style="flex:1">
+            <h2 class="nes-text">ERROR: {{.Code}}</h2>
+
+            <p>{{.Message}}</p>
+          </div>
+          <i class="nes-bulbasaur"></i>
+        </div>
+      </div>
+      <a class="nes-btn is-primary" href="/">go back to a real page</a>
+    </div>
+    {{end}}
+  </body>
+</html>

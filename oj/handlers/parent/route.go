@@ -43,24 +43,24 @@ func CreateKid(w http.ResponseWriter, r *http.Request) {
 	user := users.Current(r)
 	err := r.ParseForm()
 	if err != nil {
-		http.Error(w, err.Error(), 500)
+		render.Error(w, err.Error(), 500)
 		return
 	}
 	username := r.PostForm.Get("username")
 
 	kid, err := users.FindByUsername(username)
 	if err != nil && err != sql.ErrNoRows {
-		http.Error(w, err.Error(), 500)
+		render.Error(w, err.Error(), 500)
 		return
 	}
 	if kid != nil {
-		http.Error(w, "username taken", http.StatusConflict)
+		render.Error(w, "username taken", http.StatusConflict)
 		return
 	}
 
 	kid, err = user.CreateKid(username)
 	if err != nil {
-		http.Error(w, err.Error(), 500)
+		render.Error(w, err.Error(), 500)
 		return
 	}
 

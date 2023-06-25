@@ -10,6 +10,7 @@ import (
 	"oj/handlers/chat"
 	"oj/handlers/eventsource"
 	"oj/handlers/parent"
+	"oj/handlers/render"
 	"oj/handlers/tools"
 	"oj/handlers/u"
 	"oj/models/users"
@@ -52,6 +53,10 @@ func Router() *chi.Mux {
 
 		r.Get("/card/edit", u.GetCardEdit)
 		r.Patch("/user", u.PatchUser)
+
+		r.NotFound(func(w http.ResponseWriter, r *http.Request) {
+			render.Error(w, "Page not found", 404)
+		})
 	})
 
 	// non authenticated routes

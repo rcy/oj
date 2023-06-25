@@ -94,15 +94,13 @@ func emailRegisterAction(w http.ResponseWriter, r *http.Request) {
 	// store generated code in pending registrations table along with email
 	nonce, err := generateSecureString(32)
 	if err != nil {
-		log.Printf("Error generating secure string enMJFDN8M4Z6y5p6n: %s", err)
-		http.Error(w, "Error generating code enMJFDN8M4Z6y5p6n", 500)
+		render.Error(w, "Error generating code enMJFDN8M4Z6y5p6n", 500)
 		return
 	}
 	code := generateDigitCode()
 	_, err = db.DB.Exec("insert into codes(nonce, email, code) values(?, ?, ?)", nonce, address, code)
 	if err != nil {
-		log.Printf("Error generating code YQChKPeCivnvM9P82: %s", err)
-		http.Error(w, "Error generating code YQChKPeCivnvM9P82", 500)
+		render.Error(w, "Error generating code YQChKPeCivnvM9P82", 500)
 		return
 	}
 
@@ -112,7 +110,7 @@ func emailRegisterAction(w http.ResponseWriter, r *http.Request) {
 	_, _, err = email.Send("hello", code, address)
 	if err != nil {
 		log.Printf("Error emailing code gYqGXoK6XfC2va3Rp: %s", err)
-		http.Error(w, "Error emailing code gYqGXoK6XfC2va3Rp", 500)
+		render.Error(w, "Error emailing code gYqGXoK6XfC2va3Rp", 500)
 		return
 	}
 
@@ -155,15 +153,13 @@ func kidsUsernameAction(w http.ResponseWriter, r *http.Request) {
 	// store generated code in pending registrations table along with email
 	nonce, err := generateSecureString(32)
 	if err != nil {
-		log.Printf("Error generating secure string wN6Cd9vQLHYQ2euxb: %s", err)
-		http.Error(w, "Error generating code wN6Cd9vQLHYQ2euxb", 500)
+		render.Error(w, "Error generating code wN6Cd9vQLHYQ2euxb", 500)
 		return
 	}
 	code := generateDigitCode()
 	_, err = db.DB.Exec("insert into kids_codes(nonce, user_id, code) values(?, ?, ?)", nonce, user.ID, code)
 	if err != nil {
-		log.Printf("Error generating code qYBJ24gqRrmFEJWAs: %s", err)
-		http.Error(w, "Error generating code qYBJ24gqRrmFEJWAs", 500)
+		render.Error(w, "Error generating code qYBJ24gqRrmFEJWAs", 500)
 		return
 	}
 
@@ -172,14 +168,12 @@ func kidsUsernameAction(w http.ResponseWriter, r *http.Request) {
 	// email code to kids parent(s)
 	parents, err := users.GetParents(user.ID)
 	if err != nil {
-		log.Printf("Error getting parents wdEXqpGbDeTc69Ju3: %s", err)
-		http.Error(w, "Error getting parents wdEXqpGbDeTc69Ju3", 500)
+		render.Error(w, "Error getting parents wdEXqpGbDeTc69Ju3", 500)
 		return
 	}
 
 	if len(parents) == 0 {
-		log.Printf("No parents QNw5BhAWCEQxwQ4LE: %s", err)
-		http.Error(w, "No parents QNw5BhAWCEQxwQ4LE", 500)
+		render.Error(w, "No parents QNw5BhAWCEQxwQ4LE", 500)
 		return
 	}
 
@@ -229,8 +223,7 @@ func kidsCodeAction(w http.ResponseWriter, r *http.Request) {
 	err = db.DB.Get(&userID, "select user_id from kids_codes where nonce = ? and code = ?", nonce, code)
 	if err != nil {
 		if err != sql.ErrNoRows {
-			log.Printf("Error retrieving code RkfeaQB4rAX7uxdY3: %s", err)
-			http.Error(w, "Error retrieving code RkfeaQB4rAX7uxdY3", 500)
+			render.Error(w, "Error retrieving code RkfeaQB4rAX7uxdY3", 500)
 			return
 		}
 	}
@@ -290,8 +283,7 @@ func parentsCodeAction(w http.ResponseWriter, r *http.Request) {
 	err = db.DB.Get(&email, "select email from codes where nonce = ? and code = ?", nonce, code)
 	if err != nil {
 		if err != sql.ErrNoRows {
-			log.Printf("Error retrieving code qmNpb3qvPM8oGwmLn: %s", err)
-			http.Error(w, "Error retrieving code qmNpb3qvPM8oGwmLn", 500)
+			render.Error(w, "Error retrieving code qmNpb3qvPM8oGwmLn", 500)
 			return
 		}
 	}

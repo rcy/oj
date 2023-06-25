@@ -20,7 +20,7 @@ var t = template.Must(template.ParseFiles(layout.File, "handlers/u/user_page.htm
 func UserPage(w http.ResponseWriter, r *http.Request) {
 	l, err := layout.GetData(r)
 	if err != nil {
-		render.Error(w, err.Error(), 500)
+		render.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
@@ -28,13 +28,13 @@ func UserPage(w http.ResponseWriter, r *http.Request) {
 	user, err := users.FindByStringId(userID)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			render.Error(w, "User not found", 404)
+			render.Error(w, "User not found", http.StatusNotFound)
 			return
 		}
 	}
 	ug, err := gradients.UserBackground(user.ID)
 	if err != nil {
-		render.Error(w, err.Error(), 500)
+		render.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	// override layout gradient to show the page user's not the request user's
@@ -42,8 +42,7 @@ func UserPage(w http.ResponseWriter, r *http.Request) {
 
 	bio, err := getBio(user.ID)
 	if err != nil {
-		log.Print("err(R2Hd): ", err)
-		http.Error(w, "internal error", http.StatusInternalServerError)
+		render.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
@@ -68,8 +67,7 @@ func GetAboutEdit(w http.ResponseWriter, r *http.Request) {
 	user := users.Current(r)
 	bio, err := getBio(user.ID)
 	if err != nil {
-		log.Print("err(a4gt): ", err)
-		http.Error(w, "internal error", http.StatusInternalServerError)
+		render.Error(w, "internal error", http.StatusInternalServerError)
 		return
 	}
 
@@ -80,14 +78,13 @@ func PutAbout(w http.ResponseWriter, r *http.Request) {
 	user := users.Current(r)
 	text := r.FormValue("text")
 	if text == "" {
-		http.Error(w, "empty text", http.StatusBadRequest)
+		render.Error(w, "empty text", http.StatusBadRequest)
 		return
 	}
 	var bio Bio
 	err := db.DB.Get(&bio, "insert into bios(user_id,text) values(?,?) returning *", user.ID, text)
 	if err != nil {
-		log.Print("error(owcE): ", err)
-		http.Error(w, "unknown error", http.StatusInternalServerError)
+		render.Error(w, "unknown error", http.StatusInternalServerError)
 		return
 	}
 
@@ -104,8 +101,7 @@ func GetAbout(w http.ResponseWriter, r *http.Request) {
 	user := users.Current(r)
 	bio, err := getBio(user.ID)
 	if err != nil {
-		log.Print("err(f8Ns): ", err)
-		http.Error(w, "internal error", http.StatusInternalServerError)
+		render.Error(w, "internal error", http.StatusInternalServerError)
 		return
 	}
 
@@ -147,15 +143,13 @@ func PatchUser(w http.ResponseWriter, r *http.Request) {
 
 	_, err := db.DB.Exec("update users set username=? where id=?", username, user.ID)
 	if err != nil {
-		log.Print("err(aPvk): ", err)
-		http.Error(w, "internal error", http.StatusInternalServerError)
+		render.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	updatedUser, err := users.FindById(user.ID)
 	if err != nil {
-		log.Print("err(dr9s): ", err)
-		http.Error(w, "internal error", http.StatusInternalServerError)
+		render.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	log.Printf("user: %v %v", user, updatedUser)
