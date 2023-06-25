@@ -29,9 +29,6 @@ COPY --from=builder /app/app .
 # TODO: handlers has go code to remove
 COPY handlers handlers
 
-# TODO: serve with cdn
-COPY public public
-
 # Expose the desired port
 EXPOSE 8080
 
