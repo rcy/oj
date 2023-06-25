@@ -1,7 +1,9 @@
 package messages
 
 import (
+	"html/template"
 	"oj/db"
+	"oj/md"
 	"time"
 )
 
@@ -12,6 +14,10 @@ type Message struct {
 	SenderID        int64     `db:"sender_id"`
 	SenderAvatarURL string    `db:"sender_avatar_url"` // joined
 	Body            string
+}
+
+func (m Message) BodyHTML() template.HTML {
+	return md.RenderString(m.Body)
 }
 
 func FindByRoomID(roomID int64) (messages []Message, err error) {
