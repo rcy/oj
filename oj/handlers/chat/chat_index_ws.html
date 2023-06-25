@@ -6,6 +6,12 @@
   es.addEventListener("NEW_MESSAGE", (e) => {
     document.getElementsByTagName('body')[0].dispatchEvent(new Event("NEW_MESSAGE"))
   })
+
+  es.addEventListener("KEEP_ALIVE", (e) => {
+    console.debug("KEEP_ALIVE", Date.now() - Date.parse(e.data))
+  })
+  es.addEventListener("open", (e) => { console.log('es open', e) })
+  es.addEventListener("error", (e) => { console.error('es error', e) })
 </script>
 
 <style>

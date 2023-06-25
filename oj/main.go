@@ -2,12 +2,17 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"oj/db"
 	"oj/handlers"
+	"oj/handlers/eventsource"
+
+	"github.com/alexandrevicenzi/go-sse"
 )
 
 func main() {
@@ -15,6 +20,17 @@ func main() {
 	if err != nil {
 		log.Fatalf("could not ping db: %s", err)
 	}
+
+	go func() {
+		count := 0
+		for {
+			id := fmt.Sprint(count)
+			data := time.Now().Format(time.RFC3339Nano)
+			eventsource.SSE.SendMessage("", sse.NewMessage(id, data, "KEEP_ALIVE"))
+			count += 1
+			time.Sleep(30 * time.Second)
+		}
+	}()
 
 	listenAndServe(os.Getenv("PORT"), handlers.Router())
 }
