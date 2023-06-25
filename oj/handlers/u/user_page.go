@@ -2,6 +2,7 @@ package u
 
 import (
 	"database/sql"
+	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -10,6 +11,7 @@ import (
 	"oj/handlers/render"
 	"oj/models/gradients"
 	"oj/models/users"
+	"oj/util/hash"
 	"time"
 
 	"github.com/go-chi/chi/v5"
@@ -163,4 +165,33 @@ func PatchUser(w http.ResponseWriter, r *http.Request) {
 		User:    *updatedUser,
 		CanEdit: true,
 	})
+}
+
+func GetAvatars(w http.ResponseWriter, r *http.Request) {
+	const count = 99
+
+	user := users.Current(r)
+
+	urls := []string{user.AvatarURL}
+
+	for i := 0; i < count; i += 1 {
+		url := fmt.Sprintf("https://www.gravatar.com/avatar/%s?d=retro", hash.GenerateMD5(fmt.Sprintf("%s-%d", user.Username, i)))
+		if url != urls[0] {
+			urls = append(urls, url)
+		}
+	}
+
+	render.ExecuteNamed(w, t, "avatars", struct{ URLs []string }{urls})
+}
+
+func PutAvatar(w http.ResponseWriter, r *http.Request) {
+	user := users.Current(r)
+	newAvatarURL := r.FormValue("URL")
+
+	err := db.DB.Get(&user, "update users set avatar_url = ? where id = ? returning *", newAvatarURL, user.ID)
+	if err != nil {
+		render.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	render.ExecuteNamed(w, t, "changeable-avatar", struct{ User users.User }{user})
 }

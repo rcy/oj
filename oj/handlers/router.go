@@ -54,6 +54,9 @@ func Router() *chi.Mux {
 		r.Get("/card/edit", u.GetCardEdit)
 		r.Patch("/user", u.PatchUser)
 
+		r.Get("/avatars", u.GetAvatars)
+		r.Put("/avatar", u.PutAvatar)
+
 		r.NotFound(func(w http.ResponseWriter, r *http.Request) {
 			render.Error(w, "Page not found", 404)
 		})
