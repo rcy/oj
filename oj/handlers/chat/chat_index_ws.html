@@ -1,3 +1,7 @@
+{{define "head"}}
+<title>{{.User.Username}}</title>
+{{end}}
+
 {{define "main"}}
 <script>
   const es = new EventSource("/es/room-{{.RoomID}}");
