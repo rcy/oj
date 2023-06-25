@@ -9,6 +9,7 @@ import (
 	"oj/db"
 	"oj/handlers/layout"
 	"oj/handlers/render"
+	"oj/md"
 	"oj/models/gradients"
 	"oj/models/users"
 	"oj/util/hash"
@@ -123,6 +124,10 @@ type Bio struct {
 	CreatedAt time.Time `db:"created_at"`
 	UserID    int64     `db:"user_id"`
 	Text      string
+}
+
+func (b Bio) HTML() template.HTML {
+	return md.RenderString(b.Text)
 }
 
 func getBio(userID int64) (*Bio, error) {

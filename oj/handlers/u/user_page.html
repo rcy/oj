@@ -60,7 +60,9 @@
 {{define "about"}}
 <section class="nes-container ghost" hx-swap="outerHTML">
   <h3>About me</h3>
-  <p>{{.Bio.Text}}</p>
+  <div>
+    {{.Bio.HTML}}
+  </div>
   {{if .CanEdit}}{{template "edit-section-button" "/bio/edit"}}{{end}}
 </section>
 {{end}}
@@ -72,7 +74,8 @@
     <textarea
       name="text"
       class="nes-textarea"
-      placeholder="Write something here..."
+      placeholder="Write something about yourself..."
+      rows=10
     >{{.Bio.Text}}</textarea>
     <div style="display:flex; justify-content:space-between;">
       <button type="submit" class="nes-btn is-primary">save</button>
