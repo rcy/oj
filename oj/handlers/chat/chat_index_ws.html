@@ -50,17 +50,17 @@
 {{define "chat_message_other"}}
 <div style="display:flex">
   <img class="nes-avatar is-large" src="{{.SenderAvatarURL}}">
-  <div class="nes-balloon from-left">
+  <div class="nes-balloon from-left" style="overflow-wrap: break-word; max-width: 70%">
     {{.Body}}
   </div>
-  <div style="flex:1; min-width:100px;"></div>
+  <div style="flex:1"></div>
 </div>
 {{end}}
 
 {{define "chat_message_mine"}}
 <div style="display:flex; align-items: center">
-  <div style="flex:1; min-width:100px"></div>
-  <div class="nes-balloon from-right">
+  <div style="flex:1"></div>
+  <div class="nes-balloon from-right" style="overflow-wrap: break-word; max-width: 70%">
     {{.Body}}
   </div>
   <img class="nes-avatar is-large" src="{{.SenderAvatarURL}}">
