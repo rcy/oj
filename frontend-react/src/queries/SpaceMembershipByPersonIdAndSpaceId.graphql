@@ -1,5 +1,0 @@
-query SpaceMembershipByPersonIdAndSpaceId($personId: UUID!, $spaceId: UUID!) {
-  spaceMembershipByPersonIdAndSpaceId(personId: $personId, spaceId: $spaceId) {
-    id
-  }
-}

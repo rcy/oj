@@ -1,6 +1,0 @@
-# update this to not require personId, write a pg function
-mutation SetPersonAvatar($personId: UUID!, $avatarUrl: String!) {
-  updatePerson(input: { id: $personId, patch: { avatarUrl: $avatarUrl } }) {
-    clientMutationId
-  }
-}

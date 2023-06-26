@@ -1,7 +1,0 @@
-mutation CreateSpace($name: String!) {
-  createSpace(input: { space: { name: $name } }) {
-    space {
-      id
-    }
-  }
-}

@@ -1,18 +1,19 @@
 include .env
 
-start: install up
-	npx foreman start -s
+start:
+	find . -name \*.go -o -name \*.html | entr -r go run .
 
-bootstrap: install up
-	${MAKE} -C backend create migrate
+clean-temp:
+	rm -rf ${TEMP}/go-build*
 
-up:
-	podman-compose up -d
+build:
+	go build .
 
-install:
-	npm i
-	cd backend && npm i
-	cd frontend-react && npm i
+sql:
+	sqlite3 ${SQLITE_DB}
 
-psql:
-	psql ${DATABASE_URL}
+version.%:
+	echo "update migration_version set version = $*" | sqlite3 ${SQLITE_DB}
+
+deploy:
+	flyctl deploy

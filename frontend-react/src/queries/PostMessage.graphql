@@ -1,7 +1,0 @@
-mutation PostMessage($membershipId: UUID!, $body: String!) {
-  postMessage(input: { spaceMembershipId: $membershipId, body: $body }) {
-    post {
-      id
-    }
-  }
-}

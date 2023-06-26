@@ -1,7 +1,5 @@
 node_modules
-/.env.prod
-/.env.docker
+/.env*
 *.db
 *.db-shm
 *.db-wal
-

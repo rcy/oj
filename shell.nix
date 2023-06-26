@@ -1,7 +1,14 @@
 with (import <nixpkgs> {});
 mkShell {
   buildInputs = [
-    nodejs-16_x
-    postgresql
+    go
+    golint
+    gopls
+    sqlite
+    flyctl
+    golangci-lint
+    entr
+    google-cloud-sdk
+    nodejs
   ];
 }
