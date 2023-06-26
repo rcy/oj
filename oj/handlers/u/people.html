@@ -1,13 +1,27 @@
 {{define "main"}}
-<h1>Friends</h1>
+<div style="display:flex;flex-direction:column;gap:1em;">
 
-<div class="box">
-  <ul>
-    {{range .AllUsers}}
-    <li>
-      <a href="/u/{{.ID}}">{{.Username}}</a>
-    </li>
-    {{end}}
-  </ul>
+  <div class="nes-container is-dark">
+    <h1>Friends</h1>
+  </div>
+
+  {{range .AllUsers}}
+  <a href="/u/{{.ID}}">
+    <div class="nes-container ghost" style="display:flex; gap:1em">
+      <img src="{{.AvatarURL}}">
+      <div style="display:flex;flex-direction:column">
+        <h2>
+          {{.Username}}
+        </h2>
+        {{if (eq .Count 1)}}
+        <p class="nes-text is-error">{{.Count}} unread message</p>
+        {{end}}
+        {{if (gt .Count 1)}}
+        <p class="nes-text is-error">{{.Count}} unread messages</p>
+        {{end}}
+      </div>
+    </div>
+  </a>
+  {{end}}
 </div>
 {{end}}

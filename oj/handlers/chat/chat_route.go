@@ -3,10 +3,12 @@ package chat
 import (
 	"database/sql"
 	"html/template"
+	"log"
 	"net/http"
 	"oj/db"
 	"oj/handlers/layout"
 	"oj/handlers/render"
+	"sync"
 
 	"oj/models/gradients"
 	"oj/models/messages"
@@ -14,6 +16,7 @@ import (
 	"oj/models/users"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/jmoiron/sqlx"
 )
 
 var chatTemplate = template.Must(
@@ -51,25 +54,34 @@ func UserChatPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// tx, err := db.DB.BeginTxx(r.Context(), nil)
+	// if err != nil {
+	// 	render.Error(w, err.Error(), 500)
+	// }
+	// defer tx.Rollback()
+
 	var records []messages.Message
 	err = db.DB.Select(&records, `
 select * from
 (
- select messages.*, users.avatar_url as sender_avatar_url from deliveries
-   join messages on messages.id = deliveries.message_id
-   join users on messages.sender_id = users.id
-   where messages.room_id = ? and recipient_id = ?
+ select m.*, sender.avatar_url as sender_avatar_url from messages m
+   join users sender on m.sender_id = sender.id
+   where m.room_id = ?
    order by created_at desc
-   limit 1000
+   limit 128
 )
 order by created_at asc
-`, room.ID, user.ID)
+`, room.ID, l.User.ID)
 	if err != nil {
-		render.Error(w, "selecting deliveries: "+err.Error(), 500)
+		render.Error(w, "selecting messages: "+err.Error(), 500)
 		return
 	}
 
-	// XXX mark stuff as read here
+	err = updateDeliveries(db.DB, room.ID, l.User.ID)
+	if err != nil {
+		render.Error(w, "marking deliveries sent: "+err.Error(), 500)
+		return
+	}
 
 	pd := struct {
 		Layout   layout.Data
@@ -83,5 +95,23 @@ order by created_at asc
 		Messages: records,
 	}
 
+	// err = tx.Commit()
+	// if err != nil {
+	// 	render.Error(w, err.Error(), 500)
+	// 	return
+	// }
 	render.Execute(w, chatTemplate, pd)
+
+}
+
+var udMut sync.Mutex
+
+func updateDeliveries(db *sqlx.DB, roomID, userID int64) error {
+	udMut.Lock()
+	defer udMut.Unlock()
+
+	log.Printf("UPDATE DELIVERIES %d", userID)
+	_, err := db.DB.Exec(`update deliveries set sent_at = current_timestamp where sent_at is null and room_id = ? and recipient_id = ?`, roomID, userID)
+	log.Printf("UPDATE DELIVERIES %d...done", userID)
+	return err
 }

@@ -68,7 +68,7 @@ func postMessage(roomID, senderID int64, body string) error {
 
 	// create deliveries for each user in the room
 	for _, roomUser := range roomUsers {
-		result, err = tx.Exec(`insert into deliveries(message_id, recipient_id) values(?,?)`, messageID, roomUser.UserID)
+		result, err = tx.Exec(`insert into deliveries(message_id, room_id, sender_id, recipient_id) values(?,?,?,?)`, messageID, roomID, senderID, roomUser.UserID)
 		if err != nil {
 			return err
 		}

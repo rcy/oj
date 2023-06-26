@@ -8,7 +8,7 @@ import (
 const schemaFile = "./db/schema.sql"
 
 func MustDump() {
-	rows, err := DB.Queryx("SELECT sql FROM sqlite_master where type = 'table' or type = 'view'")
+	rows, err := DB.Queryx("SELECT sql FROM sqlite_master where type = 'table' or type = 'view' order by sql")
 	if err != nil {
 		panic(err)
 	}

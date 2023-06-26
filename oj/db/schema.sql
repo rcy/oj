@@ -1,12 +1,9 @@
-CREATE TABLE migration_version (
-			version INTEGER
-		);
-CREATE TABLE users (
+CREATE TABLE bios(
   id integer primary key,
   created_at datetime not null default current_timestamp,
-  username text not null unique check(length(username) > 0),
-  email text check (email like '%@%') unique
-, avatar_url not null default 'https://www.gravatar.com/avatar/?d=mp');
+  user_id references users not null,
+  text string not null default ''
+);
 CREATE TABLE codes(
   id integer primary key,
   created_at datetime not null default current_timestamp,
@@ -14,10 +11,21 @@ CREATE TABLE codes(
   nonce string not null,
   email text check (email like '%@%') not null
 );
-CREATE TABLE sessions(
+CREATE TABLE deliveries(
   id integer primary key,
+  created_at datetime not null default current_timestamp,
+  message_id integer references messages not null,
+  room_id integer references rooms not null,
+  recipient_id integer references users not null,
+  sender_id integer references users not null,
+  sent_at datetime,
+  unique(message_id, recipient_id)
+);
+CREATE TABLE gradients(
+  id integer primary key,
+  created_at text not null default current_timestamp,
   user_id integer references users not null,
-  key string unique not null
+  gradient blob not null
 );
 CREATE TABLE kids_codes(
   id integer primary key,
@@ -32,17 +40,6 @@ CREATE TABLE kids_parents(
   kid_id integer references users not null,
   parent_id integer references users not null
 );
-CREATE TABLE gradients(
-  id integer primary key,
-  created_at text not null default current_timestamp,
-  user_id integer references users not null,
-  gradient blob not null
-);
-CREATE TABLE rooms(
-  id integer primary key,
-  created_at datetime not null default current_timestamp,
-  key text not null
-);
 CREATE TABLE messages(
   id integer primary key,
   created_at datetime not null default current_timestamp,
@@ -50,11 +47,9 @@ CREATE TABLE messages(
   room_id text not null references rooms not null,
   body text not null
 );
-CREATE TABLE reads(
-  id integer primary key,
-  created_at datetime not null default current_timestamp,
-  delivery_id integer references deliveries not null
-);
+CREATE TABLE migration_version (
+			version INTEGER
+		);
 CREATE TABLE room_users(
   id integer primary key,
   created_at datetime not null default current_timestamp,
@@ -62,18 +57,19 @@ CREATE TABLE room_users(
   user_id integer references users not null,
   unique(room_id, user_id)
 );
-CREATE TABLE deliveries(
+CREATE TABLE rooms(
   id integer primary key,
   created_at datetime not null default current_timestamp,
-  message_id integer references messages not null,
-  recipient_id integer references users not null,
-  sent_at datetime,
-  read_at datetime,
-  unique(message_id, recipient_id)
+  key text not null
 );
-CREATE TABLE bios(
+CREATE TABLE sessions(
+  id integer primary key,
+  user_id integer references users not null,
+  key string unique not null
+);
+CREATE TABLE users (
   id integer primary key,
   created_at datetime not null default current_timestamp,
-  user_id references users not null,
-  text string not null default ''
-);
+  username text not null unique check(length(username) > 0),
+  email text check (email like '%@%') unique
+, avatar_url not null default 'https://www.gravatar.com/avatar/?d=mp');

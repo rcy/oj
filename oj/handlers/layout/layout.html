@@ -45,7 +45,15 @@
         <a class="nes-btn is-success" href="/u">Friends</a>
         <a class="nes-btn is-warning" href="/tools">Background</a>
         <span style="flex-grow:1"></span>
-        <a class="nes-btn is-error" href="/u/{{.Layout.User.ID}}">{{.Layout.User.Username}}</a>
+
+        {{if (eq .Layout.UnreadCount 0)}}
+        <a class="nes-btn" href="/u">Chat</a>
+        {{else}}
+        <a class="nes-btn is-error" href="/u">Chat({{.Layout.UnreadCount}})</a>
+        {{end}}
+
+        <a class="nes-btn is-primary" href="/u/{{.Layout.User.ID}}">{{.Layout.User.Username}}</a>
+        <span></span><!-- something makes the final element 4px taller!? -->
       </header>
 
       <main>

@@ -123,4 +123,17 @@ alter table users add column avatar_url not null default 'http://www.gravatar.co
 alter table users drop column avatar_url;
 alter table users add column avatar_url not null default 'https://www.gravatar.com/avatar/?d=mp';
 `,
+	`-- 15 fix deliveries
+drop table if exists reads;
+drop table if exists deliveries;
+create table deliveries(
+  id integer primary key,
+  created_at datetime not null default current_timestamp,
+  message_id integer references messages not null,
+  room_id integer references rooms not null,
+  recipient_id integer references users not null,
+  sender_id integer references users not null,
+  sent_at datetime,
+  unique(message_id, recipient_id)
+);`,
 }
