@@ -12,19 +12,13 @@
     })
   </script>
 
-  <div class="nes-container">
+  <div class="nes-container" style="height:100%; display:flex; flex-direction:column">
     <h1>chatting with {{.User.Username}}</h1>
-    <div style="height: 400px; display:flex; flex-direction: column; background: rgba(255,255,255,.1)">
-      <div class="is-dark" style="flex-grow: 1; height: 100%">
-        <div style="display:flex; flex-direction: column; height: 100%; gap: 1em">
-          <div style="flex:1; overflow-y: scroll; display:flex; flex-direction: column-reverse;">
-            {{template "chatMessages" .}}
-          </div>
-          <div>
-            {{template "chatInput" .}}
-          </div>
-        </div>
-      </div>
+    <div style="flex:1; overflow-y: scroll; display:flex; flex-direction: column-reverse;">
+      {{template "chatMessages" .}}
+    </div>
+    <div>
+      {{template "chatInput" .}}
     </div>
   </div>
 {{end}}
@@ -66,7 +60,9 @@
 {{end}}
 
 {{define "chatInput"}}
-  <form id="form2" hx-post="/chat/messages" hx-swap="outerHTML"
+  <form id="form2"
+        autocomplete="off"
+        hx-post="/chat/messages" hx-swap="outerHTML"
         _="on submit add @disabled to #inp">
     <input name="roomID" value="{{.RoomID}}" type="hidden">
 
