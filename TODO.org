@@ -1,0 +1,31 @@
+* FEATURES
+** pixel editor
+** chess
+** image look up
+** math games
+** word games
+** recorder
+** video ripper
+** pong
+** snake
+
+* TASKS
+** TODO logout
+** TODO nes style the welcome pages
+** -----
+** TODO fix join date formatting Joined 2023-06-27 06:16:58 +0000 UTC
+** TODO nav: games chat my-profile
+** TODO show my family/friends on my page
+** TODO nicer scrollbar, or hide scrollbar in chat
+** TODO remove bios table, move to user column
+** TODO revisit the parent page
+** TODO create families
+
+* COMPLETED
+** DONE change avatar
+** DONE linkify urls in bio
+** DONE linkify urls in chat
+** DONE full height the chat responsively
+** DONE fix the gradient picker
+- [X] flex the colors
+- [X] fix the rotation slider to use the full range
