@@ -1,5 +1,18 @@
 {{define "head"}}
   <title>{{.User.Username}}</title>
+
+  <style>
+    /* Hide scrollbar for Chrome, Safari and Opera */
+   .hide-scrollbar::-webkit-scrollbar {
+       display: none;
+    }
+
+    /* Hide scrollbar for IE, Edge and Firefox */
+    .hide-scrollbar {
+        -ms-overflow-style: none;  /* IE and Edge */
+        scrollbar-width: none;  /* Firefox */
+    }
+  </style>
 {{end}}
 
 {{define "main"}}
@@ -14,7 +27,7 @@
 
   <div class="nes-container" style="height:100%; display:flex; flex-direction:column">
     <h1>chatting with {{.User.Username}}</h1>
-    <div style="flex:1; overflow-y: scroll; display:flex; flex-direction: column-reverse;">
+    <div class="hide-scrollbar" style="flex:1; overflow-y: scroll; display:flex; flex-direction: column-reverse;">
       {{template "chatMessages" .}}
     </div>
     <div>
