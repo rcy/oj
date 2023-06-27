@@ -12,13 +12,14 @@ import (
 	"oj/md"
 	"oj/models/gradients"
 	"oj/models/users"
+	"oj/templatehelpers"
 	"oj/util/hash"
 	"time"
 
 	"github.com/go-chi/chi/v5"
 )
 
-var t = template.Must(template.ParseFiles(layout.File, "handlers/u/user_page.html"))
+var t = template.Must(template.New("layout.html").Funcs(templatehelpers.FuncMap).ParseFiles(layout.File, "handlers/u/user_page.html"))
 
 func UserPage(w http.ResponseWriter, r *http.Request) {
 	l, err := layout.GetData(r)

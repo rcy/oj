@@ -31,7 +31,7 @@
 
     <div style="display: flex; flex-direction: column">
       <h1>{{.User.Username}}</h1>
-      <div>Joined {{.User.CreatedAt}}</div>
+      <div>Joined {{fromNow .User.CreatedAt}} ago</div>
     </div>
   </div>
   {{if .CanEdit}}{{template "edit-section-button" "/card/edit"}}{{end}}

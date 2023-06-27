@@ -13,7 +13,6 @@
 ** TODO logout
 ** TODO nes style the welcome pages
 ** -----
-** TODO fix join date formatting Joined 2023-06-27 06:16:58 +0000 UTC
 ** TODO nav: games chat my-profile
 ** TODO show my family/friends on my page
 ** TODO nicer scrollbar, or hide scrollbar in chat
@@ -29,3 +28,4 @@
 ** DONE fix the gradient picker
 - [X] flex the colors
 - [X] fix the rotation slider to use the full range
+** DONE fix join date formatting Joined 2023-06-27 06:16:58 +0000 UTC
