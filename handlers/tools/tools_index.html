@@ -1,5 +1,9 @@
 {{define "main"}}
 <style>
+ .hidden {
+     visibility: hidden;
+ }
+
  /* https://mikejolley.com/2019/08/02/building-a-cross-browser-compatible-multi-handle-range-slider/ */
  .rotation {
      background: transparent;
@@ -55,13 +59,13 @@
  }
 
  .slider {
-     margin-top: 10px;
+     margin-top: 16px;
  }
 
  /* .slider::-webkit-slider-thumb:hover {
-     background: radial-gradient(rgba(255,255,255,0) 32%,#000000 46%,#ffffff 54%,#000000 60%);
- }
- */
+    background: radial-gradient(rgba(255,255,255,0) 32%,#000000 46%,#ffffff 54%,#000000 60%);
+    }
+  */
  .track {
      width: 100%;
      height: 32px;
@@ -84,104 +88,88 @@
 {{end}}
 
 {{define "picker"}}
-<form class="picker" hx-post="/tools/picker" hx-swap="outerHTML">
-  <div class="f-row">
-    <div class="flex-grow:1"></div>
+<form class="xpicker" hx-post="/tools/picker" hx-swap="innerHTML">
+  <div class="nes-container is-dark">
     <button style="display: none" id="submit"></button>
-  </div>
 
-  <div class="f-row align-items:baseline">
-    <select
-      style="width: 100%"
-      name="gradientType"
-      _="on change log 'changed' then click() the #submit"
-    >
-      <option {{if (eq .Gradient.Type "linear")}}selected{{end}} value="linear">Linear Gradient</option>
-      <option {{if (eq .Gradient.Type "radial")}}selected{{end}} value="radial">Radial Gradient</option>
-      <option {{if (eq .Gradient.Type "conic")}}selected{{end}} value="conic">Conic Gradient</option>
-    </select>
-    <label style="white-space: nowrap">
-      <input
-        id="repeatingCheckbox"
-        type="checkbox"
-        name="repeat"
-        _="on change log 'changed' then click() the #submit"
-        {{if .Gradient.Repeat}}checked{{end}}
-      >
-      Repeating
-    </label>
-  </div>    
-
-  <div class="f-row" style="--gap: 0px">
-    {{if (gt (index .Gradient.Stops 0).Percent 0)}}
-    <button>-1</button>
-    {{end}}
-
-    {{range $i, $stop := .Gradient.Stops}}
-    <input
-      name="color"
-      stylex="position: absolute;top:40"
-      type="color"
-      value="{{$stop.Color}}"
-      style="width: 100%"
-      _="on change log 'changed' then click() the #submit"
-    >
-    {{if (lt $stop.Percent 100)}}
-    <button>{{$i}}</button>
-    {{end}}
-
-    {{end}}
-  </div>
-
-  <div style="position:relative">
-
-    {{range $stop := .Gradient.Stops}}
-    <div class="group">
-      <input
-        name="percent"
-        style="position:absolute"
-        type="range"
-        min="0"
-        max="100"
-        value="{{$stop.Percent}}"
-        class="slider"
-        _="on click remove .selected from .selected add .selected to the closest .group
-              on change log 'changed' then click() the #submit"
-      >
+    <div style="display:flex; justify-content:space-between; gap: 1em;align-items:center">
+      <div style="width:100%; margin-bottom: 1em">
+        <div class="nes-select is-dark" >
+          <select name="gradientType"
+                  id="gradient-type"
+                  _="on change log 'changed' then click() the #submit">
+            <option {{if (eq .Gradient.Type "linear")}}selected{{end}}
+                    value="linear">Linear Gradient</option>
+            <option {{if (eq .Gradient.Type "radial")}}selected{{end}}
+                    value="radial">Radial Gradient</option>
+            <option {{if (eq .Gradient.Type "conic")}}selected{{end}}
+                    value="conic">Conic Gradient</option>
+          </select>
+        </div>
+      </div>
+      <label style="white-space: nowrap">
+        <input class="nes-checkbox is-dark"
+               id="repeatingCheckbox"
+               type="checkbox"
+               name="repeat"
+               _="on change log 'changed' then click() the #submit"
+               {{if .Gradient.Repeat}}checked{{end}}>
+        <span>Repeating</span>
+      </label>
     </div>
-    {{end}}
 
-    <div class="track" style="background: {{.Gradient.RenderBar}}"></div>
+    <div style="display:flex;justify-items:stretch">
+      {{range $i, $stop := .Gradient.Stops}}
+      <input name="color"
+             type="color"
+             value="{{$stop.Color}}"
+             style="width: 100%"
+             _="on change log 'changed' then click() the #submit">
+      {{end}}
+    </div>
+
+    <div style="position:relative">
+
+      {{range $stop := .Gradient.Stops}}
+      <div class="group">
+        <input name="percent"
+               style="position:absolute"
+               type="range"
+               min="0"
+               max="100"
+               value="{{$stop.Percent}}"
+               class="slider"
+               _="on click remove .selected from .selected add .selected to the closest .group
+
+                     on change log 'changed' then click() the #submit">
+      </div>
+      {{end}}
+
+      <div class="track" style="background: {{.Gradient.RenderBar}}"></div>
+    </div>
+
+    <div style="display:flex">
+      <input class="rotation {{if (eq .Gradient.Type "radial")}}hidden{{end}}"
+             style="flex:1"
+             {{if (eq .Gradient.Type "radial")}}hidden{{end}}
+             name="degrees"
+             type="range"
+             min="0"
+             max="180"
+             value="{{.Gradient.Degrees}}"
+             _="on change click() the #submit">
+    </div>
+
+    <div class="preview" style="background: {{.Gradient.Render}}"></div>
+
+    <div class="f-row justify-content:space-between">
+      <code>{{.Gradient.Render}}</code>
+
+      <button class="nes-btn"
+              hx-post="/tools/set-background"
+              hx-target="#user-style"
+              hx-swap="innerHTML">set as background</button>
+    </div>
   </div>
-
-  <div class="f-row">
-    <input
-      class="rotation"
-      {{if (eq .Gradient.Type "radial")}}style="visibility: hidden"{{end}}
-      name="degrees"
-      type="range"
-      min="0"
-      max="180"
-      value="{{.Gradient.Degrees}}"
-      _="on change click() the #submit">
-  </div>
-
-  <div class="preview" style="background: {{.Gradient.Render}}"></div>
-
-  <div class="f-row justify-content:space-between">
-    <code>
-      {{.Gradient.Render}}
-    </code>
-
-    <button
-      class="big"
-      hx-post="/tools/set-background"
-      hx-target="#user-style"
-      hx-swap="innerHTML"
-    >
-      set as background
-    </button>
-  </div>
-
 </form>
 {{end}}
