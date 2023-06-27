@@ -4,16 +4,13 @@
 
 {{define "main"}}
   <script>
-      const es = new EventSource("/es/room-{{.RoomID}}");
+    const es = new EventSource("/es/room-{{.RoomID}}");
 
     // dispatch event for use by hx-trigger
     es.addEventListener("NEW_MESSAGE", (e) => {
       document.getElementsByTagName('body')[0].dispatchEvent(new Event("NEW_MESSAGE"))
     })
   </script>
-
-  <style>
-  </style>
 
   <div class="nes-container">
     <h1>chatting with {{.User.Username}}</h1>
@@ -69,7 +66,7 @@
 {{end}}
 
 {{define "chatInput"}}
-  <form id="form2" class="f-row" hx-post="/chat/messages" hx-swap="outerHTML"
+  <form id="form2" hx-post="/chat/messages" hx-swap="outerHTML"
         _="on submit add @disabled to #inp">
     <input name="roomID" value="{{.RoomID}}" type="hidden">
 
