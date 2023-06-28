@@ -32,33 +32,47 @@
     <style>
      body {
          height: 100vh;
-         max-width: 960px;
-         margin: 0 auto;
      }
     </style>
   </head>
   <body style="height: 100%" hx-boost="false">
-    <div style="height: 100%; display:flex; flex-direction: column; gap: 1em">
-      <header style="display:flex;gap:1em" class="nes-container is-dark">
-        <a class="nes-btn is-primary" href="/">OJ</a>
+    <div style="height: 100%;display:flex; flex-direction:column; gap: 1em;">
+      <header style="background: rgba(0,0,0,.9); color:white;">
+        <div style="max-width: 960px; margin: 0 auto;">
+          <div style="padding: 1em 0 1em">
 
-        {{if (eq .Layout.UnreadCount 0)}}
-        <a class="nes-btn" href="/u">Chat</a>
-        {{else}}
-        <a class="nes-btn is-error" href="/u">Chat({{.Layout.UnreadCount}})</a>
-        {{end}}
+            <div style="display:flex;gap:4px;align-items:center;justify-content:space-between">
+              
+              <a href="/" style="display:flex; align-items: center; gap:6px; color: inherit; text-decoration: none">
+                <i class="nes-icon  coin"></i>
+                <h3 style="margin:0">Octopus Jr</h3>
+              </a>
 
-        <span style="flex:1"></span>
-        <a class="nes-btn is-primary" href="/u/{{.Layout.User.ID}}">{{.Layout.User.Username}}</a>
-        <span></span><!-- something makes the final element 4px taller!? -->
+              {{if (eq .Layout.UnreadCount 0)}}
+              <a href="/u">Chat</a>
+              {{else}}
+              <a href="/u">Chat({{.Layout.UnreadCount}})</a>
+              {{end}}
+
+              <a href="/u/{{.Layout.User.ID}}"
+                 style="display:flex; align-items: center; gap:6px; color: inherit; text-decoration: none">
+                <span>{{.Layout.User.Username}}</span>
+                <img src="{{.Layout.User.AvatarURL}}" height="40px" width="40px">
+              </a>
+            </div>
+          </div>
+        </div>
       </header>
 
-      <main style="flex:auto; height:100%; overflow: auto">
-        {{block "main" .}}{{end}}
+      <main style="flex:auto; height:100%; overflow: auto;">
+        <div style="max-width: 960px; margin: 0 auto;">
+          {{block "main" .}}{{end}}
+        </div>
       </main>
       <footer>
         {{block "footer" .}}{{end}}
       </footer>
     </div>
+    
   </body>
 </html>

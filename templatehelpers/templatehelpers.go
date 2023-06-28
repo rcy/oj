@@ -9,6 +9,6 @@ import (
 
 var FuncMap = template.FuncMap{
 	"fromNow": func(t time.Time) string {
-		return durafmt.Parse(time.Now().Sub(t)).LimitFirstN(2).String()
+		return durafmt.Parse(time.Now().Sub(t)).LimitFirstN(1).String()
 	},
 }
