@@ -6,13 +6,9 @@
 <div style="display:flex;flex-direction:column;gap:1em;">
 
   {{template "card" .}}
+
   {{template "about" .}}
 
-  {{if (not (eq .User.ID .Layout.User.ID))}}
-  <section class="nes-container ghost">
-    <a class="nes-btn" href="/u/{{.User.ID}}/chat">chat with {{.User.Username}}</a>
-  </section>
-  {{end}}
 </div>
 {{end}}
 
@@ -35,6 +31,10 @@
     </div>
   </div>
   {{if .CanEdit}}{{template "edit-section-button" "/card/edit"}}{{end}}
+
+  {{if (not (eq .User.ID .Layout.User.ID))}}
+  <a class="nes-btn is-success" href="/u/{{.User.ID}}/chat">Chat</a>
+  {{end}}
 </section>
 {{end}}
 
