@@ -151,7 +151,13 @@ func PatchUser(w http.ResponseWriter, r *http.Request) {
 	user := users.Current(r)
 	username := r.FormValue("username")
 
-	_, err := db.DB.Exec("update users set username=? where id=?", username, user.ID)
+	l, err := layout.GetData(r)
+	if err != nil {
+		render.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	_, err = db.DB.Exec("update users set username=? where id=?", username, user.ID)
 	if err != nil {
 		render.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -167,9 +173,11 @@ func PatchUser(w http.ResponseWriter, r *http.Request) {
 	render.ExecuteNamed(w, t, "card", struct {
 		User    users.User
 		CanEdit bool
+		Layout  layout.Data
 	}{
 		User:    *updatedUser,
 		CanEdit: true,
+		Layout:  l,
 	})
 }
 
