@@ -13,6 +13,7 @@
 ** TODO logout
 ** TODO nes style the welcome pages
 ** -----
+** TODO make responsive, adopt tailwind
 ** TODO nav: games chat my-profile
 move background to profile
 ** TODO show my family/friends on my page
