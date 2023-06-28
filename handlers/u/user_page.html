@@ -34,6 +34,8 @@
 
   {{if (not (eq .User.ID .Layout.User.ID))}}
   <a class="nes-btn is-success" href="/u/{{.User.ID}}/chat">Chat</a>
+  {{else}}
+  <a class="nes-btn is-warning" href="/tools">Background</a>
   {{end}}
 </section>
 {{end}}
