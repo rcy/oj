@@ -54,12 +54,6 @@ func UserChatPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// tx, err := db.DB.BeginTxx(r.Context(), nil)
-	// if err != nil {
-	// 	render.Error(w, err.Error(), 500)
-	// }
-	// defer tx.Rollback()
-
 	var records []messages.Message
 	err = db.DB.Select(&records, `
 select * from
@@ -95,13 +89,7 @@ order by created_at asc
 		Messages: records,
 	}
 
-	// err = tx.Commit()
-	// if err != nil {
-	// 	render.Error(w, err.Error(), 500)
-	// 	return
-	// }
 	render.Execute(w, chatTemplate, pd)
-
 }
 
 var udMut sync.Mutex
