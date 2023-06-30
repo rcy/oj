@@ -78,9 +78,19 @@ func postMessage(roomID, senderID int64, body string) error {
 		return err
 	}
 
+	// send notifications after the transaction has been committed
+
 	eventsource.SSE.SendMessage(
 		fmt.Sprintf("/es/room-%d", roomID),
 		sse.NewMessage("", fmt.Sprint(messageID), "NEW_MESSAGE"))
+
+	for _, roomUser := range roomUsers {
+		if roomUser.ID != senderID {
+			eventsource.SSE.SendMessage(
+				fmt.Sprintf("/es/user-%d", roomUser.UserID),
+				sse.NewMessage("", "simple", "USER_UPDATE"))
+		}
+	}
 
 	return nil
 }

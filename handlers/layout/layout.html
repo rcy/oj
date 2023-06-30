@@ -34,35 +34,24 @@
          height: 100vh;
      }
     </style>
+
+    <script>
+      (function(){
+        const es = new EventSource("/es/user-{{.Layout.User.ID}}");
+
+        es.addEventListener("USER_UPDATE", (e) => {
+          document.getElementsByTagName('body')[0].dispatchEvent(new Event("USER_UPDATE"))
+        })
+
+        window.addEventListener('beforeunload', function(e) {
+          es.close();
+        })
+      })();
+    </script>
   </head>
-  <body style="height: 100%" hx-boost="false">
+  <body style="height: 100%">
     <div style="height: 100%;display:flex; flex-direction:column; gap: 1em;">
-      <header style="background: rgba(0,0,0,.9); color:white;">
-        <div style="max-width: 960px; margin: 0 auto;">
-          <div style="padding: 1em 0 1em">
-
-            <div style="display:flex;gap:4px;align-items:center;justify-content:space-between">
-              
-              <a href="/" style="display:flex; align-items: center; gap:6px; color: inherit; text-decoration: none">
-                <i class="nes-icon  coin"></i>
-                <h3 style="margin:0">OJ</h3>
-              </a>
-
-              {{if (eq .Layout.UnreadCount 0)}}
-              <a href="/u">Chat</a>
-              {{else}}
-              <a href="/u">Chat({{.Layout.UnreadCount}})</a>
-              {{end}}
-
-              <a href="/u/{{.Layout.User.ID}}"
-                 style="display:flex; align-items: center; gap:6px; color: inherit; text-decoration: none">
-                <span>{{.Layout.User.Username}}</span>
-                <img src="{{.Layout.User.AvatarURL}}" height="40px" width="40px">
-              </a>
-            </div>
-          </div>
-        </div>
-      </header>
+      {{template "header" .}}
 
       <main style="flex:auto; height:100%; overflow: auto;">
         <div style="max-width: 960px; margin: 0 auto;">
@@ -76,3 +65,32 @@
     
   </body>
 </html>
+
+{{define "header"}}
+<header hx-get="/header" hx-trigger="USER_UPDATE from:body" hx-swap="outerHTML"
+        style="background: rgba(0,0,0,.9); color:white;">
+  <div style="max-width: 960px; margin: 0 auto;">
+    <div style="padding: 1em 0 1em">
+
+      <div style="display:flex;gap:4px;align-items:center;justify-content:space-between">
+        <a href="/" style="display:flex; align-items: center; gap:6px; color: inherit; text-decoration: none">
+          <i class="nes-icon  coin"></i>
+          <h3 style="margin:0">OJ</h3>
+        </a>
+
+        {{if (eq .Layout.UnreadCount 0)}}
+        <a href="/u">Chat</a>
+        {{else}}
+        <a href="/u">Chat({{.Layout.UnreadCount}})</a>
+        {{end}}
+
+        <a href="/u/{{.Layout.User.ID}}"
+           style="display:flex; align-items: center; gap:6px; color: inherit; text-decoration: none">
+          <span>{{.Layout.User.Username}}</span>
+          <img src="{{.Layout.User.AvatarURL}}" height="40px" width="40px">
+        </a>
+      </div>
+    </div>
+  </div>
+</header>
+{{end}}

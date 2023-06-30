@@ -5,23 +5,29 @@
     <h1>Friends</h1>
   </div>
 
-  {{range .AllUsers}}
-  <a href="/u/{{.ID}}/chat">
-    <div class="nes-container ghost" style="display:flex; gap:1em">
-      <img src="{{.AvatarURL}}">
-      <div style="display:flex;flex-direction:column">
-        <h2>
-          {{.Username}}
-        </h2>
-        {{if (eq .Count 1)}}
-        <p class="nes-text is-error">{{.Count}} unread message</p>
-        {{end}}
-        {{if (gt .Count 1)}}
-        <p class="nes-text is-error">{{.Count}} unread messages</p>
-        {{end}}
+  <div id="friendList"
+       hx-get="/u"
+       hx-swap="outerHTML"
+       hx-select="#friendList"
+       hx-trigger="USER_UPDATE from:body">
+    {{range .AllUsers}}
+    <a href="/u/{{.ID}}/chat">
+      <div class="nes-container ghost" style="display:flex; gap:1em">
+        <img src="{{.AvatarURL}}">
+        <div style="display:flex;flex-direction:column">
+          <h2>
+            {{.Username}}
+          </h2>
+          {{if (eq .Count 1)}}
+          <p class="nes-text is-error">{{.Count}} unread message</p>
+          {{end}}
+          {{if (gt .Count 1)}}
+          <p class="nes-text is-error">{{.Count}} unread messages</p>
+          {{end}}
+        </div>
       </div>
-    </div>
-  </a>
-  {{end}}
+    </a>
+    {{end}}
+  </div>
 </div>
 {{end}}

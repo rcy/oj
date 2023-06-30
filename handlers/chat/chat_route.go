@@ -2,10 +2,12 @@ package chat
 
 import (
 	"database/sql"
+	"fmt"
 	"html/template"
 	"log"
 	"net/http"
 	"oj/db"
+	"oj/handlers/eventsource"
 	"oj/handlers/layout"
 	"oj/handlers/render"
 	"sync"
@@ -15,6 +17,7 @@ import (
 	"oj/models/rooms"
 	"oj/models/users"
 
+	"github.com/alexandrevicenzi/go-sse"
 	"github.com/go-chi/chi/v5"
 	"github.com/jmoiron/sqlx"
 )
@@ -26,29 +29,23 @@ var chatTemplate = template.Must(
 	))
 
 func UserChatPage(w http.ResponseWriter, r *http.Request) {
-	l, err := layout.GetData(r)
-	if err != nil {
-		render.Error(w, err.Error(), 500)
-		return
-	}
+	user := users.Current(r)
 
-	userID := chi.URLParam(r, "userID")
-	user, err := users.FindByStringId(userID)
+	pageUserID := chi.URLParam(r, "userID")
+	pageUser, err := users.FindByStringId(pageUserID)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			render.Error(w, "User not found", 404)
 			return
 		}
 	}
-	ug, err := gradients.UserBackground(user.ID)
+	ug, err := gradients.UserBackground(pageUser.ID)
 	if err != nil {
 		render.Error(w, err.Error(), 500)
 		return
 	}
-	// override layout gradient to show the page user's not the request user's
-	l.BackgroundGradient = *ug
 
-	room, err := rooms.FindOrCreateByUserIDs(l.User.ID, user.ID)
+	room, err := rooms.FindOrCreateByUserIDs(user.ID, pageUser.ID)
 	if err != nil {
 		render.Error(w, err.Error(), 500)
 		return
@@ -65,17 +62,26 @@ select * from
    limit 128
 )
 order by created_at asc
-`, room.ID, l.User.ID)
+`, room.ID, user.ID)
 	if err != nil {
 		render.Error(w, "selecting messages: "+err.Error(), 500)
 		return
 	}
 
-	err = updateDeliveries(db.DB, room.ID, l.User.ID)
+	err = updateDeliveries(db.DB, room.ID, user.ID)
 	if err != nil {
 		render.Error(w, "marking deliveries sent: "+err.Error(), 500)
 		return
 	}
+
+	// get the layout after the deliveries have been updated
+	l, err := layout.GetData(r)
+	if err != nil {
+		render.Error(w, err.Error(), 500)
+		return
+	}
+	// override layout gradient to show the page user's not the request user's
+	l.BackgroundGradient = *ug
 
 	pd := struct {
 		Layout   layout.Data
@@ -84,7 +90,7 @@ order by created_at asc
 		Messages []messages.Message
 	}{
 		Layout:   l,
-		User:     *user,
+		User:     *pageUser,
 		RoomID:   room.ID,
 		Messages: records,
 	}
@@ -101,5 +107,10 @@ func updateDeliveries(db *sqlx.DB, roomID, userID int64) error {
 	log.Printf("UPDATE DELIVERIES %d", userID)
 	_, err := db.DB.Exec(`update deliveries set sent_at = current_timestamp where sent_at is null and room_id = ? and recipient_id = ?`, roomID, userID)
 	log.Printf("UPDATE DELIVERIES %d...done", userID)
+
+	eventsource.SSE.SendMessage(
+		fmt.Sprintf("/es/user-%d", userID),
+		sse.NewMessage("", "simple", "USER_UPDATE"))
+
 	return err
 }

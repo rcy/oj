@@ -17,12 +17,18 @@
 
 {{define "main"}}
   <script>
-    const es = new EventSource("/es/room-{{.RoomID}}");
+    (function(){
+      const es = new EventSource("/es/room-{{.RoomID}}");
 
-    // dispatch event for use by hx-trigger
-    es.addEventListener("NEW_MESSAGE", (e) => {
-      document.getElementsByTagName('body')[0].dispatchEvent(new Event("NEW_MESSAGE"))
-    })
+      // dispatch event for use by hx-trigger
+      es.addEventListener("NEW_MESSAGE", (e) => {
+        document.getElementsByTagName('body')[0].dispatchEvent(new Event("NEW_MESSAGE"))
+      })
+
+      window.addEventListener('beforeunload', function() {
+        es.close();
+      })
+    })();
   </script>
 
   <div class="xnes-container" style="height:100%; display:flex; flex-direction:column">

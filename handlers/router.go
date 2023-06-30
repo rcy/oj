@@ -9,6 +9,7 @@ import (
 	"oj/handlers/auth"
 	"oj/handlers/chat"
 	"oj/handlers/eventsource"
+	"oj/handlers/header"
 	"oj/handlers/parent"
 	"oj/handlers/render"
 	"oj/handlers/tools"
@@ -31,6 +32,8 @@ func Router() *chi.Mux {
 		r.Use(authMiddleware)
 
 		r.Get("/", Home)
+
+		r.Get("/header", header.Header)
 
 		r.Get("/parent", parent.Index)
 		r.Post("/parent/kids", parent.CreateKid)
