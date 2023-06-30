@@ -17,3 +17,6 @@ version.%:
 
 deploy:
 	flyctl deploy
+
+drop:
+	-rm ${SQLITE_DB}{,-shm,-wal}
