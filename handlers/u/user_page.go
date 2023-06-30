@@ -83,10 +83,7 @@ func GetAboutEdit(w http.ResponseWriter, r *http.Request) {
 func PutAbout(w http.ResponseWriter, r *http.Request) {
 	user := users.Current(r)
 	text := r.FormValue("text")
-	if text == "" {
-		render.Error(w, "empty text", http.StatusBadRequest)
-		return
-	}
+
 	var bio Bio
 	err := db.DB.Get(&bio, "insert into bios(user_id,text) values(?,?) returning *", user.ID, text)
 	if err != nil {
