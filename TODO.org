@@ -10,6 +10,11 @@
 ** snake
 
 * TASKS
+** TODO last pass on registration
+- [ ] make into a single page as much as possible
+- [ ] report bad username on kids login
+
+** TODO add a family code
 ** TODO logout
 ** TODO nes style the welcome pages
 ** -----
