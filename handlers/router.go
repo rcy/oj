@@ -6,7 +6,6 @@ import (
 	"log"
 	"net/http"
 	"oj/db"
-	"oj/handlers/auth"
 	"oj/handlers/chat"
 	"oj/handlers/eventsource"
 	"oj/handlers/header"
@@ -14,6 +13,7 @@ import (
 	"oj/handlers/render"
 	"oj/handlers/tools"
 	"oj/handlers/u"
+	auth "oj/handlers/welcome"
 	"oj/models/users"
 	"os"
 
