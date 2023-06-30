@@ -38,12 +38,12 @@
       </div>
     </a>
     <div>
-      <button class="nes-btn is-warning"
-              hx-post="/parent/kids/{{.ID}}/logout"
-              hx-confirm="Logout {{.Username}} from all active sessions?"
-              hx-swap="outerHTML"
-      >logout</button>
-
+      <!-- <button class="nes-btn is-warning"
+           hx-post="/parent/kids/{{.ID}}/logout"
+           hx-confirm="Logout {{.Username}} from all active sessions?"
+           hx-swap="outerHTML"
+           >logout</button>
+      -->
       <button class="nes-btn is-error"
               hx-delete="/parent/kids/{{.ID}}"
               hx-confirm="Delete {{.Username}}?"
