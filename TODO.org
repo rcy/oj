@@ -1,11 +1,11 @@
 * FEATURES
+** video ripper
 ** pixel editor
 ** chess
 ** image look up
 ** math games
 ** word games
 ** recorder
-** video ripper
 ** pong
 ** snake
 
@@ -14,16 +14,11 @@
 ** TODO nes style the welcome pages
 ** -----
 ** TODO make responsive, adopt tailwind
-** TODO nav: games chat my-profile
-move background to profile
 ** TODO show my family/friends on my page
 ** TODO remove bios table, move to user column
 ** TODO revisit the parent page
 ** TODO create families
 ** TODO run prettier on html
-** TODO improve chat notifications
-- [ ] increment counter in header in realtime
-- [ ] decrement counter in header in realtime
 
 * COMPLETED
 ** DONE change avatar
@@ -37,3 +32,8 @@ move background to profile
 ** DONE nicer scrollbar, or hide scrollbar in chat
 ** DONE add link to profile from chat
 ** DONE make chatlist links go to u/:id/chat
+** DONE nav: games chat my-profile
+move background to profile
+** DONE improve chat notifications
+- [X] increment counter in header in realtime
+- [X] decrement counter in header in realtime
