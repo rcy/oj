@@ -37,6 +37,8 @@ func Router() *chi.Mux {
 
 		r.Get("/parent", parent.Index)
 		r.Post("/parent/kids", parent.CreateKid)
+		r.Delete("/parent/kids/{userID}", parent.DeleteKid)
+		r.Post("/parent/kids/{userID}/logout", parent.LogoutKid)
 
 		//r.Get("/chat/{roomID}", chat.Index)        // deprecated
 		r.Post("/chat/messages", chat.PostChatMessage)

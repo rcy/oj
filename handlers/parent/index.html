@@ -1,15 +1,56 @@
 {{define "main"}}
-<h2>hello parent {{.User.Email}}</h2>
+<div style="display:flex; flex-direction: column; gap:1em; margin-top:1em">
+  <div class="nes-container is-dark" style="display:flex; flex-direction:column; gap:1em">
+    <h1>hello parent {{.User.Email}}</h1>
 
-<form action="/parent/kids" method="post">
-  <label>
-    Kid's Username
-    <input type="text" name="username">
-  </label>
-</form>
+    <p>
+      Here you can add managed accounts for your kids.
+    </p>
 
-{{range .Kids}}
-{{.Username}}
+    <p>
+      Kids will be able to login with their username and a 4 digit PIN
+      that will be emailed to you, the parent.
+    </p>
+
+    <form action="/parent/kids" method="post">
+      <label>
+        Kid's Username
+        <input class="nes-input" type="text" name="username">
+      </label>
+      <button class="nes-btn is-primary">Add Kid</button>
+    </form>
+  </div>
+
+  {{range .Kids}}
+  {{template "kid" .}}
+  {{end}}
+</div>
 {{end}}
 
+{{define "kid"}}
+<div class="nes-container ghost kid">
+  <div style="display:flex; justify-content:space-between">
+    <a href="/u/{{.ID}}" style="display: flex; gap:1em">
+      <img src="{{.AvatarURL}}">
+      <div style="display:flex; flex-direction: column">
+        <h2>{{.Username}}</h2>
+        <div>0 sessions</div>
+      </div>
+    </a>
+    <div>
+      <button class="nes-btn is-warning"
+              hx-post="/parent/kids/{{.ID}}/logout"
+              hx-confirm="Logout {{.Username}} from all active sessions?"
+              hx-swap="outerHTML"
+      >logout</button>
+
+      <button class="nes-btn is-error"
+              hx-delete="/parent/kids/{{.ID}}"
+              hx-confirm="Delete {{.Username}}?"
+              hx-target="closest .kid"
+              hx-swap="outerHTML"
+      >delete</button>
+    </div>
+  </div>
+</div>
 {{end}}
