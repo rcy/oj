@@ -31,17 +31,19 @@
     })();
   </script>
 
-  <div class="xnes-container" style="height:100%; display:flex; flex-direction:column">
+  <div style="height:100%; display:flex; flex-direction:column">
 
-    <section class="ghost" style="display:flex; align-items: top; gap:1em; box-shadow: 0 8px rgba(0,0,0,.5); z-index:1000">
+    <a href="/u/{{.User.ID}}" style="z-index:1000; text-decoration: none;">
+      <section class="ghost" style="display:flex; align-items: top; gap:1em; box-shadow: 0 8px rgba(0,0,0,.5);">
       <img src="{{.User.AvatarURL}}" width="80px" height="80px">
       <div style="flex">
+        chatting with
         <h1>{{.User.Username}}</h1>
-        <a href="/u/{{.User.ID}}">profile</a>
       </div>
-    </section>
+      </section>
+    </a>
 
-    <div class="hide-scrollbar" style="flex:1; overflow-y: scroll; display:flex; flex-direction: column-reverse;">
+    <div class="hide-scrollbar" style="flex:1; overflow-y: scroll; display:flex; flex-direction: column-reverse">
       {{template "chatMessages" .}}
     </div>
     <div>

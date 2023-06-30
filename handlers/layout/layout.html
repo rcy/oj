@@ -50,7 +50,7 @@
     </script>
   </head>
   <body style="height: 100%">
-    <div style="height: 100%;display:flex; flex-direction:column; gap: 1em;">
+    <div style="height: 100%;display:flex; flex-direction:column">
       {{template "header" .}}
 
       <main style="flex:auto; height:100%; overflow: auto;">
@@ -58,11 +58,7 @@
           {{block "main" .}}{{end}}
         </div>
       </main>
-      <footer>
-        {{block "footer" .}}{{end}}
-      </footer>
     </div>
-    
   </body>
 </html>
 
