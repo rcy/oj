@@ -1,23 +1,31 @@
 {{define "main"}}
-<h1>Welcome to Octopus Junior!</h1>
 
-<div class="box kid big">
-  <strong class="block titlebar">Kids Zone</strong>
+<div style="display:flex; flex-direction:column; gap:3em">
+  <div class="nes-container">
+    <h2>Kids Zone</h2>
+    <i class="nes-ash"></i>
 
-  <p>
-    <a class="<button> big" href="/welcome/kids">
+    <p>Use this button if have an account</p>
+
+    <a class="nes-btn is-success" href="/welcome/kids">
       I am a Kid!
     </a>
-  </p>
-</div>
+  </div>
 
-<div class="box parent">
-  <strong class="block titlebar">Parents Zone</strong>
+  <div class="nes-container">
+    <h2>Parents: Start Here</h2>
 
-  <p>
-    <a class="<button> big" href="/welcome/parents">
-      I am a parent
+    <p>
+      A parent account is required to use Octopus Jr.
+    </p>
+    <p>The first step is to create an account using your email address.</p>
+
+    <p>Once logged in you will be able to create managed accounts for your children.</p>
+
+    <a class="nes-btn is-primary" href="/welcome/parents">
+      Parent Registration
     </a>
-  </p>
+  </div>
+
 </div>
 {{end}}

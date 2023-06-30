@@ -1,25 +1,40 @@
 {{define "main"}}
 <div style="display:flex; flex-direction: column; gap:1em; margin-top:1em">
   <div class="nes-container is-dark" style="display:flex; flex-direction:column; gap:1em">
-    <h1>hello parent {{.User.Email}}</h1>
+    <h1>Hello parent! <small>{{.User.Email}}</small></h1>
 
     <p>
       Here you can add managed accounts for your kids.
     </p>
 
     <p>
-      Kids will be able to login with their username and a 4 digit PIN
-      that will be emailed to you, the parent.
+      You are the manager for these accounts.  You can remove them and
+      all associated data at any time.
     </p>
 
-    <form action="/parent/kids" method="post">
-      <label>
-        Kid's Username
-        <input class="nes-input" type="text" name="username">
-      </label>
-      <button class="nes-btn is-primary">Add Kid</button>
-    </form>
+    <p>
+      Choose a unique username for your child.  It can contain their
+      name, but doesn't have to.  They will be able to
+      change it to whatever they want when they login.
+    </p>
+
+    <div class="nes-container is-dark">
+      <form action="/parent/kids" method="post">
+        <label>
+          Child's Username
+          <input class="nes-input" type="text" name="username">
+        </label>
+        <button class="nes-btn is-primary">Add Kid</button>
+      </form>
+    </div>
+
+    <p>
+      Kids login with their username and a one time code that will
+      be emailed to {{.User.Email}}.
+    </p>
   </div>
+
+
 
   {{range .Kids}}
   {{template "kid" .}}
@@ -33,8 +48,8 @@
     <a href="/u/{{.ID}}" style="display: flex; gap:1em">
       <img src="{{.AvatarURL}}">
       <div style="display:flex; flex-direction: column">
-        <h2>{{.Username}}</h2>
-        <div>0 sessions</div>
+        <h2>username: {{.Username}}</h2>
+        <div>Joined {{.CreatedAt}}</div>
       </div>
     </a>
     <div>
@@ -46,7 +61,7 @@
       -->
       <button class="nes-btn is-error"
               hx-delete="/parent/kids/{{.ID}}"
-              hx-confirm="Delete {{.Username}}?"
+              hx-confirm="Permanently delete {{.Username}} and all associated data?"
               hx-target="closest .kid"
               hx-swap="outerHTML"
       >delete</button>

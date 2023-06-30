@@ -43,6 +43,7 @@ func (u User) CreateKid(username string) (*User, error) {
 	if err != nil {
 		return nil, err
 	}
+	defer tx.Rollback()
 
 	result, err := tx.Exec("insert into users(username) values(?)", username)
 	if err != nil {
@@ -76,7 +77,12 @@ func (u User) CreateKid(username string) (*User, error) {
 func GetKids(parentUserID int64) ([]User, error) {
 	var kids []User
 
-	err := db.DB.Select(&kids, "select users.* from kids_parents join users on kids_parents.kid_id = users.id where kids_parents.parent_id = ?", parentUserID)
+	err := db.DB.Select(&kids, `
+select users.* from kids_parents
+join users on kids_parents.kid_id = users.id
+where kids_parents.parent_id = ?
+order by created_at desc
+`, parentUserID)
 	if err != nil {
 		return nil, err
 	}

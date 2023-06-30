@@ -18,6 +18,7 @@
 ** TODO remove bios table, move to user column
 ** TODO revisit the parent page
 ** TODO create families
+** TODO use uuids of some sort
 ** TODO run prettier on html
 
 * COMPLETED

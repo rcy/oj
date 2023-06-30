@@ -1,19 +1,19 @@
 {{define "main"}}
-<h1>Kids Login</h1>
-<div class="box kid big">
-  <strong class="block titlebar">Step 2: Enter Code</strong>
+<div class="nes-container">
+  <h2>Kids Login - Step 2: Code</h2>
+  <i class="nes-squirtle"></i>
+
   <p>
     Please enter the four numbers sent to your parent's email
   </p>
   <form method="post" action="/welcome/kids/code" >
     <label>
-      Code
-      <input name="code" type="text" required>
+      4 Digit Code
+      <input autofocus class="nes-input" placeholder="Type code..." name="code" type="text" required>
     </label>
-    <button class="big" type="submit">Submit</button>
+    <button class="nes-btn is-success" type="submit">Submit</button>
     <br/>
-    <p class="bad color">{{if .Retry}}invalid code, try again{{end}}</p>
+    <p class="nes-text is-error">{{if .Retry}}invalid code, try again{{end}}</p>
   </form>
 </div>
-
 {{end}}

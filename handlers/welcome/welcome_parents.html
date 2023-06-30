@@ -1,19 +1,23 @@
 {{define "main"}}
-<h1>Parents Registration</h1>
-<div class="box parent">
-  <strong class="block titlebar">Signin or Signup with Email</strong>
-  <br>
-  <form method="post" action="/welcome/parents/email" >
-    <label>
-      Email
-      <input name="email" type="email" required>
-    </label>
-    <button type="submit">Submit</button>
+<div style="display:flex; flex-direction:column;gap:2em">
+  <div class="nes-container">
+    <h2>Parent Registration <small>Step 1: Email</small></h2>
+
+    <p>
+      New and returning parents sign in here.
+    </p>
+    
+    <form method="post" action="/welcome/parents/email" >
+      <label>
+        Email
+        <input autofocus placeholder="human@example.com" class="nes-input" name="email" type="email" required>
+      </label>
+      <button class="nes-btn is-primary" type="submit">Submit</button>
   </form>
 </div>
 
 <div class="box kid">
-  If you are looking for the kids login, <a href="/welcome/kids">click here!</a>
+  If you are looking for the kids login, <a class="nes-text is-success" href="/welcome/kids">click here!</a>
 </div>
 
 {{end}}
