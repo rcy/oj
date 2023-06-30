@@ -89,7 +89,8 @@ delete from kids_codes where user_id = ?;
 delete from messages where sender_id = ?;
 delete from room_users where user_id = ?;
 delete from sessions where user_id = ?;
-`, userID, userID, userID, userID, userID, userID, userID, userID)
+delete from users where id = ?;
+`, userID, userID, userID, userID, userID, userID, userID, userID, userID)
 	if err != nil {
 		render.Error(w, err.Error(), http.StatusInternalServerError)
 		return
