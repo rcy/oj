@@ -107,7 +107,10 @@ func emailRegisterAction(w http.ResponseWriter, r *http.Request) {
 	http.SetCookie(w, &http.Cookie{Name: "kh_nonce", Value: nonce, Path: "/", Expires: time.Now().Add(time.Hour)})
 
 	// email code to user
-	_, _, err = email.Send("hello", code, address)
+	_, _, err = email.Send(
+		fmt.Sprintf("Parent registration code: %s", code),
+		fmt.Sprintf("Your Octopus Jr verification code is %s", code),
+		address)
 	if err != nil {
 		log.Printf("Error emailing code gYqGXoK6XfC2va3Rp: %s", err)
 		render.Error(w, "Error emailing code gYqGXoK6XfC2va3Rp", 500)
@@ -178,7 +181,11 @@ func kidsUsernameAction(w http.ResponseWriter, r *http.Request) {
 	}
 
 	for _, parent := range parents {
-		_, _, err = email.Send("code for your kid", code, *parent.Email)
+		_, _, err = email.Send(
+			fmt.Sprintf("Code for %s is %s", username, code),
+			fmt.Sprintf(fmt.Sprintf("Your child, %s, is trying to login to Octopus Jr.  The verification code is %s.",
+				username, code)),
+			*parent.Email)
 		if err != nil {
 			log.Printf("Error sending email BohZie4YoPfrTHwj4: %s", err)
 		}
