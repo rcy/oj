@@ -45,3 +45,4 @@ move background to profile
 - [X] report bad username on kids login
 - [ ] make into a single page as much as possible
 ** DONE revisit the parent page
+** DONE github action to deploy
