@@ -10,19 +10,13 @@
 ** snake
 
 * TASKS
-** TODO write the Learn more blurb
-** TODO last pass on registration
-- [ ] make into a single page as much as possible
-- [ ] report bad username on kids login
-
 ** TODO add a family code
-** TODO logout
-** TODO nes style the welcome pages
+** TODO add process for extended family / family friends to join
 ** -----
+** TODO context logging with request id
 ** TODO make responsive, adopt tailwind
 ** TODO show my family/friends on my page
 ** TODO remove bios table, move to user column
-** TODO revisit the parent page
 ** TODO create families
 ** TODO use uuids of some sort
 ** TODO run prettier on html
@@ -44,3 +38,11 @@ move background to profile
 ** DONE improve chat notifications
 - [X] increment counter in header in realtime
 - [X] decrement counter in header in realtime
+** DONE fix code emails
+** DONE nes style the welcome pages
+** DONE logout
+** DONE last pass on registration [1/2]
+- [X] report bad username on kids login
+- [ ] make into a single page as much as possible
+** DONE revisit the parent page
+** DONE github action to deploy
