@@ -7,13 +7,19 @@
     Please enter the four numbers sent to your parent's email
   </p>
   <form method="post" action="/welcome/kids/code" >
-    <label>
-      4 Digit Code
-      <input class="nes-input" placeholder="Type code..." name="code" type="text" required>
-    </label>
+    <div>
+      <label>
+        4 Digit Code
+        <input class="nes-input"
+               placeholder="Type code..."
+               name="code"
+               type="text"
+               required
+               x-on:keydown="$refs.error.setHTML('')">
+        <div x-ref="error" class="nes-text is-error">{{.Error}}</div>
+      </label>
+    </div>
     <button class="nes-btn is-success" type="submit">Submit</button>
-    <br/>
-    <p class="nes-text is-error">{{if .Retry}}invalid code, try again{{end}}</p>
   </form>
 </div>
 {{end}}

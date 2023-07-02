@@ -1,14 +1,23 @@
 {{define "main"}}
-<div style="display:flex; flex-direction:column;gap:2em">
+<div id="welcomeKidsSection" style="display:flex; flex-direction:column;gap:2em">
   <div class="nes-container">
     <h2>Kids Login - Step 1: Username</h2>
     <i class="nes-pokeball"></i>
 
-    <form method="post" action="/welcome/kids/username" >
-      <label>
-        Username
-        <input class="nes-input" placeholder="Type your username..." name="username" type="text" id="usernameInput" aria-describedby="usernameHelp">
-      </label>
+    <form method="post" action="/welcome/kids/username">
+      <div>
+        <label>
+          Username
+          <input class="nes-input"
+                 placeholder="Type your username..."
+                 name="username"
+                 type="text"
+                 required
+                 x-on:keydown="$refs.error.setHTML('')">
+          <div x-ref="error" class="nes-text is-error">{{.Error}}</div>
+        </label>
+      </div>
+
       <button class="nes-btn is-success" type="submit">Submit</button>
     </form>
   </div>

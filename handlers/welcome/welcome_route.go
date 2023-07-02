@@ -1,12 +1,13 @@
 package auth
 
 import (
+	cryptorand "crypto/rand"
 	"database/sql"
 	"encoding/base64"
 	"fmt"
 	"html/template"
 	"log"
-	"math/rand"
+	mathrand "math/rand"
 	"net/http"
 	"oj/db"
 	"oj/handlers/render"
@@ -51,7 +52,7 @@ var welcomeKidsTemplate = template.Must(template.ParseFiles(
 ))
 
 func welcomeKids(w http.ResponseWriter, r *http.Request) {
-	err := welcomeKidsTemplate.Execute(w, nil)
+	err := welcomeKidsTemplate.Execute(w, struct{ Error string }{""})
 	if err != nil {
 		render.Error(w, err.Error(), 500)
 	}
@@ -77,7 +78,7 @@ func signout(w http.ResponseWriter, r *http.Request) {
 func generateDigitCode() string {
 	code := ""
 	for i := 0; i < 4; i++ {
-		digit := rand.Intn(10)
+		digit := mathrand.Intn(10)
 		code += fmt.Sprint(digit)
 	}
 
@@ -127,10 +128,7 @@ var welcomeParentsCodeTemplate = template.Must(template.ParseFiles(
 ))
 
 func parentsCode(w http.ResponseWriter, r *http.Request) {
-	retry := r.URL.Query().Has("retry")
-	log.Printf("retry(%v)", retry)
-
-	err := welcomeParentsCodeTemplate.Execute(w, struct{ Retry bool }{Retry: retry})
+	err := welcomeParentsCodeTemplate.Execute(w, struct{ Error string }{""})
 	if err != nil {
 		render.Error(w, err.Error(), 500)
 	}
@@ -138,18 +136,17 @@ func parentsCode(w http.ResponseWriter, r *http.Request) {
 
 func kidsUsernameAction(w http.ResponseWriter, r *http.Request) {
 	username := r.FormValue("username")
-	if username == "" {
-		http.Redirect(w, r, "/welcome/kids", http.StatusSeeOther)
-		return
-	}
 
 	user, err := users.FindByUsername(username)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			http.Redirect(w, r, "/welcome/kids?badusername", http.StatusSeeOther)
+			err = welcomeKidsTemplate.Execute(w, struct{ Error string }{"User not found"})
+			if err != nil {
+				render.Error(w, err.Error(), 500)
+			}
 			return
 		}
-		http.Redirect(w, r, "/welcome/kids?weirderror", http.StatusSeeOther)
+		render.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
@@ -201,10 +198,7 @@ var welcomeKidsCodeTemplate = template.Must(template.ParseFiles(
 ))
 
 func kidsCode(w http.ResponseWriter, r *http.Request) {
-	retry := r.URL.Query().Has("retry")
-	log.Printf("retry(%v)", retry)
-
-	err := welcomeKidsCodeTemplate.Execute(w, struct{ Retry bool }{Retry: retry})
+	err := welcomeKidsCodeTemplate.Execute(w, struct{ Error string }{""})
 	if err != nil {
 		render.Error(w, err.Error(), 500)
 	}
@@ -266,7 +260,11 @@ func kidsCodeAction(w http.ResponseWriter, r *http.Request) {
 	} else {
 		log.Println("code is bad")
 		// code is bad
-		http.Redirect(w, r, "/welcome/kids/code?retry", 303)
+		err = welcomeKidsCodeTemplate.Execute(w, struct{ Error string }{"bad code, try again"})
+		if err != nil {
+			render.Error(w, err.Error(), 500)
+			return
+		}
 	}
 }
 
@@ -324,15 +322,20 @@ func parentsCodeAction(w http.ResponseWriter, r *http.Request) {
 		// redirect
 		http.Redirect(w, r, "/", 303)
 	} else {
-		log.Println("code is bad")
 		// code is bad
-		http.Redirect(w, r, "/welcome/parents/code?retry", 303)
+		log.Println("code is bad")
+		err := welcomeParentsCodeTemplate.Execute(w, struct{ Error string }{"bad code, try again"})
+		if err != nil {
+			render.Error(w, err.Error(), 500)
+		}
+		//http.Redirect(w, r, "/welcome/parents/code?retry", 303)
+
 	}
 }
 
 func generateSecureString(length int) (string, error) {
 	randomBytes := make([]byte, length)
-	_, err := rand.Read(randomBytes)
+	_, err := cryptorand.Read(randomBytes)
 	if err != nil {
 		return "", err
 	}

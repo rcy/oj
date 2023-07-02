@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
     <link href="https://unpkg.com/nes.css@latest/css/nes.min.css" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
 
@@ -13,7 +15,7 @@
      }
     </style>
   </head>
-  <body>
+  <body x-data>
     <div style="display:flex; flex-direction: column; gap:2em">
       <header hx-get="/header" hx-trigger="USER_UPDATE from:body" hx-swap="outerHTML"
               style="background: rgba(0,0,0,.9); color:white;">

@@ -7,13 +7,19 @@
     </p>
 
     <form method="post" action="/welcome/parents/code" >
-      <label>
-        Code
-        <input class="nes-input" placeholder="Enter code..." name="code" type="text" required>
-      </label>
+      <div>
+        <label>
+          4 Digit Code
+          <input class="nes-input"
+                 placeholder="Enter code..."
+                 name="code"
+                 type="text"
+                 required
+                 x-on:keydown="$refs.error.setHTML('')">
+          <div x-ref="error" class="nes-text is-error">{{.Error}}</div>
+        </label>
+      </div>
       <button class="nes-btn is-primary" type="submit">Submit</button>
-      <br/>
-      <p class="nes-text is-error">{{if .Retry}}invalid code, try again{{end}}</p>
     </form>
 
     <p>
