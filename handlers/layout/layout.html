@@ -75,9 +75,9 @@
         </a>
 
         {{if (eq .Layout.UnreadCount 0)}}
-        <a href="/u">Chat</a>
+        <a href="/friends">Chat</a>
         {{else}}
-        <a href="/u">Chat({{.Layout.UnreadCount}})</a>
+        <a href="/friends">Chat({{.Layout.UnreadCount}})</a>
         {{end}}
 
         <a href="/u/{{.Layout.User.ID}}"
