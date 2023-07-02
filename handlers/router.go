@@ -22,6 +22,8 @@ import (
 func Router() *chi.Mux {
 	r := chi.NewRouter()
 
+	r.Use(middleware.RequestID)
+
 	middleware.DefaultLogger = middleware.RequestLogger(&middleware.DefaultLogFormatter{Logger: log.New(os.Stdout, "", log.LstdFlags), NoColor: true})
 	r.Use(middleware.Logger)
 
