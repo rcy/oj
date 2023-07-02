@@ -17,6 +17,7 @@
 
 {{define "main"}}
 {{template "initEventSource" .}}
+{{template "ensureInteraction" .}}
 <div style="height:100%; display:flex; flex-direction:column">
 
   <a href="/u/{{.User.ID}}" style="z-index:1000; text-decoration: none;">
@@ -112,4 +113,31 @@
     })
   })();
 </script>
+{{end}}
+
+{{define "ensureInteraction"}}
+<section>
+  <script>
+    function testBeep() {
+      return document.getElementById('beeper').play()
+    }
+
+    window.onload = async function() {
+      try {
+        await testBeep()
+      } catch(e) {
+        document.getElementById('force-interaction').showModal()
+      }
+    }
+  </script>
+  <dialog class="nes-dialog" id="force-interaction">
+    <form method="dialog">
+      <p class="title">Hello!</p>
+      <p>Click button to enable beeps</p>
+      <menu class="dialog-menu">
+        <button class="nes-btn is-primary" onclick="testBeep()">OK</button>
+      </menu>
+    </form>
+  </dialog>
+</section>
 {{end}}
