@@ -1,4 +1,4 @@
-package u
+package friends
 
 import (
 	"html/template"
@@ -9,14 +9,15 @@ import (
 	"oj/models/users"
 )
 
-var uit = template.Must(template.ParseFiles(layout.File, "handlers/u/people.html"))
+var uit = template.Must(template.ParseFiles(layout.File, "handlers/friends/friends.html"))
 
 type UserWithCount struct {
 	users.User
 	Count int
+	Role  string
 }
 
-func UserIndex(w http.ResponseWriter, r *http.Request) {
+func Friends(w http.ResponseWriter, r *http.Request) {
 	user := users.Current(r)
 
 	l, err := layout.GetData(r)
@@ -25,16 +26,16 @@ func UserIndex(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var allUsers []UserWithCount
+	var friends []UserWithCount
 
-	err = db.DB.Select(&allUsers, "select * from users where id <> ?", user.ID)
+	err = db.DB.Select(&friends, `select users.*, b_role role from friends join users on b_id = users.id where a_id = ?`, user.ID)
 	if err != nil {
 		render.Error(w, err.Error(), 500)
 		return
 	}
 
-	for i, recipient := range allUsers {
-		err := db.DB.Get(&allUsers[i].Count, `select count() from deliveries where recipient_id = ? and sender_id = ? and sent_at is null`, user.ID, recipient.ID)
+	for i, recipient := range friends {
+		err := db.DB.Get(&friends[i].Count, `select count() from deliveries where recipient_id = ? and sender_id = ? and sent_at is null`, user.ID, recipient.ID)
 		if err != nil {
 			render.Error(w, err.Error(), 500)
 			return
@@ -48,7 +49,7 @@ func UserIndex(w http.ResponseWriter, r *http.Request) {
 	}{
 		Layout:   l,
 		User:     l.User,
-		AllUsers: allUsers,
+		AllUsers: friends,
 	}
 
 	render.Execute(w, uit, d)

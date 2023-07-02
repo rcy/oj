@@ -8,6 +8,7 @@ import (
 	"oj/db"
 	"oj/handlers/chat"
 	"oj/handlers/eventsource"
+	"oj/handlers/friends"
 	"oj/handlers/header"
 	"oj/handlers/parent"
 	"oj/handlers/render"
@@ -48,7 +49,6 @@ func Router() *chi.Mux {
 		r.Post("/tools/picker", tools.Picker)
 		r.Post("/tools/set-background", tools.SetBackground)
 
-		r.Get("/u", u.UserIndex)
 		r.Get("/u/{userID}", u.UserPage)
 		r.Get("/u/{userID}/chat", chat.UserChatPage)
 
@@ -61,6 +61,8 @@ func Router() *chi.Mux {
 
 		r.Get("/avatars", u.GetAvatars)
 		r.Put("/avatar", u.PutAvatar)
+
+		r.Get("/friends", friends.Friends)
 
 		r.NotFound(func(w http.ResponseWriter, r *http.Request) {
 			render.Error(w, "Page not found", 404)

@@ -16,7 +16,7 @@
         <img src="{{.AvatarURL}}">
         <div style="display:flex;flex-direction:column">
           <h2>
-            {{.Username}}
+            {{.Username}} ({{.Role}})
           </h2>
           {{if (eq .Count 1)}}
           <p class="nes-text is-error">{{.Count}} unread message</p>

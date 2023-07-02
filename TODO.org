@@ -10,14 +10,14 @@
 ** snake
 
 * TASKS
+** TODO show my family/friends on my page
 ** TODO add a family code
+** TODO create families
 ** TODO add process for extended family / family friends to join
 ** -----
 ** TODO context logging with request id
 ** TODO make responsive, adopt tailwind
-** TODO show my family/friends on my page
 ** TODO remove bios table, move to user column
-** TODO create families
 ** TODO use uuids of some sort
 ** TODO run prettier on html
 
