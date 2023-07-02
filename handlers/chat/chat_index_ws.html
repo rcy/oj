@@ -17,11 +17,18 @@
 
 {{define "main"}}
   <script>
+    const userID = "{{.Layout.User.ID}}";
+
     (function(){
       const es = new EventSource("/es/room-{{.RoomID}}");
 
-      // dispatch event for use by hx-trigger
       es.addEventListener("NEW_MESSAGE", (e) => {
+        const data = JSON.parse(e.data)
+        if (data.senderID !== userID) {
+          document.getElementById("beeper").play()
+        }
+
+        // dispatch event for use by hx-trigger
         document.getElementsByTagName('body')[0].dispatchEvent(new Event("NEW_MESSAGE"))
       })
 

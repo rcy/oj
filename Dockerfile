@@ -29,6 +29,8 @@ COPY --from=builder /app/app .
 # TODO: handlers has go code to remove
 COPY handlers handlers
 
+COPY assets assets
+
 # Expose the desired port
 EXPOSE 8080
 

@@ -72,6 +72,10 @@ func Router() *chi.Mux {
 	// non authenticated routes
 	r.Route("/welcome", auth.Route)
 
+	// serve static files
+	fs := http.FileServer(http.Dir("assets"))
+	r.Handle("/assets/*", http.StripPrefix("/assets", fs))
+
 	return r
 }
 

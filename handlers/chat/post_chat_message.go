@@ -1,6 +1,7 @@
 package chat
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"oj/db"
@@ -80,9 +81,15 @@ func postMessage(roomID, senderID int64, body string) error {
 
 	// send notifications after the transaction has been committed
 
+	data, err := json.Marshal(map[string]interface{}{
+		"senderID": fmt.Sprint(senderID),
+	})
+	if err != nil {
+		return err
+	}
 	eventsource.SSE.SendMessage(
 		fmt.Sprintf("/es/room-%d", roomID),
-		sse.NewMessage("", fmt.Sprint(messageID), "NEW_MESSAGE"))
+		sse.NewMessage("", string(data), "NEW_MESSAGE"))
 
 	for _, roomUser := range roomUsers {
 		if roomUser.ID != senderID {
