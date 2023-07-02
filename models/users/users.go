@@ -60,6 +60,11 @@ func (u User) CreateKid(username string) (*User, error) {
 		return nil, err
 	}
 
+	result, err = tx.Exec("insert into friends(a_id, b_id, b_role) values(?, ?, 'child'),(?, ?, 'parent')", u.ID, kidID, kidID, u.ID)
+	if err != nil {
+		return nil, err
+	}
+
 	err = tx.Commit()
 	if err != nil {
 		return nil, err
