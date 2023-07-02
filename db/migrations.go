@@ -136,4 +136,16 @@ create table deliveries(
   sent_at datetime,
   unique(message_id, recipient_id)
 );`,
+	`-- 16 add friends
+drop table if exists friends;
+create table friends(
+  id integer primary key,
+  created_at datetime not null default current_timestamp,
+  a_id integer not null references users(id) on delete cascade,
+  b_id integer not null references users(id) on delete cascade,
+  b_role text not null
+);
+insert into friends(a_id, b_id, b_role) select parent_id, kid_id, 'child' from kids_parents;
+insert into friends(a_id, b_id, b_role) select kid_id, parent_id, 'parent' from kids_parents;
+`,
 }

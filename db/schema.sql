@@ -21,6 +21,13 @@ CREATE TABLE deliveries(
   sent_at datetime,
   unique(message_id, recipient_id)
 );
+CREATE TABLE friends(
+  id integer primary key,
+  created_at datetime not null default current_timestamp,
+  a_id integer not null references users(id) on delete cascade,
+  b_id integer not null references users(id) on delete cascade,
+  b_role text not null
+);
 CREATE TABLE gradients(
   id integer primary key,
   created_at text not null default current_timestamp,
