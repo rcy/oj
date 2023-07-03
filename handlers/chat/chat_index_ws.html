@@ -119,7 +119,7 @@
 <section>
   <script>
     function testBeep() {
-      return document.getElementById('beeper').play()
+      return (new Audio()).play()
     }
 
     window.onload = async function() {
