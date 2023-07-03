@@ -15,7 +15,8 @@ import (
 )
 
 func PostChatMessage(w http.ResponseWriter, r *http.Request) {
-	user := users.Current(r)
+	ctx := r.Context()
+	user := users.FromContext(ctx)
 	roomID, err := strconv.Atoi(r.FormValue("roomID"))
 	if err != nil {
 		render.Error(w, err.Error(), 500)

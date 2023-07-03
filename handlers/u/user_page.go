@@ -70,7 +70,8 @@ func UserPage(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetAboutEdit(w http.ResponseWriter, r *http.Request) {
-	user := users.Current(r)
+	ctx := r.Context()
+	user := users.FromContext(ctx)
 	bio, err := getBio(user.ID)
 	if err != nil {
 		render.Error(w, "internal error", http.StatusInternalServerError)
@@ -81,7 +82,8 @@ func GetAboutEdit(w http.ResponseWriter, r *http.Request) {
 }
 
 func PutAbout(w http.ResponseWriter, r *http.Request) {
-	user := users.Current(r)
+	ctx := r.Context()
+	user := users.FromContext(ctx)
 	text := r.FormValue("text")
 
 	var bio Bio
@@ -101,7 +103,8 @@ func PutAbout(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetAbout(w http.ResponseWriter, r *http.Request) {
-	user := users.Current(r)
+	ctx := r.Context()
+	user := users.FromContext(ctx)
 	bio, err := getBio(user.ID)
 	if err != nil {
 		render.Error(w, err.Error(), http.StatusInternalServerError)
@@ -140,12 +143,14 @@ func getBio(userID int64) (*Bio, error) {
 }
 
 func GetCardEdit(w http.ResponseWriter, r *http.Request) {
-	user := users.Current(r)
+	ctx := r.Context()
+	user := users.FromContext(ctx)
 	render.ExecuteNamed(w, t, "card-edit", struct{ User users.User }{User: user})
 }
 
 func PatchUser(w http.ResponseWriter, r *http.Request) {
-	user := users.Current(r)
+	ctx := r.Context()
+	user := users.FromContext(ctx)
 	username := r.FormValue("username")
 
 	l, err := layout.GetData(r)
@@ -181,7 +186,8 @@ func PatchUser(w http.ResponseWriter, r *http.Request) {
 func GetAvatars(w http.ResponseWriter, r *http.Request) {
 	const count = 99
 
-	user := users.Current(r)
+	ctx := r.Context()
+	user := users.FromContext(ctx)
 
 	urls := []string{user.AvatarURL}
 
@@ -196,7 +202,8 @@ func GetAvatars(w http.ResponseWriter, r *http.Request) {
 }
 
 func PutAvatar(w http.ResponseWriter, r *http.Request) {
-	user := users.Current(r)
+	ctx := r.Context()
+	user := users.FromContext(ctx)
 	newAvatarURL := r.FormValue("URL")
 
 	err := db.DB.Get(&user, "update users set avatar_url = ? where id = ? returning *", newAvatarURL, user.ID)

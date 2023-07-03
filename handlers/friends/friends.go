@@ -18,7 +18,8 @@ type UserWithCount struct {
 }
 
 func Friends(w http.ResponseWriter, r *http.Request) {
-	user := users.Current(r)
+	ctx := r.Context()
+	user := users.FromContext(ctx)
 
 	l, err := layout.GetData(r)
 	if err != nil {

@@ -1,10 +1,8 @@
 package handlers
 
 import (
-	"context"
 	"log"
 	"net/http"
-	"oj/db"
 	"oj/handlers/chat"
 	"oj/handlers/eventsource"
 	"oj/handlers/friends"
@@ -84,15 +82,15 @@ func authMiddleware(next http.Handler) http.Handler {
 		if err != nil {
 			http.Redirect(w, r, "/welcome", http.StatusSeeOther)
 			return
-		} else {
-			var user users.User
-			err := db.DB.Get(&user, "select users.* from sessions join users on sessions.user_id = users.id where sessions.key = ?", cookie.Value)
-			if err != nil {
-				http.Redirect(w, r, "/welcome", http.StatusSeeOther)
-				return
-			}
-			ctx := context.WithValue(r.Context(), "user", user)
-			next.ServeHTTP(w, r.WithContext(ctx))
 		}
+
+		user, err := users.FromSessionKey(cookie.Value)
+		if err != nil {
+			http.Redirect(w, r, "/welcome", http.StatusSeeOther)
+			return
+		}
+
+		ctx := users.NewContext(r.Context(), user)
+		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }

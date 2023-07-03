@@ -43,7 +43,8 @@ func Index(w http.ResponseWriter, r *http.Request) {
 }
 
 func CreateKid(w http.ResponseWriter, r *http.Request) {
-	user := users.Current(r)
+	ctx := r.Context()
+	user := users.FromContext(ctx)
 	err := r.ParseForm()
 	if err != nil {
 		render.Error(w, err.Error(), 500)

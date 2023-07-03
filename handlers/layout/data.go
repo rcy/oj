@@ -17,7 +17,8 @@ type Data struct {
 }
 
 func GetData(r *http.Request) (Data, error) {
-	user := users.Current(r)
+	ctx := r.Context()
+	user := users.FromContext(ctx)
 
 	backgroundGradient, err := gradients.UserBackground(user.ID)
 	if err != nil {

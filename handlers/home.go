@@ -7,7 +7,8 @@ import (
 )
 
 func Home(w http.ResponseWriter, r *http.Request) {
-	user := users.Current(r)
+	ctx := r.Context()
+	user := users.FromContext(ctx)
 
 	if user.IsParent() {
 		http.Redirect(w, r, "/parent", http.StatusFound)

@@ -1,8 +1,8 @@
 package users
 
 import (
+	"context"
 	"database/sql"
-	"net/http"
 	"oj/db"
 	"strconv"
 	"time"
@@ -14,6 +14,27 @@ type User struct {
 	Username  string
 	Email     *string
 	AvatarURL string `db:"avatar_url"`
+}
+
+func FromSessionKey(key string) (User, error) {
+	var user User
+	err := db.DB.Get(&user, "select users.* from sessions join users on sessions.user_id = users.id where sessions.key = ?", key)
+	if err != nil {
+		return User{}, err
+	}
+	return user, nil
+}
+
+type key int
+
+const userKey key = 0
+
+func NewContext(ctx context.Context, user User) context.Context {
+	return context.WithValue(ctx, userKey, user)
+}
+
+func FromContext(ctx context.Context) User {
+	return ctx.Value(userKey).(User)
 }
 
 func (u User) IsParent() bool {
@@ -92,10 +113,6 @@ order by created_at desc
 		return nil, err
 	}
 	return kids, nil
-}
-
-func Current(r *http.Request) User {
-	return r.Context().Value("user").(User)
 }
 
 func FindById(id int64) (*User, error) {

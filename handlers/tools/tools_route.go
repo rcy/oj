@@ -52,7 +52,8 @@ func Picker(w http.ResponseWriter, r *http.Request) {
 }
 
 func SetBackground(w http.ResponseWriter, r *http.Request) {
-	user := users.Current(r)
+	ctx := r.Context()
+	user := users.FromContext(ctx)
 
 	err := r.ParseForm()
 	if err != nil {

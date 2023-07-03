@@ -29,7 +29,8 @@ var chatTemplate = template.Must(
 	))
 
 func UserChatPage(w http.ResponseWriter, r *http.Request) {
-	user := users.Current(r)
+	ctx := r.Context()
+	user := users.FromContext(ctx)
 
 	pageUserID := chi.URLParam(r, "userID")
 	pageUser, err := users.FindByStringId(pageUserID)
