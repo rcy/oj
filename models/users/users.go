@@ -25,16 +25,18 @@ func FromSessionKey(key string) (User, error) {
 	return user, nil
 }
 
-type key int
+type contextKey int
 
-const userKey key = 0
+const (
+	userContextKey contextKey = iota
+)
 
 func NewContext(ctx context.Context, user User) context.Context {
-	return context.WithValue(ctx, userKey, user)
+	return context.WithValue(ctx, userContextKey, user)
 }
 
 func FromContext(ctx context.Context) User {
-	return ctx.Value(userKey).(User)
+	return ctx.Value(userContextKey).(User)
 }
 
 func (u User) IsParent() bool {
