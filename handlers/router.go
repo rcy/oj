@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"context"
-	"database/sql"
 	"log"
 	"net/http"
 	"oj/db"
@@ -83,26 +82,14 @@ func authMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		cookie, err := r.Cookie("kh_session")
 		if err != nil {
-			if err == http.ErrNoCookie {
-				http.Redirect(w, r, "/welcome", http.StatusSeeOther)
-				return
-			} else {
-				log.Printf("WARNING: weirderror: %s", err)
-				http.Redirect(w, r, "/welcome?weirderror", http.StatusSeeOther)
-				return
-			}
+			http.Redirect(w, r, "/welcome", http.StatusSeeOther)
+			return
 		} else {
 			var user users.User
 			err := db.DB.Get(&user, "select users.* from sessions join users on sessions.user_id = users.id where sessions.key = ?", cookie.Value)
 			if err != nil {
-				if err == sql.ErrNoRows {
-					http.Redirect(w, r, "/welcome", http.StatusSeeOther)
-					return
-				} else {
-					log.Printf("WARNING: weirderror2: %s", err)
-					http.Redirect(w, r, "/welcome?weirderror2", http.StatusSeeOther)
-					return
-				}
+				http.Redirect(w, r, "/welcome", http.StatusSeeOther)
+				return
 			}
 			ctx := context.WithValue(r.Context(), "user", user)
 			next.ServeHTTP(w, r.WithContext(ctx))
