@@ -41,7 +41,6 @@ func Router() *chi.Mux {
 		//r.Get("/chat/{roomID}", chat.Index)        // deprecated
 		r.Post("/chat/messages", chat.PostChatMessage)
 		r.Mount("/es", eventsource.SSE)
-		r.Mount("/es", eventsource.New())
 
 		r.Get("/tools", tools.Index)
 		r.Post("/tools/picker", tools.Picker)
