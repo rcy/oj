@@ -22,7 +22,8 @@ import (
 var t = template.Must(template.New("layout.html").Funcs(templatehelpers.FuncMap).ParseFiles(layout.File, "handlers/u/user_page.html"))
 
 func UserPage(w http.ResponseWriter, r *http.Request) {
-	l, err := layout.GetData(r)
+	ctx := r.Context()
+	l, err := layout.FromContext(ctx)
 	if err != nil {
 		render.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -153,7 +154,7 @@ func PatchUser(w http.ResponseWriter, r *http.Request) {
 	user := users.FromContext(ctx)
 	username := r.FormValue("username")
 
-	l, err := layout.GetData(r)
+	l, err := layout.FromContext(ctx)
 	if err != nil {
 		render.Error(w, err.Error(), http.StatusInternalServerError)
 		return

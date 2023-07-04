@@ -1,7 +1,7 @@
 package layout
 
 import (
-	"net/http"
+	"context"
 	"oj/db"
 	"oj/element/gradient"
 	"oj/models/gradients"
@@ -16,8 +16,7 @@ type Data struct {
 	UnreadCount        int
 }
 
-func GetData(r *http.Request) (Data, error) {
-	ctx := r.Context()
+func FromContext(ctx context.Context) (Data, error) {
 	user := users.FromContext(ctx)
 
 	backgroundGradient, err := gradients.UserBackground(user.ID)

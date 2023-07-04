@@ -21,7 +21,7 @@ func Friends(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	user := users.FromContext(ctx)
 
-	l, err := layout.GetData(r)
+	l, err := layout.FromContext(ctx)
 	if err != nil {
 		render.Error(w, err.Error(), 500)
 		return
