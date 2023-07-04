@@ -17,7 +17,8 @@ import (
 var t = template.Must(template.ParseFiles(layout.File, "handlers/tools/tools_index.html"))
 
 func Index(w http.ResponseWriter, r *http.Request) {
-	l, err := layout.GetData(r)
+	ctx := r.Context()
+	l, err := layout.FromContext(ctx)
 	if err != nil {
 		render.Error(w, err.Error(), 500)
 		return
