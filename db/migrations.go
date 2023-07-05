@@ -148,4 +148,12 @@ create table friends(
 insert into friends(a_id, b_id, b_role) select parent_id, kid_id, 'child' from kids_parents;
 insert into friends(a_id, b_id, b_role) select kid_id, parent_id, 'parent' from kids_parents;
 `,
+	`-- add is_parent to users
+alter table users drop column is_parent;
+alter table users add column is_parent bool not null default false;
+update users set is_parent = true where email is not null;
+`,
+	`-- add unique constraint to friends
+create unique index uidx_friends_a_b on friends (a_id, b_id)
+`,
 }

@@ -235,7 +235,7 @@ func kidsCodeAction(w http.ResponseWriter, r *http.Request) {
 		// create user if not exists
 		user, err := users.FindById(userID)
 		if err != nil {
-			render.Error(w, "error getting user", 500)
+			render.Error(w, "error getting user:"+err.Error(), 500)
 			return
 		}
 		log.Printf("user %v", user)
@@ -297,9 +297,9 @@ func parentsCodeAction(w http.ResponseWriter, r *http.Request) {
 		log.Println("code is good")
 		// found email, code is good
 		// create user if not exists
-		user, err := users.FindOrCreateByEmail(email)
+		user, err := users.FindOrCreateParentByEmail(email)
 		if err != nil {
-			render.Error(w, "error getting user", 500)
+			render.Error(w, "error getting user: "+err.Error(), 500)
 			return
 		}
 		log.Printf("user %v", user)

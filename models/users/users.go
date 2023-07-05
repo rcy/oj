@@ -14,6 +14,7 @@ type User struct {
 	Username  string
 	Email     *string
 	AvatarURL string `db:"avatar_url"`
+	IsParent  bool   `db:"is_parent"`
 }
 
 func FromSessionKey(key string) (User, error) {
@@ -37,10 +38,6 @@ func NewContext(ctx context.Context, user User) context.Context {
 
 func FromContext(ctx context.Context) User {
 	return ctx.Value(userContextKey).(User)
-}
-
-func (u User) IsParent() bool {
-	return u.Email != nil
 }
 
 func (u User) Parents() ([]User, error) {
@@ -156,8 +153,8 @@ func FindByUsername(username string) (*User, error) {
 	return &user, nil
 }
 
-func Create(email *string, username string) (*User, error) {
-	result, err := db.DB.Exec("insert into users(email, username) values(?, ?)", email, username)
+func CreateParent(email *string, username string) (*User, error) {
+	result, err := db.DB.Exec("insert into users(email, username, is_parent) values(?, ?, true)", email, username)
 	if err != nil {
 		return nil, err
 	}
@@ -165,12 +162,12 @@ func Create(email *string, username string) (*User, error) {
 	return FindById(id)
 }
 
-func FindOrCreateByEmail(email string) (*User, error) {
+func FindOrCreateParentByEmail(email string) (*User, error) {
 	user, err := FindByEmail(email)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			// we don't have a username here, so use the email, they can change it later
-			return Create(&email, email)
+			return CreateParent(&email, email)
 		}
 		return nil, err
 	}

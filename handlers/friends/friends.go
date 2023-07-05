@@ -29,7 +29,12 @@ func Friends(w http.ResponseWriter, r *http.Request) {
 
 	var friends []UserWithCount
 
-	err = db.DB.Select(&friends, `select users.*, b_role role from friends join users on b_id = users.id where a_id = ?`, user.ID)
+	err = db.DB.Select(&friends, `
+select users.*, fi.b_role role
+from users
+join friends fi on fi.b_id = users.id and fi.a_id = $1
+join friends fo on fo.a_id = users.id and fo.b_id = $1
+`, user.ID)
 	if err != nil {
 		render.Error(w, err.Error(), 500)
 		return

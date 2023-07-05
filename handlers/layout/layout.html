@@ -4,6 +4,7 @@
     <script src="https://unpkg.com/hyperscript.org@0.9.8"></script>
 
     <link href="https://unpkg.com/nes.css@latest/css/nes.min.css" rel="stylesheet" />
+    <link href="https://unpkg.com/nes.icons@latest/css/nes-icons.min.css" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
 
     <meta charset="utf-8">
@@ -75,6 +76,10 @@
           <i class="nes-icon  coin"></i>
           <h3 style="margin:0">OJ</h3>
         </a>
+
+        {{if .Layout.User.IsParent}}
+        <a href="/connect">Connect</a>
+        {{end}}
 
         {{if (eq .Layout.UnreadCount 0)}}
         <a href="/friends">Chat</a>

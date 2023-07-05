@@ -1,0 +1,87 @@
+{{define "main"}}
+<style>
+ .htmx-request {
+     opacity: .5;
+ }
+</style>
+<div style="display:flex;flex-direction:column; gap:1em">
+  <div class="nes-container ghost">
+    <h1>Connect with Other Parents</h1>
+    <p>Once you are connected with another parent, your children will be able to connect with eachother.</p>
+  </div>
+
+  <div style="display:flex; flex-direction:column; gap:1em" >
+    {{range .Connections}}
+    {{template "connection" .}}
+    {{end}}
+  </div>
+</div>
+{{end}}
+
+{{define "connection"}}
+<div class="nes-container ghost hx-connection" style="display:flex; gap:1em; justify-content: space-between">
+  <div style="display:flex; gap:1em">
+    <img src="{{.AvatarURL}}" width="80" height="80">
+    <div>
+      <h2 style="align-self: flex-start">{{.Username}}</h2>
+      <div>
+        {{if (not (eq .Status "none"))}}{{.Status}}{{end}}
+      </div>
+    </div>
+  </div>
+  <div style="align-self: flex-start">
+    {{template "connectionButton" .}}
+  </div>
+</div>
+{{end}}
+
+{{define "connectionButton"}}
+{{if (eq .Status "none")}}
+<button class="nes-btn is-primary"
+        hx-put="/connect/friend/{{.ID}}"
+        hx-target="closest .hx-connection"
+        hx-swap="outerHTML">
+  <div style="display:flex; gap: 1em; align-items: center">
+    <i class="nes-icon is-small user"></i>
+    <span>Add Friend</span>
+  </div>
+</button>
+{{end}}
+
+{{if (eq .Status "request received")}}
+<button class="nes-btn is-success"
+        hx-put="/connect/friend/{{.ID}}"
+        hx-target="closest .hx-connection"
+        hx-swap="outerHTML">
+  <div style="display:flex; gap: 1em; align-items: center">
+    <i class="nes-icon is-small check"></i>
+    <span>Accept Request</span>
+  </div>
+</button>
+{{end}}
+
+{{if (eq .Status "request sent")}}
+<button class="nes-btn"
+        hx-delete="/connect/friend/{{.ID}}"
+        hx-target="closest .hx-connection"
+        hx-swap="outerHTML">
+  <div style="display:flex; gap: 1em; align-items: center">
+    <i class="nes-icon is-small times"></i>
+    <span>Cancel Request</span>
+  </div>
+</button>
+{{end}}
+
+{{if (eq .Status "connected")}}
+<button class="nes-btn"
+        hx-delete="/connect/friend/{{.ID}}"
+        hx-confirm="Do you want to unfriend {{.Username}}?"
+        hx-target="closest .hx-connection"
+        hx-swap="outerHTML">
+  <div style="display:flex; gap: 1em; align-items: center">
+    <span>{{.RoleOut}}</span>
+  </div>
+</button>
+{{end}}
+
+{{end}}
