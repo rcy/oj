@@ -30,7 +30,7 @@ func UserPage(w http.ResponseWriter, r *http.Request) {
 	}
 
 	userID := chi.URLParam(r, "userID")
-	user, err := users.FindByStringId(userID)
+	pageUser, err := users.FindByStringId(userID)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			render.Error(w, "User not found", http.StatusNotFound)
@@ -39,7 +39,7 @@ func UserPage(w http.ResponseWriter, r *http.Request) {
 		render.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	ug, err := gradients.UserBackground(user.ID)
+	ug, err := gradients.UserBackground(pageUser.ID)
 	if err != nil {
 		render.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -47,13 +47,13 @@ func UserPage(w http.ResponseWriter, r *http.Request) {
 	// override layout gradient to show the page user's not the request user's
 	l.BackgroundGradient = *ug
 
-	bio, err := getBio(user.ID)
+	bio, err := getBio(pageUser.ID)
 	if err != nil {
 		render.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	canEdit := l.User.ID == user.ID
+	canEdit := l.User.ID == pageUser.ID
 
 	d := struct {
 		Layout  layout.Data
@@ -62,7 +62,7 @@ func UserPage(w http.ResponseWriter, r *http.Request) {
 		CanEdit bool
 	}{
 		Layout:  l,
-		User:    *user,
+		User:    *pageUser,
 		Bio:     *bio,
 		CanEdit: canEdit,
 	}
@@ -193,7 +193,8 @@ func GetAvatars(w http.ResponseWriter, r *http.Request) {
 	urls := []string{user.AvatarURL}
 
 	for i := 0; i < count; i += 1 {
-		url := fmt.Sprintf("https://www.gravatar.com/avatar/%s?d=retro", hash.GenerateMD5(fmt.Sprintf("%s-%d", user.Username, i)))
+		url := fmt.Sprintf("https://www.gravatar.com/avatar/%s?d=retro",
+			hash.GenerateMD5(fmt.Sprintf("%s-%d", user.Username, i)))
 		if url != urls[0] {
 			urls = append(urls, url)
 		}
