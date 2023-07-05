@@ -22,7 +22,3 @@ func GenerateMD5(s string) string {
 	hasher.Write([]byte(s))
 	return hex.EncodeToString(hasher.Sum(nil))
 }
-
-func RandomMD5() string {
-	return GenerateMD5(randomString(16))
-}
