@@ -10,8 +10,9 @@
   {{template "about" .}}
 
   {{if (eq .User.ID .Layout.User.ID)}}
-  <div style="display:flex; align-items:right; justify-content:flex-end">
-    <a href="/welcome/signout" class="nes-btn">logout</a>
+  <div style="display:flex; align-items:right; justify-content:space-between">
+    <a class="nes-btn" href="/tools">Change Background</a>
+    <a href="/welcome/signout" class="nes-btn">Logout</a>
   </div>
   {{end}}
 
@@ -43,8 +44,6 @@
 
   {{if (not (eq .User.ID .Layout.User.ID))}}
   <a class="nes-btn is-success" href="/u/{{.User.ID}}/chat">Chat</a>
-  {{else}}
-  <a class="nes-btn is-warning" href="/tools">Background</a>
   {{end}}
 </section>
 {{end}}
