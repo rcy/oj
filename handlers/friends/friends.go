@@ -6,6 +6,7 @@ import (
 	"oj/db"
 	"oj/handlers/layout"
 	"oj/handlers/render"
+	"oj/models/gradients"
 	"oj/models/users"
 )
 
@@ -13,8 +14,9 @@ var uit = template.Must(template.ParseFiles(layout.File, "handlers/friends/frien
 
 type UserWithCount struct {
 	users.User
-	Count int
-	Role  string
+	Count       int
+	Role        string
+	GradientCSS template.CSS
 }
 
 func Friends(w http.ResponseWriter, r *http.Request) {
@@ -41,11 +43,28 @@ join friends fo on fo.a_id = users.id and fo.b_id = $1
 	}
 
 	for i, recipient := range friends {
-		err := db.DB.Get(&friends[i].Count, `select count() from deliveries where recipient_id = ? and sender_id = ? and sent_at is null`, user.ID, recipient.ID)
+		err := db.DB.Get(&friends[i].Count, `
+select count()
+from deliveries
+where
+  recipient_id = ?
+and
+  sender_id = ?
+and
+  sent_at is null
+`, user.ID, recipient.ID)
 		if err != nil {
 			render.Error(w, err.Error(), 500)
 			return
 		}
+
+		bg, err := gradients.UserBackground(recipient.ID)
+		if err != nil {
+			render.Error(w, err.Error(), 500)
+			return
+		}
+
+		friends[i].GradientCSS = bg.Render()
 	}
 
 	d := struct {
