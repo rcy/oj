@@ -1,5 +1,5 @@
 {{define "main"}}
-<div style="display:flex;flex-direction:column;gap:1em;">
+<div style="display:flex;flex-direction:column;gap:2em;">
 
   <div class="nes-container is-dark">
     <h1>Friends</h1>
@@ -9,15 +9,22 @@
        hx-get="/u"
        hx-swap="outerHTML"
        hx-select="#friendList"
-       hx-trigger="USER_UPDATE from:body">
+       hx-trigger="USER_UPDATE from:body"
+       style="display:flex; flex-direction:column; gap:2em">
     {{range .AllUsers}}
-    <a href="/u/{{.ID}}/chat">
-      <div class="nes-container ghost" style="display:flex; gap:1em">
-        <img src="{{.AvatarURL}}">
-        <div style="display:flex;flex-direction:column">
-          <h2>
-            {{.Username}} ({{.Role}})
-          </h2>
+    <div style="padding: 1em; border: 4px solid black; background: cyan;">
+      <div class="nes-container"
+           style="display:flex; flex-direction:column; gap: 1em; background: rgba(255,255,255,.9)">
+        <a href="/u/{{.ID}}" style="display:flex; gap:1em; color: inherit">
+          <img src="{{.AvatarURL}}" height="80px" width="80px">
+          <div style="display:flex;flex-direction:column">
+            <h2>
+              {{.Username}} ({{.Role}})
+            </h2>
+          </div>
+        </a>
+        <div style="display:flex; gap:1em">
+          <a href="/u/{{.ID}}/chat" class="nes-btn">chat</a>
           {{if (eq .Count 1)}}
           <p class="nes-text is-error">{{.Count}} unread message</p>
           {{end}}
@@ -26,7 +33,7 @@
           {{end}}
         </div>
       </div>
-    </a>
+    </div>
     {{end}}
   </div>
 </div>
