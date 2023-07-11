@@ -20,3 +20,6 @@ deploy:
 
 drop:
 	-rm ${SQLITE_DB}{,-shm,-wal}
+
+seed: db/seed.sql
+	sqlite3 ${SQLITE_DB} < $<
