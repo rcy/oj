@@ -19,6 +19,30 @@ type Connection struct {
 	RoleOut *string `db:"role_out"`
 }
 
+func GetConnection(user1ID int64, user2ID any) (*Connection, error) {
+	var connection Connection
+	err := db.DB.Get(&connection, `
+select u.*,
+       case
+           when f1.a_id = $1 then f1.b_role
+           else null
+       end as role_out,
+       case
+           when f2.b_id = $1 then f2.b_role
+           else null
+       end as role_in
+from users u
+left join friends f1 on f1.b_id = u.id and f1.a_id = $1
+left join friends f2 on f2.a_id = u.id and f2.b_id = $1
+where
+  u.id = $2
+`, user1ID, user2ID)
+	if err != nil {
+		return nil, err
+	}
+	return &connection, err
+}
+
 func (f Connection) Status() string {
 	if f.RoleOut == nil {
 		if f.RoleIn == nil {
@@ -90,42 +114,17 @@ func PutParentFriend(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tx, err := db.DB.BeginTxx(ctx, nil)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	defer tx.Rollback()
-
-	_, err = tx.Exec(`insert into friends(a_id, b_id, b_role) values(?,?,'friend')`, currentUser.ID, userID)
+	_, err = db.DB.Exec(`insert into friends(a_id, b_id, b_role) values(?,?,'friend')`, currentUser.ID, userID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	err = tx.Commit()
+	connection, err := GetConnection(currentUser.ID, userID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-
-	var connection Connection
-	err = db.DB.Get(&connection, `
-select u.*,
-       case
-           when f1.a_id = $1 then f1.b_role
-           else null
-       end as role_out,
-       case
-           when f2.b_id = $1 then f2.b_role
-           else null
-       end as role_in
-from users u
-left join friends f1 on f1.b_id = u.id and f1.a_id = $1
-left join friends f2 on f2.a_id = u.id and f2.b_id = $1
-where
-  u.id = $2
-`, currentUser.ID, userID)
 
 	render.ExecuteNamed(w, t, "connection", connection)
 }
@@ -146,42 +145,17 @@ func DeleteParentFriend(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tx, err := db.DB.BeginTxx(ctx, nil)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	defer tx.Rollback()
-
-	_, err = tx.Exec(`delete from friends where a_id = $1 and b_id = $2`, currentUser.ID, userID)
+	_, err = db.DB.Exec(`delete from friends where a_id = $1 and b_id = $2`, currentUser.ID, userID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	err = tx.Commit()
+	connection, err := GetConnection(currentUser.ID, userID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-
-	var connection Connection
-	err = db.DB.Get(&connection, `
-select u.*,
-       case
-           when f1.a_id = $1 then f1.b_role
-           else null
-       end as role_out,
-       case
-           when f2.b_id = $1 then f2.b_role
-           else null
-       end as role_in
-from users u
-left join friends f1 on f1.b_id = u.id and f1.a_id = $1
-left join friends f2 on f2.a_id = u.id and f2.b_id = $1
-where
-  u.id = $2
-`, currentUser.ID, userID)
 
 	render.ExecuteNamed(w, t, "connection", connection)
 }

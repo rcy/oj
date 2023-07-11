@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"oj/handlers/chat"
 	"oj/handlers/connect"
+	"oj/handlers/connectkids"
 	"oj/handlers/eventsource"
 	"oj/handlers/friends"
 	"oj/handlers/header"
@@ -67,6 +68,10 @@ func Router() *chi.Mux {
 		r.Get("/connect", connect.Connect)
 		r.Put("/connect/friend/{userID}", connect.PutParentFriend)
 		r.Delete("/connect/friend/{userID}", connect.DeleteParentFriend)
+
+		r.Get("/connectkids", connectkids.KidConnect)
+		r.Put("/connectkids/friend/{userID}", connectkids.PutKidFriend)
+		r.Delete("/connectkids/friend/{userID}", connectkids.DeleteKidFriend)
 
 		r.NotFound(func(w http.ResponseWriter, r *http.Request) {
 			render.Error(w, "Page not found", 404)

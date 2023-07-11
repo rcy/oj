@@ -44,6 +44,7 @@ func (u User) Parents() ([]User, error) {
 	return GetParents(u.ID)
 }
 
+// parents via kids_parents table
 func GetParents(kidUserID int64) ([]User, error) {
 	var parents []User
 

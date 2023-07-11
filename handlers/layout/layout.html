@@ -79,6 +79,8 @@
 
         {{if .Layout.User.IsParent}}
         <a href="/connect">Connect</a>
+        {{else}}
+        <a href="/connectkids">Connect</a>
         {{end}}
 
         {{if (eq .Layout.UnreadCount 0)}}
