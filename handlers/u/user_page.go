@@ -9,12 +9,10 @@ import (
 	"oj/db"
 	"oj/handlers/layout"
 	"oj/handlers/render"
-	"oj/md"
 	"oj/models/gradients"
 	"oj/models/users"
 	"oj/templatehelpers"
 	"oj/util/hash"
-	"time"
 
 	"github.com/go-chi/chi/v5"
 )
@@ -47,23 +45,15 @@ func UserPage(w http.ResponseWriter, r *http.Request) {
 	// override layout gradient to show the page user's not the request user's
 	l.BackgroundGradient = *ug
 
-	bio, err := getBio(pageUser.ID)
-	if err != nil {
-		render.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
 	canEdit := l.User.ID == pageUser.ID
 
 	d := struct {
 		Layout  layout.Data
 		User    users.User
-		Bio     Bio
 		CanEdit bool
 	}{
 		Layout:  l,
 		User:    *pageUser,
-		Bio:     *bio,
 		CanEdit: canEdit,
 	}
 
@@ -73,13 +63,7 @@ func UserPage(w http.ResponseWriter, r *http.Request) {
 func GetAboutEdit(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	user := users.FromContext(ctx)
-	bio, err := getBio(user.ID)
-	if err != nil {
-		render.Error(w, "internal error", http.StatusInternalServerError)
-		return
-	}
-
-	render.ExecuteNamed(w, t, "about-edit", struct{ Bio Bio }{Bio: *bio})
+	render.ExecuteNamed(w, t, "about-edit", struct{ User users.User }{User: user})
 }
 
 func PutAbout(w http.ResponseWriter, r *http.Request) {
@@ -87,18 +71,17 @@ func PutAbout(w http.ResponseWriter, r *http.Request) {
 	user := users.FromContext(ctx)
 	text := r.FormValue("text")
 
-	var bio Bio
-	err := db.DB.Get(&bio, "insert into bios(user_id,text) values(?,?) returning *", user.ID, text)
+	err := db.DB.Get(&user, "update users set bio = ? where id = ? returning *", text, user.ID)
 	if err != nil {
 		render.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	render.ExecuteNamed(w, t, "about", struct {
-		Bio     Bio
+		User    users.User
 		CanEdit bool
 	}{
-		Bio:     bio,
+		User:    user,
 		CanEdit: true,
 	})
 }
@@ -106,41 +89,14 @@ func PutAbout(w http.ResponseWriter, r *http.Request) {
 func GetAbout(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	user := users.FromContext(ctx)
-	bio, err := getBio(user.ID)
-	if err != nil {
-		render.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
 
 	render.ExecuteNamed(w, t, "about", struct {
-		Bio     Bio
+		User    users.User
 		CanEdit bool
 	}{
-		Bio:     *bio,
+		User:    user,
 		CanEdit: true,
 	})
-}
-
-type Bio struct {
-	ID        int64
-	CreatedAt time.Time `db:"created_at"`
-	UserID    int64     `db:"user_id"`
-	Text      string
-}
-
-func (b Bio) HTML() template.HTML {
-	return md.RenderString(b.Text)
-}
-
-func getBio(userID int64) (*Bio, error) {
-	var bio Bio
-	err := db.DB.Get(&bio, "select * from bios where user_id = ? order by created_at desc limit 1", userID)
-	if err != nil {
-		if err != sql.ErrNoRows {
-			return nil, err
-		}
-	}
-	return &bio, nil
 }
 
 func GetCardEdit(w http.ResponseWriter, r *http.Request) {

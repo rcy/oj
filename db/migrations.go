@@ -155,4 +155,16 @@ update users set is_parent = true where email is not null;
 	`-- 18 add unique constraint to friends
 create unique index uidx_friends_a_b on friends (a_id, b_id)
 `,
+	`-- 19 remove bios table
+alter table users add column bio text not null default '';
+
+update users
+set bio = (
+  select coalesce(
+    (select text from bios where users.id = bios.user_id), ''
+  )
+);
+
+drop table bios;
+`,
 }

@@ -3,7 +3,9 @@ package users
 import (
 	"context"
 	"database/sql"
+	"html/template"
 	"oj/db"
+	"oj/md"
 	"strconv"
 	"time"
 )
@@ -15,6 +17,7 @@ type User struct {
 	Email     *string
 	AvatarURL string `db:"avatar_url"`
 	IsParent  bool   `db:"is_parent"`
+	Bio       string `db:"bio"`
 }
 
 func FromSessionKey(key string) (User, error) {
@@ -38,6 +41,10 @@ func NewContext(ctx context.Context, user User) context.Context {
 
 func FromContext(ctx context.Context) User {
 	return ctx.Value(userContextKey).(User)
+}
+
+func (u User) BioHTML() template.HTML {
+	return md.RenderString(u.Bio)
 }
 
 func (u User) Parents() ([]User, error) {

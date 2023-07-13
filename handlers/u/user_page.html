@@ -75,10 +75,10 @@
 <section class="nes-container ghost" hx-swap="outerHTML">
   <h3>About me</h3>
   <div>
-    {{if (eq .Bio.Text "")}}
+    {{if (eq .User.Bio "")}}
     <p class="nes-text is-disabled">nothing here yet</p>
     {{else}}
-    {{.Bio.HTML}}
+    {{.User.BioHTML}}
     {{end}}
   </div>
   {{if .CanEdit}}{{template "edit-section-button" "/bio/edit"}}{{end}}
@@ -94,7 +94,7 @@
       class="nes-textarea"
       placeholder="Write something about yourself..."
       rows=10
-    >{{.Bio.Text}}</textarea>
+    >{{.User.Bio}}</textarea>
     <div style="display:flex; justify-content:space-between;">
       <button type="submit" class="nes-btn is-primary">save</button>
       <button type="reset" class="nes-btn" hx-get="/bio">cancel</button>

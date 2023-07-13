@@ -1,9 +1,3 @@
-CREATE TABLE bios(
-  id integer primary key,
-  created_at datetime not null default current_timestamp,
-  user_id references users not null,
-  text string not null default ''
-);
 CREATE TABLE codes(
   id integer primary key,
   created_at datetime not null default current_timestamp,
@@ -79,4 +73,4 @@ CREATE TABLE users (
   created_at datetime not null default current_timestamp,
   username text not null unique check(length(username) > 0),
   email text check (email like '%@%') unique
-, avatar_url not null default 'https://www.gravatar.com/avatar/?d=mp', is_parent bool not null default false);
+, avatar_url not null default 'https://www.gravatar.com/avatar/?d=mp', is_parent bool not null default false, bio text not null default '');
