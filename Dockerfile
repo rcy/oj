@@ -14,7 +14,7 @@ RUN go mod download
 COPY . .
 
 # Build the Go application
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o app .
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o ./build/server .
 
 # Use a lightweight base image
 FROM alpine:latest
@@ -23,7 +23,7 @@ FROM alpine:latest
 WORKDIR /app
 
 # Copy the binary from the builder stage
-COPY --from=builder /app/app .
+COPY --from=builder /app/build/server .
 
 # Copy the handlers directory for the templates
 # TODO: handlers has go code to remove
@@ -35,4 +35,4 @@ COPY assets assets
 EXPOSE 8080
 
 # Run the Go application
-CMD ["./app"]
+CMD ["./server"]
