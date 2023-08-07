@@ -3,11 +3,15 @@ package chat
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
+	"net/url"
+	"oj/app"
 	"oj/db"
 	"oj/handlers/eventsource"
 	"oj/handlers/render"
 	"oj/models/users"
+	"oj/services/email"
 	"strconv"
 	"time"
 
@@ -41,6 +45,7 @@ type RoomUser struct {
 	CreatedAt time.Time `db:"created_at"`
 	RoomID    int64     `db:"room_id"`
 	UserID    int64     `db:"user_id"`
+	Email     *string   `db:"email"`
 }
 
 func postMessage(roomID, senderID int64, body string) error {
@@ -52,8 +57,15 @@ func postMessage(roomID, senderID int64, body string) error {
 	}
 	defer tx.Rollback()
 
+	var sender users.User
+
+	err = tx.Get(&sender, `select * from users where id = ?`, senderID)
+	if err != nil {
+		return err
+	}
+
 	// get the users of the room
-	err = tx.Select(&roomUsers, `select * from room_users where room_id = ?`, roomID)
+	err = tx.Select(&roomUsers, `select room_users.*, users.email from room_users join users on room_users.user_id = users.id where room_id = ?`, roomID)
 	if err != nil {
 		return err
 	}
@@ -88,15 +100,28 @@ func postMessage(roomID, senderID int64, body string) error {
 	if err != nil {
 		return err
 	}
+
 	eventsource.SSE.SendMessage(
 		fmt.Sprintf("/es/room-%d", roomID),
 		sse.NewMessage("", string(data), "NEW_MESSAGE"))
 
 	for _, roomUser := range roomUsers {
-		if roomUser.ID != senderID {
-			eventsource.SSE.SendMessage(
-				fmt.Sprintf("/es/user-%d", roomUser.UserID),
-				sse.NewMessage("", "simple", "USER_UPDATE"))
+		if roomUser.ID == senderID {
+			continue
+		}
+
+		eventsource.SSE.SendMessage(
+			fmt.Sprintf("/es/user-%d", roomUser.UserID),
+			sse.NewMessage("", "simple", "USER_UPDATE"))
+
+		if roomUser.Email != nil {
+			link := app.AbsoluteURL(url.URL{Path: fmt.Sprintf("/u/%d/chat", senderID)})
+			subject := fmt.Sprintf("%s sent you a message", sender.Username)
+			emailBody := fmt.Sprintf("%s %s", body, link.String())
+			_, _, err := email.Send(subject, emailBody, *roomUser.Email)
+			if err != nil {
+				log.Printf("WARN: error sending email: %s", err)
+			}
 		}
 	}
 
