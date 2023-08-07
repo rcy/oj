@@ -106,7 +106,7 @@ func postMessage(roomID, senderID int64, body string) error {
 		sse.NewMessage("", string(data), "NEW_MESSAGE"))
 
 	for _, roomUser := range roomUsers {
-		if roomUser.ID == senderID {
+		if roomUser.UserID == senderID {
 			continue
 		}
 
