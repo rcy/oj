@@ -1,17 +1,15 @@
 package chat
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
-	"net/url"
-	"oj/app"
 	"oj/db"
 	"oj/handlers/eventsource"
 	"oj/handlers/render"
 	"oj/models/users"
-	"oj/services/email"
+	"oj/worker"
 	"strconv"
 	"time"
 
@@ -28,7 +26,7 @@ func PostChatMessage(w http.ResponseWriter, r *http.Request) {
 	}
 	body := r.FormValue("body")
 
-	err = postMessage(int64(roomID), user.ID, body)
+	err = postMessage(r.Context(), int64(roomID), user.ID, body)
 	if err != nil {
 		render.Error(w, err.Error(), 500)
 		return
@@ -48,7 +46,7 @@ type RoomUser struct {
 	Email     *string   `db:"email"`
 }
 
-func postMessage(roomID, senderID int64, body string) error {
+func postMessage(ctx context.Context, roomID, senderID int64, body string) error {
 	var roomUsers []RoomUser
 
 	tx, err := db.DB.Beginx()
@@ -81,11 +79,19 @@ func postMessage(roomID, senderID int64, body string) error {
 	}
 
 	// create deliveries for each user in the room
+	var deliveryIDs []int64
 	for _, roomUser := range roomUsers {
 		result, err = tx.Exec(`insert into deliveries(message_id, room_id, sender_id, recipient_id) values(?,?,?,?)`, messageID, roomID, senderID, roomUser.UserID)
 		if err != nil {
 			return err
 		}
+
+		deliveryID, err := result.LastInsertId()
+		if err != nil {
+			return err
+		}
+
+		deliveryIDs = append(deliveryIDs, deliveryID)
 	}
 
 	if err = tx.Commit(); err != nil {
@@ -93,6 +99,10 @@ func postMessage(roomID, senderID int64, body string) error {
 	}
 
 	// send notifications after the transaction has been committed
+
+	for _, deliveryID := range deliveryIDs {
+		worker.NotifyDelivery(deliveryID)
+	}
 
 	data, err := json.Marshal(map[string]interface{}{
 		"senderID": fmt.Sprint(senderID),
@@ -113,16 +123,6 @@ func postMessage(roomID, senderID int64, body string) error {
 		eventsource.SSE.SendMessage(
 			fmt.Sprintf("/es/user-%d", roomUser.UserID),
 			sse.NewMessage("", "simple", "USER_UPDATE"))
-
-		if roomUser.Email != nil {
-			link := app.AbsoluteURL(url.URL{Path: fmt.Sprintf("/u/%d/chat", senderID)})
-			subject := fmt.Sprintf("%s sent you a message", sender.Username)
-			emailBody := fmt.Sprintf("%s %s", body, link.String())
-			_, _, err := email.Send(subject, emailBody, *roomUser.Email)
-			if err != nil {
-				log.Printf("WARN: error sending email: %s", err)
-			}
-		}
 	}
 
 	return nil

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"log"
@@ -11,6 +12,7 @@ import (
 	"oj/db"
 	"oj/handlers"
 	"oj/handlers/eventsource"
+	"oj/worker"
 
 	"github.com/alexandrevicenzi/go-sse"
 )
@@ -19,6 +21,11 @@ func main() {
 	err := db.DB.Ping()
 	if err != nil {
 		log.Fatalf("could not ping db: %s", err)
+	}
+
+	err = worker.Start(context.Background())
+	if err != nil {
+		log.Fatalf("could not start worker: %s", err)
 	}
 
 	go func() {
