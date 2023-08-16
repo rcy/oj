@@ -46,8 +46,9 @@ where f.id = ?
 
 	var mutualID int64
 	err = db.DB.Get(&mutualID, `select id from friends where a_id = ? and b_id = ?`, friend.BID, friend.AID)
-
-	log.Printf("handleNotifyFriend %v, %d", friend, mutualID)
+	if err != nil {
+		return err
+	}
 
 	var link url.URL
 	var subject, emailBody string
