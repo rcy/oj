@@ -100,9 +100,12 @@ func postMessage(ctx context.Context, roomID, senderID int64, body string) error
 
 	// send notifications after the transaction has been committed
 
-	for _, deliveryID := range deliveryIDs {
-		worker.NotifyDelivery(deliveryID)
-	}
+	go func() {
+		time.Sleep(time.Second)
+		for _, deliveryID := range deliveryIDs {
+			worker.NotifyDelivery(deliveryID)
+		}
+	}()
 
 	data, err := json.Marshal(map[string]interface{}{
 		"senderID": fmt.Sprint(senderID),
