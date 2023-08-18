@@ -23,3 +23,9 @@ drop:
 
 seed: db/seed.sql
 	sqlite3 ${SQLITE_DB} < $<
+
+getproddb:
+	fly ssh sftp get /data/oj_production.db
+	fly ssh sftp get /data/oj_production.db-shm
+	fly ssh sftp get /data/oj_production.db-wal
+
