@@ -41,10 +41,6 @@
     </div>
   </div>
   {{template "edit-section-button" "/card/edit"}}
-
-  {{if (not (eq .User.ID .Layout.User.ID))}}
-  <a class="nes-btn is-success" href="/u/{{.User.ID}}/chat">Chat</a>
-  {{end}}
 </section>
 {{end}}
 
