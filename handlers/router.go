@@ -9,6 +9,7 @@ import (
 	"oj/handlers/eventsource"
 	"oj/handlers/friends"
 	"oj/handlers/header"
+	"oj/handlers/me"
 	"oj/handlers/parent"
 	"oj/handlers/render"
 	"oj/handlers/tools"
@@ -50,18 +51,19 @@ func Router() *chi.Mux {
 		r.Post("/tools/picker", tools.Picker)
 		r.Post("/tools/set-background", tools.SetBackground)
 
+		r.Get("/me", me.MyPage)
 		r.Get("/u/{userID}", u.UserPage)
 		r.Get("/u/{userID}/chat", chat.UserChatPage)
 
-		r.Get("/bio", u.GetAbout)
-		r.Get("/bio/edit", u.GetAboutEdit)
-		r.Put("/bio", u.PutAbout)
+		r.Get("/bio", me.GetAbout)
+		r.Get("/bio/edit", me.GetAboutEdit)
+		r.Put("/bio", me.PutAbout)
 
-		r.Get("/card/edit", u.GetCardEdit)
-		r.Patch("/user", u.PatchUser)
+		r.Get("/card/edit", me.GetCardEdit)
+		r.Patch("/user", me.PatchUser)
 
-		r.Get("/avatars", u.GetAvatars)
-		r.Put("/avatar", u.PutAvatar)
+		r.Get("/avatars", me.GetAvatars)
+		r.Put("/avatar", me.PutAvatar)
 
 		r.Get("/friends", friends.Friends)
 

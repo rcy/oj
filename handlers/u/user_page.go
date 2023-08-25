@@ -2,22 +2,18 @@ package u
 
 import (
 	"database/sql"
-	"fmt"
 	"html/template"
-	"log"
 	"net/http"
-	"oj/db"
 	"oj/handlers/layout"
 	"oj/handlers/render"
 	"oj/models/gradients"
 	"oj/models/users"
 	"oj/templatehelpers"
-	"oj/util/hash"
 
 	"github.com/go-chi/chi/v5"
 )
 
-var t = template.Must(template.New("layout.html").Funcs(templatehelpers.FuncMap).ParseFiles(layout.File, "handlers/u/user_page.html"))
+var userPageTemplate = template.Must(template.New("layout.html").Funcs(templatehelpers.FuncMap).ParseFiles(layout.File, "handlers/u/user_page.html"))
 
 func UserPage(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
@@ -37,6 +33,12 @@ func UserPage(w http.ResponseWriter, r *http.Request) {
 		render.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+
+	if l.User.ID == pageUser.ID {
+		http.Redirect(w, r, "/me", http.StatusFound)
+		return
+	}
+
 	ug, err := gradients.UserBackground(pageUser.ID)
 	if err != nil {
 		render.Error(w, err.Error(), http.StatusInternalServerError)
@@ -57,117 +59,5 @@ func UserPage(w http.ResponseWriter, r *http.Request) {
 		CanEdit: canEdit,
 	}
 
-	render.Execute(w, t, d)
-}
-
-func GetAboutEdit(w http.ResponseWriter, r *http.Request) {
-	ctx := r.Context()
-	user := users.FromContext(ctx)
-	render.ExecuteNamed(w, t, "about-edit", struct{ User users.User }{User: user})
-}
-
-func PutAbout(w http.ResponseWriter, r *http.Request) {
-	ctx := r.Context()
-	user := users.FromContext(ctx)
-	text := r.FormValue("text")
-
-	err := db.DB.Get(&user, "update users set bio = ? where id = ? returning *", text, user.ID)
-	if err != nil {
-		render.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	render.ExecuteNamed(w, t, "about", struct {
-		User    users.User
-		CanEdit bool
-	}{
-		User:    user,
-		CanEdit: true,
-	})
-}
-
-func GetAbout(w http.ResponseWriter, r *http.Request) {
-	ctx := r.Context()
-	user := users.FromContext(ctx)
-
-	render.ExecuteNamed(w, t, "about", struct {
-		User    users.User
-		CanEdit bool
-	}{
-		User:    user,
-		CanEdit: true,
-	})
-}
-
-func GetCardEdit(w http.ResponseWriter, r *http.Request) {
-	ctx := r.Context()
-	user := users.FromContext(ctx)
-	render.ExecuteNamed(w, t, "card-edit", struct{ User users.User }{User: user})
-}
-
-func PatchUser(w http.ResponseWriter, r *http.Request) {
-	ctx := r.Context()
-	user := users.FromContext(ctx)
-	username := r.FormValue("username")
-
-	l, err := layout.FromContext(ctx)
-	if err != nil {
-		render.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	_, err = db.DB.Exec("update users set username=? where id=?", username, user.ID)
-	if err != nil {
-		render.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	updatedUser, err := users.FindById(user.ID)
-	if err != nil {
-		render.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	log.Printf("user: %v %v", user, updatedUser)
-
-	render.ExecuteNamed(w, t, "card", struct {
-		User    users.User
-		CanEdit bool
-		Layout  layout.Data
-	}{
-		User:    *updatedUser,
-		CanEdit: true,
-		Layout:  l,
-	})
-}
-
-func GetAvatars(w http.ResponseWriter, r *http.Request) {
-	const count = 99
-
-	ctx := r.Context()
-	user := users.FromContext(ctx)
-
-	urls := []string{user.AvatarURL}
-
-	for i := 0; i < count; i += 1 {
-		url := fmt.Sprintf("https://www.gravatar.com/avatar/%s?d=retro",
-			hash.GenerateMD5(fmt.Sprintf("%s-%d", user.Username, i)))
-		if url != urls[0] {
-			urls = append(urls, url)
-		}
-	}
-
-	render.ExecuteNamed(w, t, "avatars", struct{ URLs []string }{urls})
-}
-
-func PutAvatar(w http.ResponseWriter, r *http.Request) {
-	ctx := r.Context()
-	user := users.FromContext(ctx)
-	newAvatarURL := r.FormValue("URL")
-
-	err := db.DB.Get(&user, "update users set avatar_url = ? where id = ? returning *", newAvatarURL, user.ID)
-	if err != nil {
-		render.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	render.ExecuteNamed(w, t, "changeable-avatar", struct{ User users.User }{user})
+	render.Execute(w, userPageTemplate, d)
 }

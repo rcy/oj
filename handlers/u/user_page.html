@@ -40,34 +40,8 @@
       {{end}}
     </div>
   </div>
-  {{if .CanEdit}}{{template "edit-section-button" "/card/edit"}}{{end}}
 
-  {{if (not (eq .User.ID .Layout.User.ID))}}
   <a class="nes-btn is-success" href="/u/{{.User.ID}}/chat">Chat</a>
-  {{end}}
-</section>
-{{end}}
-
-{{define "card-edit"}}
-<section class="nes-container is-dark" hx-swap="outerHTML" hx-target="closest section">
-  <h3>Editing User</h3>
-
-  <form hx-patch="/user" style="display: flex; flex-direction: column; gap: 2em">
-    <div>
-      <div>avatar</div>
-      <div style="display:flex;width:100%; align-items:center; gap: 1em">
-        {{template "changeable-avatar" .}}
-      </div>
-    </div>
-    <div class="nes-field">
-      <label for="username-field">username</label>
-      <input id="username-field" class="nes-input" name="username" type="text" value="{{.User.Username}}"/>
-    </div>
-    <div style="display:flex; justify-content:space-between;">
-      <button type="submit" class="nes-btn is-primary">save</button>
-      <button type="reset" class="nes-btn" hx-get="" hx-select="#card">cancel</button>
-    </div>
-  </form>
 </section>
 {{end}}
 
@@ -81,43 +55,5 @@
     {{.User.BioHTML}}
     {{end}}
   </div>
-  {{if .CanEdit}}{{template "edit-section-button" "/bio/edit"}}{{end}}
 </section>
-{{end}}
-
-{{define "about-edit"}}
-<section class="nes-container is-dark" hx-swap="outerHTML">
-  <h3>Editing About me</h3>
-  <form hx-put="/bio" hx-target="closest section" style="display: flex; flex-direction: column; gap: 1em">
-    <textarea
-      name="text"
-      class="nes-textarea"
-      placeholder="Write something about yourself..."
-      rows=10
-    >{{.User.Bio}}</textarea>
-    <div style="display:flex; justify-content:space-between;">
-      <button type="submit" class="nes-btn is-primary">save</button>
-      <button type="reset" class="nes-btn" hx-get="/bio">cancel</button>
-    </div>
-  </form>
-</section>
-{{end}}
-
-{{define "changeable-avatar"}}
-<div id="avatar-{{.User.ID}}">
-  <img src="{{.User.AvatarURL}}" style="image-rendering: pixelated">
-  <a href="#" hx-get="/avatars" hx-target="#avatar-{{.User.ID}}">
-    change
-  </a>
-</div>
-{{end}}
-
-{{define "avatars"}}
-<div id="avatar-list" style="display: flex; flex-wrap: wrap; gap: 1em">
-  {{range .URLs}}
-  <div hx-put="/avatar" hx-swap="outerHTML" hx-target="#avatar-list" hx-vals='{"URL":"{{.}}"}'>
-    <img width="80px" height="80px" src="{{.}}">
-  </div>
-  {{end}}
-</div>
 {{end}}

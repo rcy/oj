@@ -1,0 +1,123 @@
+{{define "head"}}
+<title>{{.User.Username}}</title>
+{{end}}
+
+{{define "main"}}
+<div style="display:flex;flex-direction:column;gap:1em;">
+
+  {{template "card" .}}
+
+  {{template "about" .}}
+
+  {{if (eq .User.ID .Layout.User.ID)}}
+  <div style="display:flex; align-items:right; justify-content:space-between">
+    <a class="nes-btn" href="/tools">Change Background</a>
+    <a href="/welcome/signout" class="nes-btn">Logout</a>
+  </div>
+  {{end}}
+
+</div>
+{{end}}
+
+{{define "edit-section-button"}}
+<button hx-get={{.}} hx-target="closest section" class="nes-btn" style="position: absolute; right:4px; top:4px; ">
+  edit
+</button>
+{{end}}
+
+{{define "card"}}
+<section id="card" class="nes-container ghost" hx-swap="outerHTML">
+  <div style="display: flex; align-items: top; gap: 1em" >
+    <figure style="width:80px; height:80px;">
+      <img src="{{.User.AvatarURL}}">
+    </figure>
+
+    <div style="display: flex; flex-direction: column">
+      <h1>{{.User.Username}}</h1>
+      <div>Joined {{fromNow .User.CreatedAt}} ago</div>
+      {{if .User.IsParent}}
+      <div class="nes-badge"><span class="is-primary">parent</span></div>
+      {{end}}
+    </div>
+  </div>
+  {{template "edit-section-button" "/card/edit"}}
+
+  {{if (not (eq .User.ID .Layout.User.ID))}}
+  <a class="nes-btn is-success" href="/u/{{.User.ID}}/chat">Chat</a>
+  {{end}}
+</section>
+{{end}}
+
+{{define "card-edit"}}
+<section class="nes-container is-dark" hx-swap="outerHTML" hx-target="closest section">
+  <h3>Editing User</h3>
+
+  <form hx-patch="/user" style="display: flex; flex-direction: column; gap: 2em">
+    <div>
+      <div>avatar</div>
+      <div style="display:flex;width:100%; align-items:center; gap: 1em">
+        {{template "changeable-avatar" .}}
+      </div>
+    </div>
+    <div class="nes-field">
+      <label for="username-field">username</label>
+      <input id="username-field" class="nes-input" name="username" type="text" value="{{.User.Username}}"/>
+    </div>
+    <div style="display:flex; justify-content:space-between;">
+      <button type="submit" class="nes-btn is-primary">save</button>
+      <button type="reset" class="nes-btn" hx-get="" hx-select="#card">cancel</button>
+    </div>
+  </form>
+</section>
+{{end}}
+
+{{define "about"}}
+<section class="nes-container ghost" hx-swap="outerHTML">
+  <h3>About me</h3>
+  <div>
+    {{if (eq .User.Bio "")}}
+    <p class="nes-text is-disabled">nothing here yet</p>
+    {{else}}
+    {{.User.BioHTML}}
+    {{end}}
+  </div>
+  {{template "edit-section-button" "/bio/edit"}}
+</section>
+{{end}}
+
+{{define "about-edit"}}
+<section class="nes-container is-dark" hx-swap="outerHTML">
+  <h3>Editing About me</h3>
+  <form hx-put="/bio" hx-target="closest section" style="display: flex; flex-direction: column; gap: 1em">
+    <textarea
+      name="text"
+      class="nes-textarea"
+      placeholder="Write something about yourself..."
+      rows=10
+    >{{.User.Bio}}</textarea>
+    <div style="display:flex; justify-content:space-between;">
+      <button type="submit" class="nes-btn is-primary">save</button>
+      <button type="reset" class="nes-btn" hx-get="/bio">cancel</button>
+    </div>
+  </form>
+</section>
+{{end}}
+
+{{define "changeable-avatar"}}
+<div id="avatar-{{.User.ID}}">
+  <img src="{{.User.AvatarURL}}" style="image-rendering: pixelated">
+  <a href="#" hx-get="/avatars" hx-target="#avatar-{{.User.ID}}">
+    change
+  </a>
+</div>
+{{end}}
+
+{{define "avatars"}}
+<div id="avatar-list" style="display: flex; flex-wrap: wrap; gap: 1em">
+  {{range .URLs}}
+  <div hx-put="/avatar" hx-swap="outerHTML" hx-target="#avatar-list" hx-vals='{"URL":"{{.}}"}'>
+    <img width="80px" height="80px" src="{{.}}">
+  </div>
+  {{end}}
+</div>
+{{end}}
