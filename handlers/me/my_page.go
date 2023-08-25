@@ -8,7 +8,6 @@ import (
 	"oj/db"
 	"oj/handlers/layout"
 	"oj/handlers/render"
-	"oj/models/gradients"
 	"oj/models/users"
 	"oj/templatehelpers"
 	"oj/util/hash"
@@ -24,24 +23,12 @@ func MyPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	ug, err := gradients.UserBackground(l.User.ID)
-	if err != nil {
-		render.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	// override layout gradient to show the page user's not the request user's
-	l.BackgroundGradient = *ug
-
-	canEdit := true
-
 	d := struct {
-		Layout  layout.Data
-		User    users.User
-		CanEdit bool
+		Layout layout.Data
+		User   users.User
 	}{
-		Layout:  l,
-		User:    l.User,
-		CanEdit: canEdit,
+		Layout: l,
+		User:   l.User,
 	}
 
 	render.Execute(w, myPageTemplate, d)
