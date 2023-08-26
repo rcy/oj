@@ -127,7 +127,9 @@
   {{.Username}}
   my {{.Role}}
   {{if .UnreadCount}}
-  {{.UnreadCount}} unread messages
+  <a href="#" class="nes-badge">
+    <span class="is-error">  {{.UnreadCount}} unread</span>
+  </a>
   {{end}}
 </div>
 </div>
