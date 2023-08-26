@@ -5,6 +5,7 @@ import (
 	"log"
 	"oj/worker/notifydelivery"
 	"oj/worker/notifyfriend"
+	"time"
 
 	"github.com/acaloiaro/neoq"
 	"github.com/acaloiaro/neoq/handler"
@@ -31,9 +32,9 @@ func Start(ctx context.Context) error {
 
 func NotifyDelivery(deliveryID int64) (string, error) {
 	return Queue.Enqueue(context.Background(), &jobs.Job{
-		Queue:   "notify-delivery",
-		Payload: map[string]any{"id": deliveryID},
-		//RunAfter: time.Now().Add(1 * time.Second),
+		Queue:    "notify-delivery",
+		Payload:  map[string]any{"id": deliveryID},
+		RunAfter: time.Now().Add(1 * time.Second),
 	})
 }
 
