@@ -122,16 +122,16 @@
 {{define "friends"}}
 {{range .}}
 <a href="/u/{{.ID}}">
-<div class="nes-container ghost">
-  <img src={{.AvatarURL}}>
-  {{.Username}}
-  my {{.Role}}
-  {{if .UnreadCount}}
-  <a href="#" class="nes-badge">
-    <span class="is-error">  {{.UnreadCount}} unread</span>
-  </a>
-  {{end}}
-</div>
-</div>
+  <div class="nes-container ghost">
+    <img src={{.AvatarURL}}>
+    {{.Username}}
+    my {{.Role}}
+    {{if .UnreadCount}}
+    <a href="#" class="nes-badge">
+      <span class="is-error">  {{.UnreadCount}} unread</span>
+    </a>
+    {{end}}
+  </div>
+</a>
 {{end}}
 {{end}}
