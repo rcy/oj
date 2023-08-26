@@ -16,6 +16,7 @@
   </div>
   {{end}}
 
+  {{template "friends" .Friends}}
 </div>
 {{end}}
 
@@ -116,4 +117,19 @@
   </div>
   {{end}}
 </div>
+{{end}}
+
+{{define "friends"}}
+{{range .}}
+<a href="/u/{{.ID}}">
+<div class="nes-container ghost">
+  <img src={{.AvatarURL}}>
+  {{.Username}}
+  my {{.Role}}
+  {{if .UnreadCount}}
+  {{.UnreadCount}} unread messages
+  {{end}}
+</div>
+</div>
+{{end}}
 {{end}}

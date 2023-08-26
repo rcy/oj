@@ -83,10 +83,8 @@
         <a href="/connectkids">Connect</a>
         {{end}}
 
-        {{if (eq .Layout.UnreadCount 0)}}
-        <a href="/friends">Friends</a>
-        {{else}}
-        <a href="/friends">Friends({{.Layout.UnreadCount}})</a>
+        {{if .Layout.UnreadCount}}
+        <a href="/me">Messages({{.Layout.UnreadCount}})</a>
         {{end}}
 
         <a href="/me"

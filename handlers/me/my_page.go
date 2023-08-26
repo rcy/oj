@@ -11,6 +11,7 @@ import (
 	"oj/models/users"
 	"oj/templatehelpers"
 	"oj/util/hash"
+	"sort"
 )
 
 var myPageTemplate = template.Must(template.New("layout.html").Funcs(templatehelpers.FuncMap).ParseFiles(layout.File, "handlers/me/my_page.html"))
@@ -23,12 +24,61 @@ func MyPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	type UserWithCount struct {
+		users.User
+		Role        string
+		UnreadCount int
+	}
+
+	var friends []*UserWithCount
+	err = db.DB.Select(&friends, `
+select users.*, fi.b_role role
+from users
+join friends fi on fi.b_id = users.id and fi.a_id = $1
+join friends fo on fo.a_id = users.id and fo.b_id = $1
+`, l.User.ID)
+	if err != nil {
+		render.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	type Unread struct {
+		SenderID int64 `db:"sender_id"`
+		Count    int
+	}
+	var unreads []Unread
+
+	err = db.DB.Select(&unreads, `
+	  select sender_id, count(*) count
+          from deliveries
+          where recipient_id = ? and sent_at is null
+          group by sender_id`, l.User.ID)
+	if err != nil {
+		render.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	for _, friend := range friends {
+		for _, unread := range unreads {
+			if unread.SenderID == friend.ID {
+				friend.UnreadCount = unread.Count
+				break
+			}
+		}
+	}
+
+	sort.Slice(friends, func(i, j int) bool {
+		return friends[j].UnreadCount < friends[i].UnreadCount
+	})
+
 	d := struct {
-		Layout layout.Data
-		User   users.User
+		Layout  layout.Data
+		User    users.User
+		Friends []*UserWithCount
 	}{
-		Layout: l,
-		User:   l.User,
+		Layout:  l,
+		User:    l.User,
+		Friends: friends,
 	}
 
 	render.Execute(w, myPageTemplate, d)
