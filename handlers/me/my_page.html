@@ -5,25 +5,48 @@
 {{define "main"}}
 <div style="display:flex;flex-direction:column;gap:1em;">
 
-  {{template "card" .}}
+  <div style="display:flex; flex-direction:column; gap: 3em;">
 
-  {{template "about" .}}
+    <div>
+      <h1 style="text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;">My Page</h1>
 
-  {{if (eq .User.ID .Layout.User.ID)}}
-  <div style="display:flex; align-items:right; justify-content:space-between">
-    <a class="nes-btn" href="/tools">Change Background</a>
+      <div style="display:flex; flex-direction: column; gap: 1em">
+        {{template "card" .}}
 
-    {{if .Layout.User.IsParent}}
-    <a class="nes-btn" href="/connect">Find Friends</a>
-    {{else}}
-    <a class="nes-btn" href="/connectkids">Find Friends</a>
-    {{end}}
+        {{template "about" .}}
 
-    <a href="/welcome/signout" class="nes-btn">Logout</a>
+        {{if (eq .User.ID .Layout.User.ID)}}
+        <div style="display:flex; align-items:right; justify-content:space-between">
+          <a class="nes-btn" href="/tools">Change Background</a>
+
+          <a href="/welcome/signout" class="nes-btn">Logout</a>
+        </div>
+      </div>
+      {{end}}
+    </div>
+
+
+    <div>
+      <div style="display:flex; justify-content:space-between;">
+        <h1 style="text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;">My Family</h1>
+      </div>
+      {{template "friends" .Family}}
+    </div>
+
+    <div>
+      <div style="display:flex; justify-content:space-between;">
+        <h1 style="text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;">My Friends</h1>
+        <div>
+          {{if .Layout.User.IsParent}}
+          <a class="nes-btn is-primary" href="/connect">Find Friends</a>
+          {{else}}
+          <a class="nes-btn is-primary" href="/connectkids">Find Friends</a>
+          {{end}}
+        </div>
+      </div>
+      {{template "friends" .Friends}}
+    </div>
   </div>
-  {{end}}
-
-  {{template "friends" .Friends}}
 
   <div style="margin-bottom: 50vh"></div>
 </div>
@@ -129,18 +152,20 @@
 {{end}}
 
 {{define "friends"}}
-{{range .}}
-<a href="/u/{{.ID}}">
-  <div class="nes-container ghost">
-    <img src={{.AvatarURL}}>
-    {{.Username}}
-    my {{.Role}}
-    {{if .UnreadCount}}
-    <a href="#" class="nes-badge">
-      <span class="is-error">  {{.UnreadCount}} unread</span>
-    </a>
-    {{end}}
-  </div>
-</a>
-{{end}}
+<div style="display:flex; flex-direction: column; gap: 1em">
+  {{range .}}
+  <a href="/u/{{.ID}}">
+    <div class="nes-container ghost">
+      <img src={{.AvatarURL}}>
+      {{.Username}}
+      my {{.Role}}
+      {{if .UnreadCount}}
+      <a href="#" class="nes-badge">
+        <span class="is-error">  {{.UnreadCount}} unread</span>
+      </a>
+      {{end}}
+    </div>
+  </a>
+  {{end}}
+</div>
 {{end}}

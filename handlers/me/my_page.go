@@ -36,6 +36,20 @@ select users.*, fi.b_role role
 from users
 join friends fi on fi.b_id = users.id and fi.a_id = $1
 join friends fo on fo.a_id = users.id and fo.b_id = $1
+where fi.b_role = 'friend'
+`, l.User.ID)
+	if err != nil {
+		render.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	var family []*UserWithCount
+	err = db.DB.Select(&family, `
+select users.*, fi.b_role role
+from users
+join friends fi on fi.b_id = users.id and fi.a_id = $1
+join friends fo on fo.a_id = users.id and fo.b_id = $1
+where fi.b_role <> 'friend'
 `, l.User.ID)
 	if err != nil {
 		render.Error(w, err.Error(), http.StatusInternalServerError)
@@ -75,10 +89,12 @@ join friends fo on fo.a_id = users.id and fo.b_id = $1
 		Layout  layout.Data
 		User    users.User
 		Friends []*UserWithCount
+		Family  []*UserWithCount
 	}{
 		Layout:  l,
 		User:    l.User,
 		Friends: friends,
+		Family:  family,
 	}
 
 	render.Execute(w, myPageTemplate, d)
