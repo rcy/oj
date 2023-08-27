@@ -77,12 +77,6 @@
           <h3 style="margin:0">OJ</h3>
         </a>
 
-        {{if .Layout.User.IsParent}}
-        <a href="/connect">Connect</a>
-        {{else}}
-        <a href="/connectkids">Connect</a>
-        {{end}}
-
         {{if .Layout.UnreadCount}}
         <a href="/me">Messages({{.Layout.UnreadCount}})</a>
         {{end}}

@@ -12,6 +12,13 @@
   {{if (eq .User.ID .Layout.User.ID)}}
   <div style="display:flex; align-items:right; justify-content:space-between">
     <a class="nes-btn" href="/tools">Change Background</a>
+
+    {{if .Layout.User.IsParent}}
+    <a class="nes-btn" href="/connect">Find Friends</a>
+    {{else}}
+    <a class="nes-btn" href="/connectkids">Find Friends</a>
+    {{end}}
+
     <a href="/welcome/signout" class="nes-btn">Logout</a>
   </div>
   {{end}}
