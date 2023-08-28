@@ -26,9 +26,7 @@
       </div>
 
 
-      <div>
-        {{template "myFamily" .Family}}
-      </div>
+      {{template "myFamily" .Family}}
 
       <div>
         <div style="display:flex; justify-content:space-between;">
@@ -169,8 +167,11 @@
 {{end}}
 
 {{define "myFamily"}}
-  <div style="display:flex; justify-content:space-between;">
-    <h1 style="text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;">My Family</h1>
+  <div style="display:flex; flex-direction: column; gap: 1em;">
+    <div style="display:flex; justify-content:space-between;">
+      <h1 style="text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;">My Family</h1>
+      <a href="/parent" class="nes-btn is-success">Manage Family</a>
+    </div>
+    {{template "friends" .}}
   </div>
-  {{template "friends" .}}
 {{end}}
