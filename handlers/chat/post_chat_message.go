@@ -11,6 +11,7 @@ import (
 	"oj/models/users"
 	"oj/worker"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/alexandrevicenzi/go-sse"
@@ -26,10 +27,12 @@ func PostChatMessage(w http.ResponseWriter, r *http.Request) {
 	}
 	body := r.FormValue("body")
 
-	err = postMessage(r.Context(), int64(roomID), user.ID, body)
-	if err != nil {
-		render.Error(w, err.Error(), 500)
-		return
+	if strings.TrimSpace(body) != "" {
+		err = postMessage(r.Context(), int64(roomID), user.ID, body)
+		if err != nil {
+			render.Error(w, err.Error(), 500)
+			return
+		}
 	}
 
 	err = chatTemplate.ExecuteTemplate(w, "chatInput", struct{ RoomID int }{RoomID: roomID})
