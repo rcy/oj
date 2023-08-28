@@ -1,171 +1,172 @@
 {{define "head"}}
-<title>{{.User.Username}}</title>
+  <title>{{.User.Username}}</title>
 {{end}}
 
 {{define "main"}}
-<div style="display:flex;flex-direction:column;gap:1em;">
+  <div style="display:flex;flex-direction:column;gap:1em;">
 
-  <div style="display:flex; flex-direction:column; gap: 3em;">
+    <div style="display:flex; flex-direction:column; gap: 3em;">
 
-    <div>
-      <h1 style="text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;">My Page</h1>
+      <div>
+        <h1 style="text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;">My Page</h1>
 
-      <div style="display:flex; flex-direction: column; gap: 1em">
-        {{template "card" .}}
+        <div style="display:flex; flex-direction: column; gap: 1em">
+          {{template "card" .}}
 
-        {{template "about" .}}
+          {{template "about" .}}
 
-        {{if (eq .User.ID .Layout.User.ID)}}
-        <div style="display:flex; align-items:right; justify-content:space-between">
-          <a class="nes-btn" href="/tools">Change Background</a>
+          {{if (eq .User.ID .Layout.User.ID)}}
+            <div style="display:flex; align-items:right; justify-content:space-between">
+              <a class="nes-btn" href="/tools">Change Background</a>
 
-          <a href="/welcome/signout" class="nes-btn">Logout</a>
-        </div>
-        {{end}}
-      </div>
-    </div>
-
-
-    <div>
-      <div style="display:flex; justify-content:space-between;">
-        <h1 style="text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;">My Family</h1>
-      </div>
-      {{template "friends" .Family}}
-    </div>
-
-    <div>
-      <div style="display:flex; justify-content:space-between;">
-        <h1 style="text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;">My Friends</h1>
-        <div>
-          {{if .Layout.User.IsParent}}
-          <a class="nes-btn is-primary" href="/connect">Find Friends</a>
-          {{else}}
-          <a class="nes-btn is-primary" href="/connectkids">Find Friends</a>
+              <a href="/welcome/signout" class="nes-btn">Logout</a>
+            </div>
           {{end}}
         </div>
       </div>
-      {{template "friends" .Friends}}
+
+
+      <div>
+        <div style="display:flex; justify-content:space-between;">
+          <h1 style="text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;">My Family</h1>
+        </div>
+        {{template "friends" .Family}}
+      </div>
+
+      <div>
+        <div style="display:flex; justify-content:space-between;">
+          <h1 style="text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;">My Friends</h1>
+          <div>
+            {{if .Layout.User.IsParent}}
+              <a class="nes-btn is-primary" href="/connect">Find Friends</a>
+            {{else}}
+              <a class="nes-btn is-primary" href="/connectkids">Find Friends</a>
+            {{end}}
+          </div>
+        </div>
+        {{template "friends" .Friends}}
+      </div>
     </div>
+
+    <div style="margin-bottom: 50vh"></div>
   </div>
 
-  <div style="margin-bottom: 50vh"></div>
-</div>
 {{end}}
 
 {{define "edit-section-button"}}
-<button hx-get={{.}} hx-target="closest section" class="nes-btn" style="position: absolute; right:4px; top:4px; ">
-  edit
-</button>
+  <button hx-get={{.}} hx-target="closest section" class="nes-btn" style="position: absolute; right:4px; top:4px; ">
+    edit
+  </button>
 {{end}}
 
 {{define "card"}}
-<section id="card" class="nes-container ghost" hx-swap="outerHTML">
-  <div style="display: flex; align-items: top; gap: 1em" >
-    <figure style="width:80px; height:80px;">
-      <img src="{{.User.AvatarURL}}">
-    </figure>
+  <section id="card" class="nes-container ghost" hx-swap="outerHTML">
+    <div style="display: flex; align-items: top; gap: 1em" >
+      <figure style="width:80px; height:80px;">
+        <img src="{{.User.AvatarURL}}">
+      </figure>
 
-    <div style="display: flex; flex-direction: column">
-      <h1>{{.User.Username}}</h1>
-      <div>Joined {{fromNow .User.CreatedAt}} ago</div>
-      {{if .User.IsParent}}
-      <div class="nes-badge"><span class="is-primary">parent</span></div>
-      {{end}}
+      <div style="display: flex; flex-direction: column">
+        <h1>{{.User.Username}}</h1>
+        <div>Joined {{fromNow .User.CreatedAt}} ago</div>
+        {{if .User.IsParent}}
+          <div class="nes-badge"><span class="is-primary">parent</span></div>
+        {{end}}
+      </div>
     </div>
-  </div>
-  {{template "edit-section-button" "/card/edit"}}
-</section>
+    {{template "edit-section-button" "/card/edit"}}
+  </section>
 {{end}}
 
 {{define "card-edit"}}
-<section class="nes-container is-dark" hx-swap="outerHTML" hx-target="closest section">
-  <h3>Editing User</h3>
+  <section class="nes-container is-dark" hx-swap="outerHTML" hx-target="closest section">
+    <h3>Editing User</h3>
 
-  <form hx-patch="/user" style="display: flex; flex-direction: column; gap: 2em">
-    <div>
-      <div>avatar</div>
-      <div style="display:flex;width:100%; align-items:center; gap: 1em">
-        {{template "changeable-avatar" .}}
+    <form hx-patch="/user" style="display: flex; flex-direction: column; gap: 2em">
+      <div>
+        <div>avatar</div>
+        <div style="display:flex;width:100%; align-items:center; gap: 1em">
+          {{template "changeable-avatar" .}}
+        </div>
       </div>
-    </div>
-    <div class="nes-field">
-      <label for="username-field">username</label>
-      <input id="username-field" class="nes-input" name="username" type="text" value="{{.User.Username}}"/>
-    </div>
-    <div style="display:flex; justify-content:space-between;">
-      <button type="submit" class="nes-btn is-primary">save</button>
-      <button type="reset" class="nes-btn" hx-get="" hx-select="#card">cancel</button>
-    </div>
-  </form>
-</section>
+      <div class="nes-field">
+        <label for="username-field">username</label>
+        <input id="username-field" class="nes-input" name="username" type="text" value="{{.User.Username}}"/>
+      </div>
+      <div style="display:flex; justify-content:space-between;">
+        <button type="submit" class="nes-btn is-primary">save</button>
+        <button type="reset" class="nes-btn" hx-get="" hx-select="#card">cancel</button>
+      </div>
+    </form>
+  </section>
 {{end}}
 
 {{define "about"}}
-<section class="nes-container ghost" hx-swap="outerHTML">
-  <h3>About me</h3>
-  <div>
-    {{if (eq .User.Bio "")}}
-    <p class="nes-text is-disabled">nothing here yet</p>
-    {{else}}
-    {{.User.BioHTML}}
-    {{end}}
-  </div>
-  {{template "edit-section-button" "/bio/edit"}}
-</section>
+  <section class="nes-container ghost" hx-swap="outerHTML">
+    <h3>About me</h3>
+    <div>
+      {{if (eq .User.Bio "")}}
+        <p class="nes-text is-disabled">nothing here yet</p>
+      {{else}}
+        {{.User.BioHTML}}
+      {{end}}
+    </div>
+    {{template "edit-section-button" "/bio/edit"}}
+  </section>
 {{end}}
 
 {{define "about-edit"}}
-<section class="nes-container is-dark" hx-swap="outerHTML">
-  <h3>Editing About me</h3>
-  <form hx-put="/bio" hx-target="closest section" style="display: flex; flex-direction: column; gap: 1em">
-    <textarea
-      name="text"
-      class="nes-textarea"
-      placeholder="Write something about yourself..."
-      rows=10
-    >{{.User.Bio}}</textarea>
-    <div style="display:flex; justify-content:space-between;">
-      <button type="submit" class="nes-btn is-primary">save</button>
-      <button type="reset" class="nes-btn" hx-get="/bio">cancel</button>
-    </div>
-  </form>
-</section>
+  <section class="nes-container is-dark" hx-swap="outerHTML">
+    <h3>Editing About me</h3>
+    <form hx-put="/bio" hx-target="closest section" style="display: flex; flex-direction: column; gap: 1em">
+      <textarea
+        name="text"
+        class="nes-textarea"
+        placeholder="Write something about yourself..."
+        rows=10
+      >{{.User.Bio}}</textarea>
+      <div style="display:flex; justify-content:space-between;">
+        <button type="submit" class="nes-btn is-primary">save</button>
+        <button type="reset" class="nes-btn" hx-get="/bio">cancel</button>
+      </div>
+    </form>
+  </section>
 {{end}}
 
 {{define "changeable-avatar"}}
-<div id="avatar-{{.User.ID}}">
-  <img src="{{.User.AvatarURL}}" style="image-rendering: pixelated">
-  <a href="#" hx-get="/avatars" hx-target="#avatar-{{.User.ID}}">
-    change
-  </a>
-</div>
+  <div id="avatar-{{.User.ID}}">
+    <img src="{{.User.AvatarURL}}" style="image-rendering: pixelated">
+    <a href="#" hx-get="/avatars" hx-target="#avatar-{{.User.ID}}">
+      change
+    </a>
+  </div>
 {{end}}
 
 {{define "avatars"}}
-<div id="avatar-list" style="display: flex; flex-wrap: wrap; gap: 1em">
-  {{range .URLs}}
-  <div hx-put="/avatar" hx-swap="outerHTML" hx-target="#avatar-list" hx-vals='{"URL":"{{.}}"}'>
-    <img width="80px" height="80px" src="{{.}}">
+  <div id="avatar-list" style="display: flex; flex-wrap: wrap; gap: 1em">
+    {{range .URLs}}
+      <div hx-put="/avatar" hx-swap="outerHTML" hx-target="#avatar-list" hx-vals='{"URL":"{{.}}"}'>
+        <img width="80px" height="80px" src="{{.}}">
+      </div>
+    {{end}}
   </div>
-  {{end}}
-</div>
 {{end}}
 
 {{define "friends"}}
-<div style="display:flex; flex-direction: column; gap: 1em">
-  {{range .}}
-  <a href="/u/{{.ID}}">
-    <div class="nes-container ghost">
-      <img src={{.AvatarURL}}>
-      {{.Username}}
-      my {{.Role}}
-      {{if .UnreadCount}}
-      <a href="#" class="nes-badge">
-        <span class="is-error">  {{.UnreadCount}} unread</span>
+  <div style="display:flex; flex-direction: column; gap: 1em">
+    {{range .}}
+      <a href="/u/{{.ID}}">
+        <div class="nes-container ghost">
+          <img src={{.AvatarURL}}>
+          {{.Username}}
+          my {{.Role}}
+          {{if .UnreadCount}}
+            <a href="#" class="nes-badge">
+              <span class="is-error">  {{.UnreadCount}} unread</span>
+            </a>
+          {{end}}
+        </div>
       </a>
-      {{end}}
-    </div>
-  </a>
-  {{end}}
-</div>
+    {{end}}
+  </div>
 {{end}}
