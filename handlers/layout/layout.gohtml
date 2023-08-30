@@ -66,28 +66,28 @@
 </html>
 
 {{define "header"}}
-<header hx-get="/header" hx-trigger="USER_UPDATE from:body" hx-swap="outerHTML"
-        style="background: rgba(0,0,0,.9); color:white;">
-  <div style="max-width: 960px; margin: 0 auto;">
-    <div style="padding: 1em 0 1em">
+  <header hx-get="/header" hx-trigger="USER_UPDATE from:body" hx-swap="outerHTML"
+          style="background: rgba(0,0,0,.9); color:white;">
+    <div style="max-width: 960px; margin: 0 auto;">
+      <div style="padding: 1em 0 1em">
 
-      <div style="display:flex;gap:4px;align-items:center;justify-content:space-between">
-        <a href="/" style="display:flex; align-items: center; gap:6px; color: inherit; text-decoration: none">
-          <i class="nes-icon  coin"></i>
-          <h3 style="margin:0">OJ</h3>
-        </a>
+        <div style="display:flex;gap:4px;align-items:center;justify-content:space-between">
+          <a href="/" style="display:flex; align-items: center; gap:6px; color: inherit; text-decoration: none">
+            <i class="nes-icon  coin"></i>
+            <h3 style="margin:0">OJ</h3>
+          </a>
 
-        {{if .Layout.UnreadCount}}
-        <a href="/me">Messages({{.Layout.UnreadCount}})</a>
-        {{end}}
+          {{if .Layout.UnreadCount}}
+            <a href="/me">Messages({{.Layout.UnreadCount}})</a>
+          {{end}}
 
-        <a href="/me"
-           style="display:flex; align-items: center; gap:6px; color: inherit; text-decoration: none">
-          <span>{{.Layout.User.Username}}</span>
-          <img src="{{.Layout.User.AvatarURL}}" height="40px" width="40px">
-        </a>
+          <a href="/me"
+             style="display:flex; align-items: center; gap:6px; color: inherit; text-decoration: none">
+            <span>{{.Layout.User.Username}}</span>
+            <img src="{{.Layout.User.AvatarURL}}" height="40px" width="40px">
+          </a>
+        </div>
       </div>
     </div>
-  </div>
-</header>
+  </header>
 {{end}}
