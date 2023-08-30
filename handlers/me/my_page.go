@@ -8,6 +8,7 @@ import (
 	"oj/db"
 	"oj/handlers/layout"
 	"oj/handlers/render"
+	"oj/models/gradients"
 	"oj/models/users"
 	"oj/templatehelpers"
 	"oj/util/hash"
@@ -15,6 +16,18 @@ import (
 )
 
 var myPageTemplate = template.Must(template.New("layout.gohtml").Funcs(templatehelpers.FuncMap).ParseFiles(layout.File, "handlers/me/my_page.gohtml"))
+
+type Unread struct {
+	SenderID int64 `db:"sender_id"`
+	Count    int
+}
+
+type Friend struct {
+	users.User
+	Role        string
+	UnreadCount int
+	GradientCSS template.CSS
+}
 
 func MyPage(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
@@ -24,13 +37,7 @@ func MyPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	type UserWithCount struct {
-		users.User
-		Role        string
-		UnreadCount int
-	}
-
-	var friends []*UserWithCount
+	var friends []*Friend
 	err = db.DB.Select(&friends, `
 select users.*, fi.b_role role
 from users
@@ -43,7 +50,7 @@ where fi.b_role = 'friend'
 		return
 	}
 
-	var family []*UserWithCount
+	var family []*Friend
 	err = db.DB.Select(&family, `
 select users.*, fi.b_role role
 from users
@@ -56,10 +63,6 @@ where fi.b_role <> 'friend'
 		return
 	}
 
-	type Unread struct {
-		SenderID int64 `db:"sender_id"`
-		Count    int
-	}
 	var unreads []Unread
 
 	err = db.DB.Select(&unreads, `
@@ -72,24 +75,25 @@ where fi.b_role <> 'friend'
 		return
 	}
 
-	for _, friend := range friends {
-		for _, unread := range unreads {
-			if unread.SenderID == friend.ID {
-				friend.UnreadCount = unread.Count
-				break
-			}
-		}
-	}
+	addUnreadCounts(friends, unreads)
+	addUnreadCounts(family, unreads)
 
-	sort.Slice(friends, func(i, j int) bool {
-		return friends[j].UnreadCount < friends[i].UnreadCount
-	})
+	err = addGradients(friends)
+	if err != nil {
+		render.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	err = addGradients(family)
+	if err != nil {
+		render.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 
 	d := struct {
 		Layout  layout.Data
 		User    users.User
-		Friends []*UserWithCount
-		Family  []*UserWithCount
+		Friends []*Friend
+		Family  []*Friend
 	}{
 		Layout:  l,
 		User:    l.User,
@@ -210,4 +214,31 @@ func PutAvatar(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	render.ExecuteNamed(w, myPageTemplate, "changeable-avatar", struct{ User users.User }{user})
+}
+
+func addUnreadCounts(friends []*Friend, unreads []Unread) {
+	for _, friend := range friends {
+		for _, unread := range unreads {
+			if unread.SenderID == friend.ID {
+				friend.UnreadCount = unread.Count
+				break
+			}
+		}
+	}
+
+	sort.Slice(friends, func(i, j int) bool {
+		return friends[j].UnreadCount < friends[i].UnreadCount
+	})
+}
+
+func addGradients(friends []*Friend) error {
+	for _, friend := range friends {
+		bg, err := gradients.UserBackground(friend.User.ID)
+		if err != nil {
+			return err
+		}
+
+		friend.GradientCSS = bg.Render()
+	}
+	return nil
 }

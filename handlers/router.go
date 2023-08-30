@@ -7,7 +7,6 @@ import (
 	"oj/handlers/connect"
 	"oj/handlers/connectkids"
 	"oj/handlers/eventsource"
-	"oj/handlers/friends"
 	"oj/handlers/header"
 	"oj/handlers/me"
 	"oj/handlers/parent"
@@ -64,8 +63,6 @@ func Router() *chi.Mux {
 
 		r.Get("/avatars", me.GetAvatars)
 		r.Put("/avatar", me.PutAvatar)
-
-		r.Get("/friends", friends.Friends)
 
 		r.Get("/connect", connect.Connect)
 		r.Put("/connect/friend/{userID}", connect.PutParentFriend)
