@@ -10,7 +10,7 @@ import (
 	"oj/models/users"
 )
 
-var uit = template.Must(template.ParseFiles(layout.File, "handlers/friends/friends.html"))
+var uit = template.Must(template.ParseFiles(layout.File, "handlers/friends/friends.gohtml"))
 
 type UserWithCount struct {
 	users.User

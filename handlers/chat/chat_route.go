@@ -25,7 +25,7 @@ import (
 var chatTemplate = template.Must(
 	template.ParseFiles(
 		layout.File,
-		"handlers/chat/chat_index_ws.html",
+		"handlers/chat/chat_index_ws.gohtml",
 	))
 
 func UserChatPage(w http.ResponseWriter, r *http.Request) {

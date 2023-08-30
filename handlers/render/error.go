@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-var t = template.Must(template.ParseFiles("handlers/error.html"))
+var t = template.Must(template.ParseFiles("handlers/error.gohtml"))
 
 func Error(w http.ResponseWriter, msg string, code int) {
 	log.Printf("%d: %s", code, msg)

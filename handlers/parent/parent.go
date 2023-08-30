@@ -13,7 +13,7 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-var t = template.Must(template.ParseFiles(layout.File, "handlers/parent/parent.html"))
+var t = template.Must(template.ParseFiles(layout.File, "handlers/parent/parent.gohtml"))
 
 func Index(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()

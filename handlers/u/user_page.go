@@ -13,7 +13,7 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-var userPageTemplate = template.Must(template.New("layout.html").Funcs(templatehelpers.FuncMap).ParseFiles(layout.File, "handlers/u/user_page.html"))
+var userPageTemplate = template.Must(template.New("layout.gohtml").Funcs(templatehelpers.FuncMap).ParseFiles(layout.File, "handlers/u/user_page.gohtml"))
 
 func UserPage(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()

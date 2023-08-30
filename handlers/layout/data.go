@@ -8,7 +8,7 @@ import (
 	"oj/models/users"
 )
 
-const File = "handlers/layout/layout.html"
+const File = "handlers/layout/layout.gohtml"
 
 type Data struct {
 	User               users.User

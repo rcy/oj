@@ -15,7 +15,7 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-var t = template.Must(template.ParseFiles(layout.File, "handlers/connectkids/connectkids.html"))
+var t = template.Must(template.ParseFiles(layout.File, "handlers/connectkids/connectkids.gohtml"))
 
 func KidConnect(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
@@ -71,7 +71,7 @@ func KidConnect(w http.ResponseWriter, r *http.Request) {
 		connections = append(connections, *connection)
 	}
 
-	render.ExecuteNamed(w, t, "layout.html", struct {
+	render.ExecuteNamed(w, t, "layout.gohtml", struct {
 		Layout      layout.Data
 		Connections []connect.Connection
 	}{

@@ -12,7 +12,7 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-var t = template.Must(template.ParseFiles(layout.File, "handlers/connect/connect.html"))
+var t = template.Must(template.ParseFiles(layout.File, "handlers/connect/connect.gohtml"))
 
 type Connection struct {
 	users.User
@@ -90,7 +90,7 @@ limit 128;
 		return
 	}
 
-	render.ExecuteNamed(w, t, "layout.html", struct {
+	render.ExecuteNamed(w, t, "layout.gohtml", struct {
 		Layout      layout.Data
 		Connections []Connection
 	}{

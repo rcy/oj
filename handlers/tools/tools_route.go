@@ -14,7 +14,7 @@ import (
 	"strconv"
 )
 
-var t = template.Must(template.ParseFiles(layout.File, "handlers/tools/tools_index.html"))
+var t = template.Must(template.ParseFiles(layout.File, "handlers/tools/tools_index.gohtml"))
 
 func Index(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()

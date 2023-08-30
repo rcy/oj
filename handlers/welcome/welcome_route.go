@@ -35,8 +35,8 @@ func Route(r chi.Router) {
 }
 
 var welcomeTemplate = template.Must(template.ParseFiles(
-	"handlers/welcome/layout.html",
-	"handlers/welcome/welcome.html",
+	"handlers/welcome/layout.gohtml",
+	"handlers/welcome/welcome.gohtml",
 ))
 
 func welcome(w http.ResponseWriter, r *http.Request) {
@@ -47,8 +47,8 @@ func welcome(w http.ResponseWriter, r *http.Request) {
 }
 
 var welcomeKidsTemplate = template.Must(template.ParseFiles(
-	"handlers/welcome/layout.html",
-	"handlers/welcome/welcome_kids.html",
+	"handlers/welcome/layout.gohtml",
+	"handlers/welcome/welcome_kids.gohtml",
 ))
 
 func welcomeKids(w http.ResponseWriter, r *http.Request) {
@@ -59,8 +59,8 @@ func welcomeKids(w http.ResponseWriter, r *http.Request) {
 }
 
 var welcomeParentsTemplate = template.Must(template.ParseFiles(
-	"handlers/welcome/layout.html",
-	"handlers/welcome/welcome_parents.html",
+	"handlers/welcome/layout.gohtml",
+	"handlers/welcome/welcome_parents.gohtml",
 ))
 
 func welcomeParents(w http.ResponseWriter, r *http.Request) {
@@ -123,8 +123,8 @@ func emailRegisterAction(w http.ResponseWriter, r *http.Request) {
 }
 
 var welcomeParentsCodeTemplate = template.Must(template.ParseFiles(
-	"handlers/welcome/layout.html",
-	"handlers/welcome/welcome_parents_code.html",
+	"handlers/welcome/layout.gohtml",
+	"handlers/welcome/welcome_parents_code.gohtml",
 ))
 
 func parentsCode(w http.ResponseWriter, r *http.Request) {
@@ -193,8 +193,8 @@ func kidsUsernameAction(w http.ResponseWriter, r *http.Request) {
 }
 
 var welcomeKidsCodeTemplate = template.Must(template.ParseFiles(
-	"handlers/welcome/layout.html",
-	"handlers/welcome/welcome_kids_code.html",
+	"handlers/welcome/layout.gohtml",
+	"handlers/welcome/welcome_kids_code.gohtml",
 ))
 
 func kidsCode(w http.ResponseWriter, r *http.Request) {
