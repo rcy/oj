@@ -37,53 +37,13 @@ func MyPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var friends []*Friend
-	err = db.DB.Select(&friends, `
-select users.*, fi.b_role role
-from users
-join friends fi on fi.b_id = users.id and fi.a_id = $1
-join friends fo on fo.a_id = users.id and fo.b_id = $1
-where fi.b_role = 'friend'
-`, l.User.ID)
+	friends, err := getFriends(l.User.ID)
 	if err != nil {
 		render.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	var family []*Friend
-	err = db.DB.Select(&family, `
-select users.*, fi.b_role role
-from users
-join friends fi on fi.b_id = users.id and fi.a_id = $1
-join friends fo on fo.a_id = users.id and fo.b_id = $1
-where fi.b_role <> 'friend'
-`, l.User.ID)
-	if err != nil {
-		render.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	var unreads []Unread
-
-	err = db.DB.Select(&unreads, `
-	  select sender_id, count(*) count
-          from deliveries
-          where recipient_id = ? and sent_at is null
-          group by sender_id`, l.User.ID)
-	if err != nil {
-		render.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	addUnreadCounts(friends, unreads)
-	addUnreadCounts(family, unreads)
-
-	err = addGradients(friends)
-	if err != nil {
-		render.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	err = addGradients(family)
+	family, err := getFamily(l.User.ID)
 	if err != nil {
 		render.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -102,6 +62,62 @@ where fi.b_role <> 'friend'
 	}
 
 	render.Execute(w, myPageTemplate, d)
+}
+
+func getFriends(userID int64) ([]*Friend, error) {
+	var friends []*Friend
+	err := db.DB.Select(&friends, `
+select users.*, fi.b_role role
+from users
+join friends fi on fi.b_id = users.id and fi.a_id = $1
+join friends fo on fo.a_id = users.id and fo.b_id = $1
+where fi.b_role = 'friend'
+`, userID)
+	if err != nil {
+		return nil, err
+	}
+
+	err = addGradients(friends)
+	if err != nil {
+		return nil, err
+	}
+
+	unreads, err := getUnreads(userID)
+	if err != nil {
+		return nil, err
+	}
+
+	addUnreadCounts(friends, unreads)
+
+	return friends, nil
+}
+
+func getFamily(userID int64) ([]*Friend, error) {
+	var family []*Friend
+	err := db.DB.Select(&family, `
+select users.*, fi.b_role role
+from users
+join friends fi on fi.b_id = users.id and fi.a_id = $1
+join friends fo on fo.a_id = users.id and fo.b_id = $1
+where fi.b_role <> 'friend'
+`, userID)
+	if err != nil {
+		return nil, err
+	}
+
+	err = addGradients(family)
+	if err != nil {
+		return nil, err
+	}
+
+	unreads, err := getUnreads(userID)
+	if err != nil {
+		return nil, err
+	}
+
+	addUnreadCounts(family, unreads)
+
+	return family, nil
 }
 
 func GetAboutEdit(w http.ResponseWriter, r *http.Request) {
@@ -214,6 +230,20 @@ func PutAvatar(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	render.ExecuteNamed(w, myPageTemplate, "changeable-avatar", struct{ User users.User }{user})
+}
+
+func getUnreads(userID int64) ([]Unread, error) {
+	var unreads []Unread
+
+	err := db.DB.Select(&unreads, `
+	  select sender_id, count(*) count
+          from deliveries
+          where recipient_id = ? and sent_at is null
+          group by sender_id`, userID)
+	if err != nil {
+		return nil, err
+	}
+	return unreads, nil
 }
 
 func addUnreadCounts(friends []*Friend, unreads []Unread) {
