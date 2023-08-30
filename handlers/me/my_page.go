@@ -14,7 +14,7 @@ import (
 	"sort"
 )
 
-var myPageTemplate = template.Must(template.New("layout.html").Funcs(templatehelpers.FuncMap).ParseFiles(layout.File, "handlers/me/my_page.gohtml"))
+var myPageTemplate = template.Must(template.New("layout.gohtml").Funcs(templatehelpers.FuncMap).ParseFiles(layout.File, "handlers/me/my_page.gohtml"))
 
 func MyPage(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
