@@ -47,16 +47,13 @@ func UserPage(w http.ResponseWriter, r *http.Request) {
 	// override layout gradient to show the page user's not the request user's
 	l.BackgroundGradient = *ug
 
-	canEdit := l.User.ID == pageUser.ID
 
 	d := struct {
-		Layout  layout.Data
-		User    users.User
-		CanEdit bool
+		Layout layout.Data
+		User   users.User
 	}{
-		Layout:  l,
-		User:    *pageUser,
-		CanEdit: canEdit,
+		Layout: l,
+		User:   *pageUser,
 	}
 
 	render.Execute(w, userPageTemplate, d)

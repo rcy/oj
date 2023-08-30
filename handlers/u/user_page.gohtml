@@ -8,21 +8,7 @@
     {{template "card" .}}
 
     {{template "about" .}}
-
-    {{if (eq .User.ID .Layout.User.ID)}}
-      <div style="display:flex; align-items:right; justify-content:space-between">
-        <a class="nes-btn" href="/tools">Change Background</a>
-        <a href="/welcome/signout" class="nes-btn">Logout</a>
-      </div>
-    {{end}}
-
   </div>
-{{end}}
-
-{{define "edit-section-button"}}
-  <button hx-get={{.}} hx-target="closest section" class="nes-btn" style="position: absolute; right:4px; top:4px; ">
-    edit
-  </button>
 {{end}}
 
 {{define "card"}}
