@@ -27,7 +27,9 @@
       </div>
     </div>
 
-    <a class="nes-btn is-success" href="/u/{{.User.ID}}/chat">Chat</a>
+    {{if .CanChat}}
+      <a class="nes-btn is-success" href="/u/{{.User.ID}}/chat">Chat</a>
+    {{end}}
   </section>
 {{end}}
 
