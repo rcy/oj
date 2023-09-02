@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"html/template"
 	"net/http"
+	"oj/handlers/connect"
 	"oj/handlers/layout"
 	"oj/handlers/render"
 	"oj/models/gradients"
@@ -47,13 +48,24 @@ func UserPage(w http.ResponseWriter, r *http.Request) {
 	// override layout gradient to show the page user's not the request user's
 	l.BackgroundGradient = *ug
 
+	connection, err := connect.GetConnection(l.User.ID, pageUser.ID)
+	if err != nil {
+		render.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	canChat := connection.RoleIn != nil && connection.RoleOut != nil
 
 	d := struct {
-		Layout layout.Data
-		User   users.User
+		Layout     layout.Data
+		User       users.User
+		Connection *connect.Connection
+		CanChat    bool
 	}{
-		Layout: l,
-		User:   *pageUser,
+		Layout:     l,
+		User:       *pageUser,
+		Connection: connection,
+		CanChat:    canChat,
 	}
 
 	render.Execute(w, userPageTemplate, d)
