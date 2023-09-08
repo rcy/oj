@@ -1,12 +1,15 @@
 package render
 
 import (
+	_ "embed"
 	"html/template"
 	"log"
 	"net/http"
 )
 
-var t = template.Must(template.ParseFiles("handlers/error.gohtml"))
+//go:embed "error.gohtml"
+var tContent string
+var t = template.Must(template.New("").Parse(tContent))
 
 func Error(w http.ResponseWriter, msg string, code int) {
 	log.Printf("%d: %s", code, msg)
