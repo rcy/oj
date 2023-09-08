@@ -11,13 +11,14 @@ import (
 )
 
 type User struct {
-	ID        int64
-	CreatedAt time.Time `db:"created_at"`
-	Username  string
-	Email     *string
-	AvatarURL string `db:"avatar_url"`
-	IsParent  bool   `db:"is_parent"`
-	Bio       string `db:"bio"`
+	ID           int64
+	CreatedAt    time.Time `db:"created_at"`
+	Username     string
+	Email        *string
+	AvatarURL    string `db:"avatar_url"`
+	IsParent     bool   `db:"is_parent"`
+	Bio          string `db:"bio"`
+	BecomeUserID *int64 `db:"become_user_id"`
 }
 
 func FromSessionKey(key string) (User, error) {
@@ -41,6 +42,14 @@ func NewContext(ctx context.Context, user User) context.Context {
 
 func FromContext(ctx context.Context) User {
 	return ctx.Value(userContextKey).(User)
+}
+
+func Become(ctx context.Context) (*User, error) {
+	user := FromContext(ctx)
+	if user.BecomeUserID == nil {
+		return nil, nil
+	}
+	return FindById(*user.BecomeUserID)
 }
 
 func (u User) BioHTML() template.HTML {
