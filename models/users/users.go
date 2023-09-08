@@ -3,6 +3,7 @@ package users
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"html/template"
 	"oj/db"
 	"oj/md"
@@ -19,6 +20,7 @@ type User struct {
 	IsParent     bool   `db:"is_parent"`
 	Bio          string `db:"bio"`
 	BecomeUserID *int64 `db:"become_user_id"`
+	Admin        bool
 }
 
 func FromSessionKey(key string) (User, error) {
@@ -44,10 +46,15 @@ func FromContext(ctx context.Context) User {
 	return ctx.Value(userContextKey).(User)
 }
 
-func Become(ctx context.Context) (*User, error) {
+var ErrNotAuthorized = errors.New("Not authorized")
+
+func BecomeFromContext(ctx context.Context) (*User, error) {
 	user := FromContext(ctx)
 	if user.BecomeUserID == nil {
 		return nil, nil
+	}
+	if !user.Admin {
+		return nil, ErrNotAuthorized
 	}
 	return FindById(*user.BecomeUserID)
 }
