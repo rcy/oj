@@ -17,6 +17,8 @@ import (
 
 var myPageTemplate = template.Must(template.New("layout.gohtml").Funcs(templatehelpers.FuncMap).ParseFiles(layout.File, "handlers/me/my_page.gohtml"))
 
+var myPageEditTemplate = template.Must(template.New("layout.gohtml").Funcs(templatehelpers.FuncMap).ParseFiles(layout.File, "handlers/me/my_page_edit.gohtml"))
+
 type Unread struct {
 	SenderID int64 `db:"sender_id"`
 	Count    int
@@ -62,6 +64,27 @@ func MyPage(w http.ResponseWriter, r *http.Request) {
 	}
 
 	render.Execute(w, myPageTemplate, d)
+}
+
+func MyPageEdit(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	l, err := layout.FromContext(ctx)
+	if err != nil {
+		render.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	d := struct {
+		Layout layout.Data
+		User   users.User
+	}{
+		Layout: l,
+		User:   l.User,
+	}
+
+	log.Printf("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% my page edit %v", d)
+
+	render.Execute(w, myPageEditTemplate, d)
 }
 
 func getFriends(userID int64) ([]*Friend, error) {

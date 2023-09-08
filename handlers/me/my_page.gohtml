@@ -5,42 +5,10 @@
 {{define "main"}}
   <div style="display:flex;flex-direction:column;gap:1em;">
 
-    <div style="display:flex; flex-direction:column; gap: 3em;">
-
-      <div>
-        <h1 style="text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;">My Page</h1>
-
-        <div style="display:flex; flex-direction: column; gap: 1em">
-          {{template "card" .}}
-
-          {{template "about" .}}
-
-          {{if (eq .User.ID .Layout.User.ID)}}
-            <div style="display:flex; align-items:right; justify-content:space-between">
-              <a class="nes-btn" href="/tools">Change Background</a>
-
-              <a href="/welcome/signout" class="nes-btn">Logout</a>
-            </div>
-          {{end}}
-        </div>
-      </div>
-
-
+    <div style="display:flex; flex-direction:column; gap: 5em;">
+      {{template "myPage" .}}
       {{template "myFamily" .}}
-
-      <div>
-        <div style="display:flex; justify-content:space-between;">
-          <h1 style="text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;">My Friends</h1>
-          <div>
-            {{if .Layout.User.IsParent}}
-              <a class="nes-btn is-primary" href="/connect">Find Friends</a>
-            {{else}}
-              <a class="nes-btn is-primary" href="/connectkids">Find Friends</a>
-            {{end}}
-          </div>
-        </div>
-        {{template "friends" .Friends}}
-      </div>
+      {{template "myFriends" .}}
     </div>
 
     <div style="margin-bottom: 50vh"></div>
@@ -48,10 +16,47 @@
 
 {{end}}
 
-{{define "edit-section-button"}}
-  <button hx-get={{.}} hx-target="closest section" class="nes-btn" style="position: absolute; right:4px; top:4px; ">
-    edit
-  </button>
+{{define "myPage"}}
+  <section style="display:flex; flex-direction:column; gap: 1em">
+    <div style="display:flex; justify-content: space-between">
+      <h1 style="text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;">My Page</h1>
+      <a href="/me/edit" class="nes-btn is-warning">Edit</a>
+    </div>
+    <div style="display:flex; flex-direction: column; gap: 1em">
+      {{template "card" .}}
+    </div>
+  </section>
+{{end}}
+
+{{define "myFriends"}}
+  <section style="display:flex; flex-direction:column; gap: 1em">
+    <div style="display:flex; justify-content:space-between;">
+      <h1 style="text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;">My Friends</h1>
+      <div>
+        {{if .Layout.User.IsParent}}
+          <a class="nes-btn is-primary" href="/connect">Find Friends</a>
+        {{else}}
+          <a class="nes-btn is-primary" href="/connectkids">Find Friends</a>
+        {{end}}
+      </div>
+    </div>
+    {{template "friends" .Friends}}
+  </section>
+{{end}}
+
+
+{{define "myFamily"}}
+  <section style="display:flex; flex-direction:column; gap: 1em">
+    <div style="display:flex; justify-content:space-between">
+      <h1 style="text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;">My Family</h1>
+      {{if .User.IsParent}}
+        <div>
+          <a href="/parent" class="nes-btn is-success">Manage Family</a>
+        </div>
+      {{end}}
+    </div>
+    {{template "friends" .Family}}
+  </section>
 {{end}}
 
 {{define "card"}}
@@ -69,35 +74,11 @@
         {{end}}
       </div>
     </div>
-    {{template "edit-section-button" "/card/edit"}}
-  </section>
-{{end}}
-
-{{define "card-edit"}}
-  <section class="nes-container is-dark" hx-swap="outerHTML" hx-target="closest section">
-    <h3>Editing User</h3>
-
-    <form hx-patch="/user" style="display: flex; flex-direction: column; gap: 2em">
-      <div>
-        <div>avatar</div>
-        <div style="display:flex;width:100%; align-items:center; gap: 1em">
-          {{template "changeable-avatar" .}}
-        </div>
-      </div>
-      <div class="nes-field">
-        <label for="username-field">username</label>
-        <input id="username-field" class="nes-input" name="username" type="text" value="{{.User.Username}}"/>
-      </div>
-      <div style="display:flex; justify-content:space-between;">
-        <button type="submit" class="nes-btn is-primary">save</button>
-        <button type="reset" class="nes-btn" hx-get="" hx-select="#card">cancel</button>
-      </div>
-    </form>
+    {{template "about" .}}
   </section>
 {{end}}
 
 {{define "about"}}
-  <section class="nes-container ghost" hx-swap="outerHTML">
     <h3>About me</h3>
     <div>
       {{if (eq .User.Bio "")}}
@@ -106,8 +87,6 @@
         {{.User.BioHTML}}
       {{end}}
     </div>
-    {{template "edit-section-button" "/bio/edit"}}
-  </section>
 {{end}}
 
 {{define "about-edit"}}
@@ -126,15 +105,6 @@
       </div>
     </form>
   </section>
-{{end}}
-
-{{define "changeable-avatar"}}
-  <div id="avatar-{{.User.ID}}">
-    <img src="{{.User.AvatarURL}}" style="image-rendering: pixelated">
-    <a href="#" hx-get="/avatars" hx-target="#avatar-{{.User.ID}}">
-      change
-    </a>
-  </div>
 {{end}}
 
 {{define "avatars"}}
@@ -188,17 +158,5 @@
         {{end}}
       </div>
     </div>
-  </div>
-{{end}}
-
-{{define "myFamily"}}
-  <div style="display:flex; flex-direction: column; gap: 1em;">
-    <div style="display:flex; justify-content:space-between;">
-      <h1 style="text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;">My Family</h1>
-      {{if .User.IsParent}}
-        <a href="/parent" class="nes-btn is-success">Manage Family</a>
-      {{end}}
-    </div>
-    {{template "friends" .Family}}
   </div>
 {{end}}

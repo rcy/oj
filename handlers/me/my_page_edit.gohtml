@@ -1,0 +1,37 @@
+{{define "main"}}
+{{template "card-edit" .}}
+{{end}}
+
+{{define "card-edit"}}
+  <section class="nes-container is-dark" hx-swap="outerHTML" hx-target="closest section">
+    <h3>Editing User</h3>
+
+    <form hx-patch="/user" style="display: flex; flex-direction: column; gap: 2em">
+      <div>
+        <div>avatar</div>
+        <div style="display:flex;width:100%; align-items:center; gap: 1em">
+          {{template "changeable-avatar" .}}
+        </div>
+      </div>
+      <div class="nes-field">
+        <label for="username-field">username</label>
+        <input id="username-field" class="nes-input" name="username" type="text" value="{{.User.Username}}"/>
+      </div>
+      <div style="display:flex; justify-content:space-between;">
+        <button type="submit" class="nes-btn is-primary">save</button>
+        <button type="reset" class="nes-btn" hx-get="" hx-select="#card">cancel</button>
+      </div>
+    </form>
+  </section>
+{{end}}
+
+
+{{define "changeable-avatar"}}
+  <div id="avatar-{{.User.ID}}">
+    <img src="{{.User.AvatarURL}}" style="image-rendering: pixelated">
+    <a href="#" hx-get="/avatars" hx-target="#avatar-{{.User.ID}}">
+      change
+    </a>
+  </div>
+{{end}}
+

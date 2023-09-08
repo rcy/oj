@@ -52,6 +52,8 @@ func Router() *chi.Mux {
 		r.Post("/tools/set-background", tools.SetBackground)
 
 		r.Get("/me", me.MyPage)
+		r.Get("/me/edit", me.MyPageEdit)
+
 		r.Get("/u/{userID}", u.UserPage)
 		r.Get("/u/{userID}/chat", chat.UserChatPage)
 
