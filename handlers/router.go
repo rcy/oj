@@ -9,12 +9,12 @@ import (
 	"oj/handlers/eventsource"
 	"oj/handlers/header"
 	"oj/handlers/me"
+	mw "oj/handlers/middleware"
 	"oj/handlers/parent"
 	"oj/handlers/render"
 	"oj/handlers/tools"
 	"oj/handlers/u"
 	auth "oj/handlers/welcome"
-	"oj/models/users"
 	"os"
 
 	"github.com/go-chi/chi/v5"
@@ -31,8 +31,8 @@ func Router() *chi.Mux {
 
 	// authenticated routes
 	r.Route("/", func(r chi.Router) {
-		r.Use(authMiddleware)
-		r.Use(becomeMiddleware)
+		r.Use(mw.Auth)
+		r.Use(mw.Become)
 
 		r.Get("/", Home)
 
@@ -86,45 +86,4 @@ func Router() *chi.Mux {
 	r.Handle("/assets/*", http.StripPrefix("/assets", fs))
 
 	return r
-}
-
-func authMiddleware(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		cookie, err := r.Cookie("kh_session")
-		if err != nil {
-			http.Redirect(w, r, "/welcome", http.StatusSeeOther)
-			return
-		}
-
-		user, err := users.FromSessionKey(cookie.Value)
-		if err != nil {
-			http.Redirect(w, r, "/welcome", http.StatusSeeOther)
-			return
-		}
-
-		ctx := users.NewContext(r.Context(), user)
-		next.ServeHTTP(w, r.WithContext(ctx))
-	})
-}
-
-func becomeMiddleware(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		ctx := r.Context()
-
-		becomeUser, err := users.Become(ctx)
-		if err != nil {
-			log.Printf("error: Become %s", err)
-			render.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-
-		if becomeUser != nil {
-			user := users.FromContext(ctx)
-			log.Printf("*** user %d becoming user %d", user.ID, becomeUser.ID)
-			ctx = users.NewContext(ctx, *becomeUser)
-			next.ServeHTTP(w, r.WithContext(ctx))
-		} else {
-			next.ServeHTTP(w, r)
-		}
-	})
 }
