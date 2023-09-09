@@ -170,4 +170,7 @@ drop table bios;
 	` --20 add become_user_id to users
 alter table users add column become_user_id integer references users;
 `,
+	` --21 add admin to users
+alter table users add column admin bool not null default false;
+`,
 }

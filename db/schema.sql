@@ -73,4 +73,4 @@ CREATE TABLE users (
   created_at datetime not null default current_timestamp,
   username text not null unique check(length(username) > 0),
   email text check (email like '%@%') unique
-, avatar_url not null default 'https://www.gravatar.com/avatar/?d=mp', is_parent bool not null default false, bio text not null default '', become_user_id integer references users);
+, avatar_url not null default 'https://www.gravatar.com/avatar/?d=mp', is_parent bool not null default false, bio text not null default '', become_user_id integer references users, admin bool not null default false);
