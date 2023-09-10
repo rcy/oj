@@ -1,4 +1,4 @@
-include .env
+-include .env
 
 start:
 	find . -name \*.go -o -name \*.gohtml | entr -r go run .
