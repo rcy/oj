@@ -12,7 +12,7 @@ import (
 	"sort"
 )
 
-var MyPageTemplate = template.Must(template.New("layout.gohtml").Funcs(templatehelpers.FuncMap).ParseFiles(layout.File, "handlers/me/my_page.gohtml"))
+var MyPageTemplate = template.Must(template.New("layout.gohtml").Funcs(templatehelpers.FuncMap).ParseFiles(layout.File, "handlers/me/my_page.gohtml", "handlers/me/card.gohtml"))
 
 type Unread struct {
 	SenderID int64 `db:"sender_id"`
