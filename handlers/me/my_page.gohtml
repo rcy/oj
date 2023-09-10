@@ -24,13 +24,6 @@
     </div>
     <div style="display:flex; flex-direction: column; gap: 1em">
       {{template "card" .}}
-      <div style="display:flex; justify-content: space-between">
-        <div></div>
-        <a onclick="return confirm('really logout?')"
-           href="/welcome/signout"
-           class="nes-btn"
-        >Logout</a>
-      </div>
     </div>
   </section>
 {{end}}
