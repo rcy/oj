@@ -7,9 +7,12 @@ import (
 	"oj/handlers/connect"
 	"oj/handlers/connectkids"
 	"oj/handlers/eventsource"
+	"oj/handlers/fun"
 	"oj/handlers/header"
 	"oj/handlers/me"
 	"oj/handlers/me/editme"
+	"oj/handlers/me/family"
+	"oj/handlers/me/friends"
 	mw "oj/handlers/middleware"
 	"oj/handlers/parent"
 	"oj/handlers/render"
@@ -54,6 +57,11 @@ func Router() *chi.Mux {
 		r.Get("/me", me.MyPage)
 		r.Get("/me/edit", editme.MyPageEdit)
 		r.Post("/me/edit", editme.Post)
+
+		r.Get("/me/family", family.Page)
+		r.Get("/me/friends", friends.Page)
+
+		r.Get("/fun", fun.Page)
 
 		r.Get("/u/{userID}", u.UserPage)
 		r.Get("/u/{userID}/chat", chat.UserChatPage)

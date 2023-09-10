@@ -5,41 +5,12 @@
 {{define "main"}}
   <div style="display:flex;flex-direction:column;gap:1em;">
     <div style="display:flex; flex-direction:column; gap: 5em;">
-      {{template "myPage" .}}
+      {{template "myFamily" .}}
     </div>
 
     <div style="margin-bottom: 50vh"></div>
   </div>
 {{end}}
-
-{{define "myPage"}}
-  <section style="display:flex; flex-direction:column; gap: 1em">
-    <div style="display:flex; justify-content: space-between">
-      <h1 style="text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;">My Page</h1>
-      <a href="/me/edit" class="nes-btn is-warning">Edit</a>
-    </div>
-    <div style="display:flex; flex-direction: column; gap: 1em">
-      {{template "card" .}}
-    </div>
-  </section>
-{{end}}
-
-{{define "myFriends"}}
-  <section style="display:flex; flex-direction:column; gap: 1em">
-    <div style="display:flex; justify-content:space-between;">
-      <h1 style="text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;">My Friends</h1>
-      <div>
-        {{if .Layout.User.IsParent}}
-          <a class="nes-btn is-primary" href="/connect">Find Friends</a>
-        {{else}}
-          <a class="nes-btn is-primary" href="/connectkids">Find Friends</a>
-        {{end}}
-      </div>
-    </div>
-    {{template "friends" .Friends}}
-  </section>
-{{end}}
-
 
 {{define "myFamily"}}
   <section style="display:flex; flex-direction:column; gap: 1em">
