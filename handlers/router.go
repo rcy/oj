@@ -9,6 +9,7 @@ import (
 	"oj/handlers/eventsource"
 	"oj/handlers/header"
 	"oj/handlers/me"
+	"oj/handlers/me/editme"
 	mw "oj/handlers/middleware"
 	"oj/handlers/parent"
 	"oj/handlers/render"
@@ -43,7 +44,6 @@ func Router() *chi.Mux {
 		r.Delete("/parent/kids/{userID}", parent.DeleteKid)
 		r.Post("/parent/kids/{userID}/logout", parent.LogoutKid)
 
-		//r.Get("/chat/{roomID}", chat.Index)        // deprecated
 		r.Post("/chat/messages", chat.PostChatMessage)
 		r.Mount("/es", eventsource.SSE)
 
@@ -52,20 +52,14 @@ func Router() *chi.Mux {
 		r.Post("/tools/set-background", tools.SetBackground)
 
 		r.Get("/me", me.MyPage)
-		r.Get("/me/edit", me.MyPageEdit)
+		r.Get("/me/edit", editme.MyPageEdit)
+		r.Post("/me/edit", editme.Post)
 
 		r.Get("/u/{userID}", u.UserPage)
 		r.Get("/u/{userID}/chat", chat.UserChatPage)
 
-		r.Get("/bio", me.GetAbout)
-		r.Get("/bio/edit", me.GetAboutEdit)
-		r.Put("/bio", me.PutAbout)
-
-		r.Get("/card/edit", me.GetCardEdit)
-		r.Patch("/user", me.PatchUser)
-
-		r.Get("/avatars", me.GetAvatars)
-		r.Put("/avatar", me.PutAvatar)
+		r.Get("/avatars", editme.GetAvatars)
+		r.Put("/avatar", editme.PutAvatar)
 
 		r.Get("/connect", connect.Connect)
 		r.Put("/connect/friend/{userID}", connect.PutParentFriend)

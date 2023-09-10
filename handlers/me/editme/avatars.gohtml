@@ -1,0 +1,18 @@
+{{define "avatars"}}
+  <div id="avatar-list" style="display: flex; flex-wrap: wrap; gap: 1em">
+    {{range .URLs}}
+      <div hx-put="/avatar" hx-swap="outerHTML" hx-target="#avatar-list" hx-vals='{"URL":"{{.}}"}'>
+        <img width="80px" height="80px" src="{{.}}">
+      </div>
+    {{end}}
+  </div>
+{{end}}
+
+{{define "changeable-avatar"}}
+  <div id="avatar-{{.User.ID}}">
+    <a href="#" hx-get="/avatars" hx-target="#avatar-{{.User.ID}}">
+    <img src="{{.User.AvatarURL}}" style="image-rendering: pixelated">
+      change
+    </a>
+  </div>
+{{end}}

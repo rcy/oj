@@ -107,32 +107,10 @@
   </section>
 {{end}}
 
-{{define "avatars"}}
-  <div id="avatar-list" style="display: flex; flex-wrap: wrap; gap: 1em">
-    {{range .URLs}}
-      <div hx-put="/avatar" hx-swap="outerHTML" hx-target="#avatar-list" hx-vals='{"URL":"{{.}}"}'>
-        <img width="80px" height="80px" src="{{.}}">
-      </div>
-    {{end}}
-  </div>
-{{end}}
-
 {{define "friends"}}
   <div style="display:flex; flex-direction: column; gap: 1em">
     {{range .}}
       {{template "friend" .}}
-      <!-- <a href="/u/{{.ID}}">
-           <div class="nes-container ghost">
-           <img src={{.AvatarURL}}>
-           {{.Username}}
-           my {{.Role}}
-           {{if .UnreadCount}}
-           <a href="#" class="nes-badge">
-           <span class="is-error">  {{.UnreadCount}} unread</span>
-           </a>
-           {{end}}
-           </div>
-           </a> -->
     {{end}}
   </div>
 {{end}}
