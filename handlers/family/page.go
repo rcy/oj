@@ -1,4 +1,4 @@
-package friends
+package family
 
 import (
 	"html/template"
@@ -12,7 +12,7 @@ import (
 	"sort"
 )
 
-var MyPageTemplate = template.Must(template.New("layout.gohtml").Funcs(templatehelpers.FuncMap).ParseFiles(layout.File, "handlers/me/friends/page.gohtml", "handlers/me/card.gohtml"))
+var MyPageTemplate = template.Must(template.New("layout.gohtml").Funcs(templatehelpers.FuncMap).ParseFiles(layout.File, "handlers/family/page.gohtml", "handlers/me/card.gohtml"))
 
 type Unread struct {
 	SenderID int64 `db:"sender_id"`
@@ -34,39 +34,39 @@ func Page(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	friends, err := getFriends(l.User.ID)
+	family, err := getFamily(l.User.ID)
 	if err != nil {
 		render.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	d := struct {
-		Layout  layout.Data
-		User    users.User
-		Friends []*Friend
+		Layout layout.Data
+		User   users.User
+		Family []*Friend
 	}{
-		Layout:  l,
-		User:    l.User,
-		Friends: friends,
+		Layout: l,
+		User:   l.User,
+		Family: family,
 	}
 
 	render.Execute(w, MyPageTemplate, d)
 }
 
-func getFriends(userID int64) ([]*Friend, error) {
-	var friends []*Friend
-	err := db.DB.Select(&friends, `
+func getFamily(userID int64) ([]*Friend, error) {
+	var family []*Friend
+	err := db.DB.Select(&family, `
 select users.*, fi.b_role role
 from users
 join friends fi on fi.b_id = users.id and fi.a_id = $1
 join friends fo on fo.a_id = users.id and fo.b_id = $1
-where fi.b_role = 'friend'
+where fi.b_role <> 'friend'
 `, userID)
 	if err != nil {
 		return nil, err
 	}
 
-	err = addGradients(friends)
+	err = addGradients(family)
 	if err != nil {
 		return nil, err
 	}
@@ -76,9 +76,9 @@ where fi.b_role = 'friend'
 		return nil, err
 	}
 
-	addUnreadCounts(friends, unreads)
+	addUnreadCounts(family, unreads)
 
-	return friends, nil
+	return family, nil
 }
 
 func getUnreads(userID int64) ([]Unread, error) {
