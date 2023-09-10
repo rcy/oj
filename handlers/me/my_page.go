@@ -12,16 +12,17 @@ import (
 
 var MyPageTemplate = template.Must(template.New("layout.gohtml").Funcs(templatehelpers.FuncMap).ParseFiles(layout.File, "handlers/me/my_page.gohtml", "handlers/me/card.gohtml"))
 
-type Unread struct {
-	SenderID int64 `db:"sender_id"`
-	Count    int
+type UnreadUser struct {
+	users.User
+	UnreadCount int `db:"unread_count"`
 }
 
-type Friend struct {
-	users.User
-	Role        string
-	UnreadCount int
-	GradientCSS template.CSS
+func (uu UnreadUser) GradientCSS() template.CSS {
+	return template.CSS("red")
+}
+
+func (uu UnreadUser) Role() string {
+	return "foo"
 }
 
 func MyPage(w http.ResponseWriter, r *http.Request) {
@@ -32,27 +33,29 @@ func MyPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	query := `
+select users.*, count(*) unread_count
+from deliveries
+join users on sender_id = users.id
+where recipient_id = ? and sent_at is null
+group by users.username;
+`
+	var unreadUsers []UnreadUser
+	err = db.DB.Select(&unreadUsers, query, l.User.ID)
+	if err != nil {
+		render.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
 	d := struct {
-		Layout layout.Data
-		User   users.User
+		Layout      layout.Data
+		User        users.User
+		UnreadUsers []UnreadUser
 	}{
-		Layout: l,
-		User:   l.User,
+		Layout:      l,
+		User:        l.User,
+		UnreadUsers: unreadUsers,
 	}
 
 	render.Execute(w, MyPageTemplate, d)
-}
-
-func getUnreads(userID int64) ([]Unread, error) {
-	var unreads []Unread
-
-	err := db.DB.Select(&unreads, `
-	  select sender_id, count(*) count
-          from deliveries
-          where recipient_id = ? and sent_at is null
-          group by sender_id`, userID)
-	if err != nil {
-		return nil, err
-	}
-	return unreads, nil
 }

@@ -118,15 +118,18 @@ func postMessage(ctx context.Context, roomID, senderID int64, body string) error
 		fmt.Sprintf("/es/room-%d", roomID),
 		sse.NewMessage("", string(data), "NEW_MESSAGE"))
 
-	for _, roomUser := range roomUsers {
-		if roomUser.UserID == senderID {
-			continue
-		}
+	go func() {
+		time.Sleep(time.Second)
+		for _, roomUser := range roomUsers {
+			if roomUser.UserID == senderID {
+				continue
+			}
 
-		eventsource.SSE.SendMessage(
-			fmt.Sprintf("/es/user-%d", roomUser.UserID),
-			sse.NewMessage("", "simple", "USER_UPDATE"))
-	}
+			eventsource.SSE.SendMessage(
+				fmt.Sprintf("/es/user-%d", roomUser.UserID),
+				sse.NewMessage("", "simple", "USER_UPDATE"))
+		}
+	}()
 
 	return nil
 }
