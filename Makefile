@@ -1,6 +1,6 @@
 -include .env
 
-start:
+start: clean-temp
 	find . -name \*.go -o -name \*.gohtml | entr -r go run .
 
 clean-temp:
