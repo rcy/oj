@@ -96,24 +96,6 @@
     </div>
 {{end}}
 
-{{define "about-edit"}}
-  <section class="nes-container is-dark" hx-swap="outerHTML">
-    <h3>Editing About me</h3>
-    <form hx-put="/bio" hx-target="closest section" style="display: flex; flex-direction: column; gap: 1em">
-      <textarea
-        name="text"
-        class="nes-textarea"
-        placeholder="Write something about yourself..."
-        rows=10
-      >{{.User.Bio}}</textarea>
-      <div style="display:flex; justify-content:space-between;">
-        <button type="submit" class="nes-btn is-primary">save</button>
-        <button type="reset" class="nes-btn" hx-get="/bio">cancel</button>
-      </div>
-    </form>
-  </section>
-{{end}}
-
 {{define "friends"}}
   <div style="display:flex; flex-direction: column; gap: 1em">
     {{range .}}
@@ -145,3 +127,4 @@
     </div>
   </div>
 {{end}}
+
