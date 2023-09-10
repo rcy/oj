@@ -109,7 +109,7 @@ func emailRegisterAction(w http.ResponseWriter, r *http.Request) {
 
 	// email code to user
 	_, _, err = email.Send(
-		fmt.Sprintf("Parent registration code: %s", code),
+		fmt.Sprintf("Parent sign in code: %s", code),
 		fmt.Sprintf("Your Octopus Jr verification code is %s", code),
 		address)
 	if err != nil {
