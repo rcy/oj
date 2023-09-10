@@ -1,6 +1,6 @@
 {{define "card"}}
   <section id="card" class="nes-container ghost" hx-swap="outerHTML">
-      <div style="display: flex; align-items: top; gap: 1em" >
+    <div style="display: flex; align-items: top; gap: 1em" >
       <figure style="width:80px; height:80px;">
         <img src="{{.User.AvatarURL}}">
       </figure>
@@ -18,12 +18,12 @@
 {{end}}
 
 {{define "about"}}
-    <h3>About me</h3>
-    <div>
-      {{if (eq .User.Bio "")}}
-        <p class="nes-text is-disabled">nothing here yet</p>
-      {{else}}
-        {{.User.BioHTML}}
-      {{end}}
-    </div>
+  <h3>About me</h3>
+  <div>
+    {{if (eq .User.Bio "")}}
+      <p class="nes-text is-disabled">nothing here yet</p>
+    {{else}}
+      {{.User.BioHTML}}
+    {{end}}
+  </div>
 {{end}}
