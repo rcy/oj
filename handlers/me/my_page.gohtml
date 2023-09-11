@@ -20,9 +20,15 @@
 
 {{define "myPage"}}
   <section style="display:flex; flex-direction:column; gap: 1em">
-    <div style="display:flex; justify-content: space-between">
+    <div style="display:flex; justify-content: space-between; align-items: center">
       <h1 style="text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;">My Page</h1>
-      <a href="/me/edit" class="nes-btn">Edit My Profile</a>
+
+        <a onclick="return confirm('really logout?')"
+           href="/welcome/signout"
+           class="nes-btn"
+        >Logout</a>
+
+      <a href="/me/edit" class="nes-btn is-primary">Edit My Profile</a>
     </div>
     <div style="display:flex; flex-direction: column; gap: 1em">
       {{template "card" .}}
