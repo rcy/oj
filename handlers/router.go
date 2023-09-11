@@ -37,6 +37,7 @@ func Router() *chi.Mux {
 	r.Route("/", func(r chi.Router) {
 		r.Use(mw.Auth)
 		r.Use(mw.Become)
+		r.Use(mw.Redirect)
 
 		r.Get("/", Home)
 
