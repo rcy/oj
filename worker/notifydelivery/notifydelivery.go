@@ -62,7 +62,7 @@ where d.id = ?`, j.Payload["id"])
 		return nil
 	}
 
-	link := app.AbsoluteURL(url.URL{Path: fmt.Sprintf("/u/%d/chat", delivery.SenderID)})
+	link := app.AbsoluteURL(url.URL{Path: fmt.Sprintf("/delivery/%d", delivery.ID)})
 	subject := fmt.Sprintf("%s sent you a message", delivery.SenderUsername)
 	emailBody := fmt.Sprintf("%s\n\nclick here to reply: %s", delivery.Body, link.String())
 	_, _, err = email.Send(subject, emailBody, *delivery.Email)

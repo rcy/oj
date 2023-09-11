@@ -1,0 +1,15 @@
+{{define "main"}}
+  <h1>delivery</h1>
+
+  <dialog open class="nes-dialog is-dark">
+    <form method="post" action={{.LogoutActionURL}}>
+      <p>You are currently logged in as {{.Layout.User.Username}}.</p>
+      <p>This content is for a different user!</p>
+      <div style="display:flex; justify-content: space-between">
+        <button class="nes-btn is-primary">Logout</button>
+        <a href="/" class="nes-btn">Cancel</a>
+      </div>
+    </form>
+  </dialog>
+
+{{end}}
