@@ -10,13 +10,13 @@ func Auth(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		cookie, err := r.Cookie("kh_session")
 		if err != nil {
-			login(w, r)
+			redirectToLogin(w, r)
 			return
 		}
 
 		user, err := users.FromSessionKey(cookie.Value)
 		if err != nil {
-			login(w, r)
+			redirectToLogin(w, r)
 			return
 		}
 
@@ -26,7 +26,7 @@ func Auth(next http.Handler) http.Handler {
 }
 
 // Save the current path in a cookie and redirect to welcome page
-func login(w http.ResponseWriter, r *http.Request) {
+func redirectToLogin(w http.ResponseWriter, r *http.Request) {
 	http.SetCookie(w, &http.Cookie{
 		Name:    "redirect",
 		Value:   r.URL.Path,
