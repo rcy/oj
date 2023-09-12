@@ -66,6 +66,7 @@ func Router() *chi.Mux {
 
 		r.Get("/fun", fun.Page)
 		r.Get("/fun/images", images.Page)
+		r.Post("/fun/images", images.Submit)
 
 		r.Get("/u/{userID}", u.UserPage)
 		r.Get("/u/{userID}/chat", chat.UserChatPage)

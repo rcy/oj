@@ -1,0 +1,15 @@
+{{define "main"}}
+  <h1>images!</h1>
+
+  <form hx-post hx-target="#result" hx-swap="innerHTML">
+    <input type="text" name="query" autofocus />
+  </form>
+
+  <div id="result">
+  </div>
+{{end}}
+
+
+{{define "result"}}
+  <img width=640 src={{.Image}}>
+{{end}}
