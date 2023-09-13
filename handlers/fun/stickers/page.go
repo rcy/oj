@@ -7,12 +7,11 @@ import (
 	"net/http"
 	"oj/handlers/layout"
 	"oj/handlers/render"
-	"oj/templatehelpers"
 
 	goduckgo "github.com/minoplhy/duckduckgo-images-api"
 )
 
-var pageTemplate = template.Must(template.New("layout.gohtml").Funcs(templatehelpers.FuncMap).ParseFiles(layout.File, "handlers/fun/stickers/page.gohtml"))
+var pageTemplate = template.Must(template.New("layout.gohtml").ParseFiles(layout.File, "handlers/fun/stickers/page.gohtml"))
 
 func Page(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
