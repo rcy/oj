@@ -1,4 +1,4 @@
-package images
+package stickers
 
 import (
 	"fmt"
@@ -12,7 +12,7 @@ import (
 	goduckgo "github.com/minoplhy/duckduckgo-images-api"
 )
 
-var pageTemplate = template.Must(template.New("layout.gohtml").Funcs(templatehelpers.FuncMap).ParseFiles(layout.File, "handlers/fun/images/page.gohtml"))
+var pageTemplate = template.Must(template.New("layout.gohtml").Funcs(templatehelpers.FuncMap).ParseFiles(layout.File, "handlers/fun/stickers/page.gohtml"))
 
 func Page(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
@@ -33,7 +33,7 @@ func Page(w http.ResponseWriter, r *http.Request) {
 func Submit(w http.ResponseWriter, r *http.Request) {
 	query := r.FormValue("query")
 
-	result := goduckgo.Search(goduckgo.Query{Keyword: fmt.Sprintf("cartoon %s", query)})
+	result := goduckgo.Search(goduckgo.Query{Keyword: fmt.Sprintf("happy cartoon %s", query)})
 	log.Printf("%v", result)
 
 	render.ExecuteNamed(w, pageTemplate, "result", struct {
