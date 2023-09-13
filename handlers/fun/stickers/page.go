@@ -33,7 +33,7 @@ func Page(w http.ResponseWriter, r *http.Request) {
 func Submit(w http.ResponseWriter, r *http.Request) {
 	query := r.FormValue("query")
 
-	result := goduckgo.Search(goduckgo.Query{Keyword: fmt.Sprintf("happy cartoon %s", query)})
+	result := goduckgo.Search(goduckgo.Query{Keyword: fmt.Sprintf("cartoon %s", query)})
 	log.Printf("%v", result)
 
 	render.ExecuteNamed(w, pageTemplate, "result", struct {
