@@ -84,6 +84,7 @@ func Router() *chi.Mux {
 		r.Delete("/connectkids/friend/{userID}", connectkids.DeleteKidFriend)
 
 		r.Get("/deliveries/{deliveryID}", deliveries.Page)
+		r.Get("/delivery/{deliveryID}", deliveries.Page) // temporary
 		r.Post("/deliveries/{deliveryID}/logout", deliveries.Logout)
 
 		r.NotFound(func(w http.ResponseWriter, r *http.Request) {
