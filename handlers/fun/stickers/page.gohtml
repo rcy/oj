@@ -1,5 +1,5 @@
 {{define "main"}}
-  <h1>Stickers!</h1>
+  <h1>Sticker Book</h1>
 
   <p>Type a word to search for stickers</p>
 
@@ -17,14 +17,14 @@
 
 
 {{define "result"}}
-  <div style="display:flex; flex-direction: column; gap:1em" class="nes-container is-dark">
+  <div id="result" style="display:flex; flex-direction: column; gap:1em" class="nes-container is-dark">
     <div style="height: 400px">
       <img height="100%" src={{.URL}}>
     </div>
 
     <form hx-post="stickers/save" hx-target="#stickerBook" hx-swap="afterbegin">
       <input type="hidden" name="url" value={{.URL}} />
-      <button class="nes-btn" style="width:100%">Add to sticker book</button>
+      <button id="addbutton" class="nes-btn" style="width:100%">Add to sticker book</button>
     </form>
   </div>
 {{end}}
@@ -40,6 +40,11 @@
 
 {{define "sticker"}}
   <div>
-    <img src={{.URL}} width=100 />
+    <img src={{.URL}} height="100px" />
   </div>
+{{end}}
+
+{{define "saveSticker"}}
+  <div id="addButton" hx-swap-oob="true"></div>
+  {{template "sticker" .}}
 {{end}}
