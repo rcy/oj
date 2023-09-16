@@ -28,6 +28,12 @@ CREATE TABLE gradients(
   user_id integer references users not null,
   gradient blob not null
 );
+CREATE TABLE images(
+  id integer primary key,
+  created_at datetime not null default current_timestamp,
+  url string not null,
+  user_id references users not null
+);
 CREATE TABLE kids_codes(
   id integer primary key,
   created_at datetime not null default current_timestamp,
