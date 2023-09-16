@@ -173,4 +173,13 @@ alter table users add column become_user_id integer references users;
 	` --21 add admin to users
 alter table users add column admin bool not null default false;
 `,
+	` --22 add images
+drop table if exists images;
+create table images(
+  id integer primary key,
+  created_at datetime not null default current_timestamp,
+  url string not null,
+  user_id references users not null
+);
+`,
 }

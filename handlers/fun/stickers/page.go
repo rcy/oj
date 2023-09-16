@@ -3,15 +3,24 @@ package stickers
 import (
 	"fmt"
 	"html/template"
-	"log"
 	"net/http"
+	"oj/db"
 	"oj/handlers/layout"
 	"oj/handlers/render"
+	"oj/models/users"
+	"time"
 
 	goduckgo "github.com/minoplhy/duckduckgo-images-api"
 )
 
 var pageTemplate = template.Must(template.New("layout.gohtml").ParseFiles(layout.File, "handlers/fun/stickers/page.gohtml"))
+
+type Image struct {
+	ID        int64
+	CreatedAt time.Time `db:"created_at"`
+	UserID    int64     `db:"user_id"`
+	URL       string    `db:"url"`
+}
 
 func Page(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
@@ -20,10 +29,20 @@ func Page(w http.ResponseWriter, r *http.Request) {
 		render.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+
+	var images []Image
+	err = db.DB.Select(&images, `select * from images where user_id = ? order by created_at desc`, l.User.ID)
+	if err != nil {
+		render.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
 	d := struct {
 		Layout layout.Data
+		Images []Image
 	}{
 		Layout: l,
+		Images: images,
 	}
 
 	render.Execute(w, pageTemplate, d)
@@ -33,13 +52,28 @@ func Submit(w http.ResponseWriter, r *http.Request) {
 	query := r.FormValue("query")
 
 	result := goduckgo.Search(goduckgo.Query{Keyword: fmt.Sprintf("cartoon %s", query)})
-	log.Printf("%v", result)
 
 	render.ExecuteNamed(w, pageTemplate, "result", struct {
-		Image     string
+		URL       string
 		Thumbnail string
 	}{
-		Image:     result.Results[0].Image,
+		URL:       result.Results[0].Image,
 		Thumbnail: result.Results[0].Thumbnail,
 	})
+}
+
+func SaveSticker(w http.ResponseWriter, r *http.Request) {
+	user := users.FromContext(r.Context())
+
+	url := r.FormValue("url")
+
+	img := Image{URL: url}
+
+	_, err := db.DB.Exec(`insert into images(url, user_id) values(?,?)`, url, user.ID)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	render.ExecuteNamed(w, pageTemplate, "sticker", img)
 }

@@ -7,11 +7,40 @@
     <input type="text" name="query" autofocus />
   </form>
 
-  <div id="result">
+  <div style="display:flex; flex-direction: column">
+    <div id="result">
+    </div>
+    <div id="stickerBook">
+      {{template "stickerBook" .}}
+    </div>
   </div>
 {{end}}
 
 
 {{define "result"}}
-  <img height=400 src={{.Image}}>
+  <div style="display:flex; flex-direction: column; gap:1em">
+    <div style="height: 400px">
+      <img height="100%" src={{.URL}}>
+    </div>
+
+    <form hx-post="stickers/save" hx-target="#stickerBook" hx-swap="afterbegin">
+      <input type="hidden" name="url" value={{.URL}} />
+      <button class="nes-btn">Add to sticker book</button>
+    </form>
+  </div>
+{{end}}
+
+
+{{define "stickerBook"}}
+  <div style="display:flex; flex-wrap: wrap; gap:1em">
+    {{range .Images}}
+      {{template "sticker" .}}
+    {{end}}
+  </div>
+{{end}}
+
+{{define "sticker"}}
+  <div>
+    <img src={{.URL}} width=100 />
+  </div>
 {{end}}

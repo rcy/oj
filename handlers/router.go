@@ -67,6 +67,7 @@ func Router() *chi.Mux {
 		r.Get("/fun", fun.Page)
 		r.Get("/fun/stickers", stickers.Page)
 		r.Post("/fun/stickers", stickers.Submit)
+		r.Post("/fun/stickers/save", stickers.SaveSticker)
 
 		r.Get("/u/{userID}", u.UserPage)
 		r.Get("/u/{userID}/chat", chat.UserChatPage)
