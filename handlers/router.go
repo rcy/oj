@@ -11,6 +11,7 @@ import (
 	"oj/handlers/family"
 	"oj/handlers/friends"
 	"oj/handlers/fun"
+	"oj/handlers/fun/chess"
 	"oj/handlers/fun/stickers"
 	"oj/handlers/header"
 	"oj/handlers/me"
@@ -68,6 +69,7 @@ func Router() *chi.Mux {
 		r.Get("/fun/stickers", stickers.Page)
 		r.Post("/fun/stickers", stickers.Submit)
 		r.Post("/fun/stickers/save", stickers.SaveSticker)
+		r.Get("/fun/chess", chess.Page)
 
 		r.Get("/u/{userID}", u.UserPage)
 		r.Get("/u/{userID}/chat", chat.UserChatPage)
