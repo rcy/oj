@@ -3,14 +3,13 @@
 
   <p>Type a word to search for stickers</p>
 
-  <form hx-post hx-target="#result" hx-swap="innerHTML">
-    <input type="text" name="query" autofocus />
+  <form hx-post hx-target="#result" hx-swap="outerHTML">
+    <input type="text" name="query" autofocus style="width: 100%" placeholder="dog, cat, etc..." />
   </form>
 
-  <div style="display:flex; flex-direction: column">
-    <div id="result">
-    </div>
-    <div id="stickerBook">
+  <div style="display:flex; flex-direction: column; gap:1em; align-items: center">
+    <div id="result"></div>
+    <div class="nes-container is-dark">
       {{template "stickerBook" .}}
     </div>
   </div>
@@ -18,21 +17,21 @@
 
 
 {{define "result"}}
-  <div style="display:flex; flex-direction: column; gap:1em">
+  <div style="display:flex; flex-direction: column; gap:1em" class="nes-container is-dark">
     <div style="height: 400px">
       <img height="100%" src={{.URL}}>
     </div>
 
     <form hx-post="stickers/save" hx-target="#stickerBook" hx-swap="afterbegin">
       <input type="hidden" name="url" value={{.URL}} />
-      <button class="nes-btn">Add to sticker book</button>
+      <button class="nes-btn" style="width:100%">Add to sticker book</button>
     </form>
   </div>
 {{end}}
 
 
 {{define "stickerBook"}}
-  <div style="display:flex; flex-wrap: wrap; gap:1em">
+  <div id="stickerBook" style="display:flex; flex-wrap: wrap; gap:1em">
     {{range .Images}}
       {{template "sticker" .}}
     {{end}}
