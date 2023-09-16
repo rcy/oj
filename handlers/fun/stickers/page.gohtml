@@ -24,7 +24,7 @@
 
     <form hx-post="stickers/save" hx-target="#stickerBook" hx-swap="afterbegin">
       <input type="hidden" name="url" value={{.URL}} />
-      <button class="nes-btn" style="width:100%">Add to sticker book</button>
+      <button id="addbutton" class="nes-btn" style="width:100%">Add to sticker book</button>
     </form>
   </div>
 {{end}}
@@ -42,4 +42,9 @@
   <div>
     <img src={{.URL}} height="100px" />
   </div>
+{{end}}
+
+{{define "saveSticker"}}
+  <div id="addButton" hx-swap-oob="true"></div>
+  {{template "sticker" .}}
 {{end}}

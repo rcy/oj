@@ -75,5 +75,5 @@ func SaveSticker(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	render.ExecuteNamed(w, pageTemplate, "sticker", img)
+	render.ExecuteNamed(w, pageTemplate, "saveSticker", img)
 }
