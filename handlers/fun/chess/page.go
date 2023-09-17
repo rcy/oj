@@ -3,6 +3,7 @@ package chess
 import (
 	"html/template"
 	"log"
+	"math/rand"
 	"net/http"
 	"oj/handlers/layout"
 	"oj/handlers/render"
@@ -22,7 +23,17 @@ func Page(w http.ResponseWriter, r *http.Request) {
 	}
 
 	game := chess.NewGame()
+
+	for i := 0; i < 3; i += 1 {
+		moves := game.ValidMoves()
+		move := moves[rand.Intn(len(moves))]
+		game.Move(move)
+	}
+	// next: click peice, show valid moves
+
 	pos := game.Position()
+
+	log.Println(pos.Board().Draw())
 
 	squareMap := pos.Board().SquareMap()
 
@@ -46,7 +57,7 @@ func Page(w http.ResponseWriter, r *http.Request) {
 
 	for i := 0; i < 64; i += 1 {
 		piece := squareMap[chess.Square(i)]
-		rows[i/8][i%8] = svgPiece[piece]
+		rows[7-i/8][i%8] = svgPiece[piece]
 	}
 
 	log.Println(rows)
