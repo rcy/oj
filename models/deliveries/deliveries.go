@@ -12,5 +12,4 @@ type Delivery struct {
 	RoomID      int64     `db:"room_id"`
 	SenderID    int64     `db:"sender_id"`
 	SentAt      time.Time `db:"sent_at"`
-	ReadAt      time.Time `db:"read_at"`
 }
