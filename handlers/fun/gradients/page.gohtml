@@ -88,7 +88,7 @@
 {{end}}
 
 {{define "picker"}}
-  <form class="xpicker" hx-post="/tools/picker" hx-swap="innerHTML">
+  <form class="xpicker" hx-post="/fun/gradients/picker" hx-swap="innerHTML">
     <div class="nes-container is-dark">
       <button style="display: none" id="submit"></button>
 
@@ -164,7 +164,7 @@
 
       <div class="f-row justify-content:space-between">
         <button class="nes-btn"
-                hx-post="/tools/set-background"
+                hx-post="/fun/gradients/set-background"
                 hx-target="#user-style"
                 hx-swap="innerHTML">set as background</button>
       </div>

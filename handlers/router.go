@@ -12,6 +12,7 @@ import (
 	"oj/handlers/friends"
 	"oj/handlers/fun"
 	"oj/handlers/fun/chess"
+	"oj/handlers/fun/gradients"
 	"oj/handlers/fun/stickers"
 	"oj/handlers/header"
 	"oj/handlers/me"
@@ -19,7 +20,6 @@ import (
 	mw "oj/handlers/middleware"
 	"oj/handlers/parent"
 	"oj/handlers/render"
-	"oj/handlers/tools"
 	"oj/handlers/u"
 	auth "oj/handlers/welcome"
 	"os"
@@ -54,10 +54,6 @@ func Router() *chi.Mux {
 		r.Post("/chat/messages", chat.PostChatMessage)
 		r.Mount("/es", eventsource.SSE)
 
-		r.Get("/tools", tools.Index)
-		r.Post("/tools/picker", tools.Picker)
-		r.Post("/tools/set-background", tools.SetBackground)
-
 		r.Get("/me", me.MyPage)
 		r.Get("/me/edit", editme.MyPageEdit)
 		r.Post("/me/edit", editme.Post)
@@ -66,9 +62,14 @@ func Router() *chi.Mux {
 		r.Get("/me/friends", friends.Page)
 
 		r.Get("/fun", fun.Page)
+		r.Get("/fun/gradients", gradients.Index)
+		r.Post("/fun/gradients/picker", gradients.Picker)
+		r.Post("/fun/gradients/set-background", gradients.SetBackground)
+
 		r.Get("/fun/stickers", stickers.Page)
 		r.Post("/fun/stickers", stickers.Submit)
 		r.Post("/fun/stickers/save", stickers.SaveSticker)
+
 		r.Get("/fun/chess", chess.Page)
 
 		r.Get("/u/{userID}", u.UserPage)

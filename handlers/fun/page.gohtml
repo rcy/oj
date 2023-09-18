@@ -1,11 +1,18 @@
 {{define "main"}}
   <h1>Here's some fun things to do!</h1>
 
-  <div style="display:flex; flex-direction:column">
+  <div style="display:flex; flex-direction:column; gap: 1em">
     <a href="fun/stickers">
-      <div class="nes-container ghost" style="display:flex">
+      <div class="nes-container ghost" style="display:flex; gap:1em">
         <i class="nes-kirby"></i>
         <h1>Sticker Book</h1>
+      </div>
+    </a>
+
+    <a href="fun/gradients">
+      <div class="nes-container ghost" style="display:flex; gap:1em">
+        <div style="height:96px; width:96px; background: {{.Layout.BackgroundGradient.Render}}"></div>
+        <h1>Gradients</h1>
       </div>
     </a>
 
