@@ -73,6 +73,9 @@ where d.id = ?`, j.Payload["id"])
 		subject := fmt.Sprintf("%s sent your child, %s, a message", delivery.SenderUsername, recipient.Username)
 		emailBody := fmt.Sprintf("%s\n\nclick here to reply: %s", delivery.Body, link.String())
 		for _, p := range parents {
+			if p.ID == delivery.SenderID {
+				continue
+			}
 			_, _, err = email.Send(subject, emailBody, *p.Email)
 			if err != nil {
 				return err
