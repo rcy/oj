@@ -50,15 +50,15 @@ where d.id = ?`, j.Payload["id"])
 		return err
 	}
 
-	if delivery.Email == nil {
-		return nil
-	}
-
 	if delivery.SenderID == delivery.RecipientID {
 		return nil
 	}
 
 	if delivery.SentAt != nil {
+		return nil
+	}
+
+	if delivery.Email == nil {
 		return nil
 	}
 
