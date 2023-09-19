@@ -7,6 +7,7 @@ import (
 	"net/url"
 	"oj/app"
 	"oj/db"
+	"oj/models/users"
 	"oj/services/email"
 	"time"
 
@@ -58,16 +59,32 @@ where d.id = ?`, j.Payload["id"])
 		return nil
 	}
 
-	if delivery.Email == nil {
-		return nil
-	}
-
 	link := app.AbsoluteURL(url.URL{Path: fmt.Sprintf("/deliveries/%d", delivery.ID)})
-	subject := fmt.Sprintf("%s sent you a message", delivery.SenderUsername)
-	emailBody := fmt.Sprintf("%s\n\nclick here to reply: %s", delivery.Body, link.String())
-	_, _, err = email.Send(subject, emailBody, *delivery.Email)
-	if err != nil {
-		return err
+
+	if delivery.Email == nil {
+		recipient, err := users.FindById(delivery.RecipientID)
+		if err != nil {
+			return err
+		}
+		parents, err := recipient.Parents()
+		if err != nil {
+			return err
+		}
+		subject := fmt.Sprintf("%s sent your child, %s, a message", delivery.SenderUsername, recipient.Username)
+		emailBody := fmt.Sprintf("%s\n\nclick here to reply: %s", delivery.Body, link.String())
+		for _, p := range parents {
+			_, _, err = email.Send(subject, emailBody, *p.Email)
+			if err != nil {
+				return err
+			}
+		}
+	} else {
+		subject := fmt.Sprintf("%s sent you a message", delivery.SenderUsername)
+		emailBody := fmt.Sprintf("%s\n\nclick here to reply: %s", delivery.Body, link.String())
+		_, _, err = email.Send(subject, emailBody, *delivery.Email)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil
