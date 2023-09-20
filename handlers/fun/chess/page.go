@@ -2,7 +2,6 @@ package chess
 
 import (
 	"html/template"
-	"log"
 	"math/rand"
 	"net/http"
 	"oj/handlers/layout"
@@ -29,23 +28,17 @@ func Page(w http.ResponseWriter, r *http.Request) {
 		move := moves[rand.Intn(len(moves))]
 		game.Move(move)
 	}
-	// next: click peice, show valid moves
-
 	pos := game.Position()
-
-	log.Println(pos.Board().Draw())
 
 	pieces := squareMapToPieceArray(pos.Board().SquareMap())
 
-	d := struct {
+	render.Execute(w, MyPageTemplate, struct {
 		Layout layout.Data
 		Pieces [8][8]string
 	}{
 		Layout: l,
 		Pieces: pieces,
-	}
-
-	render.Execute(w, MyPageTemplate, d)
+	})
 }
 
 func squareMapToPieceArray(squareMap map[chess.Square]chess.Piece) [8][8]string {
