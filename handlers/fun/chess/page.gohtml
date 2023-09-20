@@ -21,6 +21,7 @@
   <div id="board-container" style="height: 80vh; width: 80vh">
     {{template "board" .}}
   </div>
+
 {{end}}
 
 {{define "board"}}
@@ -40,5 +41,9 @@
         {{end}}
       </div>
     {{end}}
+    {{range .ValidMoves}}
+      {{.}}
+    {{end}}
   </div>
+
 {{end}}

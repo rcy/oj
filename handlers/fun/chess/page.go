@@ -3,6 +3,7 @@ package chess
 import (
 	"fmt"
 	"html/template"
+	"log"
 	"net/http"
 	"oj/handlers/layout"
 	"oj/handlers/render"
@@ -32,14 +33,19 @@ func Page(w http.ResponseWriter, r *http.Request) {
 	}
 
 	game := chess.NewGame()
+
+	log.Println(game.Position().Board().Draw())
+
 	board := gameBoard(game, nil)
 
 	render.Execute(w, pageTemplate, struct {
-		Layout layout.Data
-		Board  Board
+		Layout     layout.Data
+		Board      Board
+		ValidMoves []*chess.Move
 	}{
-		Layout: l,
-		Board:  board,
+		Layout:     l,
+		Board:      board,
+		ValidMoves: game.ValidMoves(),
 	})
 }
 
@@ -98,9 +104,24 @@ func Select(w http.ResponseWriter, r *http.Request) {
 	file, _ := strconv.Atoi(fileStr)
 
 	game := chess.NewGame()
+	moves := game.ValidMoves()
 	board := gameBoard(game, &Position{rank, file})
 
-	render.ExecuteNamed(w, pageTemplate, "board", struct{ Board Board }{board})
+	selectedSquare := chess.Square((7-rank)*8 + file)
+	actuallyValidMoves := []*chess.Move{}
+	for _, move := range moves {
+		if move.S1() == selectedSquare {
+			actuallyValidMoves = append(actuallyValidMoves, move)
+		}
+	}
+
+	render.ExecuteNamed(w, pageTemplate, "board", struct {
+		Board      Board
+		ValidMoves []*chess.Move
+	}{
+		Board:      board,
+		ValidMoves: actuallyValidMoves,
+	})
 }
 
 func Unselect(w http.ResponseWriter, r *http.Request) {
