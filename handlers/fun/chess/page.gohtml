@@ -36,22 +36,26 @@
                  style="flex:1"
                  class="square color-{{odd $ri $fi}} {{if $square.Selected}}selected{{end}}">
               {{if $square.SVGPiece}}
-                <img width="100%" src="{{$square.SVGPiece}}">
-              {{end}}
-              {{if $square.Dot}}
-                <div style="display:flex; height: 100%; align-items: center; justify-content: center">
-                  <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="50" cy="50" r="20" fill="orange" />
-                  </svg>
-                </div>
+                {{if $square.Dot}}
+                  <div style="background: radial-gradient(rgba(0,0,0,0) 80%, orange 80%);">
+                    <img width="100%" src="{{$square.SVGPiece}}">
+                  </div>
+                {{else}}
+                  <img width="100%" src="{{$square.SVGPiece}}">
+                {{end}}
+              {{else}}
+                {{if $square.Dot}}
+                  <div style="display:flex; height: 100%; align-items: center; justify-content: center">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                      <circle cx="50" cy="50" r="20" fill="orange" />
+                    </svg>
+                  </div>
+                {{end}}
               {{end}}
             </div>
           {{end}}
         </div>
       {{end}}
     </div>
-    {{range .GameBoard.ValidMoves}}
-      {{.}}
-    {{end}}
   </div>
 {{end}}

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"html/template"
 	"log"
+	"math/rand"
 	"net/http"
 	"oj/handlers/layout"
 	"oj/handlers/render"
@@ -30,6 +31,8 @@ type GameBoard struct {
 
 var pageTemplate = template.Must(template.New("layout.gohtml").Funcs(templatehelpers.FuncMap).ParseFiles(layout.File, "handlers/fun/chess/page.gohtml"))
 
+var game *chess.Game = chess.NewGame()
+
 func Page(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	l, err := layout.FromContext(ctx)
@@ -38,7 +41,11 @@ func Page(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	game := chess.NewGame()
+	for i := 0; i < 20; i += 1 {
+		moves := game.ValidMoves()
+		move := moves[rand.Intn(len(moves))]
+		game.Move(move)
+	}
 
 	log.Println(game.Position().Board().Draw())
 
@@ -70,7 +77,9 @@ func gameBoard(game *chess.Game, position *Position) GameBoard {
 
 		for _, move := range gb.ValidMoves {
 			target := move.S2()
-			gb.Board[7-target/8][target%8].Dot = true
+			square := &gb.Board[7-target/8][target%8]
+			square.Dot = true
+			square.Action = "chess/move/" + move.String()
 		}
 	}
 
@@ -126,7 +135,6 @@ func Select(w http.ResponseWriter, r *http.Request) {
 	rank, _ := strconv.Atoi(rankStr)
 	file, _ := strconv.Atoi(fileStr)
 
-	game := chess.NewGame()
 	gb := gameBoard(game, &Position{rank, file})
 
 	render.ExecuteNamed(w, pageTemplate, "board", struct {
@@ -137,7 +145,6 @@ func Select(w http.ResponseWriter, r *http.Request) {
 }
 
 func Unselect(w http.ResponseWriter, r *http.Request) {
-	game := chess.NewGame()
 	gb := gameBoard(game, nil)
 
 	render.ExecuteNamed(w, pageTemplate, "board", struct{ GameBoard GameBoard }{gb})
