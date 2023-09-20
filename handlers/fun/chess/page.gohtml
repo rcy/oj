@@ -25,25 +25,33 @@
 {{end}}
 
 {{define "board"}}
-  <div style="height: 100%; width: 100%; display: flex; flex-direction: column"
-       class="board">
-    {{range $ri, $rank := .GameBoard.Board}}
-      <div style="flex: 1; display:flex">
-        {{range $fi, $square := $rank}}
+  <div class="board">
+    <div style="height: 100%; width: 100%; display: flex; flex-direction: column">
+      {{range $ri, $rank := .GameBoard.Board}}
+        <div style="flex: 1; display:flex">
+          {{range $fi, $square := $rank}}
             <div hx-get="{{$square.Action}}"
                  hx-target="closest .board"
+                 hx-swap="outerHTML"
                  style="flex:1"
                  class="square color-{{odd $ri $fi}} {{if $square.Selected}}selected{{end}}">
               {{if $square.SVGPiece}}
                 <img width="100%" src="{{$square.SVGPiece}}">
               {{end}}
+              {{if $square.Dot}}
+                <div style="display:flex; height: 100%; align-items: center; justify-content: center">
+                  <svg width="100" height="100" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="50" cy="50" r="20" fill="orange" />
+                  </svg>
+                </div>
+              {{end}}
             </div>
-        {{end}}
-      </div>
-    {{end}}
+          {{end}}
+        </div>
+      {{end}}
+    </div>
     {{range .GameBoard.ValidMoves}}
       {{.}}
     {{end}}
   </div>
-
 {{end}}
