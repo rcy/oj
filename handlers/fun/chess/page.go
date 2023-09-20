@@ -47,12 +47,9 @@ func Page(w http.ResponseWriter, r *http.Request) {
 	render.Execute(w, pageTemplate, struct {
 		Layout    layout.Data
 		GameBoard GameBoard
-		// Board      Board
-		// ValidMoves []*chess.Move
 	}{
 		Layout:    l,
 		GameBoard: gameBoard,
-		//ValidMoves: game.ValidMoves(),
 	})
 }
 
