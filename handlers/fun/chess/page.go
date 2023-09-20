@@ -18,6 +18,7 @@ type Square struct {
 	SVGPiece string
 	Selected bool
 	Action   string
+	Dot      bool
 }
 
 type Board [8][8]Square
@@ -68,6 +69,11 @@ func gameBoard(game *chess.Game, position *Position) GameBoard {
 			if move.S1() == selectedSquare {
 				gb.ValidMoves = append(gb.ValidMoves, move)
 			}
+		}
+
+		for _, move := range gb.ValidMoves {
+			target := move.S2()
+			gb.Board[7-target/8][target%8].Dot = true
 		}
 	}
 
