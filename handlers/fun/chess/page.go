@@ -41,7 +41,7 @@ func Page(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	for i := 0; i < 20; i += 1 {
+	for i := 0; i < 6; i += 1 {
 		moves := game.ValidMoves()
 		if len(moves) > 0 {
 			move := moves[rand.Intn(len(moves))]
