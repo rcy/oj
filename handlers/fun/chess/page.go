@@ -35,8 +35,20 @@ func Page(w http.ResponseWriter, r *http.Request) {
 
 	log.Println(pos.Board().Draw())
 
-	squareMap := pos.Board().SquareMap()
+	pieces := squareMapToPieceArray(pos.Board().SquareMap())
 
+	d := struct {
+		Layout layout.Data
+		Pieces [8][8]string
+	}{
+		Layout: l,
+		Pieces: pieces,
+	}
+
+	render.Execute(w, MyPageTemplate, d)
+}
+
+func squareMapToPieceArray(squareMap map[chess.Square]chess.Piece) [8][8]string {
 	svgPiece := [13]string{
 		"", // empty piece
 		"/assets/chess/wK.svg",
@@ -60,15 +72,5 @@ func Page(w http.ResponseWriter, r *http.Request) {
 		rows[7-i/8][i%8] = svgPiece[piece]
 	}
 
-	log.Println(rows)
-
-	d := struct {
-		Layout layout.Data
-		Pieces [8][8]string
-	}{
-		Layout: l,
-		Pieces: rows,
-	}
-
-	render.Execute(w, MyPageTemplate, d)
+	return rows
 }
