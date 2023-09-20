@@ -1,17 +1,27 @@
 package chess
 
 import (
+	"fmt"
 	"html/template"
-	"math/rand"
 	"net/http"
 	"oj/handlers/layout"
 	"oj/handlers/render"
 	"oj/templatehelpers"
+	"strconv"
 
+	"github.com/go-chi/chi/v5"
 	"github.com/notnil/chess"
 )
 
-var MyPageTemplate = template.Must(template.New("layout.gohtml").Funcs(templatehelpers.FuncMap).ParseFiles(layout.File, "handlers/fun/chess/page.gohtml"))
+type Square struct {
+	SVGPiece string
+	Selected bool
+	Action   string
+}
+
+type Board [8][8]Square
+
+var pageTemplate = template.Must(template.New("layout.gohtml").Funcs(templatehelpers.FuncMap).ParseFiles(layout.File, "handlers/fun/chess/page.gohtml"))
 
 func Page(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
@@ -22,26 +32,28 @@ func Page(w http.ResponseWriter, r *http.Request) {
 	}
 
 	game := chess.NewGame()
+	board := gameBoard(game, nil)
 
-	for i := 0; i < 3; i += 1 {
-		moves := game.ValidMoves()
-		move := moves[rand.Intn(len(moves))]
-		game.Move(move)
-	}
-	pos := game.Position()
-
-	pieces := squareMapToPieceArray(pos.Board().SquareMap())
-
-	render.Execute(w, MyPageTemplate, struct {
+	render.Execute(w, pageTemplate, struct {
 		Layout layout.Data
-		Pieces [8][8]string
+		Board  Board
 	}{
 		Layout: l,
-		Pieces: pieces,
+		Board:  board,
 	})
 }
 
-func squareMapToPieceArray(squareMap map[chess.Square]chess.Piece) [8][8]string {
+func gameBoard(game *chess.Game, position *Position) Board {
+	pos := game.Position()
+	return squareMapToBoard(pos.Board().SquareMap(), position)
+}
+
+type Position struct {
+	rank int
+	file int
+}
+
+func squareMapToBoard(squareMap map[chess.Square]chess.Piece, selected *Position) Board {
 	svgPiece := [13]string{
 		"", // empty piece
 		"/assets/chess/wK.svg",
@@ -58,12 +70,62 @@ func squareMapToPieceArray(squareMap map[chess.Square]chess.Piece) [8][8]string 
 		"/assets/chess/bP.svg",
 	}
 
-	var rows [8][8]string
+	var board Board
 
 	for i := 0; i < 64; i += 1 {
 		piece := squareMap[chess.Square(i)]
-		rows[7-i/8][i%8] = svgPiece[piece]
+		rank := 7 - i/8
+		file := i % 8
+		square := &board[rank][file]
+		square.SVGPiece = svgPiece[piece]
+
+		if selected != nil && selected.rank == rank && selected.file == file {
+			square.Action = "/fun/chess/unselect"
+			square.Selected = true
+		} else {
+			square.Action = fmt.Sprintf("/fun/chess/select/%d/%d", rank, file)
+		}
 	}
 
-	return rows
+	return board
+}
+
+func Select(w http.ResponseWriter, r *http.Request) {
+	rankStr := chi.URLParam(r, "rank")
+	fileStr := chi.URLParam(r, "file")
+
+	rank, _ := strconv.Atoi(rankStr)
+	file, _ := strconv.Atoi(fileStr)
+
+	game := chess.NewGame()
+	board := gameBoard(game, &Position{rank, file})
+
+	render.ExecuteNamed(w, pageTemplate, "board", struct{ Board Board }{board})
+}
+
+func Unselect(w http.ResponseWriter, r *http.Request) {
+	game := chess.NewGame()
+	board := gameBoard(game, nil)
+
+	render.ExecuteNamed(w, pageTemplate, "board", struct{ Board Board }{board})
+}
+
+func Move(w http.ResponseWriter, r *http.Request) {
+	r1Str := chi.URLParam(r, "r1")
+	f1Str := chi.URLParam(r, "f1")
+	r2Str := chi.URLParam(r, "r2")
+	f2Str := chi.URLParam(r, "f2")
+
+	r1, _ := strconv.Atoi(r1Str)
+	f1, _ := strconv.Atoi(f1Str)
+	r2, _ := strconv.Atoi(r2Str)
+	f2, _ := strconv.Atoi(f2Str)
+
+	game := chess.NewGame()
+	board := gameBoard(game, nil)
+
+	board[r1][f1].Selected = true
+	board[r2][f2].Selected = true
+
+	render.ExecuteNamed(w, pageTemplate, "board", struct{ Board Board }{board})
 }

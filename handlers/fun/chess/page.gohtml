@@ -2,32 +2,43 @@
   <h1>chess club</h1>
 
   <style>
-   .square:hover {
-       background: yellow;
-   }
-
+   /* .square:hover {
+      background: yellow;
+      }
+    */
    .color-0 {
        background: rgba(100,100,100,1);
    }
    .color-1 {
        background: rgba(255,255,255,1);
    }
+
+   .selected {
+       background: orange;
    }
   </style>
 
-  <div style="height: 80vh; width: 80vh">
-    <div style="height: 100%; width: 100%; display: flex; flex-direction: column">
-      {{range $ri, $rank := .Pieces}}
-        <div style="flex: 1; display:flex">
-          {{range $fi, $src := $rank}}
-            <div style="flex:1" class="square color-{{odd $ri $fi}}">
-              {{if .}}
-                <img width="100%" src="{{$src}}">
+  <div id="board-container" style="height: 80vh; width: 80vh">
+    {{template "board" .}}
+  </div>
+{{end}}
+
+{{define "board"}}
+  <div style="height: 100%; width: 100%; display: flex; flex-direction: column"
+       class="board">
+    {{range $ri, $rank := .Board}}
+      <div style="flex: 1; display:flex">
+        {{range $fi, $square := $rank}}
+            <div hx-get="{{$square.Action}}"
+                 hx-target="closest .board"
+                 style="flex:1"
+                 class="square color-{{odd $ri $fi}} {{if $square.Selected}}selected{{end}}">
+              {{if $square.SVGPiece}}
+                <img width="100%" src="{{$square.SVGPiece}}">
               {{end}}
             </div>
-          {{end}}
-        </div>
-      {{end}}
-    </div>
+        {{end}}
+      </div>
+    {{end}}
   </div>
 {{end}}
