@@ -27,7 +27,7 @@
 {{define "board"}}
   <div style="height: 100%; width: 100%; display: flex; flex-direction: column"
        class="board">
-    {{range $ri, $rank := .Board}}
+    {{range $ri, $rank := .GameBoard.Board}}
       <div style="flex: 1; display:flex">
         {{range $fi, $square := $rank}}
             <div hx-get="{{$square.Action}}"
@@ -41,7 +41,7 @@
         {{end}}
       </div>
     {{end}}
-    {{range .ValidMoves}}
+    {{range .GameBoard.ValidMoves}}
       {{.}}
     {{end}}
   </div>

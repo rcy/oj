@@ -73,7 +73,7 @@ func Router() *chi.Mux {
 		r.Get("/fun/chess", chess.Page)
 		r.Get("/fun/chess/select/{rank}/{file}", chess.Select)
 		r.Get("/fun/chess/unselect", chess.Unselect)
-		r.Get("/fun/chess/select/{r1}/{f1}/{r2}/{f2}", chess.Move)
+		//r.Get("/fun/chess/select/{r1}/{f1}/{r2}/{f2}", chess.Move)
 
 		r.Get("/u/{userID}", u.UserPage)
 		r.Get("/u/{userID}/chat", chat.UserChatPage)
