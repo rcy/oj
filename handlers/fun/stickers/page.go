@@ -1,9 +1,9 @@
 package stickers
 
 import (
-	"fmt"
 	"html/template"
 	"net/http"
+	"net/url"
 	"oj/db"
 	"oj/handlers/layout"
 	"oj/handlers/render"
@@ -51,7 +51,9 @@ func Page(w http.ResponseWriter, r *http.Request) {
 func Submit(w http.ResponseWriter, r *http.Request) {
 	query := r.FormValue("query")
 
-	result := goduckgo.Search(goduckgo.Query{Keyword: fmt.Sprintf("cartoon %s", query)})
+	keyword := url.QueryEscape("cartoon " + query)
+
+	result := goduckgo.Search(goduckgo.Query{Keyword: keyword})
 
 	render.ExecuteNamed(w, pageTemplate, "result", struct {
 		URL       string
