@@ -58,7 +58,7 @@
 {{define "chat_message_other"}}
   <div style="display:flex; align-items:end">
     <a href="/u/{{.SenderID}}">
-      <img style="margin-bottom: 8px" src="{{.SenderAvatarURL}}">
+      <img style="margin-bottom: 8px" src="{{.SenderAvatarURL}}" width="80" height="80">
     </a>
     <div class="nes-balloon from-left" style="overflow-wrap: break-word; max-width: 70%">
       {{.BodyHTML}}
@@ -73,7 +73,7 @@
     <div class="nes-balloon from-right" style="overflow-wrap: break-word; max-width: 70%">
       {{.BodyHTML}}
     </div>
-    <img style="margin-bottom: 8px" src="{{.SenderAvatarURL}}">
+    <img style="margin-bottom: 8px" src="{{.SenderAvatarURL}}" width="80" height="80">
   </div>
 {{end}}
 
