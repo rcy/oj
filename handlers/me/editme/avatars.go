@@ -22,7 +22,7 @@ func GetAvatars(w http.ResponseWriter, r *http.Request) {
 
 	for i := 0; i < count; i += 1 {
 		url := fmt.Sprintf("https://robohash.org/%s?set=set5&size=80x80",
-			hash.GenerateMD5(fmt.Sprintf("%s-%d", user.Username, i)))
+			hash.GenerateMD5(fmt.Sprintf("%d-%d", user.ID, i)))
 		if url != urls[0] {
 			urls = append(urls, url)
 		}
