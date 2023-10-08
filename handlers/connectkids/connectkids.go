@@ -10,6 +10,7 @@ import (
 	"oj/handlers/layout"
 	"oj/handlers/render"
 	"oj/models/users"
+	"oj/worker"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/jmoiron/sqlx"
@@ -131,11 +132,17 @@ func PutKidFriend(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err = db.DB.Exec(`insert into friends(a_id, b_id, b_role) values(?,?,'friend')`, currentUser.ID, userID)
+	result, err := db.DB.Exec(`insert into friends(a_id, b_id, b_role) values(?,?,'friend')`, currentUser.ID, userID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	friendID, err := result.LastInsertId()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	go worker.NotifyKidFriend(friendID)
 
 	connection, err := connect.GetConnection(currentUser.ID, userID)
 	if err != nil {

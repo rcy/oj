@@ -5,6 +5,7 @@ import (
 	"log"
 	"oj/worker/notifydelivery"
 	"oj/worker/notifyfriend"
+	"oj/worker/notifykidfriend"
 	"time"
 
 	"github.com/acaloiaro/neoq"
@@ -24,6 +25,7 @@ func Start(ctx context.Context) error {
 
 	Queue.Start(ctx, "notify-delivery", handler.New(notifydelivery.Handle))
 	Queue.Start(ctx, "notify-friend", handler.New(notifyfriend.Handle))
+	Queue.Start(ctx, "notify-kid-friend", handler.New(notifykidfriend.Handle))
 
 	log.Print("started worker")
 
@@ -42,6 +44,14 @@ func NotifyFriend(friendID int64) (string, error) {
 	log.Printf("Enqueue NotifyFriend %d", friendID)
 	return Queue.Enqueue(context.Background(), &jobs.Job{
 		Queue:   "notify-friend",
+		Payload: map[string]any{"id": friendID},
+	})
+}
+
+func NotifyKidFriend(friendID int64) (string, error) {
+	log.Printf("Enqueue NotifyKidFriend %d", friendID)
+	return Queue.Enqueue(context.Background(), &jobs.Job{
+		Queue:   "notify-kid-friend",
 		Payload: map[string]any{"id": friendID},
 	})
 }
