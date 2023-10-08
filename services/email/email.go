@@ -32,13 +32,19 @@ func Send(subject, body, recipient string) (string, string, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
 	defer cancel()
 
+	if privateAPIKey == "LOCALHOST" {
+		id := "dummy id"
+		resp := "mock sent"
+		log.Printf("mockemail: to:%s subject:%s body:%s", recipient, subject, body)
+		return id, resp, nil
+	}
+
 	// Send the message with a 10 second timeout
 	resp, id, err := mg.Send(ctx, message)
 
 	if err != nil {
 		return "", "", err
 	}
-
 	log.Printf("sent email: %s %s %s; %s %s", subject, body, recipient, resp, id)
 
 	return id, resp, nil
