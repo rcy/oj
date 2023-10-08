@@ -113,7 +113,6 @@ func emailRegisterAction(w http.ResponseWriter, r *http.Request) {
 		fmt.Sprintf("Your Octopus Jr verification code is %s", code),
 		address)
 	if err != nil {
-		log.Printf("Error emailing code gYqGXoK6XfC2va3Rp: %s", err)
 		render.Error(w, "Error emailing code gYqGXoK6XfC2va3Rp", 500)
 		return
 	}
@@ -184,7 +183,7 @@ func kidsUsernameAction(w http.ResponseWriter, r *http.Request) {
 				username, code)),
 			*parent.Email)
 		if err != nil {
-			log.Printf("Error sending email BohZie4YoPfrTHwj4: %s", err)
+			render.Error(w, fmt.Sprintf("Error emailing code: %s", err), http.StatusInternalServerError)
 		}
 	}
 
