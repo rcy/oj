@@ -13,7 +13,7 @@ import (
 )
 
 var t = template.Must(template.ParseFiles(layout.File,
-	"handlers/connect/connect_page.gohtml",
+	"handlers/connect/connect.gohtml",
 	"handlers/connect/connection.gohtml"))
 
 type Connection struct {
