@@ -3,7 +3,15 @@
 {{end}}
 
 {{define "main"}}
-  <div style="display:flex;flex-direction:column;gap:1em;">
+  <div hx-get="/u/{{.User.ID}}"
+       hx-trigger="connectionChange from:body"
+       hx-target="body"
+       style="display:flex;flex-direction:column;gap:1em;">
+
+    {{if (not (eq .Connection.Status "connected"))}}
+      {{template "connection" .Connection}}
+    {{end}}
+
     {{template "card" .}}
 
     {{if .CanChat}}

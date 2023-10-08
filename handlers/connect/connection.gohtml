@@ -1,0 +1,70 @@
+{{define "connection"}}
+  <div class="nes-container ghost hx-connection" style="display:flex; gap:1em; justify-content: space-between">
+    <a href="/u/{{.ID}}">
+      {{if (eq .Status "none")}}
+        {{.Username}}
+      {{end}}
+      {{if (eq .Status "connected")}}
+        {{.Username}} is your {{.RoleOut}}
+      {{end}}
+      {{if (eq .Status "request received")}}
+        {{.Username}} sent you a friend request
+      {{end}}
+      {{if (eq .Status "request sent")}}
+        you sent a friend request to {{.Username}}
+      {{end}}
+    </a>
+    {{template "connectionButton" .}}
+  </div>
+{{end}}
+
+{{define "connectionButton"}}
+  {{if (eq .Status "none")}}
+    <button class="nes-btn is-primary"
+            hx-put="/connect/friend/{{.ID}}"
+            hx-target="closest .hx-connection"
+            hx-swap="outerHTML">
+      <div style="display:flex; gap: 1em; align-items: center">
+        <i class="nes-icon is-small user"></i>
+        <span>Add Friend</span>
+      </div>
+    </button>
+  {{end}}
+
+  {{if (eq .Status "request received")}}
+    <button class="nes-btn is-success"
+            hx-put="/connect/friend/{{.ID}}"
+            hx-target="closest .hx-connection"
+            hx-swap="outerHTML">
+      <div style="display:flex; gap: 1em; align-items: center">
+        <i class="nes-icon is-small check"></i>
+        <span>Accept Request</span>
+      </div>
+    </button>
+  {{end}}
+
+  {{if (eq .Status "request sent")}}
+    <button class="nes-btn"
+            hx-delete="/connect/friend/{{.ID}}"
+            hx-target="closest .hx-connection"
+            hx-swap="outerHTML">
+      <div style="display:flex; gap: 1em; align-items: center">
+        <i class="nes-icon is-small times"></i>
+        <span>Cancel Request</span>
+      </div>
+    </button>
+  {{end}}
+
+  {{if (and (eq .Status "connected") (eq .RoleOut "friend"))}}
+      <button class="nes-btn"
+              hx-delete="/connect/friend/{{.ID}}"
+        hx-confirm="Do you want to unfriend {{.Username}}?"
+        hx-target="closest .hx-connection"
+        hx-swap="outerHTML">
+        <div style="display:flex; gap: 1em; align-items: center">
+          <span>Un{{.RoleOut}}</span>
+        </div>
+      </button>
+  {{end}}
+
+{{end}}

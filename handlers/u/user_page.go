@@ -14,7 +14,13 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-var userPageTemplate = template.Must(template.New("layout.gohtml").Funcs(templatehelpers.FuncMap).ParseFiles(layout.File, "handlers/u/user_page.gohtml", "handlers/me/card.gohtml"))
+var userPageTemplate = template.Must(template.New("layout.gohtml").Funcs(templatehelpers.FuncMap).
+	ParseFiles(
+		layout.File,
+		"handlers/u/user_page.gohtml",
+		"handlers/me/card.gohtml",
+		"handlers/connect/connection.gohtml",
+	))
 
 func UserPage(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
@@ -54,7 +60,7 @@ func UserPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	canChat := connection.RoleIn != nil && connection.RoleOut != nil
+	canChat := connection.RoleIn != "" && connection.RoleOut != ""
 
 	d := struct {
 		Layout     layout.Data

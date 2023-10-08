@@ -12,12 +12,14 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-var t = template.Must(template.ParseFiles(layout.File, "handlers/connect/connect.gohtml"))
+var t = template.Must(template.ParseFiles(layout.File,
+	"handlers/connect/connect_page.gohtml",
+	"handlers/connect/connection.gohtml"))
 
 type Connection struct {
 	users.User
-	RoleIn  *string `db:"role_in"`
-	RoleOut *string `db:"role_out"`
+	RoleIn  string `db:"role_in"`
+	RoleOut string `db:"role_out"`
 }
 
 func GetConnection(user1ID int64, user2ID any) (*Connection, error) {
@@ -26,11 +28,11 @@ func GetConnection(user1ID int64, user2ID any) (*Connection, error) {
 select u.*,
        case
            when f1.a_id = $1 then f1.b_role
-           else null
+           else ""
        end as role_out,
        case
            when f2.b_id = $1 then f2.b_role
-           else null
+           else ""
        end as role_in
 from users u
 left join friends f1 on f1.b_id = u.id and f1.a_id = $1
@@ -45,14 +47,14 @@ where
 }
 
 func (f Connection) Status() string {
-	if f.RoleOut == nil {
-		if f.RoleIn == nil {
+	if f.RoleOut == "" {
+		if f.RoleIn == "" {
 			return "none"
 		} else {
 			return "request received"
 		}
 	} else {
-		if f.RoleIn == nil {
+		if f.RoleIn == "" {
 			return "request sent"
 		} else {
 			return "connected"
@@ -69,11 +71,11 @@ func Connect(w http.ResponseWriter, r *http.Request) {
 select u.*,
        case
            when f1.a_id = $1 then f1.b_role
-           else null
+           else ""
        end as role_out,
        case
            when f2.b_id = $1 then f2.b_role
-           else null
+           else ""
        end as role_in
 from users u
 left join friends f1 on f1.b_id = u.id and f1.a_id = $1
@@ -133,6 +135,7 @@ func PutParentFriend(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	w.Header().Add("HX-Trigger", "connectionChange")
 	render.ExecuteNamed(w, t, "connection", connection)
 }
 
@@ -144,25 +147,26 @@ func DeleteParentFriend(w http.ResponseWriter, r *http.Request) {
 	var user users.User
 	err := db.DB.Get(&user, `select * from users where id = $1`, userID)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusNotFound)
+		render.Error(w, err.Error(), http.StatusNotFound)
 		return
 	}
 	if !user.IsParent {
-		http.Error(w, "not a parent", http.StatusBadRequest)
+		render.Error(w, "not a parent", http.StatusBadRequest)
 		return
 	}
 
 	_, err = db.DB.Exec(`delete from friends where a_id = $1 and b_id = $2`, currentUser.ID, userID)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		render.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	connection, err := GetConnection(currentUser.ID, userID)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		render.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
+	w.Header().Add("HX-Trigger", "connectionChange")
 	render.ExecuteNamed(w, t, "connection", connection)
 }
