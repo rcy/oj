@@ -41,61 +41,7 @@ func Router() *chi.Mux {
 		r.Use(mw.Auth)
 		r.Use(mw.Become)
 		r.Use(mw.Redirect)
-
-		r.Get("/", Home)
-
-		r.Get("/header", header.Header)
-
-		r.Get("/parent", parent.Index)
-		r.Post("/parent/kids", parent.CreateKid)
-		r.Delete("/parent/kids/{userID}", parent.DeleteKid)
-		r.Post("/parent/kids/{userID}/logout", parent.LogoutKid)
-
-		r.Post("/chat/messages", chat.PostChatMessage)
-		r.Mount("/es", eventsource.SSE)
-
-		r.Get("/me", me.MyPage)
-		r.Get("/me/edit", editme.MyPageEdit)
-		r.Post("/me/edit", editme.Post)
-
-		r.Get("/me/family", family.Page)
-		r.Get("/me/friends", friends.Page)
-
-		r.Get("/fun", fun.Page)
-		r.Get("/fun/gradients", gradients.Index)
-		r.Post("/fun/gradients/picker", gradients.Picker)
-		r.Post("/fun/gradients/set-background", gradients.SetBackground)
-
-		r.Get("/fun/stickers", stickers.Page)
-		r.Post("/fun/stickers", stickers.Submit)
-		r.Post("/fun/stickers/save", stickers.SaveSticker)
-
-		r.Get("/fun/chess", chess.Page)
-		r.Get("/fun/chess/select/{rank}/{file}", chess.Select)
-		r.Get("/fun/chess/unselect", chess.Unselect)
-		//r.Get("/fun/chess/select/{r1}/{f1}/{r2}/{f2}", chess.Move)
-
-		r.Get("/u/{userID}", u.UserPage)
-		r.Get("/u/{userID}/chat", chat.UserChatPage)
-
-		r.Get("/avatars", editme.GetAvatars)
-		r.Put("/avatar", editme.PutAvatar)
-
-		r.Get("/connect", connect.Connect)
-		r.Put("/connect/friend/{userID}", connect.PutParentFriend)
-		r.Delete("/connect/friend/{userID}", connect.DeleteParentFriend)
-
-		r.Get("/connectkids", connectkids.KidConnect)
-		r.Put("/connectkids/friend/{userID}", connectkids.PutKidFriend)
-		r.Delete("/connectkids/friend/{userID}", connectkids.DeleteKidFriend)
-
-		r.Get("/deliveries/{deliveryID}", deliveries.Page)
-		r.Get("/delivery/{deliveryID}", deliveries.Page) // temporary
-		r.Post("/deliveries/{deliveryID}/logout", deliveries.Logout)
-
-		r.NotFound(func(w http.ResponseWriter, r *http.Request) {
-			render.Error(w, "Page not found", 404)
-		})
+		r.Route("/", applicationRouter)
 	})
 
 	// non authenticated routes
@@ -110,4 +56,61 @@ func Router() *chi.Mux {
 	})
 
 	return r
+}
+
+func applicationRouter(r chi.Router) {
+	r.Get("/", Home)
+
+	r.Get("/header", header.Header)
+
+	r.Get("/parent", parent.Index)
+	r.Post("/parent/kids", parent.CreateKid)
+	r.Delete("/parent/kids/{userID}", parent.DeleteKid)
+	r.Post("/parent/kids/{userID}/logout", parent.LogoutKid)
+
+	r.Post("/chat/messages", chat.PostChatMessage)
+	r.Mount("/es", eventsource.SSE)
+
+	r.Get("/me", me.MyPage)
+	r.Get("/me/edit", editme.MyPageEdit)
+	r.Post("/me/edit", editme.Post)
+
+	r.Get("/me/family", family.Page)
+	r.Get("/me/friends", friends.Page)
+
+	r.Get("/fun", fun.Page)
+	r.Get("/fun/gradients", gradients.Index)
+	r.Post("/fun/gradients/picker", gradients.Picker)
+	r.Post("/fun/gradients/set-background", gradients.SetBackground)
+
+	r.Get("/fun/stickers", stickers.Page)
+	r.Post("/fun/stickers", stickers.Submit)
+	r.Post("/fun/stickers/save", stickers.SaveSticker)
+
+	r.Get("/fun/chess", chess.Page)
+	r.Get("/fun/chess/select/{rank}/{file}", chess.Select)
+	r.Get("/fun/chess/unselect", chess.Unselect)
+	//r.Get("/fun/chess/select/{r1}/{f1}/{r2}/{f2}", chess.Move)
+
+	r.Get("/u/{userID}", u.UserPage)
+	r.Get("/u/{userID}/chat", chat.UserChatPage)
+
+	r.Get("/avatars", editme.GetAvatars)
+	r.Put("/avatar", editme.PutAvatar)
+
+	r.Get("/connect", connect.Connect)
+	r.Put("/connect/friend/{userID}", connect.PutParentFriend)
+	r.Delete("/connect/friend/{userID}", connect.DeleteParentFriend)
+
+	r.Get("/connectkids", connectkids.KidConnect)
+	r.Put("/connectkids/friend/{userID}", connectkids.PutKidFriend)
+	r.Delete("/connectkids/friend/{userID}", connectkids.DeleteKidFriend)
+
+	r.Get("/deliveries/{deliveryID}", deliveries.Page)
+	r.Get("/delivery/{deliveryID}", deliveries.Page) // temporary
+	r.Post("/deliveries/{deliveryID}/logout", deliveries.Logout)
+
+	r.NotFound(func(w http.ResponseWriter, r *http.Request) {
+		render.Error(w, "Page not found", 404)
+	})
 }
