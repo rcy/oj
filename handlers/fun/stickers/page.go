@@ -1,7 +1,7 @@
 package stickers
 
 import (
-	"html/template"
+	_ "embed"
 	"net/http"
 	"net/url"
 	"oj/db"
@@ -13,7 +13,9 @@ import (
 	goduckgo "github.com/minoplhy/duckduckgo-images-api"
 )
 
-var pageTemplate = template.Must(template.New("layout.gohtml").ParseFiles(layout.File, "handlers/fun/stickers/page.gohtml"))
+//go:embed page.gohtml
+var pageContent string
+var pageTemplate = layout.MustParse(pageContent)
 
 type Image struct {
 	ID        int64

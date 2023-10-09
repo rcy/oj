@@ -1,14 +1,13 @@
 package chess
 
 import (
+	_ "embed"
 	"fmt"
-	"html/template"
 	"log"
 	"math/rand"
 	"net/http"
 	"oj/handlers/layout"
 	"oj/handlers/render"
-	"oj/templatehelpers"
 	"strconv"
 
 	"github.com/go-chi/chi/v5"
@@ -29,7 +28,9 @@ type GameBoard struct {
 	ValidMoves []*chess.Move
 }
 
-var pageTemplate = template.Must(template.New("layout.gohtml").Funcs(templatehelpers.FuncMap).ParseFiles(layout.File, "handlers/fun/chess/page.gohtml"))
+//go:embed "page.gohtml"
+var pageContent string
+var pageTemplate = layout.MustParse(pageContent)
 
 var game *chess.Game = chess.NewGame()
 

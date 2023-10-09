@@ -2,25 +2,21 @@ package u
 
 import (
 	"database/sql"
-	"html/template"
+	_ "embed"
 	"net/http"
 	"oj/handlers/connect"
 	"oj/handlers/layout"
+	"oj/handlers/me"
 	"oj/handlers/render"
 	"oj/models/gradients"
 	"oj/models/users"
-	"oj/templatehelpers"
 
 	"github.com/go-chi/chi/v5"
 )
 
-var userPageTemplate = template.Must(template.New("layout.gohtml").Funcs(templatehelpers.FuncMap).
-	ParseFiles(
-		layout.File,
-		"handlers/u/user_page.gohtml",
-		"handlers/me/card.gohtml",
-		"handlers/connect/connection.gohtml",
-	))
+//go:embed user_page.gohtml
+var pageContent string
+var userPageTemplate = layout.MustParse(pageContent, me.CardContent, connect.ConnectionContent)
 
 func UserPage(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()

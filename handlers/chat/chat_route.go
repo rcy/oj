@@ -2,31 +2,28 @@ package chat
 
 import (
 	"database/sql"
+	_ "embed"
 	"fmt"
-	"html/template"
 	"log"
 	"net/http"
 	"oj/db"
 	"oj/handlers/eventsource"
 	"oj/handlers/layout"
 	"oj/handlers/render"
-	"sync"
-
 	"oj/models/gradients"
 	"oj/models/messages"
 	"oj/models/rooms"
 	"oj/models/users"
+	"sync"
 
 	"github.com/alexandrevicenzi/go-sse"
 	"github.com/go-chi/chi/v5"
 	"github.com/jmoiron/sqlx"
 )
 
-var chatTemplate = template.Must(
-	template.ParseFiles(
-		layout.File,
-		"handlers/chat/chat_index_ws.gohtml",
-	))
+//go:embed chat_index_ws.gohtml
+var pageContent string
+var chatTemplate = layout.MustParse(pageContent)
 
 func UserChatPage(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()

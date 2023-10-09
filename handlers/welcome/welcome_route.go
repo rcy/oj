@@ -3,6 +3,7 @@ package auth
 import (
 	cryptorand "crypto/rand"
 	"database/sql"
+	_ "embed"
 	"encoding/base64"
 	"fmt"
 	"html/template"
@@ -34,10 +35,16 @@ func Route(r chi.Router) {
 	r.Get("/signout", signout)
 }
 
-var welcomeTemplate = template.Must(template.ParseFiles(
-	"handlers/welcome/layout.gohtml",
-	"handlers/welcome/welcome.gohtml",
-))
+//go:embed layout.gohtml
+var layoutContent string
+
+func mustLayout(content string) *template.Template {
+	return template.Must(template.New("").Parse(layoutContent + content))
+}
+
+//go:embed welcome.gohtml
+var welcomeContent string
+var welcomeTemplate = mustLayout(welcomeContent)
 
 func welcome(w http.ResponseWriter, r *http.Request) {
 	err := welcomeTemplate.Execute(w, nil)
@@ -46,10 +53,9 @@ func welcome(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-var welcomeKidsTemplate = template.Must(template.ParseFiles(
-	"handlers/welcome/layout.gohtml",
-	"handlers/welcome/welcome_kids.gohtml",
-))
+//go:embed welcome_kids.gohtml
+var welcomeKidsContent string
+var welcomeKidsTemplate = mustLayout(welcomeKidsContent)
 
 func welcomeKids(w http.ResponseWriter, r *http.Request) {
 	err := welcomeKidsTemplate.Execute(w, struct{ Error string }{""})
@@ -58,10 +64,9 @@ func welcomeKids(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-var welcomeParentsTemplate = template.Must(template.ParseFiles(
-	"handlers/welcome/layout.gohtml",
-	"handlers/welcome/welcome_parents.gohtml",
-))
+//go:embed welcome_parents.gohtml
+var welcomeParentsContent string
+var welcomeParentsTemplate = mustLayout(welcomeParentsContent)
 
 func welcomeParents(w http.ResponseWriter, r *http.Request) {
 	err := welcomeParentsTemplate.Execute(w, nil)
@@ -121,10 +126,9 @@ func emailRegisterAction(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/welcome/parents/code", http.StatusSeeOther)
 }
 
-var welcomeParentsCodeTemplate = template.Must(template.ParseFiles(
-	"handlers/welcome/layout.gohtml",
-	"handlers/welcome/welcome_parents_code.gohtml",
-))
+//go:embed welcome_parents_code.gohtml
+var welcomeParentsCodeContent string
+var welcomeParentsCodeTemplate = mustLayout(welcomeParentsCodeContent)
 
 func parentsCode(w http.ResponseWriter, r *http.Request) {
 	err := welcomeParentsCodeTemplate.Execute(w, struct{ Error string }{""})
@@ -191,10 +195,9 @@ func kidsUsernameAction(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/welcome/kids/code", http.StatusSeeOther)
 }
 
-var welcomeKidsCodeTemplate = template.Must(template.ParseFiles(
-	"handlers/welcome/layout.gohtml",
-	"handlers/welcome/welcome_kids_code.gohtml",
-))
+//go:embed welcome_kids_code.gohtml
+var welcomeKidsCodeContent string
+var welcomeKidsCodeTemplate = mustLayout(welcomeKidsCodeContent)
 
 func kidsCode(w http.ResponseWriter, r *http.Request) {
 	err := welcomeKidsCodeTemplate.Execute(w, struct{ Error string }{""})

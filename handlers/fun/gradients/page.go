@@ -1,9 +1,9 @@
 package gradients
 
 import (
+	_ "embed"
 	"encoding/json"
 	"fmt"
-	"html/template"
 	"net/http"
 	"net/url"
 	"oj/db"
@@ -14,7 +14,9 @@ import (
 	"strconv"
 )
 
-var t = template.Must(template.ParseFiles(layout.File, "handlers/fun/gradients/page.gohtml"))
+//go:embed "page.gohtml"
+var pageContent string
+var t = layout.MustParse(pageContent)
 
 func Index(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()

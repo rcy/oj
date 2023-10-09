@@ -2,11 +2,32 @@ package layout
 
 import (
 	"context"
+	_ "embed"
+	"fmt"
+	"html/template"
 	"oj/db"
 	"oj/element/gradient"
 	"oj/models/gradients"
 	"oj/models/users"
+	"oj/templatehelpers"
 )
+
+//go:embed "layout.gohtml"
+var layoutContent string
+
+func MustParse(templateContent ...string) *template.Template {
+	tpl := template.New("layout").Funcs(templatehelpers.FuncMap)
+
+	for i, content := range append([]string{layoutContent}, templateContent...) {
+		var err error
+		tpl, err = tpl.Parse(content)
+		if err != nil {
+			fmt.Println(i, content)
+			panic(err)
+		}
+	}
+	return tpl
+}
 
 const File = "handlers/layout/layout.gohtml"
 

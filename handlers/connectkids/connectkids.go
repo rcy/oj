@@ -2,7 +2,7 @@ package connectkids
 
 import (
 	"context"
-	"html/template"
+	_ "embed"
 	"log"
 	"net/http"
 	"oj/db"
@@ -16,7 +16,9 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-var t = template.Must(template.ParseFiles(layout.File, "handlers/connectkids/connectkids.gohtml"))
+//go:embed connectkids.gohtml
+var pageContent string
+var t = layout.MustParse(pageContent)
 
 func KidConnect(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
@@ -72,7 +74,7 @@ func KidConnect(w http.ResponseWriter, r *http.Request) {
 		connections = append(connections, *connection)
 	}
 
-	render.ExecuteNamed(w, t, "layout.gohtml", struct {
+	render.Execute(w, t, struct {
 		Layout      layout.Data
 		Connections []connect.Connection
 	}{

@@ -2,8 +2,8 @@ package deliveries
 
 import (
 	"database/sql"
+	_ "embed"
 	"fmt"
-	"html/template"
 	"net/http"
 	"oj/db"
 	"oj/handlers/layout"
@@ -13,7 +13,9 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-var pageTemplate = template.Must(template.New("layout.gohtml").ParseFiles(layout.File, "handlers/deliveries/page.gohtml"))
+//go:embed "page.gohtml"
+var pageContent string
+var pageTemplate = layout.MustParse(pageContent)
 
 func Page(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()

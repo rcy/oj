@@ -1,6 +1,7 @@
 package editme
 
 import (
+	_ "embed"
 	"fmt"
 	"html/template"
 	"net/http"
@@ -10,7 +11,10 @@ import (
 	"time"
 )
 
-var avatarsTemplate = template.Must(template.New("avatars").ParseFiles("handlers/me/editme/avatars.gohtml"))
+//go:embed "avatars.gohtml"
+var AvatarContent string
+
+var avatarsTemplate = template.Must(template.New("avatars").Parse(AvatarContent))
 
 func GetAvatars(w http.ResponseWriter, r *http.Request) {
 	const count = 44
