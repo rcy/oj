@@ -1,16 +1,21 @@
 package me
 
 import (
+	_ "embed"
 	"html/template"
 	"net/http"
 	"oj/db"
 	"oj/handlers/layout"
 	"oj/handlers/render"
 	"oj/models/users"
-	"oj/templatehelpers"
 )
 
-var MyPageTemplate = template.Must(template.New("layout.gohtml").Funcs(templatehelpers.FuncMap).ParseFiles(layout.File, "handlers/me/my_page.gohtml", "handlers/me/card.gohtml"))
+//go:embed card.gohtml
+var CardContent string
+
+//go:embed my_page.gohtml
+var pageContent string
+var MyPageTemplate = layout.MustParse(pageContent, CardContent)
 
 type UnreadUser struct {
 	users.User

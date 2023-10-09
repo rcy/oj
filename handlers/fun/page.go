@@ -1,14 +1,16 @@
 package fun
 
 import (
-	"html/template"
+	_ "embed"
 	"net/http"
 	"oj/handlers/layout"
 	"oj/handlers/render"
-	"oj/templatehelpers"
 )
 
-var MyPageTemplate = template.Must(template.New("layout.gohtml").Funcs(templatehelpers.FuncMap).ParseFiles(layout.File, "handlers/fun/page.gohtml"))
+//go:embed page.gohtml
+var pageContent string
+
+var MyPageTemplate = layout.MustParse(pageContent)
 
 func Page(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()

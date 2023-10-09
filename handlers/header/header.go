@@ -1,13 +1,12 @@
 package header
 
 import (
-	"html/template"
 	"net/http"
 	"oj/handlers/layout"
 	"oj/handlers/render"
 )
 
-var t = template.Must(template.ParseFiles(layout.File))
+var t = layout.MustParse()
 
 func Header(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()

@@ -2,7 +2,7 @@ package parent
 
 import (
 	"database/sql"
-	"html/template"
+	_ "embed"
 	"log"
 	"net/http"
 	"oj/db"
@@ -13,7 +13,9 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-var t = template.Must(template.ParseFiles(layout.File, "handlers/parent/parent.gohtml"))
+//go:embed parent.gohtml
+var pageContent string
+var t = layout.MustParse(pageContent)
 
 func Index(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()

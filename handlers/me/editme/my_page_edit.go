@@ -1,16 +1,17 @@
 package editme
 
 import (
-	"html/template"
+	_ "embed"
 	"net/http"
 	"oj/db"
 	"oj/handlers/layout"
 	"oj/handlers/render"
 	"oj/models/users"
-	"oj/templatehelpers"
 )
 
-var myPageEditTemplate = template.Must(template.New("layout.gohtml").Funcs(templatehelpers.FuncMap).ParseFiles(layout.File, "handlers/me/editme/my_page_edit.gohtml", "handlers/me/editme/avatars.gohtml"))
+//go:embed my_page_edit.gohtml
+var pageContent string
+var myPageEditTemplate = layout.MustParse(pageContent, AvatarContent)
 
 func MyPageEdit(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()

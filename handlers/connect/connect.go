@@ -1,7 +1,7 @@
 package connect
 
 import (
-	"html/template"
+	_ "embed"
 	"net/http"
 	"oj/db"
 	"oj/handlers/layout"
@@ -12,9 +12,12 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-var t = template.Must(template.ParseFiles(layout.File,
-	"handlers/connect/connect.gohtml",
-	"handlers/connect/connection.gohtml"))
+//go:embed connect.gohtml
+var pageContent string
+
+//go:embed connection.gohtml
+var ConnectionContent string
+var t = layout.MustParse(pageContent, ConnectionContent)
 
 type Connection struct {
 	users.User
@@ -92,7 +95,7 @@ limit 128;
 		return
 	}
 
-	render.ExecuteNamed(w, t, "layout.gohtml", struct {
+	render.Execute(w, t, struct {
 		Layout      layout.Data
 		Connections []Connection
 	}{

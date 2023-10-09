@@ -1,18 +1,21 @@
 package family
 
 import (
+	_ "embed"
 	"html/template"
 	"net/http"
 	"oj/db"
 	"oj/handlers/layout"
+	"oj/handlers/me"
 	"oj/handlers/render"
 	"oj/models/gradients"
 	"oj/models/users"
-	"oj/templatehelpers"
 	"sort"
 )
 
-var MyPageTemplate = template.Must(template.New("layout.gohtml").Funcs(templatehelpers.FuncMap).ParseFiles(layout.File, "handlers/family/page.gohtml", "handlers/me/card.gohtml"))
+//go:embed "page.gohtml"
+var pageContent string
+var MyPageTemplate = layout.MustParse(pageContent, me.CardContent)
 
 type Unread struct {
 	SenderID int64 `db:"sender_id"`
