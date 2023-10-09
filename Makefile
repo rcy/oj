@@ -31,5 +31,6 @@ getproddb:
 
 test: export NO_SCHEMA_DUMP=1
 test: export SQLITE_DB=:memory:
+test: export ROOT_URL=http://localhost:2001
 test:
 	go test ./...
