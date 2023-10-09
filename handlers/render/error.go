@@ -7,9 +7,11 @@ import (
 	"net/http"
 )
 
-//go:embed "error.gohtml"
-var tContent string
-var t = template.Must(template.New("").Parse(tContent))
+var (
+	//go:embed "error.gohtml"
+	tContent string
+	t        = template.Must(template.New("").Parse(tContent))
+)
 
 func Error(w http.ResponseWriter, msg string, code int) {
 	log.Printf("%d: %s", code, msg)

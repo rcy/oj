@@ -13,9 +13,11 @@ import (
 	"sort"
 )
 
-//go:embed "page.gohtml"
-var pageContent string
-var MyPageTemplate = layout.MustParse(pageContent, me.CardContent)
+var (
+	//go:embed "page.gohtml"
+	pageContent    string
+	MyPageTemplate = layout.MustParse(pageContent, me.CardContent)
+)
 
 type Unread struct {
 	SenderID int64 `db:"sender_id"`

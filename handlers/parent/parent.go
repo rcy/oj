@@ -13,9 +13,12 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-//go:embed parent.gohtml
-var pageContent string
-var t = layout.MustParse(pageContent)
+var (
+	//go:embed parent.gohtml
+	pageContent string
+
+	t = layout.MustParse(pageContent)
+)
 
 func Index(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()

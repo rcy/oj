@@ -10,12 +10,15 @@ import (
 	"oj/models/users"
 )
 
-//go:embed card.gohtml
-var CardContent string
+var (
+	//go:embed card.gohtml
+	CardContent string
 
-//go:embed my_page.gohtml
-var pageContent string
-var MyPageTemplate = layout.MustParse(pageContent, CardContent)
+	//go:embed my_page.gohtml
+	pageContent string
+
+	MyPageTemplate = layout.MustParse(pageContent, CardContent)
+)
 
 type UnreadUser struct {
 	users.User

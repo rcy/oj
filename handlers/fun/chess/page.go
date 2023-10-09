@@ -28,10 +28,11 @@ type GameBoard struct {
 	ValidMoves []*chess.Move
 }
 
-//go:embed "page.gohtml"
-var pageContent string
-var pageTemplate = layout.MustParse(pageContent)
-
+var (
+	//go:embed "page.gohtml"
+	pageContent  string
+	pageTemplate = layout.MustParse(pageContent)
+)
 var game *chess.Game = chess.NewGame()
 
 func Page(w http.ResponseWriter, r *http.Request) {

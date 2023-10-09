@@ -13,9 +13,11 @@ import (
 	goduckgo "github.com/minoplhy/duckduckgo-images-api"
 )
 
-//go:embed page.gohtml
-var pageContent string
-var pageTemplate = layout.MustParse(pageContent)
+var (
+	//go:embed page.gohtml
+	pageContent  string
+	pageTemplate = layout.MustParse(pageContent)
+)
 
 type Image struct {
 	ID        int64

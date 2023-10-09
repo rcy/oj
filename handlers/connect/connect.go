@@ -12,12 +12,15 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-//go:embed connect.gohtml
-var pageContent string
+var (
+	//go:embed connect.gohtml
+	pageContent string
 
-//go:embed connection.gohtml
-var ConnectionContent string
-var t = layout.MustParse(pageContent, ConnectionContent)
+	//go:embed connection.gohtml
+	ConnectionContent string
+
+	t = layout.MustParse(pageContent, ConnectionContent)
+)
 
 type Connection struct {
 	users.User

@@ -12,8 +12,10 @@ import (
 	"oj/templatehelpers"
 )
 
-//go:embed "layout.gohtml"
-var layoutContent string
+var (
+	//go:embed "layout.gohtml"
+	layoutContent string
+)
 
 func MustParse(templateContent ...string) *template.Template {
 	tpl := template.New("layout").Funcs(templatehelpers.FuncMap)

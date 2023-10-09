@@ -14,9 +14,11 @@ import (
 	"strconv"
 )
 
-//go:embed "page.gohtml"
-var pageContent string
-var t = layout.MustParse(pageContent)
+var (
+	//go:embed "page.gohtml"
+	pageContent string
+	t           = layout.MustParse(pageContent)
+)
 
 func Index(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()

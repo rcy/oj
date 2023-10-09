@@ -7,10 +7,12 @@ import (
 	"oj/handlers/render"
 )
 
-//go:embed page.gohtml
-var pageContent string
+var (
+	//go:embed page.gohtml
+	pageContent string
 
-var MyPageTemplate = layout.MustParse(pageContent)
+	MyPageTemplate = layout.MustParse(pageContent)
+)
 
 func Page(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()

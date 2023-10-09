@@ -16,9 +16,11 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-//go:embed connectkids.gohtml
-var pageContent string
-var t = layout.MustParse(pageContent)
+var (
+	//go:embed connectkids.gohtml
+	pageContent string
+	t           = layout.MustParse(pageContent)
+)
 
 func KidConnect(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()

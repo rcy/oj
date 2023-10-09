@@ -21,9 +21,11 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-//go:embed chat_index_ws.gohtml
-var pageContent string
-var chatTemplate = layout.MustParse(pageContent)
+var (
+	//go:embed chat_index_ws.gohtml
+	pageContent  string
+	chatTemplate = layout.MustParse(pageContent)
+)
 
 func UserChatPage(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()

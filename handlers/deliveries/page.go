@@ -13,9 +13,11 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-//go:embed "page.gohtml"
-var pageContent string
-var pageTemplate = layout.MustParse(pageContent)
+var (
+	//go:embed "page.gohtml"
+	pageContent  string
+	pageTemplate = layout.MustParse(pageContent)
+)
 
 func Page(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()

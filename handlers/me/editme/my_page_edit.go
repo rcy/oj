@@ -9,9 +9,11 @@ import (
 	"oj/models/users"
 )
 
-//go:embed my_page_edit.gohtml
-var pageContent string
-var myPageEditTemplate = layout.MustParse(pageContent, AvatarContent)
+var (
+	//go:embed my_page_edit.gohtml
+	pageContent        string
+	myPageEditTemplate = layout.MustParse(pageContent, AvatarContent)
+)
 
 func MyPageEdit(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
