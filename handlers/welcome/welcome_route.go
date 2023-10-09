@@ -1,4 +1,4 @@
-package auth
+package welcome
 
 import (
 	cryptorand "crypto/rand"

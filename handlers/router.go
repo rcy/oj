@@ -21,7 +21,7 @@ import (
 	"oj/handlers/parent"
 	"oj/handlers/render"
 	"oj/handlers/u"
-	auth "oj/handlers/welcome"
+	"oj/handlers/welcome"
 	"os"
 
 	"github.com/go-chi/chi/v5"
@@ -99,7 +99,7 @@ func Router() *chi.Mux {
 	})
 
 	// non authenticated routes
-	r.Route("/welcome", auth.Route)
+	r.Route("/welcome", welcome.Route)
 
 	// serve static files
 	fs := http.FileServer(http.Dir("assets"))
