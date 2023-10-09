@@ -12,6 +12,7 @@ import (
 	"oj/db"
 	"oj/handlers"
 	"oj/handlers/eventsource"
+	"oj/services/email"
 	"oj/worker"
 
 	"github.com/alexandrevicenzi/go-sse"
@@ -38,6 +39,11 @@ func main() {
 			time.Sleep(30 * time.Second)
 		}
 	}()
+
+	_, _, err = email.Send("oj startup", "application started", os.Getenv("DEV_EMAIL"))
+	if err != nil {
+		log.Fatalf("failed to send startup email: %s", err)
+	}
 
 	listenAndServe(os.Getenv("PORT"), handlers.Router())
 }

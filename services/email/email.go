@@ -11,7 +11,7 @@ import (
 
 // Your available domain names can be found here:
 // (https://app.mailgun.com/app/domains)
-var yourDomain string = "mg.ryanyeske.com" // e.g. mg.yourcompany.com
+var yourDomain string = os.Getenv("MAILGUN_DOMAIN") // e.g. mg.yourcompany.com
 
 // You can find the Private API Key in your Account Menu, under "Settings":
 // (https://app.mailgun.com/app/account/security)
@@ -24,7 +24,7 @@ func Send(subject, body, recipient string) (string, string, error) {
 	//When you have an EU-domain, you must specify the endpoint:
 	//mg.SetAPIBase("https://api.eu.mailgun.net/v3")
 
-	sender := "Octopus Jr <mailgun@mg.ryanyeske.com>"
+	sender := os.Getenv("MAILGUN_SENDER")
 
 	// The message object allows you to add attachments and Bcc recipients
 	message := mg.NewMessage(sender, subject, body, recipient)
