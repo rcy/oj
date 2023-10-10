@@ -1,1 +1,7 @@
-hello, admin
+{{define "main"}}
+  {{range .Users}}
+    <div>
+      <a href="/u/{{.ID}}">{{.Username}}</a>
+    </div>
+  {{end}}
+{{end}}

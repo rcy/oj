@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"oj/handlers/layout"
 	"oj/handlers/render"
+	"oj/models/users"
 )
 
 var (
@@ -21,9 +22,17 @@ func Page(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	allUsers, err := users.FindAll()
+	if err != nil {
+		render.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
 	render.Execute(w, pageTemplate, struct {
 		Layout layout.Data
+		Users  []users.User
 	}{
 		Layout: l,
+		Users:  allUsers,
 	})
 }

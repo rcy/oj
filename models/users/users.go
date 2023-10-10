@@ -200,7 +200,7 @@ func FindOrCreateParentByEmail(email string) (*User, error) {
 
 func FindAll() ([]User, error) {
 	var result []User
-	err := db.DB.Select(&result, "select * from users")
+	err := db.DB.Select(&result, "select * from users order by created_at desc")
 	if err != nil {
 		return nil, err
 	}
