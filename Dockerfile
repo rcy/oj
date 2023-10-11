@@ -25,10 +25,6 @@ WORKDIR /app
 # Copy the binary from the builder stage
 COPY --from=builder /app/build/server .
 
-# Copy the handlers directory for the templates
-# TODO: handlers has go code to remove
-COPY handlers handlers
-
 COPY assets assets
 
 # Expose the desired port
