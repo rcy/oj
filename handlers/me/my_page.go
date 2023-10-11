@@ -34,8 +34,7 @@ func (uu UnreadUser) Role() string {
 }
 
 func MyPage(w http.ResponseWriter, r *http.Request) {
-	ctx := r.Context()
-	l, err := layout.FromContext(ctx)
+	l, err := layout.FromRequest(r)
 	if err != nil {
 		render.Error(w, err.Error(), http.StatusInternalServerError)
 		return
