@@ -1,0 +1,7 @@
+{{define "main"}}
+  <h1>quizzes</h1>
+  <a href="{{.Layout.URL.Path}}/new" class="nes-button">new quiz</a>
+  {{range .Quizzes}}
+    <a href="{{$.Layout.URL.Path}}/{{.ID}}">{{.Name}}</a>
+  {{end}}
+{{end}}

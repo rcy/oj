@@ -1,0 +1,9 @@
+{{define "main"}}
+  <h1>quiz: {{.Quiz.Name}}</h1>
+
+  <ol>
+    {{range .Questions}}
+      <li>{{.Text}}</li>
+    {{end}}
+  </ol>
+{{end}}
