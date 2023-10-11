@@ -1,0 +1,9 @@
+{{define "main"}}
+  <div class="nes-container ghost">
+    <h1>{{.Quiz.Name}}</h1>
+    <p>{{.Quiz.Description}}</p>
+    <button hx-post="{{.Layout.URL.Path}}/attempt" class="nes-btn is-success">Start</button>
+    <a class="nes-btn" href="/fun/quizzes">Back to quizzes</a>
+  </div>
+{{end}}
+

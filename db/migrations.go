@@ -182,4 +182,46 @@ create table images(
   user_id references users not null
 );
 `,
+	`--23 add quizzes
+drop table if exists quizzes;
+create table quizzes(
+  id integer primary key,
+  created_at datetime not null default current_timestamp,
+  name string not null,
+  description string not null
+);
+`,
+	`--24 add questions
+drop table if exists questions;
+create table questions(
+  id integer primary key,
+  created_at datetime not null default current_timestamp,
+  quiz_id references quizzes not null,
+  text string not null,
+  answer string not null
+);
+`,
+	`--25 add attempts
+drop table if exists attempts;
+create table attempts(
+  id integer primary key,
+  created_at datetime not null default current_timestamp,
+  quiz_id references quizzes not null,
+  user_id references users not null
+);
+`,
+	`--26 add responses
+drop table if exists responses;
+create table responses(
+  id integer primary key,
+  created_at datetime not null default current_timestamp,
+  quiz_id references quizzes not null,
+  user_id references users not null,
+  attempt_id references attempts not null,
+  question_id references questions not null,
+  text string not null,
+
+  unique(attempt_id, question_id)
+);
+`,
 }

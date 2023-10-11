@@ -1,0 +1,27 @@
+{{define "main"}}
+  <div style="display:flex; flex-direction: column; gap: 1em">
+  {{template "quizheader"}}
+
+    {{range .Quizzes}}
+      {{template "quiz" .}}
+    {{end}}
+  </div>
+{{end}}
+
+{{define "quizheader"}}
+  <div class="nes-container ghost">
+    <h1>work work work work work everyday i work work work</h1>
+  </div>
+{{end}}
+
+{{define "quiz"}}
+  <div class="nes-container ghost">
+    <a href="/fun/quizzes/{{.ID}}" style="display:flex;gap:20px">
+      <img height="100px" width="100px" src="https://api.dicebear.com/7.x/icons/svg?seed={{.ID}}">
+      <div style="display:flex; flex-direction:column">
+        <h1>{{.Name}}</h1>
+        <div>{{.Description}}</div>
+      </div>
+    </a>
+  </div>
+{{end}}
