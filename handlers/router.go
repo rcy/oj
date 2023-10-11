@@ -51,7 +51,7 @@ func Router() *chi.Mux {
 
 	r.Route("/admin", func(r chi.Router) {
 		r.Use(mw.Auth)
-		r.Route("/", adminRouter)
+		r.Route("/", admin.Router)
 	})
 
 	// non authenticated routes
@@ -130,9 +130,4 @@ func applicationRouter(r chi.Router) {
 	r.NotFound(func(w http.ResponseWriter, r *http.Request) {
 		render.Error(w, "Page not found", 404)
 	})
-}
-
-func adminRouter(r chi.Router) {
-	r.Use(mw.EnsureAdmin)
-	r.Get("/", admin.Page)
 }
