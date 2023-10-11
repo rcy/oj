@@ -24,7 +24,7 @@ var (
 
 func KidConnect(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	lay, _ := layout.FromContext(ctx)
+	lay, _ := layout.FromRequest(r)
 
 	// get possible friend connections
 	// find all the kids of all the friends of this kid's parenst

@@ -75,7 +75,7 @@ order by created_at asc
 	}
 
 	// get the layout after the deliveries have been updated
-	l, err := layout.FromContext(ctx)
+	l, err := layout.FromRequest(r)
 	if err != nil {
 		render.Error(w, err.Error(), 500)
 		return

@@ -1,10 +1,11 @@
 package layout
 
 import (
-	"context"
 	_ "embed"
 	"fmt"
 	"html/template"
+	"net/http"
+	"net/url"
 	"oj/db"
 	"oj/element/gradient"
 	"oj/models/gradients"
@@ -35,12 +36,13 @@ const File = "handlers/layout/layout.gohtml"
 
 type Data struct {
 	User               users.User
+	URL                url.URL
 	BackgroundGradient gradient.Gradient
 	UnreadCount        int
 }
 
-func FromContext(ctx context.Context) (Data, error) {
-	user := users.FromContext(ctx)
+func FromRequest(r *http.Request) (Data, error) {
+	user := users.FromContext(r.Context())
 
 	backgroundGradient, err := gradients.UserBackground(user.ID)
 	if err != nil {
@@ -55,6 +57,7 @@ func FromContext(ctx context.Context) (Data, error) {
 
 	return Data{
 		User:               user,
+		URL:                *r.URL,
 		BackgroundGradient: *backgroundGradient,
 		UnreadCount:        unreadCount,
 	}, nil
