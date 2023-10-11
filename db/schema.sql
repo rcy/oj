@@ -1,3 +1,9 @@
+CREATE TABLE attempts(
+  id integer primary key,
+  created_at datetime not null default current_timestamp,
+  quiz_id references quizzes not null,
+  user_id references users not null
+);
 CREATE TABLE codes(
   id integer primary key,
   created_at datetime not null default current_timestamp,
@@ -57,6 +63,30 @@ CREATE TABLE messages(
 CREATE TABLE migration_version (
 			version INTEGER
 		);
+CREATE TABLE questions(
+  id integer primary key,
+  created_at datetime not null default current_timestamp,
+  quiz_id references quizzes not null,
+  text string not null,
+  answer string not null
+);
+CREATE TABLE quizzes(
+  id integer primary key,
+  created_at datetime not null default current_timestamp,
+  name string not null,
+  description string not null
+);
+CREATE TABLE responses(
+  id integer primary key,
+  created_at datetime not null default current_timestamp,
+  quiz_id references quizzes not null,
+  user_id references users not null,
+  attempt_id references attempts not null,
+  question_id references questions not null,
+  text string not null,
+
+  unique(attempt_id, question_id)
+);
 CREATE TABLE room_users(
   id integer primary key,
   created_at datetime not null default current_timestamp,

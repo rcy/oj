@@ -1,0 +1,18 @@
+{{define "main"}}
+  <div class="page nes-container ghost">
+    <h1>{{.Quiz.Name}}</h1>
+
+    <progress style="width:100%" max="{{.QuestionCount}}" value="{{.ResponseCount}}"></progress>
+
+    <div style="margin-top: 2em">
+      <div>{{.Question.Text}}</div>
+      <form hx-post="{{.Layout.URL.Path}}/question/{{.Question.ID}}/response"
+            hx-select=".page"
+            hx-target=".page"
+            hx-swap="outerHTML"
+      >
+        <input class="nes-input" autofocus type="text" name="response">
+        <button class="nes-btn">submit</button>
+      </form>
+    </div>
+{{end}}

@@ -14,6 +14,10 @@ import (
 	"oj/handlers/fun"
 	"oj/handlers/fun/chess"
 	"oj/handlers/fun/gradients"
+	"oj/handlers/fun/quizzes"
+	"oj/handlers/fun/quizzes/attempt"
+	"oj/handlers/fun/quizzes/attempt/completed"
+	"oj/handlers/fun/quizzes/quiz"
 	"oj/handlers/fun/stickers"
 	"oj/handlers/header"
 	"oj/handlers/me"
@@ -97,6 +101,13 @@ func applicationRouter(r chi.Router) {
 	r.Get("/fun/chess/select/{rank}/{file}", chess.Select)
 	r.Get("/fun/chess/unselect", chess.Unselect)
 	//r.Get("/fun/chess/select/{r1}/{f1}/{r2}/{f2}", chess.Move)
+
+	r.Get("/fun/quizzes", quizzes.Page)
+	r.Get("/fun/quizzes/{quizID}", quiz.Page)
+	r.Post("/fun/quizzes/{quizID}/attempt", quiz.CreateAttempt)
+	r.Get("/fun/quizzes/attempts/{attemptID}", attempt.Page)
+	r.Get("/fun/quizzes/attempts/{attemptID}/done", completed.Page)
+	r.Post("/fun/quizzes/attempts/{attemptID}/question/{questionID}/response", attempt.PostResponse)
 
 	r.Get("/u/{userID}", u.UserPage)
 	r.Get("/u/{userID}/chat", chat.UserChatPage)
