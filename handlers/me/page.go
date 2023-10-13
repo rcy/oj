@@ -14,10 +14,10 @@ var (
 	//go:embed card.gohtml
 	CardContent string
 
-	//go:embed my_page.gohtml
+	//go:embed page.gohtml
 	pageContent string
 
-	MyPageTemplate = layout.MustParse(pageContent, CardContent)
+	pageTemplate = layout.MustParse(pageContent, CardContent)
 )
 
 type UnreadUser struct {
@@ -33,7 +33,7 @@ func (uu UnreadUser) Role() string {
 	return "foo"
 }
 
-func MyPage(w http.ResponseWriter, r *http.Request) {
+func Page(w http.ResponseWriter, r *http.Request) {
 	l, err := layout.FromRequest(r)
 	if err != nil {
 		render.Error(w, err.Error(), http.StatusInternalServerError)
@@ -64,5 +64,5 @@ group by users.username;
 		UnreadUsers: unreadUsers,
 	}
 
-	render.Execute(w, MyPageTemplate, d)
+	render.Execute(w, pageTemplate, d)
 }

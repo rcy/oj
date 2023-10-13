@@ -1,0 +1,71 @@
+{{define "main"}}
+  <div style="display:flex; flex-direction: column; gap: 2em; margin-bottom: 25vh">
+    <div class="nes-container ghost">
+      <h1>quiz: {{.Quiz.Name}}</h1>
+      <p>{{.Quiz.Description}}</p>
+    </div>
+
+    <div id="questions" style="display:flex; flex-direction: column; gap:1em">
+      {{range .Questions}}
+        {{template "question" .}}
+      {{end}}
+    </div>
+    <button hx-get="/admin/quizzes/{{.Quiz.ID}}/add-question"
+            hx-target="#questions"
+            hx-swap="beforeend"
+            class="nes-btn is-primary"
+    >add question</button>
+  </div>
+{{end}}
+
+{{define "question"}}
+  <div class="nes-container ghost" style="display:flex; justify-content:space-between">
+    <div>
+      <div>Q: {{.Text}}</div>
+      <div>A: {{.Answer}}</div>
+    </div>
+    <button hx-get="/admin/quizzes/{{.QuizID}}/question/{{.ID}}/edit"
+            hx-swap="outerHTML"
+            hx-target="closest div"
+            class="nes-btn"
+    >edit</button>
+  </div>
+{{end}}
+
+{{define "new-question-form"}}
+  <div class="nes-container is-dark">
+    <form hx-post="/admin/quizzes/{{.QuizID}}/add-question"
+          hx-swap="outerHTML"
+          hx-target="closest div"
+    >
+      <div class="nes-field">
+        <label for="text_field">Question</label>
+        <input autofocus type="text" name="text" id="text_field" class="nes-input">
+      </div>
+      <div class="nes-field">
+        <label for="answer_field">Answer</label>
+        <input type="text" name="answer" id="answer_field" class="nes-input">
+      </div>
+      <button class="nes-btn is-primary">save</button>
+    </form>
+  </div>
+{{end}}
+
+{{define "edit-question-form"}}
+  <div class="nes-container is-dark">
+    <form hx-patch="/admin/quizzes/{{.QuizID}}/question/{{.ID}}"
+          hx-swap="outerHTML"
+          hx-target="closest div"
+    >
+      <div class="nes-field">
+        <label for="text_field">Question</label>
+        <input autofocus type="text" name="text" id="text_field" class="nes-input" value="{{.Text}}">
+      </div>
+      <div class="nes-field">
+        <label for="answer_field">Answer</label>
+        <input type="text" name="answer" id="answer_field" class="nes-input" value="{{.Answer}}">
+      </div>
+      <button class="nes-btn">save</button>
+    </form>
+  </div>
+{{end}}

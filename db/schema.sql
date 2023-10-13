@@ -65,11 +65,11 @@ CREATE TABLE migration_version (
 		);
 CREATE TABLE questions(
   id integer primary key,
-  created_at datetime not null default current_timestamp,
-  quiz_id references quizzes not null,
-  text string not null,
-  answer string not null
-);
+  created_at text not null default current_timestamp,
+  quiz_id integer references quizzes not null,
+  text text not null,
+  answer text not null
+) strict;
 CREATE TABLE quizzes(
   id integer primary key,
   created_at datetime not null default current_timestamp,

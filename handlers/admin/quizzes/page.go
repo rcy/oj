@@ -1,21 +1,22 @@
-package admin
+package quizzes
 
 import (
+	"database/sql"
 	_ "embed"
 	"net/http"
-	"oj/handlers/admin/quizzes"
+	"oj/handlers/admin/quizzes/create"
+	"oj/handlers/admin/quizzes/show"
 	"oj/handlers/layout"
-	mw "oj/handlers/middleware"
 	"oj/handlers/render"
-	"oj/models/users"
+	"oj/models/quizzes"
 
 	"github.com/go-chi/chi/v5"
 )
 
 func Router(r chi.Router) {
-	r.Use(mw.EnsureAdmin)
 	r.Get("/", page)
-	r.Route("/quizzes", quizzes.Router)
+	r.Route("/create", create.Router)
+	r.Route("/{quizID}", show.Router)
 }
 
 var (
@@ -31,17 +32,17 @@ func page(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	allUsers, err := users.FindAll()
-	if err != nil {
+	allQuizzes, err := quizzes.FindAll()
+	if err != nil && err != sql.ErrNoRows {
 		render.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	render.Execute(w, pageTemplate, struct {
-		Layout layout.Data
-		Users  []users.User
+		Layout  layout.Data
+		Quizzes []quizzes.Quiz
 	}{
-		Layout: l,
-		Users:  allUsers,
+		Layout:  l,
+		Quizzes: allQuizzes,
 	})
 }

@@ -224,4 +224,14 @@ create table responses(
   unique(attempt_id, question_id)
 );
 `,
+	`--27 add quizzes
+drop table if exists questions;
+create table questions(
+  id integer primary key,
+  created_at text not null default current_timestamp,
+  quiz_id integer references quizzes not null,
+  text text not null,
+  answer text not null
+) strict;
+`,
 }

@@ -24,3 +24,7 @@ func Error(w http.ResponseWriter, msg string, code int) {
 		Code:    code,
 	})
 }
+
+func NotFound(w http.ResponseWriter) {
+	Error(w, "Oops, we couldn't find that page!", http.StatusNotFound)
+}

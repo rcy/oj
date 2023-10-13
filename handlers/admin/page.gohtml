@@ -1,4 +1,8 @@
 {{define "main"}}
+  <a href="{{.Layout.URL.Path}}/quizzes">quizzes</a>
+
+  <hr>
+
   {{range .Users}}
     <div>
       <a href="/u/{{.ID}}">{{.Username}}</a>
