@@ -1,7 +1,10 @@
 {{define "main"}}
-  <h1>quiz: {{.Quiz.Name}}</h1>
-
   <div style="display:flex; flex-direction: column; gap: 2em; margin-bottom: 25vh">
+    <div class="nes-container ghost">
+      <h1>quiz: {{.Quiz.Name}}</h1>
+      <p>{{.Quiz.Description}}</p>
+    </div>
+
     <div id="questions" style="display:flex; flex-direction: column; gap:1em">
       {{range .Questions}}
         {{template "question" .}}

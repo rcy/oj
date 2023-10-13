@@ -1,0 +1,19 @@
+{{define "main"}}
+  <h1>create new quiz</h1>
+
+  <div class="nes-container is-dark">
+    <form method="post" action="/admin/quizzes/create">
+      <div class="nes-field">
+        <label for="name_field">Quiz Name</label>
+        <input autofocus type="text" name="name" id="name_field" class="nes-input">
+      </div>
+      <div class="nes-field">
+        <label for="description_field">Description</label>
+        <input autofocus type="text" name="description" id="description_field" class="nes-input">
+      </div>
+
+      <button class="nes-btn is-primary">create</button>
+      <a href="/admin/quizzes" class="nes-btn">cancel</a>
+    </form>
+  </div>
+{{end}}

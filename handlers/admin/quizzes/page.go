@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	_ "embed"
 	"net/http"
+	"oj/handlers/admin/quizzes/create"
 	"oj/handlers/admin/quizzes/show"
 	"oj/handlers/layout"
 	"oj/handlers/render"
@@ -14,6 +15,7 @@ import (
 
 func Router(r chi.Router) {
 	r.Get("/", page)
+	r.Route("/create", create.Router)
 	r.Route("/{quizID}", show.Router)
 }
 
