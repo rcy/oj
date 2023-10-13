@@ -81,7 +81,7 @@ func applicationRouter(r chi.Router) {
 	r.Post("/chat/messages", chat.PostChatMessage)
 	r.Mount("/es", eventsource.SSE)
 
-	r.Get("/me", me.MyPage)
+	r.Get("/me", me.Page)
 	r.Get("/me/edit", editme.MyPageEdit)
 	r.Post("/me/edit", editme.Post)
 
