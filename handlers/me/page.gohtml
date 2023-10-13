@@ -33,6 +33,9 @@
          href="/welcome/signout"
          class="nes-btn"
       >Logout</a>
+      {{if .User.Admin}}
+        <a href="/admin" class="nes-btn">Admin</a>
+      {{end}}
     </div>
   </section>
 {{end}}
