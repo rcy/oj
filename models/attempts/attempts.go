@@ -63,8 +63,15 @@ func FindByStringID(stringID string) (*Attempt, error) {
 func (a *Attempt) NextQuestion() (*question.Question, error) {
 	var result question.Question
 
-	query := `select questions.* from questions left join responses on responses.question_id = questions.id where questions.id not in (select question_id from responses where responses.attempt_id = ?) order by random()`
-	err := db.DB.Get(&result, query, a.ID)
+	query := `
+select questions.* from questions
+left join responses on responses.question_id = questions.id
+where
+  questions.id not in (select question_id from responses where responses.attempt_id = ?)
+and
+  questions.quiz_id = ?
+order by random()`
+	err := db.DB.Get(&result, query, a.ID, a.QuizID)
 	if err != nil {
 		return nil, err
 	}
