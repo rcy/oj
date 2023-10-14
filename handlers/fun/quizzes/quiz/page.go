@@ -23,6 +23,7 @@ var (
 func Router(r chi.Router) {
 	r.Use(quizzes.Provider)
 	r.Get("/", page)
+	r.Post("/attempt", createAttempt)
 }
 
 func page(w http.ResponseWriter, r *http.Request) {
@@ -57,7 +58,7 @@ func page(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func CreateAttempt(w http.ResponseWriter, r *http.Request) {
+func createAttempt(w http.ResponseWriter, r *http.Request) {
 	user := users.FromContext(r.Context())
 	quiz := quizzes.FromContext(r.Context())
 

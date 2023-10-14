@@ -104,7 +104,6 @@ func applicationRouter(r chi.Router) {
 
 	r.Get("/fun/quizzes", quizzes.Page)
 	r.Route("/fun/quizzes/{quizID}", quiz.Router)
-	r.Post("/fun/quizzes/{quizID}/attempt", quiz.CreateAttempt)
 	r.Get("/fun/quizzes/attempts/{attemptID}", attempt.Page)
 	r.Get("/fun/quizzes/attempts/{attemptID}/done", completed.Page)
 	r.Post("/fun/quizzes/attempts/{attemptID}/question/{questionID}/response", attempt.PostResponse)
