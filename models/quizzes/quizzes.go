@@ -12,6 +12,7 @@ type Quiz struct {
 	CreatedAt   time.Time `db:"created_at"`
 	Name        string    `db:"name"`
 	Description string    `db:"description"`
+	Published   bool      `db:"published"`
 }
 
 func FindAll() ([]Quiz, error) {

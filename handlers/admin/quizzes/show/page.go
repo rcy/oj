@@ -14,7 +14,7 @@ import (
 )
 
 func Router(r chi.Router) {
-	// todo fetch quiz in middleware
+	r.Use(quizzes.Provider)
 	r.Get("/", page)
 	r.Get("/add-question", newQuestion)
 	r.Post("/add-question", postNewQuestion)
@@ -35,17 +35,9 @@ func page(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	q, err := quizzes.FindByStringID(chi.URLParam(r, "quizID"))
-	if err != nil {
-		if err == sql.ErrNoRows {
-			render.NotFound(w)
-			return
-		}
-		render.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
+	quiz := quizzes.FromContext(r.Context())
 
-	questions, err := q.FindQuestions()
+	questions, err := quiz.FindQuestions()
 	if err != nil && err != sql.ErrNoRows {
 		render.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -53,11 +45,11 @@ func page(w http.ResponseWriter, r *http.Request) {
 
 	render.Execute(w, pageTemplate, struct {
 		Layout    layout.Data
-		Quiz      *quizzes.Quiz
+		Quiz      quizzes.Quiz
 		Questions []question.Question
 	}{
 		Layout:    l,
-		Quiz:      q,
+		Quiz:      quiz,
 		Questions: questions,
 	})
 }
@@ -73,13 +65,13 @@ func newQuestion(w http.ResponseWriter, r *http.Request) {
 }
 
 func editQuestion(w http.ResponseWriter, r *http.Request) {
-	q, err := question.FindByStringID(chi.URLParam(r, "questionID"))
+	quest, err := question.FindByStringID(chi.URLParam(r, "questionID"))
 	if err != nil {
 		render.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	render.ExecuteNamed(w, pageTemplate, "edit-question-form", q)
+	render.ExecuteNamed(w, pageTemplate, "edit-question-form", quest)
 }
 
 func postNewQuestion(w http.ResponseWriter, r *http.Request) {
