@@ -1,7 +1,6 @@
 package quiz
 
 import (
-	"database/sql"
 	_ "embed"
 	"fmt"
 	"net/http"
@@ -21,22 +20,19 @@ var (
 	pageTemplate = layout.MustParse(pageContent)
 )
 
-func Page(w http.ResponseWriter, r *http.Request) {
+func Router(r chi.Router) {
+	r.Use(quizzes.Provider)
+	r.Get("/", page)
+}
+
+func page(w http.ResponseWriter, r *http.Request) {
 	l, err := layout.FromRequest(r)
 	if err != nil {
 		render.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	quiz, err := quizzes.FindByStringID(chi.URLParam(r, "quizID"))
-	if err != nil {
-		if err == sql.ErrNoRows {
-			render.Error(w, "quiz not found", http.StatusNotFound)
-			return
-		}
-		render.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
+	quiz := quizzes.FromContext(r.Context())
 
 	questions, err := quiz.FindQuestions()
 	if err != nil {
@@ -50,7 +46,7 @@ func Page(w http.ResponseWriter, r *http.Request) {
 
 	render.Execute(w, pageTemplate, struct {
 		Layout           layout.Data
-		Quiz             *quizzes.Quiz
+		Quiz             quizzes.Quiz
 		Questions        []question.Question
 		CreateAttemptURL string
 	}{
@@ -63,16 +59,7 @@ func Page(w http.ResponseWriter, r *http.Request) {
 
 func CreateAttempt(w http.ResponseWriter, r *http.Request) {
 	user := users.FromContext(r.Context())
-
-	quiz, err := quizzes.FindByStringID(chi.URLParam(r, "quizID"))
-	if err != nil {
-		if err == sql.ErrNoRows {
-			render.Error(w, "quiz not found", http.StatusNotFound)
-			return
-		}
-		render.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
+	quiz := quizzes.FromContext(r.Context())
 
 	attempt, err := attempts.Create(quiz.ID, user.ID)
 	if err != nil {

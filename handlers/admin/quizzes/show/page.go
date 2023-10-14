@@ -55,11 +55,7 @@ func page(w http.ResponseWriter, r *http.Request) {
 }
 
 func newQuestion(w http.ResponseWriter, r *http.Request) {
-	quiz, err := quizzes.FindByStringID(chi.URLParam(r, "quizID"))
-	if err != nil {
-		render.Error(w, err.Error(), http.StatusNotFound)
-		return
-	}
+	quiz := quizzes.FromContext(r.Context())
 
 	render.ExecuteNamed(w, pageTemplate, "new-question-form", struct{ QuizID int64 }{quiz.ID})
 }
@@ -75,12 +71,9 @@ func editQuestion(w http.ResponseWriter, r *http.Request) {
 }
 
 func postNewQuestion(w http.ResponseWriter, r *http.Request) {
-	quiz, err := quizzes.FindByStringID(chi.URLParam(r, "quizID"))
-	if err != nil {
-		render.Error(w, err.Error(), http.StatusNotFound)
-		return
-	}
+	quiz := quizzes.FromContext(r.Context())
 
+	var err error
 	var quest *question.Question
 
 	if r.FormValue("id") != "" {

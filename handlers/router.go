@@ -103,7 +103,7 @@ func applicationRouter(r chi.Router) {
 	//r.Get("/fun/chess/select/{r1}/{f1}/{r2}/{f2}", chess.Move)
 
 	r.Get("/fun/quizzes", quizzes.Page)
-	r.Get("/fun/quizzes/{quizID}", quiz.Page)
+	r.Route("/fun/quizzes/{quizID}", quiz.Router)
 	r.Post("/fun/quizzes/{quizID}/attempt", quiz.CreateAttempt)
 	r.Get("/fun/quizzes/attempts/{attemptID}", attempt.Page)
 	r.Get("/fun/quizzes/attempts/{attemptID}/done", completed.Page)
