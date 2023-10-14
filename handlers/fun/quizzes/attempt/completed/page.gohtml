@@ -6,7 +6,7 @@
     <div>
       {{range .Responses}}
         <div>
-          {{.Text}}
+          {{.Text}} | {{.Answer}} = {{.IsCorrect}}
         </div>
       {{end}}
     </div>

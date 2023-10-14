@@ -52,7 +52,7 @@ func Page(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	responses, err := response.FindByAttemptID(attempt.ID)
+	responses, err := response.FindResponses(attempt.ID)
 	if err != nil {
 		render.Error(w, err.Error(), http.StatusInternalServerError)
 		return
