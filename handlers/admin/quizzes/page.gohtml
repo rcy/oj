@@ -1,11 +1,11 @@
 {{define "main"}}
   <div style="display:flex; justify-content:space-between; align-items:center">
     <h1>quizzes</h1>
-    <a href="{{.Layout.URL.Path}}/create" class="nes-btn">create quiz</a>
+    <a href="{{.Layout.PageURL.Path}}/create" class="nes-btn">create quiz</a>
   </div>
   {{range .Quizzes}}
     <div class="nes-container ghost">
-      <a href="{{$.Layout.URL.Path}}/{{.ID}}">{{.Name}}</a>
+      <a href="{{$.Layout.PageURL.Path}}/{{.ID}}">{{.Name}}</a>
     </div>
   {{end}}
 {{end}}

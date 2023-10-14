@@ -36,7 +36,6 @@ const File = "handlers/layout/layout.gohtml"
 
 type Data struct {
 	User               users.User
-	URL                url.URL
 	PageURL            url.URL
 	BackgroundGradient gradient.Gradient
 	UnreadCount        int
@@ -58,7 +57,6 @@ func FromRequest(r *http.Request) (Data, error) {
 
 	return Data{
 		User:               user,
-		URL:                *r.URL,
 		PageURL:            pageURLFromRequest(r),
 		BackgroundGradient: *backgroundGradient,
 		UnreadCount:        unreadCount,
