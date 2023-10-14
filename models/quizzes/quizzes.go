@@ -45,7 +45,7 @@ func FindByStringID(stringID string) (*Quiz, error) {
 
 func (q *Quiz) FindQuestions() ([]question.Question, error) {
 	var result []question.Question
-	query := "select created_at, id, text, answer from questions where quiz_id = ?"
+	query := "select id, created_at, quiz_id, text, answer from questions where quiz_id = ?"
 	err := db.DB.Select(&result, query, q.ID)
 	if err != nil {
 		return nil, err
