@@ -31,8 +31,6 @@ func MustParse(templateContent ...string) *template.Template {
 	return tpl
 }
 
-const File = "handlers/layout/layout.gohtml"
-
 type Data struct {
 	User               users.User
 	BackgroundGradient gradient.Gradient
