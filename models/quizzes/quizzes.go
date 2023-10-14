@@ -24,6 +24,15 @@ func FindAll() ([]Quiz, error) {
 	return result, nil
 }
 
+func FindAllPublished() ([]Quiz, error) {
+	var result []Quiz
+	err := db.DB.Select(&result, "select * from quizzes where published = true order by created_at desc")
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
+}
+
 func FindByID(id int64) (*Quiz, error) {
 	var result Quiz
 
