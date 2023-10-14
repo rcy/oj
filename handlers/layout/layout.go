@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
-	"net/url"
 	"oj/db"
 	"oj/element/gradient"
 	"oj/models/gradients"
@@ -36,7 +35,6 @@ const File = "handlers/layout/layout.gohtml"
 
 type Data struct {
 	User               users.User
-	PageURL            url.URL
 	BackgroundGradient gradient.Gradient
 	UnreadCount        int
 }
@@ -57,21 +55,7 @@ func FromRequest(r *http.Request) (Data, error) {
 
 	return Data{
 		User:               user,
-		PageURL:            pageURLFromRequest(r),
 		BackgroundGradient: *backgroundGradient,
 		UnreadCount:        unreadCount,
 	}, nil
-}
-
-// Return the URL of the current page, which can be different from the request url when called in the context of an htmx/ajax request
-func pageURLFromRequest(r *http.Request) url.URL {
-	hxCurrentURL := r.Header.Get("HX-Current-URL")
-	if hxCurrentURL == "" {
-		return *r.URL
-	}
-	url, err := url.Parse(hxCurrentURL)
-	if err != nil {
-		return *r.URL
-	}
-	return *url
 }

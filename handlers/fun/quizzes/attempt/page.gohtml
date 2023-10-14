@@ -6,7 +6,7 @@
 
     <div style="margin-top: 2em">
       <div>{{.Question.Text}}</div>
-      <form hx-post="{{.Layout.PageURL.Path}}/question/{{.Question.ID}}/response"
+      <form hx-post="/fun/quizzes/attempts/{{.Attempt.ID}}/question/{{.Question.ID}}/response"
             hx-select=".page"
             hx-target=".page"
             hx-swap="outerHTML"
