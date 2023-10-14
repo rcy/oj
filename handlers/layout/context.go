@@ -12,7 +12,11 @@ type contextKey int
 const layoutContextKey contextKey = iota
 
 func FromContext(ctx context.Context) Data {
-	return ctx.Value(layoutContextKey).(Data)
+	value := ctx.Value(layoutContextKey)
+	if value == nil {
+		return Data{}
+	}
+	return value.(Data)
 }
 
 func Provider(next http.Handler) http.Handler {
