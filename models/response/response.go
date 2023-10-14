@@ -1,6 +1,7 @@
 package response
 
 import (
+	"oj/db"
 	"time"
 )
 
@@ -12,4 +13,14 @@ type Response struct {
 	AttemptID  int64     `db:"attempt_id"`
 	QuestionID int64     `db:"question_id"`
 	Text       string    `db:"text"`
+}
+
+func FindByAttemptID(attemptID int64) ([]Response, error) {
+	query := `select * from responses where attempt_id = ?`
+	var responses []Response
+	err := db.DB.Select(&responses, query, attemptID)
+	if err != nil {
+		return nil, err
+	}
+	return responses, nil
 }

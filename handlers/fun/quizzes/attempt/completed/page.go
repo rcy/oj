@@ -8,6 +8,7 @@ import (
 	"oj/handlers/render"
 	"oj/models/attempts"
 	"oj/models/quizzes"
+	"oj/models/response"
 
 	"github.com/go-chi/chi/v5"
 )
@@ -51,15 +52,23 @@ func Page(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	responses, err := response.FindByAttemptID(attempt.ID)
+	if err != nil {
+		render.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
 	render.Execute(w, pageTemplate, struct {
 		Layout        layout.Data
 		Quiz          *quizzes.Quiz
 		Attempt       *attempts.Attempt
 		QuestionCount int
+		Responses     []response.Response
 	}{
 		Layout:        l,
 		Quiz:          quiz,
 		Attempt:       attempt,
 		QuestionCount: questionCount,
+		Responses:     responses,
 	})
 }
