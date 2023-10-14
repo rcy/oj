@@ -4,7 +4,6 @@ import (
 	_ "embed"
 	"fmt"
 	"html/template"
-	"net/http"
 	"oj/db"
 	"oj/element/gradient"
 	"oj/models/gradients"
@@ -31,17 +30,13 @@ func MustParse(templateContent ...string) *template.Template {
 	return tpl
 }
 
-const File = "handlers/layout/layout.gohtml"
-
 type Data struct {
 	User               users.User
 	BackgroundGradient gradient.Gradient
 	UnreadCount        int
 }
 
-func FromRequest(r *http.Request) (Data, error) {
-	user := users.FromContext(r.Context())
-
+func FromUser(user users.User) (Data, error) {
 	backgroundGradient, err := gradients.UserBackground(user.ID)
 	if err != nil {
 		return Data{}, err

@@ -9,11 +9,7 @@ import (
 var t = layout.MustParse()
 
 func Header(w http.ResponseWriter, r *http.Request) {
-	l, err := layout.FromRequest(r)
-	if err != nil {
-		render.Error(w, err.Error(), 500)
-		return
-	}
+	l := layout.FromContext(r.Context())
 
 	render.ExecuteNamed(w, t, "header", struct{ Layout layout.Data }{l})
 }

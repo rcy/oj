@@ -20,6 +20,7 @@ import (
 	"oj/handlers/fun/quizzes/quiz"
 	"oj/handlers/fun/stickers"
 	"oj/handlers/header"
+	"oj/handlers/layout"
 	"oj/handlers/me"
 	"oj/handlers/me/editme"
 	mw "oj/handlers/middleware"
@@ -46,11 +47,13 @@ func Router() *chi.Mux {
 		r.Use(mw.Auth)
 		r.Use(mw.Become)
 		r.Use(mw.Redirect)
+		r.Use(layout.Provider)
 		r.Route("/", applicationRouter)
 	})
 
 	r.Route("/admin", func(r chi.Router) {
 		r.Use(mw.Auth)
+		r.Use(layout.Provider)
 		r.Route("/", admin.Router)
 	})
 

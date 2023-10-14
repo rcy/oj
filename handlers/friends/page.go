@@ -33,11 +33,7 @@ type Friend struct {
 }
 
 func Page(w http.ResponseWriter, r *http.Request) {
-	l, err := layout.FromRequest(r)
-	if err != nil {
-		render.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
+	l := layout.FromContext(r.Context())
 
 	friends, err := getFriends(l.User.ID)
 	if err != nil {

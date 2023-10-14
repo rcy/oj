@@ -74,8 +74,8 @@ order by created_at asc
 		return
 	}
 
-	// get the layout after the deliveries have been updated
-	l, err := layout.FromRequest(r)
+	// get the layout after the deliveries have been updated to ensure unread count is correct
+	l, err := layout.FromUser(user)
 	if err != nil {
 		render.Error(w, err.Error(), 500)
 		return

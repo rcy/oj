@@ -36,11 +36,7 @@ var (
 var game *chess.Game = chess.NewGame()
 
 func Page(w http.ResponseWriter, r *http.Request) {
-	l, err := layout.FromRequest(r)
-	if err != nil {
-		render.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
+	l := layout.FromContext(r.Context())
 
 	for i := 0; i < 6; i += 1 {
 		moves := game.ValidMoves()

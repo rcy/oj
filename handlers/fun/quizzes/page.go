@@ -16,11 +16,7 @@ var (
 )
 
 func Page(w http.ResponseWriter, r *http.Request) {
-	l, err := layout.FromRequest(r)
-	if err != nil {
-		render.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
+	l := layout.FromContext(r.Context())
 
 	allQuizzes, err := quizzes.FindAllPublished()
 	if err != nil && err != sql.ErrNoRows {
