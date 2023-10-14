@@ -75,7 +75,7 @@ CREATE TABLE quizzes(
   created_at datetime not null default current_timestamp,
   name string not null,
   description string not null
-);
+, published bool default false);
 CREATE TABLE responses(
   id integer primary key,
   created_at datetime not null default current_timestamp,

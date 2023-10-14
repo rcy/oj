@@ -22,7 +22,7 @@ func Page(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	allQuizzes, err := quizzes.FindAll()
+	allQuizzes, err := quizzes.FindAllPublished()
 	if err != nil && err != sql.ErrNoRows {
 		render.Error(w, err.Error(), http.StatusInternalServerError)
 		return

@@ -234,4 +234,7 @@ create table questions(
   answer text not null
 ) strict;
 `,
+	`--28 add published to quizzes
+alter table quizzes add column published bool default false;
+`,
 }
