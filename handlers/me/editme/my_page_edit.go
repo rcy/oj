@@ -16,11 +16,7 @@ var (
 )
 
 func MyPageEdit(w http.ResponseWriter, r *http.Request) {
-	l, err := layout.FromRequest(r)
-	if err != nil {
-		render.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
+	l := layout.FromContext(r.Context())
 
 	d := struct {
 		Layout layout.Data

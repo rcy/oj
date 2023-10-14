@@ -25,11 +25,7 @@ var (
 )
 
 func page(w http.ResponseWriter, r *http.Request) {
-	l, err := layout.FromRequest(r)
-	if err != nil {
-		render.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
+	l := layout.FromContext(r.Context())
 
 	allUsers, err := users.FindAll()
 	if err != nil {

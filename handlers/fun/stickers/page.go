@@ -27,14 +27,10 @@ type Image struct {
 }
 
 func Page(w http.ResponseWriter, r *http.Request) {
-	l, err := layout.FromRequest(r)
-	if err != nil {
-		render.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
+	l := layout.FromContext(r.Context())
 
 	var images []Image
-	err = db.DB.Select(&images, `select * from images where user_id = ? order by created_at desc`, l.User.ID)
+	err := db.DB.Select(&images, `select * from images where user_id = ? order by created_at desc`, l.User.ID)
 	if err != nil {
 		render.Error(w, err.Error(), http.StatusInternalServerError)
 		return

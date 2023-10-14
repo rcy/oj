@@ -69,7 +69,7 @@ func (f Connection) Status() string {
 }
 
 func Connect(w http.ResponseWriter, r *http.Request) {
-	lay, _ := layout.FromRequest(r)
+	lay := layout.FromContext(r.Context())
 
 	var connections []Connection
 	err := db.DB.Select(&connections, `

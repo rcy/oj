@@ -20,11 +20,7 @@ var (
 )
 
 func Page(w http.ResponseWriter, r *http.Request) {
-	l, err := layout.FromRequest(r)
-	if err != nil {
-		render.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
+	l := layout.FromContext(r.Context())
 
 	deliveryID := chi.URLParam(r, "deliveryID")
 
@@ -32,7 +28,7 @@ func Page(w http.ResponseWriter, r *http.Request) {
 
 	query := `select * from deliveries where id = ?`
 
-	err = db.DB.Get(&delivery, query, deliveryID)
+	err := db.DB.Get(&delivery, query, deliveryID)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			render.Error(w, err.Error(), http.StatusNotFound)
@@ -61,11 +57,7 @@ func Page(w http.ResponseWriter, r *http.Request) {
 
 // Logout and redirect back to delivery page to recheck current user
 func Logout(w http.ResponseWriter, r *http.Request) {
-	l, err := layout.FromRequest(r)
-	if err != nil {
-		render.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
+	l := layout.FromContext(r.Context())
 
 	deliveryID := chi.URLParam(r, "deliveryID")
 
@@ -73,7 +65,7 @@ func Logout(w http.ResponseWriter, r *http.Request) {
 
 	query := `select * from deliveries where id = ?`
 
-	err = db.DB.Get(&delivery, query, deliveryID)
+	err := db.DB.Get(&delivery, query, deliveryID)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			render.Error(w, err.Error(), http.StatusNotFound)

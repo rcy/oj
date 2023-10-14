@@ -4,7 +4,6 @@ import (
 	_ "embed"
 	"fmt"
 	"html/template"
-	"net/http"
 	"oj/db"
 	"oj/element/gradient"
 	"oj/models/gradients"
@@ -37,9 +36,7 @@ type Data struct {
 	UnreadCount        int
 }
 
-func FromRequest(r *http.Request) (Data, error) {
-	user := users.FromContext(r.Context())
-
+func FromUser(user users.User) (Data, error) {
 	backgroundGradient, err := gradients.UserBackground(user.ID)
 	if err != nil {
 		return Data{}, err

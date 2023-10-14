@@ -22,11 +22,7 @@ var (
 )
 
 func UserPage(w http.ResponseWriter, r *http.Request) {
-	l, err := layout.FromRequest(r)
-	if err != nil {
-		render.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
+	l := layout.FromContext(r.Context())
 
 	userID := chi.URLParam(r, "userID")
 	pageUser, err := users.FindByStringId(userID)

@@ -34,11 +34,7 @@ func (uu UnreadUser) Role() string {
 }
 
 func Page(w http.ResponseWriter, r *http.Request) {
-	l, err := layout.FromRequest(r)
-	if err != nil {
-		render.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
+	l := layout.FromContext(r.Context())
 
 	query := `
 select users.*, count(*) unread_count
@@ -48,7 +44,7 @@ where recipient_id = ? and sent_at is null
 group by users.username;
 `
 	var unreadUsers []UnreadUser
-	err = db.DB.Select(&unreadUsers, query, l.User.ID)
+	err := db.DB.Select(&unreadUsers, query, l.User.ID)
 	if err != nil {
 		render.Error(w, err.Error(), http.StatusInternalServerError)
 		return
