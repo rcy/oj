@@ -112,7 +112,7 @@ func applicationRouter(r chi.Router) {
 	r.Post("/fun/quizzes/attempts/{attemptID}/question/{questionID}/response", attempt.PostResponse)
 
 	r.Get("/u/{userID}", u.UserPage)
-	r.Get("/u/{userID}/chat", chat.UserChatPage)
+	r.Get("/u/{userID}/chat", chat.Page)
 
 	r.Get("/avatars", editme.GetAvatars)
 	r.Put("/avatar", editme.PutAvatar)

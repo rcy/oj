@@ -22,12 +22,12 @@ import (
 )
 
 var (
-	//go:embed chat_index_ws.gohtml
+	//go:embed page.gohtml
 	pageContent  string
-	chatTemplate = layout.MustParse(pageContent)
+	pageTemplate = layout.MustParse(pageContent)
 )
 
-func UserChatPage(w http.ResponseWriter, r *http.Request) {
+func Page(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	user := users.FromContext(ctx)
 
@@ -95,7 +95,7 @@ order by created_at asc
 		Messages: records,
 	}
 
-	render.Execute(w, chatTemplate, pd)
+	render.Execute(w, pageTemplate, pd)
 }
 
 var udMut sync.Mutex
