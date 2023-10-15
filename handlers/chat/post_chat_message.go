@@ -35,10 +35,7 @@ func PostChatMessage(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	err = chatTemplate.ExecuteTemplate(w, "chatInput", struct{ RoomID int }{RoomID: roomID})
-	if err != nil {
-		render.Error(w, err.Error(), 500)
-	}
+	render.ExecuteNamed(w, pageTemplate, "chatInput", struct{ RoomID int }{RoomID: roomID})
 }
 
 type RoomUser struct {
