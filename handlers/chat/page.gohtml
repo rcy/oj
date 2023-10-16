@@ -41,7 +41,7 @@
 
 {{define "chatMessages"}}
   <div hx-get="/u/{{.User.ID}}/chat"
-       hx-trigger="NEW_MESSAGE from:body"
+       hx-trigger="NEW_MESSAGE from:body, ROOM_CONNECTED from:body"
        id="messages-{{.User.ID}}"
        hx-select="#messages-{{.User.ID}}"
        hx-swap="outerHTML">
@@ -110,6 +110,7 @@
 
       es.addEventListener("open", (e) => {
         console.log("The connection has been established.");
+        document.getElementsByTagName('body')[0].dispatchEvent(new Event("ROOM_CONNECTED"))
       });
 
       es.addEventListener("error", (e) => {
