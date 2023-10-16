@@ -93,7 +93,7 @@
 
 {{define "initEventSource"}}
   <script>
-      const userID = "{{.Layout.User.ID}}";
+    const userID = "{{.Layout.User.ID}}";
 
     (function(){
       const es = new EventSource("/es/room-{{.RoomID}}");
@@ -107,6 +107,10 @@
         // dispatch event for use by hx-trigger
         document.getElementsByTagName('body')[0].dispatchEvent(new Event("NEW_MESSAGE"))
       })
+
+      es.addEventListener("error", (e) => {
+        console.log("An error occurred while attempting to connect.");
+      });
 
       window.addEventListener('beforeunload', function() {
         es.close();
