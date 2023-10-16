@@ -108,6 +108,10 @@
         document.getElementsByTagName('body')[0].dispatchEvent(new Event("NEW_MESSAGE"))
       })
 
+      evtSource.addEventListener("open", (e) => {
+        console.log("The connection has been established.");
+      });
+
       es.addEventListener("error", (e) => {
         console.log("An error occurred while attempting to connect.");
       });
