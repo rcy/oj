@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"oj/handlers/admin/quizzes"
 	"oj/handlers/layout"
-	mw "oj/handlers/middleware"
 	"oj/handlers/render"
 	"oj/models/users"
 
@@ -13,7 +12,7 @@ import (
 )
 
 func Router(r chi.Router) {
-	r.Use(mw.EnsureAdmin)
+	r.Use(ensureAdmin)
 	r.Get("/", page)
 	r.Route("/quizzes", quizzes.Router)
 }
