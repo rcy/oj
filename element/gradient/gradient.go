@@ -21,23 +21,31 @@ type Gradient struct {
 	Positions []int
 }
 
-var Neon = Gradient{
-	Type:      "linear",
-	Repeat:    false,
-	Degrees:   90,
-	Colors:    []string{"#ff00ff", "#ffff00", "#00ffff"},
-	Positions: []int{0, 50, 100},
-}
-
-var Grayscale = Gradient{
-	Type:      "linear",
-	Repeat:    false,
-	Degrees:   0,
-	Colors:    []string{"#000000", "#ffffff", "#000000"},
-	Positions: []int{0, 50, 100},
-}
-
-var Default = Neon
+var (
+	Neon = Gradient{
+		Type:      "linear",
+		Repeat:    false,
+		Degrees:   90,
+		Colors:    []string{"#ff00ff", "#ffff00", "#00ffff"},
+		Positions: []int{0, 50, 100},
+	}
+	Grayscale = Gradient{
+		Type:      "linear",
+		Repeat:    false,
+		Degrees:   0,
+		Colors:    []string{"#000000", "#ffffff", "#000000"},
+		Positions: []int{0, 50, 100},
+	}
+	RedBlack = Gradient{
+		Type:      "linear",
+		Repeat:    false,
+		Degrees:   0,
+		Colors:    []string{"#ff0000", "#000000"},
+		Positions: []int{0, 50},
+	}
+	Default = Neon
+	Admin   = RedBlack
+)
 
 func Random() Gradient {
 	n := rand.Intn(3) + 2

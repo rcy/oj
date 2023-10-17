@@ -19,6 +19,10 @@ func FromContext(ctx context.Context) Data {
 	return value.(Data)
 }
 
+func NewContext(ctx context.Context, data Data) context.Context {
+	return context.WithValue(ctx, layoutContextKey, data)
+}
+
 func Provider(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
@@ -28,7 +32,7 @@ func Provider(next http.Handler) http.Handler {
 			render.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		ctx = context.WithValue(ctx, layoutContextKey, data)
+		ctx = NewContext(ctx, data)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }

@@ -1,4 +1,4 @@
-package admin
+package auth
 
 import (
 	"net/http"
@@ -6,7 +6,7 @@ import (
 	"oj/models/users"
 )
 
-func ensureAdmin(next http.Handler) http.Handler {
+func EnsureAdmin(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		user := users.FromContext(r.Context())
 		if !user.Admin {

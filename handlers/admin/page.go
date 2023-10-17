@@ -3,6 +3,9 @@ package admin
 import (
 	_ "embed"
 	"net/http"
+	"oj/element/gradient"
+	"oj/handlers/admin/middleware/auth"
+	"oj/handlers/admin/middleware/background"
 	"oj/handlers/admin/quizzes"
 	"oj/handlers/layout"
 	"oj/handlers/render"
@@ -12,7 +15,8 @@ import (
 )
 
 func Router(r chi.Router) {
-	r.Use(ensureAdmin)
+	r.Use(auth.EnsureAdmin)
+	r.Use(background.Set(gradient.Admin))
 	r.Get("/", page)
 	r.Route("/quizzes", quizzes.Router)
 }
