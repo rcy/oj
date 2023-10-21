@@ -1,10 +1,13 @@
 package quizzes
 
 import (
+	"context"
 	"oj/db"
 	"oj/models/question"
 	"strconv"
 	"time"
+
+	"github.com/jmoiron/sqlx"
 )
 
 type Quiz struct {
@@ -13,6 +16,22 @@ type Quiz struct {
 	Name        string    `db:"name"`
 	Description string    `db:"description"`
 	Published   bool      `db:"published"`
+}
+
+func (q *Quiz) Save(ctx context.Context, db *sqlx.DB) (*Quiz, error) {
+	var (
+		result Quiz
+		err    error
+	)
+	if q.ID == 0 {
+		err = db.Get(&result, `insert into quizzes(name, description) values(?,?,?) returning *`, q.Name, q.Description)
+	} else {
+		err = db.Get(&result, `update quizzes set name = ?, description = ? where id = ? returning *`, q.Name, q.Description, q.ID)
+	}
+	if err != nil {
+		return nil, err
+	}
+	return &result, nil
 }
 
 func FindAll() ([]Quiz, error) {

@@ -40,12 +40,39 @@
         </div>
       </div>
     {{end}}
-    <div class="nes-container ghost" style="margin-top: 1em">
-      <div style="display:flex; justify-content:space-between">
-        <h1>{{.Name}}</h1>
+    <div class="nes-container ghost" style="margin-top: 1em; display:flex;justify-content:space-between">
+      <div>
+        <div style="display:flex; justify-content:space-between">
+          <h1>{{.Name}}</h1>
+        </div>
+        <p>{{.Description}}</p>
       </div>
-      <p>{{.Description}}</p>
+      <div>
+        <button hx-get="/admin/quizzes/{{.ID}}/edit"
+                hx-swap="outerHTML"
+                hx-target="closest .hx-target"
+                class="nes-btn"
+        >edit</button>
+      </div>
     </div>
+  </div>
+{{end}}
+
+{{define "quiz-header-edit"}}
+  <div class="nes-container is-dark">
+    <form hx-patch="/admin/quizzes/{{.ID}}" hx-swap="outerHTML" hx-target="closest div">
+      <div class="nes-field">
+        <label for="name_field">Quiz Name</label>
+        <input autofocus type="text" name="name" id="name_field" class="nes-input" value="{{.Name}}">
+      </div>
+      <div class="nes-field">
+        <label for="description_field">Description</label>
+        <input autofocus type="text" name="description" id="description_field" class="nes-input" value="{{.Description}}">
+      </div>
+
+      <button class="nes-btn is-primary">save</button>
+      <a href="/admin/quizzes/{{.ID}}" class="nes-btn">cancel</a>
+    </form>
   </div>
 {{end}}
 

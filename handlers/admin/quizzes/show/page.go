@@ -16,6 +16,8 @@ import (
 func Router(r chi.Router) {
 	r.Use(quizzes.Provider)
 	r.Get("/", page)
+	r.Patch("/", patchQuiz)
+	r.Get("/edit", editQuiz)
 	r.Post("/toggle-published", togglePublished)
 	r.Get("/add-question", newQuestion)
 	r.Post("/add-question", postNewQuestion)
@@ -49,6 +51,27 @@ func page(w http.ResponseWriter, r *http.Request) {
 		Quiz:      quiz,
 		Questions: questions,
 	})
+}
+
+func editQuiz(w http.ResponseWriter, r *http.Request) {
+	quiz := quizzes.FromContext(r.Context())
+
+	render.ExecuteNamed(w, pageTemplate, "quiz-header-edit", quiz)
+}
+
+func patchQuiz(w http.ResponseWriter, r *http.Request) {
+	quiz := quizzes.FromContext(r.Context())
+
+	quiz.Name = r.FormValue("name")
+	quiz.Description = r.FormValue("description")
+
+	result, err := quiz.Save(r.Context(), db.DB)
+	if err != nil {
+		render.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	render.ExecuteNamed(w, pageTemplate, "quiz-header", result)
 }
 
 func togglePublished(w http.ResponseWriter, r *http.Request) {
