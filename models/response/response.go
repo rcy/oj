@@ -33,7 +33,9 @@ select
    questions.text question_text
 from responses
  join questions on responses.question_id = questions.id
- where attempt_id = ?`
+ where attempt_id = ?
+order by responses.created_at
+`
 	var responses []Response
 	err := db.DB.Select(&responses, query, attemptID)
 	if err != nil {

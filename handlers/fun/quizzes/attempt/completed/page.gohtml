@@ -1,14 +1,35 @@
 {{define "main"}}
-  <div class="page nes-container ghost">
-    <h1>DONE {{.Quiz.Name}}</h1>
-    <progress style="width:100%" max="1" value="1"></progress>
-
+  <div class="page nes-container ghost" style="display: flex; flex-direction: column; gap: 2em">
     <div>
+      <h1>{{.Quiz.Name}} Completed!</h1>
+      <progress style="width:100%" max="1" value="1"></progress>
+    </div>
+
+    <div style="display:flex; flex-direction:column; gap: 1em;">
       {{range .Responses}}
         <div>
-          {{.Text}} | {{.Answer}} = {{.IsCorrect}}
+          <div>
+            Question: {{.Question}}
+          </div>
+          {{if .IsCorrect}}
+            <div>
+              Your answer: {{.Text}} <span class="nes-text is-success">Correct!</span>
+            </div>
+          {{else}}
+            <div>
+              Your answer: {{.Text}} <span class="nes-text is-error">Incorrect</span>
+            </div>
+            <div>
+              Correct answer: {{.Answer}}
+            </div>
+          {{end}}
         </div>
       {{end}}
+    </div>
+
+    <div>
+      <button hx-post="/fun/quizzes/{{.Quiz.ID}}/attempt" class="nes-btn is-success">Try Again</button>
+      <a href="/fun/quizzes" class="nes-btn">Go Back to Quizzes</a>
     </div>
   </div>
 {{end}}
