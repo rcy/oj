@@ -3,6 +3,7 @@ package messages
 import (
 	"html/template"
 	"oj/db"
+	"oj/internal/durfmt"
 	"oj/md"
 	"time"
 )
@@ -14,6 +15,22 @@ type Message struct {
 	SenderID        int64     `db:"sender_id"`
 	SenderAvatarURL string    `db:"sender_avatar_url"` // joined
 	Body            string
+}
+
+func (m *Message) SentAt() string {
+	if time.Now().Sub(m.CreatedAt) < 24*time.Hour {
+		return m.CreatedAt.Format("3:04")
+	} else {
+		return m.CreatedAt.Format("Jan 6")
+	}
+}
+
+func (m *Message) SentAgo() string {
+	dur := time.Now().Sub(m.CreatedAt)
+	if dur < time.Minute {
+		return "just now"
+	}
+	return durfmt.Format(dur) + " ago"
 }
 
 func (m Message) BodyHTML() template.HTML {
