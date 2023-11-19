@@ -24,6 +24,9 @@ drop:
 seed: db/seed.sql
 	sqlite3 ${SQLITE_DB} < $<
 
+generate:
+	`go env GOPATH`/bin/sqlc generate
+
 getproddb:
 	fly ssh sftp get /data/oj_production.db
 	fly ssh sftp get /data/oj_production.db-shm
