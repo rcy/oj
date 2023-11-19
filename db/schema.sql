@@ -1,8 +1,8 @@
-CREATE TABLE attempts(
+CREATE TABLE "attempts"(
   id integer primary key,
   created_at datetime not null default current_timestamp,
-  quiz_id references quizzes not null,
-  user_id references users not null
+  quiz_id integer references quizzes not null,
+  user_id integer references users not null
 );
 CREATE TABLE codes(
   id integer primary key,

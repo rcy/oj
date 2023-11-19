@@ -237,4 +237,17 @@ create table questions(
 	`--28 add published to quizzes
 alter table quizzes add column published bool default false;
 `,
+	`--fix attempts
+create table xattempts(
+  id integer primary key,
+  created_at datetime not null default current_timestamp,
+  quiz_id integer references quizzes not null,
+  user_id integer references users not null
+);
+insert into xattempts(id, created_at, quiz_id, user_id)
+select id, created_at, quiz_id, user_id
+from attempts;
+drop table attempts;
+alter table xattempts rename to attempts;
+`,
 }
