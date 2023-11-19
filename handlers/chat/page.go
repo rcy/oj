@@ -6,12 +6,12 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"oj/api"
 	"oj/db"
 	"oj/handlers/eventsource"
 	"oj/handlers/layout"
 	"oj/handlers/render"
 	"oj/models/gradients"
-	"oj/models/messages"
 	"oj/models/rooms"
 	"oj/models/users"
 	"sync"
@@ -51,20 +51,10 @@ func Page(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var records []messages.Message
-	err = db.DB.Select(&records, `
-select * from
-(
- select m.*, sender.avatar_url as sender_avatar_url from messages m
-   join users sender on m.sender_id = sender.id
-   where m.room_id = ?
-   order by created_at desc
-   limit 128
-)
-order by created_at asc
-`, room.ID, user.ID)
+	queries := api.New(db.DB)
+	records, err := queries.RecentMessages(ctx, fmt.Sprint(room.ID))
 	if err != nil {
-		render.Error(w, "selecting messages: "+err.Error(), 500)
+		render.Error(w, "api selecting messages: "+err.Error(), 500)
 		return
 	}
 
@@ -87,7 +77,7 @@ order by created_at asc
 		Layout   layout.Data
 		User     users.User
 		RoomID   int64
-		Messages []messages.Message
+		Messages []api.RecentMessagesRow
 	}{
 		Layout:   l,
 		User:     *pageUser,

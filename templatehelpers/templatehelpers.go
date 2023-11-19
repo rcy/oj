@@ -2,6 +2,8 @@ package templatehelpers
 
 import (
 	"html/template"
+	"oj/internal/durfmt"
+	"oj/md"
 	"time"
 
 	"github.com/hako/durafmt"
@@ -13,5 +15,15 @@ var FuncMap = template.FuncMap{
 	},
 	"odd": func(i, j int) int {
 		return (i + j) % 2
+	},
+	"html": func(str string) template.HTML {
+		return md.RenderString(str)
+	},
+	"ago": func(t time.Time) string {
+		dur := time.Now().Sub(t)
+		if dur < time.Minute {
+			return "just now"
+		}
+		return durfmt.Format(dur) + " ago"
 	},
 }
