@@ -76,18 +76,12 @@ where d.id = ?`, j.Payload["id"])
 			if p.ID == delivery.SenderID {
 				continue
 			}
-			_, _, err = email.Send(subject, emailBody, *p.Email)
-			if err != nil {
-				return err
-			}
+			return email.Send(subject, emailBody, *p.Email)
 		}
 	} else {
 		subject := fmt.Sprintf("%s sent you a message", delivery.SenderUsername)
 		emailBody := fmt.Sprintf("%s\n\nclick here to reply: %s", delivery.Body, link.String())
-		_, _, err = email.Send(subject, emailBody, *delivery.Email)
-		if err != nil {
-			return err
-		}
+		return email.Send(subject, emailBody, *delivery.Email)
 	}
 
 	return nil

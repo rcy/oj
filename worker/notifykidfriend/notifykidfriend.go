@@ -70,7 +70,7 @@ where f.id = ?
 			subject = fmt.Sprintf("%s sent a friend request to your child, %s", friend.AUsername, friend.BUsername)
 			emailBody = fmt.Sprintf("click here to view %s: %s", friend.AUsername, aUserLink.String())
 		}
-		_, _, err = email.Send(subject, emailBody, *bParent.Email)
+		err = email.Send(subject, emailBody, *bParent.Email)
 		if err != nil {
 			return err
 		}
@@ -90,7 +90,7 @@ where f.id = ?
 			subject = fmt.Sprintf("your child, %s, sent a friend request to %s", friend.BUsername, friend.AUsername)
 			emailBody = fmt.Sprintf("click here to view %s: %s", friend.BUsername, aUserLink.String())
 		}
-		_, _, err = email.Send(subject, emailBody, *aParent.Email)
+		err = email.Send(subject, emailBody, *aParent.Email)
 		if err != nil {
 			return err
 		}

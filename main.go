@@ -40,7 +40,7 @@ func main() {
 		}
 	}()
 
-	_, _, err = email.Send("oj startup", "application started", os.Getenv("DEV_EMAIL"))
+	err = email.Send("oj startup", "application started", os.Getenv("DEV_EMAIL"))
 	if err != nil {
 		log.Fatalf("failed to send startup email: %s", err)
 	}

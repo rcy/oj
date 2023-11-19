@@ -63,7 +63,5 @@ where f.id = ?
 		emailBody = fmt.Sprintf("click here to accept %s", link.String())
 	}
 
-	_, _, err = email.Send(subject, emailBody, friend.TargetEmail)
-
-	return nil
+	return email.Send(subject, emailBody, friend.TargetEmail)
 }

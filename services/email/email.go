@@ -17,7 +17,12 @@ var yourDomain string = os.Getenv("MAILGUN_DOMAIN") // e.g. mg.yourcompany.com
 // (https://app.mailgun.com/app/account/security)
 var privateAPIKey string = os.Getenv("MAILGUN_API_KEY")
 
-func Send(subject, body, recipient string) (string, string, error) {
+func Send(subject, body, recipient string) error {
+	_, _, err := send(subject, body, recipient)
+	return err
+}
+
+func send(subject, body, recipient string) (string, string, error) {
 	// Create an instance of the Mailgun Client
 	mg := mailgun.NewMailgun(yourDomain, privateAPIKey)
 
