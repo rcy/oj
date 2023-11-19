@@ -1,7 +1,7 @@
 -include .env
 
 start: clean-temp
-	find . -name \*.go -o -name \*.gohtml | entr -r go run .
+	air
 
 clean-temp:
 	rm -rf ${TEMP}/go-build*
