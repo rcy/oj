@@ -119,6 +119,25 @@ func (q *Queries) CreateResponse(ctx context.Context, arg CreateResponseParams) 
 	return i, err
 }
 
+const delivery = `-- name: Delivery :one
+select id, created_at, message_id, room_id, recipient_id, sender_id, sent_at from deliveries where id = ?
+`
+
+func (q *Queries) Delivery(ctx context.Context, id int64) (Delivery, error) {
+	row := q.db.QueryRowContext(ctx, delivery, id)
+	var i Delivery
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.MessageID,
+		&i.RoomID,
+		&i.RecipientID,
+		&i.SenderID,
+		&i.SentAt,
+	)
+	return i, err
+}
+
 const getAttemptByID = `-- name: GetAttemptByID :one
 select id, created_at, quiz_id, user_id from attempts where id = ?
 `

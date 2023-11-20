@@ -35,3 +35,6 @@ insert into responses(quiz_id, user_id, attempt_id, question_id, text) values(?,
 
 -- name: CreateAttempt :one
 insert into attempts(quiz_id, user_id) values(?,?) returning *;
+
+-- name: Delivery :one
+select * from deliveries where id = ?;

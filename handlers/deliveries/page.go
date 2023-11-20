@@ -5,10 +5,11 @@ import (
 	_ "embed"
 	"fmt"
 	"net/http"
+	"oj/api"
 	"oj/db"
 	"oj/handlers/layout"
 	"oj/handlers/render"
-	"oj/models/deliveries"
+	"strconv"
 
 	"github.com/go-chi/chi/v5"
 )
@@ -20,15 +21,12 @@ var (
 )
 
 func Page(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
 	l := layout.FromContext(r.Context())
+	queries := api.New(db.DB)
 
-	deliveryID := chi.URLParam(r, "deliveryID")
-
-	var delivery deliveries.Delivery
-
-	query := `select * from deliveries where id = ?`
-
-	err := db.DB.Get(&delivery, query, deliveryID)
+	deliveryID, _ := strconv.Atoi(chi.URLParam(r, "deliveryID"))
+	delivery, err := queries.Delivery(ctx, int64(deliveryID))
 	if err != nil {
 		if err == sql.ErrNoRows {
 			render.Error(w, err.Error(), http.StatusNotFound)
@@ -47,7 +45,7 @@ func Page(w http.ResponseWriter, r *http.Request) {
 	render.Execute(w, pageTemplate, struct {
 		Layout          layout.Data
 		LogoutActionURL string
-		Delivery        deliveries.Delivery
+		Delivery        api.Delivery
 	}{
 		Layout:          l,
 		LogoutActionURL: fmt.Sprintf("%d/logout", delivery.ID),
@@ -57,15 +55,12 @@ func Page(w http.ResponseWriter, r *http.Request) {
 
 // Logout and redirect back to delivery page to recheck current user
 func Logout(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
 	l := layout.FromContext(r.Context())
+	queries := api.New(db.DB)
 
-	deliveryID := chi.URLParam(r, "deliveryID")
-
-	var delivery deliveries.Delivery
-
-	query := `select * from deliveries where id = ?`
-
-	err := db.DB.Get(&delivery, query, deliveryID)
+	deliveryID, _ := strconv.Atoi(chi.URLParam(r, "deliveryID"))
+	delivery, err := queries.Delivery(ctx, int64(deliveryID))
 	if err != nil {
 		if err == sql.ErrNoRows {
 			render.Error(w, err.Error(), http.StatusNotFound)
