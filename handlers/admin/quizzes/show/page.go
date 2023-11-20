@@ -4,11 +4,12 @@ import (
 	"database/sql"
 	_ "embed"
 	"net/http"
+	"oj/api"
 	"oj/db"
 	"oj/handlers/layout"
 	"oj/handlers/render"
-	"oj/models/question"
 	"oj/models/quizzes"
+	"strconv"
 
 	"github.com/go-chi/chi/v5"
 )
@@ -45,7 +46,7 @@ func page(w http.ResponseWriter, r *http.Request) {
 	render.Execute(w, pageTemplate, struct {
 		Layout    layout.Data
 		Quiz      quizzes.Quiz
-		Questions []question.Question
+		Questions []api.Question
 	}{
 		Layout:    l,
 		Quiz:      quiz,
@@ -91,7 +92,12 @@ func newQuestion(w http.ResponseWriter, r *http.Request) {
 }
 
 func editQuestion(w http.ResponseWriter, r *http.Request) {
-	quest, err := question.FindByStringID(chi.URLParam(r, "questionID"))
+	ctx := r.Context()
+	queries := api.New(db.DB)
+
+	questionID, _ := strconv.Atoi(chi.URLParam(r, "questionID"))
+
+	quest, err := queries.Question(ctx, int64(questionID))
 	if err != nil {
 		render.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -101,26 +107,35 @@ func editQuestion(w http.ResponseWriter, r *http.Request) {
 }
 
 func postNewQuestion(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	queries := api.New(db.DB)
+
 	quiz := quizzes.FromContext(r.Context())
 
 	var err error
-	var quest *question.Question
+	var quest api.Question
 
 	if r.FormValue("id") != "" {
-		quest, err = question.FindByStringID(r.FormValue("id"))
+		questionID, _ := strconv.Atoi(r.FormValue("id"))
+		_, err = queries.Question(ctx, int64(questionID))
 		if err != nil && err != sql.ErrNoRows {
 			render.Error(w, err.Error(), http.StatusNotFound)
 			return
 		}
+		quest, err = queries.UpdateQuestion(r.Context(), api.UpdateQuestionParams{
+			ID:     int64(questionID),
+			Text:   r.FormValue("text"),
+			Answer: r.FormValue("answer"),
+		})
 	} else {
-		quest = &question.Question{}
+		quest, err = queries.CreateQuestion(r.Context(), api.CreateQuestionParams{
+			QuizID: quiz.ID,
+			Text:   r.FormValue("text"),
+			Answer: r.FormValue("answer"),
+		})
+
 	}
 
-	quest.QuizID = quiz.ID
-	quest.Text = r.FormValue("text")
-	quest.Answer = r.FormValue("answer")
-
-	quest, err = quest.Save(r.Context(), db.DB)
 	if err != nil {
 		render.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -130,16 +145,21 @@ func postNewQuestion(w http.ResponseWriter, r *http.Request) {
 }
 
 func patchQuestion(w http.ResponseWriter, r *http.Request) {
-	quest, err := question.FindByStringID(chi.URLParam(r, "questionID"))
+	ctx := r.Context()
+	queries := api.New(db.DB)
+
+	questionID, _ := strconv.Atoi(chi.URLParam(r, "questionID"))
+	quest, err := queries.Question(ctx, int64(questionID))
 	if err != nil {
 		render.Error(w, err.Error(), http.StatusNotFound)
 		return
 	}
 
-	quest.Text = r.FormValue("text")
-	quest.Answer = r.FormValue("answer")
-
-	quest, err = quest.Save(r.Context(), db.DB)
+	quest, err = queries.UpdateQuestion(r.Context(), api.UpdateQuestionParams{
+		ID:     quest.ID,
+		Text:   r.FormValue("text"),
+		Answer: r.FormValue("answer"),
+	})
 	if err != nil {
 		render.Error(w, err.Error(), http.StatusInternalServerError)
 		return

@@ -86,6 +86,29 @@ func (q *Queries) CreateAttempt(ctx context.Context, arg CreateAttemptParams) (A
 	return i, err
 }
 
+const createQuestion = `-- name: CreateQuestion :one
+insert into questions(quiz_id, text, answer) values(?,?,?) returning id, created_at, quiz_id, text, answer
+`
+
+type CreateQuestionParams struct {
+	QuizID int64
+	Text   string
+	Answer string
+}
+
+func (q *Queries) CreateQuestion(ctx context.Context, arg CreateQuestionParams) (Question, error) {
+	row := q.db.QueryRowContext(ctx, createQuestion, arg.QuizID, arg.Text, arg.Answer)
+	var i Question
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.QuizID,
+		&i.Text,
+		&i.Answer,
+	)
+	return i, err
+}
+
 const createResponse = `-- name: CreateResponse :one
 insert into responses(quiz_id, user_id, attempt_id, question_id, text) values(?,?,?,?,?) returning id, created_at, quiz_id, user_id, attempt_id, question_id, text
 `
@@ -154,6 +177,23 @@ func (q *Queries) GetAttemptByID(ctx context.Context, id int64) (Attempt, error)
 	return i, err
 }
 
+const question = `-- name: Question :one
+select id, created_at, quiz_id, text, answer from questions where id = ?
+`
+
+func (q *Queries) Question(ctx context.Context, id int64) (Question, error) {
+	row := q.db.QueryRowContext(ctx, question, id)
+	var i Question
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.QuizID,
+		&i.Text,
+		&i.Answer,
+	)
+	return i, err
+}
+
 const questionCount = `-- name: QuestionCount :one
 select count(*) from questions where quiz_id = ?
 `
@@ -163,6 +203,39 @@ func (q *Queries) QuestionCount(ctx context.Context, quizID int64) (int64, error
 	var count int64
 	err := row.Scan(&count)
 	return count, err
+}
+
+const quizQuestions = `-- name: QuizQuestions :many
+select id, created_at, quiz_id, text, answer from questions where quiz_id = ?
+`
+
+func (q *Queries) QuizQuestions(ctx context.Context, quizID int64) ([]Question, error) {
+	rows, err := q.db.QueryContext(ctx, quizQuestions, quizID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Question
+	for rows.Next() {
+		var i Question
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.QuizID,
+			&i.Text,
+			&i.Answer,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const recentMessages = `-- name: RecentMessages :many
@@ -225,6 +298,29 @@ func (q *Queries) ResponseCount(ctx context.Context, attemptID interface{}) (int
 	var count int64
 	err := row.Scan(&count)
 	return count, err
+}
+
+const updateQuestion = `-- name: UpdateQuestion :one
+update questions set text = ?, answer = ? where id = ? returning id, created_at, quiz_id, text, answer
+`
+
+type UpdateQuestionParams struct {
+	Text   string
+	Answer string
+	ID     int64
+}
+
+func (q *Queries) UpdateQuestion(ctx context.Context, arg UpdateQuestionParams) (Question, error) {
+	row := q.db.QueryRowContext(ctx, updateQuestion, arg.Text, arg.Answer, arg.ID)
+	var i Question
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.QuizID,
+		&i.Text,
+		&i.Answer,
+	)
+	return i, err
 }
 
 const userGradient = `-- name: UserGradient :one

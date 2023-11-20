@@ -2,8 +2,8 @@ package quizzes
 
 import (
 	"context"
+	"oj/api"
 	"oj/db"
-	"oj/models/question"
 	"strconv"
 	"time"
 
@@ -71,10 +71,9 @@ func FindByStringID(stringID string) (*Quiz, error) {
 	return FindByID(int64(id))
 }
 
-func (q *Quiz) FindQuestions() ([]question.Question, error) {
-	var result []question.Question
-	query := "select id, created_at, quiz_id, text, answer from questions where quiz_id = ?"
-	err := db.DB.Select(&result, query, q.ID)
+func (q *Quiz) FindQuestions() ([]api.Question, error) {
+	queries := api.New(db.DB)
+	result, err := queries.QuizQuestions(context.TODO(), q.ID)
 	if err != nil {
 		return nil, err
 	}

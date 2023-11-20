@@ -41,3 +41,15 @@ select * from deliveries where id = ?;
 
 -- name: UserGradient :one
 select * from gradients where user_id = ? order by created_at desc limit 1;
+
+-- name: Question :one
+select * from questions where id = ?;
+
+-- name: CreateQuestion :one
+insert into questions(quiz_id, text, answer) values(?,?,?) returning *;
+
+-- name: UpdateQuestion :one
+update questions set text = ?, answer = ? where id = ? returning *;
+
+-- name: QuizQuestions :many
+select * from questions where quiz_id = ?;

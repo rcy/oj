@@ -8,7 +8,6 @@ import (
 	"oj/db"
 	"oj/handlers/layout"
 	"oj/handlers/render"
-	"oj/models/question"
 	"oj/models/quizzes"
 	"oj/models/users"
 
@@ -45,7 +44,7 @@ func page(w http.ResponseWriter, r *http.Request) {
 	render.Execute(w, pageTemplate, struct {
 		Layout           layout.Data
 		Quiz             quizzes.Quiz
-		Questions        []question.Question
+		Questions        []api.Question
 		CreateAttemptURL string
 	}{
 		Layout:           l,
