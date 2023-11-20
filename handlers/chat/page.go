@@ -11,9 +11,9 @@ import (
 	"oj/handlers/eventsource"
 	"oj/handlers/layout"
 	"oj/handlers/render"
-	"oj/models/gradients"
 	"oj/models/rooms"
 	"oj/models/users"
+	"oj/services/background"
 	"sync"
 
 	"github.com/alexandrevicenzi/go-sse"
@@ -39,7 +39,7 @@ func Page(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-	ug, err := gradients.UserBackground(pageUser.ID)
+	ug, err := background.ForUser(pageUser.ID)
 	if err != nil {
 		render.Error(w, err.Error(), 500)
 		return

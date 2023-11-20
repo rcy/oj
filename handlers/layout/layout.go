@@ -6,8 +6,8 @@ import (
 	"html/template"
 	"oj/db"
 	"oj/element/gradient"
-	"oj/models/gradients"
 	"oj/models/users"
+	"oj/services/background"
 	"oj/templatehelpers"
 )
 
@@ -37,7 +37,7 @@ type Data struct {
 }
 
 func FromUser(user users.User) (Data, error) {
-	backgroundGradient, err := gradients.UserBackground(user.ID)
+	backgroundGradient, err := background.ForUser(user.ID)
 	if err != nil {
 		return Data{}, err
 	}

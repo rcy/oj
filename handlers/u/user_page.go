@@ -8,8 +8,8 @@ import (
 	"oj/handlers/layout"
 	"oj/handlers/me"
 	"oj/handlers/render"
-	"oj/models/gradients"
 	"oj/models/users"
+	"oj/services/background"
 
 	"github.com/go-chi/chi/v5"
 )
@@ -40,7 +40,7 @@ func UserPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	ug, err := gradients.UserBackground(pageUser.ID)
+	ug, err := background.ForUser(pageUser.ID)
 	if err != nil {
 		render.Error(w, err.Error(), http.StatusInternalServerError)
 		return

@@ -226,3 +226,19 @@ func (q *Queries) ResponseCount(ctx context.Context, attemptID interface{}) (int
 	err := row.Scan(&count)
 	return count, err
 }
+
+const userGradient = `-- name: UserGradient :one
+select id, created_at, user_id, gradient from gradients where user_id = ? order by created_at desc limit 1
+`
+
+func (q *Queries) UserGradient(ctx context.Context, userID int64) (Gradient, error) {
+	row := q.db.QueryRowContext(ctx, userGradient, userID)
+	var i Gradient
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UserID,
+		&i.Gradient,
+	)
+	return i, err
+}

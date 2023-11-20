@@ -38,3 +38,6 @@ insert into attempts(quiz_id, user_id) values(?,?) returning *;
 
 -- name: Delivery :one
 select * from deliveries where id = ?;
+
+-- name: UserGradient :one
+select * from gradients where user_id = ? order by created_at desc limit 1;

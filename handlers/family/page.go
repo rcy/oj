@@ -8,8 +8,8 @@ import (
 	"oj/handlers/layout"
 	"oj/handlers/me"
 	"oj/handlers/render"
-	"oj/models/gradients"
 	"oj/models/users"
+	"oj/services/background"
 	"sort"
 )
 
@@ -112,7 +112,7 @@ func addUnreadCounts(friends []*Friend, unreads []Unread) {
 
 func addGradients(friends []*Friend) error {
 	for _, friend := range friends {
-		bg, err := gradients.UserBackground(friend.User.ID)
+		bg, err := background.ForUser(friend.User.ID)
 		if err != nil {
 			return err
 		}
