@@ -24,7 +24,10 @@ drop:
 seed: db/seed.sql
 	sqlite3 ${SQLITE_DB} < $<
 
-generate:
+db/schema-fixed.sql: db/schema.sql
+	sed -e 's/\"//g' $< > $@
+
+generate: db/schema-fixed.sql
 	`go env GOPATH`/bin/sqlc generate
 
 getproddb:

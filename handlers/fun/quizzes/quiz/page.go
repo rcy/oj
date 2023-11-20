@@ -4,9 +4,10 @@ import (
 	_ "embed"
 	"fmt"
 	"net/http"
+	"oj/api"
+	"oj/db"
 	"oj/handlers/layout"
 	"oj/handlers/render"
-	"oj/models/attempts"
 	"oj/models/question"
 	"oj/models/quizzes"
 	"oj/models/users"
@@ -55,10 +56,15 @@ func page(w http.ResponseWriter, r *http.Request) {
 }
 
 func createAttempt(w http.ResponseWriter, r *http.Request) {
-	user := users.FromContext(r.Context())
-	quiz := quizzes.FromContext(r.Context())
+	ctx := r.Context()
+	user := users.FromContext(ctx)
+	quiz := quizzes.FromContext(ctx)
 
-	attempt, err := attempts.Create(quiz.ID, user.ID)
+	queries := api.New(db.DB)
+	attempt, err := queries.CreateAttempt(ctx, api.CreateAttemptParams{
+		QuizID: quiz.ID,
+		UserID: user.ID,
+	})
 	if err != nil {
 		render.Error(w, err.Error(), http.StatusInternalServerError)
 		return

@@ -10,6 +10,142 @@ import (
 	"time"
 )
 
+const attemptNextQuestion = `-- name: AttemptNextQuestion :one
+select questions.id, questions.created_at, questions.quiz_id, questions.text, questions.answer from questions
+left join responses on responses.question_id = questions.id
+where
+  questions.id not in (select question_id from responses where responses.attempt_id = ?)
+and
+  questions.quiz_id = ?
+order by random()
+`
+
+type AttemptNextQuestionParams struct {
+	AttemptID interface{}
+	QuizID    int64
+}
+
+func (q *Queries) AttemptNextQuestion(ctx context.Context, arg AttemptNextQuestionParams) (Question, error) {
+	row := q.db.QueryRowContext(ctx, attemptNextQuestion, arg.AttemptID, arg.QuizID)
+	var i Question
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.QuizID,
+		&i.Text,
+		&i.Answer,
+	)
+	return i, err
+}
+
+const attemptResponseIDs = `-- name: AttemptResponseIDs :many
+select id from responses where attempt_id = ?
+`
+
+func (q *Queries) AttemptResponseIDs(ctx context.Context, attemptID interface{}) ([]int64, error) {
+	rows, err := q.db.QueryContext(ctx, attemptResponseIDs, attemptID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []int64
+	for rows.Next() {
+		var id int64
+		if err := rows.Scan(&id); err != nil {
+			return nil, err
+		}
+		items = append(items, id)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const createAttempt = `-- name: CreateAttempt :one
+insert into attempts(quiz_id, user_id) values(?,?) returning id, created_at, quiz_id, user_id
+`
+
+type CreateAttemptParams struct {
+	QuizID int64
+	UserID int64
+}
+
+func (q *Queries) CreateAttempt(ctx context.Context, arg CreateAttemptParams) (Attempt, error) {
+	row := q.db.QueryRowContext(ctx, createAttempt, arg.QuizID, arg.UserID)
+	var i Attempt
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.QuizID,
+		&i.UserID,
+	)
+	return i, err
+}
+
+const createResponse = `-- name: CreateResponse :one
+insert into responses(quiz_id, user_id, attempt_id, question_id, text) values(?,?,?,?,?) returning id, created_at, quiz_id, user_id, attempt_id, question_id, text
+`
+
+type CreateResponseParams struct {
+	QuizID     interface{}
+	UserID     interface{}
+	AttemptID  interface{}
+	QuestionID interface{}
+	Text       interface{}
+}
+
+func (q *Queries) CreateResponse(ctx context.Context, arg CreateResponseParams) (Response, error) {
+	row := q.db.QueryRowContext(ctx, createResponse,
+		arg.QuizID,
+		arg.UserID,
+		arg.AttemptID,
+		arg.QuestionID,
+		arg.Text,
+	)
+	var i Response
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.QuizID,
+		&i.UserID,
+		&i.AttemptID,
+		&i.QuestionID,
+		&i.Text,
+	)
+	return i, err
+}
+
+const getAttemptByID = `-- name: GetAttemptByID :one
+select id, created_at, quiz_id, user_id from attempts where id = ?
+`
+
+func (q *Queries) GetAttemptByID(ctx context.Context, id int64) (Attempt, error) {
+	row := q.db.QueryRowContext(ctx, getAttemptByID, id)
+	var i Attempt
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.QuizID,
+		&i.UserID,
+	)
+	return i, err
+}
+
+const questionCount = `-- name: QuestionCount :one
+select count(*) from questions where quiz_id = ?
+`
+
+func (q *Queries) QuestionCount(ctx context.Context, quizID int64) (int64, error) {
+	row := q.db.QueryRowContext(ctx, questionCount, quizID)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
 const recentMessages = `-- name: RecentMessages :many
 select id, created_at, sender_id, room_id, body, sender_avatar_url from (
   select m.id, m.created_at, m.sender_id, m.room_id, m.body, sender.avatar_url as sender_avatar_url
@@ -59,4 +195,15 @@ func (q *Queries) RecentMessages(ctx context.Context, roomID string) ([]RecentMe
 		return nil, err
 	}
 	return items, nil
+}
+
+const responseCount = `-- name: ResponseCount :one
+select count(*) from responses where attempt_id = ?
+`
+
+func (q *Queries) ResponseCount(ctx context.Context, attemptID interface{}) (int64, error) {
+	row := q.db.QueryRowContext(ctx, responseCount, attemptID)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
 }

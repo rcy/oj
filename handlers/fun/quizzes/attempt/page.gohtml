@@ -2,6 +2,7 @@
   <div class="page nes-container ghost">
     <h1>{{.Quiz.Name}}</h1>
 
+    {{.Attempt.ID}} = {{.ResponseCount}}/{{.QuestionCount}}
     <progress style="width:100%" max="{{.QuestionCount}}" value="{{.ResponseCount}}"></progress>
 
     <div style="margin-top: 2em">

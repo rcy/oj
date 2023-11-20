@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-type Attempts struct {
+type Attempt struct {
 	ID        int64
 	CreatedAt time.Time
 	QuizID    int64

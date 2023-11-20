@@ -5,11 +5,12 @@ import (
 	_ "embed"
 	"fmt"
 	"net/http"
+	"oj/api"
+	"oj/db"
 	"oj/handlers/layout"
 	"oj/handlers/render"
-	"oj/models/attempts"
-	"oj/models/question"
 	"oj/models/quizzes"
+	"oj/models/users"
 	"strconv"
 	"strings"
 
@@ -23,9 +24,12 @@ var (
 )
 
 func Page(w http.ResponseWriter, r *http.Request) {
-	l := layout.FromContext(r.Context())
+	ctx := r.Context()
+	l := layout.FromContext(ctx)
+	queries := api.New(db.DB)
 
-	attempt, err := attempts.FindByStringID(chi.URLParam(r, "attemptID"))
+	attemptID, _ := strconv.Atoi(chi.URLParam(r, "attemptID"))
+	attempt, err := queries.GetAttemptByID(ctx, int64(attemptID))
 	if err != nil {
 		if err == sql.ErrNoRows {
 			render.Error(w, "attempt not found", http.StatusNotFound)
@@ -38,26 +42,29 @@ func Page(w http.ResponseWriter, r *http.Request) {
 	quiz, err := quizzes.FindByID(attempt.QuizID)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			render.Error(w, "attempt not found", http.StatusNotFound)
+			render.Error(w, "quiz not found", http.StatusNotFound)
 			return
 		}
 		render.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	questionCount, err := attempt.QuestionCount()
+	questionCount, err := queries.QuestionCount(ctx, quiz.ID)
 	if err != nil {
 		render.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	responseCount, err := attempt.ResponseCount()
+	responseCount, err := queries.ResponseCount(ctx, attempt.ID)
 	if err != nil {
 		render.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	nextQuestion, err := attempt.NextQuestion()
+	nextQuestion, err := queries.AttemptNextQuestion(ctx, api.AttemptNextQuestionParams{
+		QuizID:    attempt.QuizID,
+		AttemptID: attempt.ID,
+	})
 	if err != nil {
 		if err == sql.ErrNoRows {
 			url := fmt.Sprintf("/fun/quizzes/attempts/%d/done", attempt.ID)
@@ -76,10 +83,10 @@ func Page(w http.ResponseWriter, r *http.Request) {
 	render.Execute(w, pageTemplate, struct {
 		Layout        layout.Data
 		Quiz          *quizzes.Quiz
-		Attempt       *attempts.Attempt
-		Question      *question.Question
-		QuestionCount int
-		ResponseCount int
+		Attempt       api.Attempt
+		Question      api.Question
+		QuestionCount int64
+		ResponseCount int64
 	}{
 		Layout:        l,
 		Quiz:          quiz,
@@ -91,11 +98,22 @@ func Page(w http.ResponseWriter, r *http.Request) {
 }
 
 func PostResponse(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	queries := api.New(db.DB)
+
+	user := users.FromContext(ctx)
+
 	attemptID, err := strconv.Atoi(chi.URLParam(r, "attemptID"))
 	if err != nil {
 		render.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	attempt, err := queries.GetAttemptByID(ctx, int64(attemptID))
+	if err != nil {
+		render.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
 	questionID, err := strconv.Atoi(chi.URLParam(r, "questionID"))
 	if err != nil {
 		render.Error(w, err.Error(), http.StatusInternalServerError)
@@ -103,8 +121,16 @@ func PostResponse(w http.ResponseWriter, r *http.Request) {
 	}
 
 	text := strings.TrimSpace(r.FormValue("response"))
+
 	if text != "" {
-		_, err := attempts.CreateResponse(int64(attemptID), int64(questionID), text)
+		_, err := queries.CreateResponse(ctx, api.CreateResponseParams{
+			QuizID:     attempt.QuizID,
+			UserID:     user.ID,
+			AttemptID:  attemptID,
+			QuestionID: questionID,
+			Text:       text,
+		})
+
 		if err != nil {
 			render.Error(w, err.Error(), http.StatusInternalServerError)
 			return

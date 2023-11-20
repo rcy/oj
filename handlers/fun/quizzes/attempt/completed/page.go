@@ -4,11 +4,13 @@ import (
 	"database/sql"
 	_ "embed"
 	"net/http"
+	"oj/api"
+	"oj/db"
 	"oj/handlers/layout"
 	"oj/handlers/render"
-	"oj/models/attempts"
 	"oj/models/quizzes"
 	"oj/models/response"
+	"strconv"
 
 	"github.com/go-chi/chi/v5"
 )
@@ -20,9 +22,12 @@ var (
 )
 
 func Page(w http.ResponseWriter, r *http.Request) {
-	l := layout.FromContext(r.Context())
+	ctx := r.Context()
+	l := layout.FromContext(ctx)
+	queries := api.New(db.DB)
 
-	attempt, err := attempts.FindByStringID(chi.URLParam(r, "attemptID"))
+	attemptID, _ := strconv.Atoi(chi.URLParam(r, "attemptID"))
+	attempt, err := queries.GetAttemptByID(ctx, int64(attemptID))
 	if err != nil {
 		if err == sql.ErrNoRows {
 			render.Error(w, "attempt not found", http.StatusNotFound)
@@ -42,7 +47,7 @@ func Page(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	questionCount, err := attempt.QuestionCount()
+	questionCount, err := queries.QuestionCount(ctx, quiz.ID)
 	if err != nil {
 		render.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -57,8 +62,8 @@ func Page(w http.ResponseWriter, r *http.Request) {
 	render.Execute(w, pageTemplate, struct {
 		Layout        layout.Data
 		Quiz          *quizzes.Quiz
-		Attempt       *attempts.Attempt
-		QuestionCount int
+		Attempt       api.Attempt
+		QuestionCount int64
 		Responses     []response.Response
 	}{
 		Layout:        l,
