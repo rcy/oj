@@ -10,6 +10,39 @@ import (
 	"time"
 )
 
+const allQuizzes = `-- name: AllQuizzes :many
+select id, created_at, name, description, published from quizzes order by created_at desc
+`
+
+func (q *Queries) AllQuizzes(ctx context.Context) ([]Quiz, error) {
+	rows, err := q.db.QueryContext(ctx, allQuizzes)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Quiz
+	for rows.Next() {
+		var i Quiz
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.Name,
+			&i.Description,
+			&i.Published,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const attemptNextQuestion = `-- name: AttemptNextQuestion :one
 select questions.id, questions.created_at, questions.quiz_id, questions.text, questions.answer from questions
 left join responses on responses.question_id = questions.id
@@ -109,6 +142,28 @@ func (q *Queries) CreateQuestion(ctx context.Context, arg CreateQuestionParams) 
 	return i, err
 }
 
+const createQuiz = `-- name: CreateQuiz :one
+insert into quizzes(name,description) values(?,?) returning id, created_at, name, description, published
+`
+
+type CreateQuizParams struct {
+	Name        interface{}
+	Description interface{}
+}
+
+func (q *Queries) CreateQuiz(ctx context.Context, arg CreateQuizParams) (Quiz, error) {
+	row := q.db.QueryRowContext(ctx, createQuiz, arg.Name, arg.Description)
+	var i Quiz
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.Name,
+		&i.Description,
+		&i.Published,
+	)
+	return i, err
+}
+
 const createResponse = `-- name: CreateResponse :one
 insert into responses(quiz_id, user_id, attempt_id, question_id, text) values(?,?,?,?,?) returning id, created_at, quiz_id, user_id, attempt_id, question_id, text
 `
@@ -177,6 +232,39 @@ func (q *Queries) GetAttemptByID(ctx context.Context, id int64) (Attempt, error)
 	return i, err
 }
 
+const publishedQuizzes = `-- name: PublishedQuizzes :many
+select id, created_at, name, description, published from quizzes where published = true order by created_at desc
+`
+
+func (q *Queries) PublishedQuizzes(ctx context.Context) ([]Quiz, error) {
+	rows, err := q.db.QueryContext(ctx, publishedQuizzes)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Quiz
+	for rows.Next() {
+		var i Quiz
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.Name,
+			&i.Description,
+			&i.Published,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const question = `-- name: Question :one
 select id, created_at, quiz_id, text, answer from questions where id = ?
 `
@@ -203,6 +291,23 @@ func (q *Queries) QuestionCount(ctx context.Context, quizID int64) (int64, error
 	var count int64
 	err := row.Scan(&count)
 	return count, err
+}
+
+const quiz = `-- name: Quiz :one
+select id, created_at, name, description, published from quizzes where id = ?
+`
+
+func (q *Queries) Quiz(ctx context.Context, id int64) (Quiz, error) {
+	row := q.db.QueryRowContext(ctx, quiz, id)
+	var i Quiz
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.Name,
+		&i.Description,
+		&i.Published,
+	)
+	return i, err
 }
 
 const quizQuestions = `-- name: QuizQuestions :many
@@ -319,6 +424,29 @@ func (q *Queries) UpdateQuestion(ctx context.Context, arg UpdateQuestionParams) 
 		&i.QuizID,
 		&i.Text,
 		&i.Answer,
+	)
+	return i, err
+}
+
+const updateQuiz = `-- name: UpdateQuiz :one
+update quizzes set name = ?, description = ? where id = ? returning id, created_at, name, description, published
+`
+
+type UpdateQuizParams struct {
+	Name        interface{}
+	Description interface{}
+	ID          int64
+}
+
+func (q *Queries) UpdateQuiz(ctx context.Context, arg UpdateQuizParams) (Quiz, error) {
+	row := q.db.QueryRowContext(ctx, updateQuiz, arg.Name, arg.Description, arg.ID)
+	var i Quiz
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.Name,
+		&i.Description,
+		&i.Published,
 	)
 	return i, err
 }

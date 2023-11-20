@@ -53,3 +53,18 @@ update questions set text = ?, answer = ? where id = ? returning *;
 
 -- name: QuizQuestions :many
 select * from questions where quiz_id = ?;
+
+-- name: AllQuizzes :many
+select * from quizzes order by created_at desc;
+
+-- name: PublishedQuizzes :many
+select * from quizzes where published = true order by created_at desc;
+
+-- name: Quiz :one
+select * from quizzes where id = ?;
+
+-- name: UpdateQuiz :one
+update quizzes set name = ?, description = ? where id = ? returning *;
+
+-- name: CreateQuiz :one
+insert into quizzes(name,description) values(?,?) returning *;

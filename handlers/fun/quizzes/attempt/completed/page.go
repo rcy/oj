@@ -8,7 +8,6 @@ import (
 	"oj/db"
 	"oj/handlers/layout"
 	"oj/handlers/render"
-	"oj/models/quizzes"
 	"oj/models/response"
 	"strconv"
 
@@ -37,7 +36,7 @@ func Page(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	quiz, err := quizzes.FindByID(attempt.QuizID)
+	quiz, err := queries.Quiz(ctx, attempt.QuizID)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			render.Error(w, "attempt not found", http.StatusNotFound)
@@ -61,7 +60,7 @@ func Page(w http.ResponseWriter, r *http.Request) {
 
 	render.Execute(w, pageTemplate, struct {
 		Layout        layout.Data
-		Quiz          *quizzes.Quiz
+		Quiz          api.Quiz
 		Attempt       api.Attempt
 		QuestionCount int64
 		Responses     []response.Response

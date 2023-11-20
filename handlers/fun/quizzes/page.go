@@ -4,9 +4,10 @@ import (
 	"database/sql"
 	_ "embed"
 	"net/http"
+	"oj/api"
+	"oj/db"
 	"oj/handlers/layout"
 	"oj/handlers/render"
-	"oj/models/quizzes"
 )
 
 var (
@@ -16,9 +17,11 @@ var (
 )
 
 func Page(w http.ResponseWriter, r *http.Request) {
-	l := layout.FromContext(r.Context())
+	ctx := r.Context()
+	l := layout.FromContext(ctx)
+	queries := api.New(db.DB)
 
-	allQuizzes, err := quizzes.FindAllPublished()
+	allQuizzes, err := queries.PublishedQuizzes(ctx)
 	if err != nil && err != sql.ErrNoRows {
 		render.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -26,7 +29,7 @@ func Page(w http.ResponseWriter, r *http.Request) {
 
 	render.Execute(w, pageTemplate, struct {
 		Layout  layout.Data
-		Quizzes []quizzes.Quiz
+		Quizzes []api.Quiz
 	}{
 		Layout:  l,
 		Quizzes: allQuizzes,

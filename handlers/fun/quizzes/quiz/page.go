@@ -27,11 +27,12 @@ func Router(r chi.Router) {
 }
 
 func page(w http.ResponseWriter, r *http.Request) {
-	l := layout.FromContext(r.Context())
+	ctx := r.Context()
+	queries := api.New(db.DB)
+	l := layout.FromContext(ctx)
+	quiz := quizzes.FromContext(ctx)
 
-	quiz := quizzes.FromContext(r.Context())
-
-	questions, err := quiz.FindQuestions()
+	questions, err := queries.QuizQuestions(ctx, quiz.ID)
 	if err != nil {
 		render.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -43,7 +44,7 @@ func page(w http.ResponseWriter, r *http.Request) {
 
 	render.Execute(w, pageTemplate, struct {
 		Layout           layout.Data
-		Quiz             quizzes.Quiz
+		Quiz             api.Quiz
 		Questions        []api.Question
 		CreateAttemptURL string
 	}{

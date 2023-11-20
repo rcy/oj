@@ -4,11 +4,12 @@ import (
 	"database/sql"
 	_ "embed"
 	"net/http"
+	"oj/api"
+	"oj/db"
 	"oj/handlers/admin/quizzes/create"
 	"oj/handlers/admin/quizzes/show"
 	"oj/handlers/layout"
 	"oj/handlers/render"
-	"oj/models/quizzes"
 
 	"github.com/go-chi/chi/v5"
 )
@@ -26,9 +27,12 @@ var (
 )
 
 func page(w http.ResponseWriter, r *http.Request) {
-	l := layout.FromContext(r.Context())
+	ctx := r.Context()
+	l := layout.FromContext(ctx)
 
-	allQuizzes, err := quizzes.FindAll()
+	queries := api.New(db.DB)
+
+	allQuizzes, err := queries.AllQuizzes(ctx)
 	if err != nil && err != sql.ErrNoRows {
 		render.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -36,7 +40,7 @@ func page(w http.ResponseWriter, r *http.Request) {
 
 	render.Execute(w, pageTemplate, struct {
 		Layout  layout.Data
-		Quizzes []quizzes.Quiz
+		Quizzes []api.Quiz
 	}{
 		Layout:  l,
 		Quizzes: allQuizzes,

@@ -33,11 +33,12 @@ var (
 )
 
 func page(w http.ResponseWriter, r *http.Request) {
-	l := layout.FromContext(r.Context())
+	ctx := r.Context()
+	queries := api.New(db.DB)
+	l := layout.FromContext(ctx)
+	quiz := quizzes.FromContext(ctx)
 
-	quiz := quizzes.FromContext(r.Context())
-
-	questions, err := quiz.FindQuestions()
+	questions, err := queries.QuizQuestions(ctx, quiz.ID)
 	if err != nil && err != sql.ErrNoRows {
 		render.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -45,7 +46,7 @@ func page(w http.ResponseWriter, r *http.Request) {
 
 	render.Execute(w, pageTemplate, struct {
 		Layout    layout.Data
-		Quiz      quizzes.Quiz
+		Quiz      api.Quiz
 		Questions []api.Question
 	}{
 		Layout:    l,
@@ -61,12 +62,15 @@ func editQuiz(w http.ResponseWriter, r *http.Request) {
 }
 
 func patchQuiz(w http.ResponseWriter, r *http.Request) {
-	quiz := quizzes.FromContext(r.Context())
+	ctx := r.Context()
+	quiz := quizzes.FromContext(ctx)
+	queries := api.New(db.DB)
 
-	quiz.Name = r.FormValue("name")
-	quiz.Description = r.FormValue("description")
-
-	result, err := quiz.Save(r.Context(), db.DB)
+	result, err := queries.UpdateQuiz(ctx, api.UpdateQuizParams{
+		ID:          quiz.ID,
+		Name:        r.FormValue("name"),
+		Description: r.FormValue("description"),
+	})
 	if err != nil {
 		render.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -77,7 +81,7 @@ func patchQuiz(w http.ResponseWriter, r *http.Request) {
 
 func togglePublished(w http.ResponseWriter, r *http.Request) {
 	quiz := quizzes.FromContext(r.Context())
-	err := db.DB.Get(&quiz, `update quizzes set published = ? where id = ? returning *`, !quiz.Published, quiz.ID)
+	err := db.DB.Get(&quiz, `update quizzes set published = ? where id = ? returning *`, !quiz.Published.Bool, quiz.ID)
 	if err != nil {
 		render.Error(w, err.Error(), http.StatusInternalServerError)
 		return
