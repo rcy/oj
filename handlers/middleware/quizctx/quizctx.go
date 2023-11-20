@@ -1,4 +1,4 @@
-package quizzes
+package quizctx
 
 import (
 	"context"
@@ -16,7 +16,7 @@ type contextKey int
 
 const quizContextKey contextKey = iota
 
-func FromContext(ctx context.Context) api.Quiz {
+func Value(ctx context.Context) api.Quiz {
 	return ctx.Value(quizContextKey).(api.Quiz)
 }
 

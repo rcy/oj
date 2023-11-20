@@ -7,8 +7,8 @@ import (
 	"oj/api"
 	"oj/db"
 	"oj/handlers/layout"
+	"oj/handlers/middleware/quizctx"
 	"oj/handlers/render"
-	"oj/models/quizzes"
 	"oj/models/users"
 
 	"github.com/go-chi/chi/v5"
@@ -21,7 +21,7 @@ var (
 )
 
 func Router(r chi.Router) {
-	r.Use(quizzes.Provider)
+	r.Use(quizctx.Provider)
 	r.Get("/", page)
 	r.Post("/attempt", createAttempt)
 }
@@ -30,7 +30,7 @@ func page(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	queries := api.New(db.DB)
 	l := layout.FromContext(ctx)
-	quiz := quizzes.FromContext(ctx)
+	quiz := quizctx.Value(ctx)
 
 	questions, err := queries.QuizQuestions(ctx, quiz.ID)
 	if err != nil {
@@ -58,7 +58,7 @@ func page(w http.ResponseWriter, r *http.Request) {
 func createAttempt(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	user := users.FromContext(ctx)
-	quiz := quizzes.FromContext(ctx)
+	quiz := quizctx.Value(ctx)
 
 	queries := api.New(db.DB)
 	attempt, err := queries.CreateAttempt(ctx, api.CreateAttemptParams{

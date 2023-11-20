@@ -7,15 +7,15 @@ import (
 	"oj/api"
 	"oj/db"
 	"oj/handlers/layout"
+	"oj/handlers/middleware/quizctx"
 	"oj/handlers/render"
-	"oj/models/quizzes"
 	"strconv"
 
 	"github.com/go-chi/chi/v5"
 )
 
 func Router(r chi.Router) {
-	r.Use(quizzes.Provider)
+	r.Use(quizctx.Provider)
 	r.Get("/", page)
 	r.Patch("/", patchQuiz)
 	r.Get("/edit", editQuiz)
@@ -36,7 +36,7 @@ func page(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	queries := api.New(db.DB)
 	l := layout.FromContext(ctx)
-	quiz := quizzes.FromContext(ctx)
+	quiz := quizctx.Value(ctx)
 
 	questions, err := queries.QuizQuestions(ctx, quiz.ID)
 	if err != nil && err != sql.ErrNoRows {
@@ -56,14 +56,14 @@ func page(w http.ResponseWriter, r *http.Request) {
 }
 
 func editQuiz(w http.ResponseWriter, r *http.Request) {
-	quiz := quizzes.FromContext(r.Context())
+	quiz := quizctx.Value(r.Context())
 
 	render.ExecuteNamed(w, pageTemplate, "quiz-header-edit", quiz)
 }
 
 func patchQuiz(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	quiz := quizzes.FromContext(ctx)
+	quiz := quizctx.Value(ctx)
 	queries := api.New(db.DB)
 
 	result, err := queries.UpdateQuiz(ctx, api.UpdateQuizParams{
@@ -80,7 +80,7 @@ func patchQuiz(w http.ResponseWriter, r *http.Request) {
 }
 
 func togglePublished(w http.ResponseWriter, r *http.Request) {
-	quiz := quizzes.FromContext(r.Context())
+	quiz := quizctx.Value(r.Context())
 	err := db.DB.Get(&quiz, `update quizzes set published = ? where id = ? returning *`, !quiz.Published.Bool, quiz.ID)
 	if err != nil {
 		render.Error(w, err.Error(), http.StatusInternalServerError)
@@ -90,7 +90,7 @@ func togglePublished(w http.ResponseWriter, r *http.Request) {
 }
 
 func newQuestion(w http.ResponseWriter, r *http.Request) {
-	quiz := quizzes.FromContext(r.Context())
+	quiz := quizctx.Value(r.Context())
 
 	render.ExecuteNamed(w, pageTemplate, "new-question-form", struct{ QuizID int64 }{quiz.ID})
 }
@@ -114,7 +114,7 @@ func postNewQuestion(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	queries := api.New(db.DB)
 
-	quiz := quizzes.FromContext(r.Context())
+	quiz := quizctx.Value(r.Context())
 
 	var err error
 	var quest api.Question
