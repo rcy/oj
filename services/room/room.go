@@ -1,4 +1,4 @@
-package rooms
+package room
 
 import (
 	"database/sql"
@@ -22,14 +22,14 @@ func FindOrCreateByUserIDs(id1, id2 int64) (*Room, error) {
 	err := db.DB.Get(&room, "select * from rooms where key = ?", key)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return Create(id1, id2)
+			return create(id1, id2)
 		}
 		return nil, err
 	}
 	return &room, nil
 }
 
-func Create(userID1, userID2 int64) (*Room, error) {
+func create(userID1, userID2 int64) (*Room, error) {
 	key := makeRoomKey(userID1, userID2)
 
 	tx, err := db.DB.Beginx()
@@ -65,10 +65,10 @@ func Create(userID1, userID2 int64) (*Room, error) {
 		return nil, err
 	}
 
-	return FindById(roomID)
+	return findById(roomID)
 }
 
-func FindById(id int64) (*Room, error) {
+func findById(id int64) (*Room, error) {
 	var room Room
 
 	err := db.DB.Get(&room, "select * from rooms where id = ?", id)
