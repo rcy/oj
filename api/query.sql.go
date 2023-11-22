@@ -405,6 +405,62 @@ func (q *Queries) ResponseCount(ctx context.Context, attemptID interface{}) (int
 	return count, err
 }
 
+const responses = `-- name: Responses :many
+select
+   responses.id, responses.created_at, responses.quiz_id, responses.user_id, responses.attempt_id, responses.question_id, responses.text,
+   questions.answer question_answer,
+   questions.text question_text
+from responses
+ join questions on responses.question_id = questions.id
+ where attempt_id = ?
+order by responses.created_at
+`
+
+type ResponsesRow struct {
+	ID             int64
+	CreatedAt      time.Time
+	QuizID         interface{}
+	UserID         interface{}
+	AttemptID      interface{}
+	QuestionID     interface{}
+	Text           interface{}
+	QuestionAnswer string
+	QuestionText   string
+}
+
+func (q *Queries) Responses(ctx context.Context, attemptID interface{}) ([]ResponsesRow, error) {
+	rows, err := q.db.QueryContext(ctx, responses, attemptID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ResponsesRow
+	for rows.Next() {
+		var i ResponsesRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.QuizID,
+			&i.UserID,
+			&i.AttemptID,
+			&i.QuestionID,
+			&i.Text,
+			&i.QuestionAnswer,
+			&i.QuestionText,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const updateQuestion = `-- name: UpdateQuestion :one
 update questions set text = ?, answer = ? where id = ? returning id, created_at, quiz_id, text, answer
 `

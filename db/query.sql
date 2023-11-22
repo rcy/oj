@@ -68,3 +68,13 @@ update quizzes set name = ?, description = ? where id = ? returning *;
 
 -- name: CreateQuiz :one
 insert into quizzes(name,description) values(?,?) returning *;
+
+-- name: Responses :many
+select
+   responses.*,
+   questions.answer question_answer,
+   questions.text question_text
+from responses
+ join questions on responses.question_id = questions.id
+ where attempt_id = ?
+order by responses.created_at;

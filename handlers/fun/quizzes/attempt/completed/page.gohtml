@@ -9,9 +9,9 @@
       {{range .Responses}}
         <div>
           <div>
-            Question: {{.Question}}
+            Question: {{.QuestionText}}
           </div>
-          {{if .IsCorrect}}
+          {{if (eq .QuestionText .QuestionAnswer)}}
             <div>
               Your answer: {{.Text}} <span class="nes-text is-success">Correct!</span>
             </div>
@@ -20,7 +20,7 @@
               Your answer: {{.Text}} <span class="nes-text is-error">Incorrect</span>
             </div>
             <div>
-              Correct answer: {{.Answer}}
+              Correct answer: {{.QuestionAnswer}}
             </div>
           {{end}}
         </div>

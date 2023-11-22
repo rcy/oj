@@ -8,7 +8,6 @@ import (
 	"oj/db"
 	"oj/handlers/layout"
 	"oj/handlers/render"
-	"oj/models/response"
 	"strconv"
 
 	"github.com/go-chi/chi/v5"
@@ -52,7 +51,7 @@ func Page(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	responses, err := response.FindResponses(attempt.ID)
+	responses, err := queries.Responses(ctx, attempt.ID)
 	if err != nil {
 		render.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -63,7 +62,7 @@ func Page(w http.ResponseWriter, r *http.Request) {
 		Quiz          api.Quiz
 		Attempt       api.Attempt
 		QuestionCount int64
-		Responses     []response.Response
+		Responses     []api.ResponsesRow
 	}{
 		Layout:        l,
 		Quiz:          quiz,
