@@ -1,4 +1,4 @@
-package middleware
+package auth
 
 import (
 	"net/http"
@@ -6,7 +6,8 @@ import (
 	"time"
 )
 
-func Auth(next http.Handler) http.Handler {
+// Provide user in context based on session cookie, redirecting to login if no session found
+func Provider(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		cookie, err := r.Cookie("kh_session")
 		if err != nil {

@@ -23,7 +23,7 @@ import (
 	"oj/handlers/layout"
 	"oj/handlers/me"
 	"oj/handlers/me/editme"
-	mw "oj/handlers/middleware"
+	"oj/handlers/middleware/auth"
 	"oj/handlers/middleware/become"
 	"oj/handlers/middleware/redirect"
 	"oj/handlers/parent"
@@ -46,7 +46,7 @@ func Router() *chi.Mux {
 
 	// authenticated routes
 	r.Route("/", func(r chi.Router) {
-		r.Use(mw.Auth)
+		r.Use(auth.Provider)
 		r.Use(become.Provider)
 		r.Use(redirect.Redirect)
 		r.Use(layout.Provider)
@@ -54,7 +54,7 @@ func Router() *chi.Mux {
 	})
 
 	r.Route("/admin", func(r chi.Router) {
-		r.Use(mw.Auth)
+		r.Use(auth.Provider)
 		r.Use(layout.Provider)
 		r.Route("/", admin.Router)
 	})
