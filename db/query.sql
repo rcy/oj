@@ -78,3 +78,12 @@ from responses
  join questions on responses.question_id = questions.id
  where attempt_id = ?
 order by responses.created_at;
+
+-- name: RoomByKey :one
+select * from rooms where key = ?;
+
+-- name: CreateRoom :one
+insert into rooms(key) values(?) returning *;
+
+-- name: CreateRoomUser :one
+insert into room_users(room_id, user_id) values(?, ?) returning *;

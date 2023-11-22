@@ -1,77 +1,53 @@
 package room
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	"math"
+	"oj/api"
 	"oj/db"
-	"time"
 )
 
-type Room struct {
-	ID        int64
-	CreatedAt time.Time `db:"created_at"`
-	Key       string
-}
-
-func FindOrCreateByUserIDs(id1, id2 int64) (*Room, error) {
-	var room Room
-
+func FindOrCreateByUserIDs(ctx context.Context, id1, id2 int64) (*api.Room, error) {
 	key := makeRoomKey(id1, id2)
 
-	err := db.DB.Get(&room, "select * from rooms where key = ?", key)
+	queries := api.New(db.DB)
+	room, err := queries.RoomByKey(ctx, key)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return create(id1, id2)
+			return build(ctx, key, id1, id2)
 		}
 		return nil, err
 	}
 	return &room, nil
 }
 
-func create(userID1, userID2 int64) (*Room, error) {
-	key := makeRoomKey(userID1, userID2)
-
+// Create room and add users
+func build(ctx context.Context, key string, userID1, userID2 int64) (*api.Room, error) {
 	tx, err := db.DB.Beginx()
 	if err != nil {
 		return nil, err
 	}
 	defer tx.Rollback()
 
-	result, err := tx.Exec("insert into rooms(key) values(?)", key)
-	if err != nil {
-		return nil, err
-	}
-	roomID, err := result.LastInsertId()
-	if err != nil {
-		return nil, err
-	}
-
-	// add users to room
-	_, err = tx.Exec("insert into room_users(room_id, user_id) values(?, ?)", roomID, userID1)
+	queries := api.New(tx)
+	room, err := queries.CreateRoom(ctx, key)
 	if err != nil {
 		return nil, err
 	}
 
-	if userID1 != userID2 {
-		_, err = tx.Exec("insert into room_users(room_id, user_id) values(?, ?)", roomID, userID2)
+	for _, userID := range []int64{userID1, userID2} {
+		_, err = queries.CreateRoomUser(ctx, api.CreateRoomUserParams{
+			RoomID: room.ID,
+			UserID: userID,
+		})
 		if err != nil {
 			return nil, err
 		}
 	}
 
 	err = tx.Commit()
-	if err != nil {
-		return nil, err
-	}
-
-	return findById(roomID)
-}
-
-func findById(id int64) (*Room, error) {
-	var room Room
-
-	err := db.DB.Get(&room, "select * from rooms where id = ?", id)
 	if err != nil {
 		return nil, err
 	}

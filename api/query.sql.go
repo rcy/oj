@@ -197,6 +197,38 @@ func (q *Queries) CreateResponse(ctx context.Context, arg CreateResponseParams) 
 	return i, err
 }
 
+const createRoom = `-- name: CreateRoom :one
+insert into rooms(key) values(?) returning id, created_at, "key"
+`
+
+func (q *Queries) CreateRoom(ctx context.Context, key string) (Room, error) {
+	row := q.db.QueryRowContext(ctx, createRoom, key)
+	var i Room
+	err := row.Scan(&i.ID, &i.CreatedAt, &i.Key)
+	return i, err
+}
+
+const createRoomUser = `-- name: CreateRoomUser :one
+insert into room_users(room_id, user_id) values(?, ?) returning id, created_at, room_id, user_id
+`
+
+type CreateRoomUserParams struct {
+	RoomID int64
+	UserID int64
+}
+
+func (q *Queries) CreateRoomUser(ctx context.Context, arg CreateRoomUserParams) (RoomUser, error) {
+	row := q.db.QueryRowContext(ctx, createRoomUser, arg.RoomID, arg.UserID)
+	var i RoomUser
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.RoomID,
+		&i.UserID,
+	)
+	return i, err
+}
+
 const delivery = `-- name: Delivery :one
 select id, created_at, message_id, room_id, recipient_id, sender_id, sent_at from deliveries where id = ?
 `
@@ -459,6 +491,17 @@ func (q *Queries) Responses(ctx context.Context, attemptID interface{}) ([]Respo
 		return nil, err
 	}
 	return items, nil
+}
+
+const roomByKey = `-- name: RoomByKey :one
+select id, created_at, "key" from rooms where key = ?
+`
+
+func (q *Queries) RoomByKey(ctx context.Context, key string) (Room, error) {
+	row := q.db.QueryRowContext(ctx, roomByKey, key)
+	var i Room
+	err := row.Scan(&i.ID, &i.CreatedAt, &i.Key)
+	return i, err
 }
 
 const updateQuestion = `-- name: UpdateQuestion :one

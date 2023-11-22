@@ -45,7 +45,7 @@ func Page(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	room, err := room.FindOrCreateByUserIDs(user.ID, pageUser.ID)
+	room, err := room.FindOrCreateByUserIDs(ctx, user.ID, pageUser.ID)
 	if err != nil {
 		render.Error(w, err.Error(), 500)
 		return
