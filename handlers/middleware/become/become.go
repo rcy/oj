@@ -1,4 +1,4 @@
-package middleware
+package become
 
 import (
 	"net/http"
@@ -6,7 +6,7 @@ import (
 	"oj/models/users"
 )
 
-func Become(next http.Handler) http.Handler {
+func Provider(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
 

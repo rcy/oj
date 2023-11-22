@@ -1,4 +1,4 @@
-package middleware
+package become
 
 import (
 	"context"
@@ -42,7 +42,7 @@ func (h testHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func TestBecome(t *testing.T) {
+func TestProvider(t *testing.T) {
 	r := http.Request{}
 
 	var bob users.User
@@ -76,7 +76,7 @@ func TestBecome(t *testing.T) {
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			ctx := users.NewContext(context.Background(), tc.requestUser)
-			res := Become(testHandler{t: t, want: tc.wantUsername})
+			res := Provider(testHandler{t: t, want: tc.wantUsername})
 			res.ServeHTTP(testResponseWriter{t: t, wantStatusCode: tc.wantStatusCode}, r.WithContext(ctx))
 		})
 	}
