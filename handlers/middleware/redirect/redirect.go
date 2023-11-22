@@ -1,4 +1,4 @@
-package middleware
+package redirect
 
 import (
 	"net/http"

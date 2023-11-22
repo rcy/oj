@@ -24,6 +24,7 @@ import (
 	"oj/handlers/me"
 	"oj/handlers/me/editme"
 	mw "oj/handlers/middleware"
+	"oj/handlers/middleware/redirect"
 	"oj/handlers/parent"
 	"oj/handlers/render"
 	"oj/handlers/u"
@@ -46,7 +47,7 @@ func Router() *chi.Mux {
 	r.Route("/", func(r chi.Router) {
 		r.Use(mw.Auth)
 		r.Use(mw.Become)
-		r.Use(mw.Redirect)
+		r.Use(redirect.Redirect)
 		r.Use(layout.Provider)
 		r.Route("/", applicationRouter)
 	})
