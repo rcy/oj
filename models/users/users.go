@@ -28,7 +28,7 @@ func FromSessionKey(key string) (User, error) {
 	return user, nil
 }
 
-func (u User) Parents() ([]User, error) {
+func Parents(u User) ([]User, error) {
 	return GetParents(u.ID)
 }
 
@@ -43,11 +43,11 @@ func GetParents(kidUserID int64) ([]User, error) {
 	return parents, nil
 }
 
-func (u User) Kids() ([]User, error) {
+func Kids(u User) ([]User, error) {
 	return GetKids(u.ID)
 }
 
-func (u User) CreateKid(username string) (*User, error) {
+func CreateKid(u User, username string) (*User, error) {
 	tx, err := db.DB.Beginx()
 	if err != nil {
 		return nil, err

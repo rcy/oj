@@ -24,7 +24,7 @@ var (
 func Index(w http.ResponseWriter, r *http.Request) {
 	l := layout.FromContext(r.Context())
 
-	kids, err := l.User.Kids()
+	kids, err := users.Kids(l.User)
 	if err != nil {
 		render.Error(w, err.Error(), 500)
 		return
@@ -64,7 +64,7 @@ func CreateKid(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	kid, err = user.CreateKid(username)
+	kid, err = users.CreateKid(user, username)
 	if err != nil {
 		render.Error(w, err.Error(), 500)
 		return

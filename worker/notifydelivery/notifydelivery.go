@@ -66,7 +66,7 @@ where d.id = ?`, j.Payload["id"])
 		if err != nil {
 			return err
 		}
-		parents, err := recipient.Parents()
+		parents, err := users.Parents(*recipient)
 		if err != nil {
 			return err
 		}
