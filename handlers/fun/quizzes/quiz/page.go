@@ -7,8 +7,8 @@ import (
 	"oj/api"
 	"oj/db"
 	"oj/handlers/layout"
-	"oj/handlers/middleware/quizctx"
 	"oj/handlers/render"
+	"oj/internal/middleware/quizctx"
 	"oj/models/users"
 
 	"github.com/go-chi/chi/v5"
