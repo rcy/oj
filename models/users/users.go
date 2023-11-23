@@ -28,10 +28,6 @@ func FromSessionKey(key string) (User, error) {
 	return user, nil
 }
 
-func Parents(u User) ([]User, error) {
-	return GetParents(u.ID)
-}
-
 // parents via kids_parents table
 func GetParents(kidUserID int64) ([]User, error) {
 	var parents []User
@@ -41,10 +37,6 @@ func GetParents(kidUserID int64) ([]User, error) {
 		return nil, err
 	}
 	return parents, nil
-}
-
-func Kids(u User) ([]User, error) {
-	return GetKids(u.ID)
 }
 
 func CreateKid(u User, username string) (*User, error) {
