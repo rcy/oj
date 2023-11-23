@@ -6,6 +6,7 @@ import (
 	"oj/db"
 	"oj/handlers/layout"
 	"oj/handlers/render"
+	"oj/internal/middleware/auth"
 	"oj/models/users"
 	"oj/worker"
 
@@ -108,7 +109,7 @@ limit 128;
 
 func PutParentFriend(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	currentUser := users.FromContext(ctx)
+	currentUser := auth.FromContext(ctx)
 	userID := chi.URLParam(r, "userID")
 
 	var user users.User
@@ -146,7 +147,7 @@ func PutParentFriend(w http.ResponseWriter, r *http.Request) {
 
 func DeleteParentFriend(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	currentUser := users.FromContext(ctx)
+	currentUser := auth.FromContext(ctx)
 	userID := chi.URLParam(r, "userID")
 
 	var user users.User

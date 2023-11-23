@@ -8,6 +8,7 @@ import (
 	"oj/db"
 	"oj/handlers/layout"
 	"oj/handlers/render"
+	"oj/internal/middleware/auth"
 	"oj/models/users"
 
 	"github.com/go-chi/chi/v5"
@@ -45,7 +46,7 @@ func Index(w http.ResponseWriter, r *http.Request) {
 
 func CreateKid(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	user := users.FromContext(ctx)
+	user := auth.FromContext(ctx)
 	err := r.ParseForm()
 	if err != nil {
 		render.Error(w, err.Error(), 500)

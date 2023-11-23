@@ -9,6 +9,7 @@ import (
 	"oj/handlers/connect"
 	"oj/handlers/layout"
 	"oj/handlers/render"
+	"oj/internal/middleware/auth"
 	"oj/models/users"
 	"oj/worker"
 
@@ -126,7 +127,7 @@ func GetFriends(ctx context.Context, db *sqlx.DB, userID int64) ([]users.User, e
 
 func PutKidFriend(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	currentUser := users.FromContext(ctx)
+	currentUser := auth.FromContext(ctx)
 	userID := chi.URLParam(r, "userID")
 
 	var user users.User
@@ -159,7 +160,7 @@ func PutKidFriend(w http.ResponseWriter, r *http.Request) {
 
 func DeleteKidFriend(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	currentUser := users.FromContext(ctx)
+	currentUser := auth.FromContext(ctx)
 	userID := chi.URLParam(r, "userID")
 
 	var user users.User

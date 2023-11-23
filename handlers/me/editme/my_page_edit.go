@@ -6,6 +6,7 @@ import (
 	"oj/db"
 	"oj/handlers/layout"
 	"oj/handlers/render"
+	"oj/internal/middleware/auth"
 	"oj/models/users"
 )
 
@@ -31,7 +32,7 @@ func MyPageEdit(w http.ResponseWriter, r *http.Request) {
 
 func Post(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	user := users.FromContext(ctx)
+	user := auth.FromContext(ctx)
 	username := r.FormValue("username")
 	bio := r.FormValue("bio")
 

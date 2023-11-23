@@ -1,9 +1,7 @@
 package users
 
 import (
-	"context"
 	"database/sql"
-	"errors"
 	"html/template"
 	"oj/db"
 	"oj/md"
@@ -30,33 +28,6 @@ func FromSessionKey(key string) (User, error) {
 		return User{}, err
 	}
 	return user, nil
-}
-
-type contextKey int
-
-const (
-	userContextKey contextKey = iota
-)
-
-func NewContext(ctx context.Context, user User) context.Context {
-	return context.WithValue(ctx, userContextKey, user)
-}
-
-func FromContext(ctx context.Context) User {
-	return ctx.Value(userContextKey).(User)
-}
-
-var ErrNotAuthorized = errors.New("Not authorized")
-
-func BecomeFromContext(ctx context.Context) (*User, error) {
-	user := FromContext(ctx)
-	if user.BecomeUserID == nil {
-		return nil, nil
-	}
-	if !user.Admin {
-		return nil, ErrNotAuthorized
-	}
-	return FindById(*user.BecomeUserID)
 }
 
 func (u User) BioHTML() template.HTML {

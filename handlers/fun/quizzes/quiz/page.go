@@ -8,8 +8,8 @@ import (
 	"oj/db"
 	"oj/handlers/layout"
 	"oj/handlers/render"
+	"oj/internal/middleware/auth"
 	"oj/internal/middleware/quizctx"
-	"oj/models/users"
 
 	"github.com/go-chi/chi/v5"
 )
@@ -57,7 +57,7 @@ func page(w http.ResponseWriter, r *http.Request) {
 
 func createAttempt(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	user := users.FromContext(ctx)
+	user := auth.FromContext(ctx)
 	quiz := quizctx.Value(ctx)
 
 	queries := api.New(db.DB)

@@ -9,7 +9,7 @@ import (
 	"oj/db"
 	"oj/handlers/layout"
 	"oj/handlers/render"
-	"oj/models/users"
+	"oj/internal/middleware/auth"
 	"strconv"
 	"strings"
 
@@ -100,7 +100,7 @@ func PostResponse(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	queries := api.New(db.DB)
 
-	user := users.FromContext(ctx)
+	user := auth.FromContext(ctx)
 
 	attemptID, err := strconv.Atoi(chi.URLParam(r, "attemptID"))
 	if err != nil {

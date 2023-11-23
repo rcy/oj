@@ -7,7 +7,7 @@ import (
 	"oj/db"
 	"oj/handlers/layout"
 	"oj/handlers/render"
-	"oj/models/users"
+	"oj/internal/middleware/auth"
 	"time"
 
 	goduckgo "github.com/minoplhy/duckduckgo-images-api"
@@ -64,7 +64,7 @@ func Submit(w http.ResponseWriter, r *http.Request) {
 }
 
 func SaveSticker(w http.ResponseWriter, r *http.Request) {
-	user := users.FromContext(r.Context())
+	user := auth.FromContext(r.Context())
 
 	url := r.FormValue("url")
 

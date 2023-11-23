@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"oj/db"
 	"oj/handlers/render"
+	"oj/internal/middleware/auth"
 	"oj/models/users"
 	"time"
 )
@@ -20,7 +21,7 @@ func GetAvatars(w http.ResponseWriter, r *http.Request) {
 	const count = 44
 
 	ctx := r.Context()
-	user := users.FromContext(ctx)
+	user := auth.FromContext(ctx)
 
 	urls := []string{user.AvatarURL}
 
@@ -38,7 +39,7 @@ func GetAvatars(w http.ResponseWriter, r *http.Request) {
 
 func PutAvatar(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	user := users.FromContext(ctx)
+	user := auth.FromContext(ctx)
 	newAvatarURL := r.FormValue("URL")
 
 	err := db.DB.Get(&user, "update users set avatar_url = ? where id = ? returning *", newAvatarURL, user.ID)

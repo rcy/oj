@@ -8,6 +8,7 @@ import (
 	"oj/db"
 	"oj/handlers/eventsource"
 	"oj/handlers/render"
+	"oj/internal/middleware/auth"
 	"oj/models/users"
 	"oj/worker"
 	"strconv"
@@ -19,7 +20,7 @@ import (
 
 func PostChatMessage(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	user := users.FromContext(ctx)
+	user := auth.FromContext(ctx)
 	roomID, err := strconv.Atoi(r.FormValue("roomID"))
 	if err != nil {
 		render.Error(w, err.Error(), 500)

@@ -10,7 +10,7 @@ import (
 	"oj/element/gradient"
 	"oj/handlers/layout"
 	"oj/handlers/render"
-	"oj/models/users"
+	"oj/internal/middleware/auth"
 	"strconv"
 )
 
@@ -53,7 +53,7 @@ func Picker(w http.ResponseWriter, r *http.Request) {
 
 func SetBackground(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	user := users.FromContext(ctx)
+	user := auth.FromContext(ctx)
 
 	err := r.ParseForm()
 	if err != nil {

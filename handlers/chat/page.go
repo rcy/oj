@@ -11,6 +11,7 @@ import (
 	"oj/handlers/eventsource"
 	"oj/handlers/layout"
 	"oj/handlers/render"
+	"oj/internal/middleware/auth"
 	"oj/models/users"
 	"oj/services/background"
 	"oj/services/room"
@@ -29,7 +30,7 @@ var (
 
 func Page(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	user := users.FromContext(ctx)
+	user := auth.FromContext(ctx)
 
 	pageUserID := chi.URLParam(r, "userID")
 	pageUser, err := users.FindByStringId(pageUserID)

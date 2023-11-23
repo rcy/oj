@@ -4,7 +4,7 @@ import (
 	"context"
 	"net/http"
 	"oj/handlers/render"
-	"oj/models/users"
+	"oj/internal/middleware/auth"
 )
 
 type contextKey int
@@ -26,7 +26,7 @@ func NewContext(ctx context.Context, data Data) context.Context {
 func Provider(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
-		user := users.FromContext(ctx)
+		user := auth.FromContext(ctx)
 		data, err := FromUser(user)
 		if err != nil {
 			render.Error(w, err.Error(), http.StatusInternalServerError)
