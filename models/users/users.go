@@ -2,9 +2,7 @@ package users
 
 import (
 	"database/sql"
-	"html/template"
 	"oj/db"
-	"oj/md"
 	"strconv"
 	"time"
 )
@@ -28,10 +26,6 @@ func FromSessionKey(key string) (User, error) {
 		return User{}, err
 	}
 	return user, nil
-}
-
-func (u User) BioHTML() template.HTML {
-	return md.RenderString(u.Bio)
 }
 
 func (u User) Parents() ([]User, error) {

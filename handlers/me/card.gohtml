@@ -25,7 +25,7 @@
     {{if (eq .User.Bio "")}}
       <p class="nes-text is-disabled">nothing here yet</p>
     {{else}}
-      {{.User.BioHTML}}
+      {{html .User.Bio}}
     {{end}}
   </div>
 {{end}}
