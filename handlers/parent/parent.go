@@ -5,6 +5,7 @@ import (
 	_ "embed"
 	"log"
 	"net/http"
+	"oj/api"
 	"oj/db"
 	"oj/handlers/layout"
 	"oj/handlers/render"
@@ -32,7 +33,7 @@ func Index(w http.ResponseWriter, r *http.Request) {
 
 	err = t.Execute(w, struct {
 		Layout layout.Data
-		User   users.User
+		User   api.User
 		Kids   []users.User
 	}{
 		Layout: l,

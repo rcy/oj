@@ -76,12 +76,12 @@ func Page(w http.ResponseWriter, r *http.Request) {
 
 	pd := struct {
 		Layout   layout.Data
-		User     users.User
+		User     api.User
 		RoomID   int64
 		Messages []api.RecentMessagesRow
 	}{
 		Layout:   l,
-		User:     *pageUser,
+		User:     pageUser,
 		RoomID:   room.ID,
 		Messages: records,
 	}

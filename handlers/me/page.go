@@ -4,6 +4,7 @@ import (
 	_ "embed"
 	"html/template"
 	"net/http"
+	"oj/api"
 	"oj/db"
 	"oj/handlers/layout"
 	"oj/handlers/render"
@@ -52,7 +53,7 @@ group by users.username;
 
 	d := struct {
 		Layout      layout.Data
-		User        users.User
+		User        api.User
 		UnreadUsers []UnreadUser
 	}{
 		Layout:      l,

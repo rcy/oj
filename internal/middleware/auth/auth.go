@@ -4,26 +4,30 @@ import (
 	"context"
 	"errors"
 	"net/http"
-	"oj/models/users"
+	"oj/api"
+	"oj/db"
 	"time"
 )
 
 // Provide user in context based on session cookie, redirecting to login if no session found
 func Provider(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := r.Context()
+		queries := api.New(db.DB)
+
 		cookie, err := r.Cookie("kh_session")
 		if err != nil {
 			redirectToLogin(w, r)
 			return
 		}
 
-		user, err := users.FromSessionKey(cookie.Value)
+		user, err := queries.UserBySessionKey(ctx, cookie.Value)
 		if err != nil {
 			redirectToLogin(w, r)
 			return
 		}
 
-		ctx := NewContext(r.Context(), user)
+		ctx = NewContext(r.Context(), user)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
@@ -34,12 +38,12 @@ const (
 	userContextKey contextKey = iota
 )
 
-func NewContext(ctx context.Context, user users.User) context.Context {
+func NewContext(ctx context.Context, user api.User) context.Context {
 	return context.WithValue(ctx, userContextKey, user)
 }
 
-func FromContext(ctx context.Context) users.User {
-	return ctx.Value(userContextKey).(users.User)
+func FromContext(ctx context.Context) api.User {
+	return ctx.Value(userContextKey).(api.User)
 }
 
 var ErrNotAuthorized = errors.New("Not authorized")

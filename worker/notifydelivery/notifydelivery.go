@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/url"
+	"oj/api"
 	"oj/app"
 	"oj/db"
 	"oj/models/users"
@@ -15,6 +16,8 @@ import (
 )
 
 func Handle(ctx context.Context) error {
+	queries := api.New(db.DB)
+
 	j, err := jobs.FromContext(ctx)
 	if err != nil {
 		return err
@@ -62,7 +65,7 @@ where d.id = ?`, j.Payload["id"])
 	link := app.AbsoluteURL(url.URL{Path: fmt.Sprintf("/deliveries/%d", delivery.ID)})
 
 	if delivery.Email == nil {
-		recipient, err := users.FindById(delivery.RecipientID)
+		recipient, err := queries.UserByID(ctx, delivery.RecipientID)
 		if err != nil {
 			return err
 		}

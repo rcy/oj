@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
+	"oj/api"
 	"oj/db"
 	"oj/handlers/render"
 	"oj/internal/middleware/auth"
-	"oj/models/users"
 	"time"
 )
 
@@ -47,5 +47,5 @@ func PutAvatar(w http.ResponseWriter, r *http.Request) {
 		render.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	render.ExecuteNamed(w, avatarsTemplate, "changeable-avatar", struct{ User users.User }{user})
+	render.ExecuteNamed(w, avatarsTemplate, "changeable-avatar", struct{ User api.User }{user})
 }

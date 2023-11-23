@@ -3,11 +3,11 @@ package editme
 import (
 	_ "embed"
 	"net/http"
+	"oj/api"
 	"oj/db"
 	"oj/handlers/layout"
 	"oj/handlers/render"
 	"oj/internal/middleware/auth"
-	"oj/models/users"
 )
 
 var (
@@ -21,7 +21,7 @@ func MyPageEdit(w http.ResponseWriter, r *http.Request) {
 
 	d := struct {
 		Layout layout.Data
-		User   users.User
+		User   api.User
 	}{
 		Layout: l,
 		User:   l.User,

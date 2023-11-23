@@ -3,9 +3,10 @@ package become
 import (
 	"context"
 	"net/http"
+	"oj/api"
+	"oj/db"
 	"oj/handlers/render"
 	"oj/internal/middleware/auth"
-	"oj/models/users"
 )
 
 func Provider(next http.Handler) http.Handler {
@@ -31,13 +32,15 @@ func Provider(next http.Handler) http.Handler {
 	})
 }
 
-func getUser(ctx context.Context) (*users.User, error) {
+func getUser(ctx context.Context) (*api.User, error) {
+	queries := api.New(db.DB)
 	user := auth.FromContext(ctx)
-	if user.BecomeUserID == nil {
+	if !user.BecomeUserID.Valid {
 		return nil, nil
 	}
 	if !user.Admin {
 		return nil, auth.ErrNotAuthorized
 	}
-	return users.FindById(*user.BecomeUserID)
+	becomeUser, err := queries.UserByID(ctx, user.BecomeUserID.Int64)
+	return &becomeUser, err
 }

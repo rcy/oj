@@ -4,6 +4,7 @@ import (
 	_ "embed"
 	"html/template"
 	"net/http"
+	"oj/api"
 	"oj/db"
 	"oj/handlers/layout"
 	"oj/handlers/me"
@@ -43,7 +44,7 @@ func Page(w http.ResponseWriter, r *http.Request) {
 
 	d := struct {
 		Layout  layout.Data
-		User    users.User
+		User    api.User
 		Friends []*Friend
 	}{
 		Layout:  l,

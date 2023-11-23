@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	_ "embed"
 	"net/http"
+	"oj/api"
 	"oj/handlers/connect"
 	"oj/handlers/layout"
 	"oj/handlers/me"
@@ -58,12 +59,12 @@ func UserPage(w http.ResponseWriter, r *http.Request) {
 
 	d := struct {
 		Layout     layout.Data
-		User       users.User
+		User       api.User
 		Connection *connect.Connection
 		CanChat    bool
 	}{
 		Layout:     l,
-		User:       *pageUser,
+		User:       pageUser,
 		Connection: connection,
 		CanChat:    canChat,
 	}

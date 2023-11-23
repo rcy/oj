@@ -10,6 +10,7 @@ import (
 	"log"
 	mathrand "math/rand"
 	"net/http"
+	"oj/api"
 	"oj/db"
 	"oj/handlers/render"
 	"oj/models/users"
@@ -207,6 +208,9 @@ func kidsCode(w http.ResponseWriter, r *http.Request) {
 }
 
 func kidsCodeAction(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	queries := api.New(db.DB)
+
 	var userID int64
 
 	cookie, err := r.Cookie("kh_nonce")
@@ -235,7 +239,7 @@ func kidsCodeAction(w http.ResponseWriter, r *http.Request) {
 		log.Println("code is good")
 		// found email, code is good
 		// create user if not exists
-		user, err := users.FindById(userID)
+		user, err := queries.UserByID(ctx, userID)
 		if err != nil {
 			render.Error(w, "error getting user:"+err.Error(), 500)
 			return

@@ -1,3 +1,15 @@
+-- name: UserBySessionKey :one
+select users.* from sessions join users on sessions.user_id = users.id where sessions.key = ?;
+
+-- name: UserByID :one
+select * from users where id = ?;
+
+-- name: CreateParent :one
+insert into users(email, username, is_parent) values(?, ?, true) returning *;
+
+-- name: UserByEmail :one
+select * from users where email = ?;
+
 -- name: RecentMessages :many
 select * from (
   select m.*, sender.avatar_url as sender_avatar_url

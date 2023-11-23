@@ -1,7 +1,9 @@
 package users
 
 import (
+	"context"
 	"database/sql"
+	"oj/api"
 	"oj/db"
 	"strconv"
 	"time"
@@ -19,15 +21,6 @@ type User struct {
 	Admin        bool
 }
 
-func FromSessionKey(key string) (User, error) {
-	var user User
-	err := db.DB.Get(&user, "select users.* from sessions join users on sessions.user_id = users.id where sessions.key = ?", key)
-	if err != nil {
-		return User{}, err
-	}
-	return user, nil
-}
-
 // parents via kids_parents table
 func GetParents(kidUserID int64) ([]User, error) {
 	var parents []User
@@ -39,7 +32,7 @@ func GetParents(kidUserID int64) ([]User, error) {
 	return parents, nil
 }
 
-func CreateKid(u User, username string) (*User, error) {
+func CreateKid(u api.User, username string) (*User, error) {
 	tx, err := db.DB.Beginx()
 	if err != nil {
 		return nil, err
@@ -95,33 +88,13 @@ order by created_at desc
 	return kids, nil
 }
 
-func FindById(id int64) (*User, error) {
-	var user User
-
-	err := db.DB.Get(&user, "select * from users where id = ?", id)
-	if err != nil {
-		return nil, err
-	}
-
-	return &user, nil
-}
-
-func FindByStringId(stringID string) (*User, error) {
+func FindByStringId(stringID string) (api.User, error) {
 	id, err := strconv.Atoi(stringID)
 	if err != nil {
-		return nil, err
+		return api.User{}, err
 	}
-	return FindById(int64(id))
-}
-
-func FindByEmail(email string) (*User, error) {
-	var user User
-
-	err := db.DB.Get(&user, "select * from users where email = ?", email)
-	if err != nil {
-		return nil, err
-	}
-	return &user, nil
+	queries := api.New(db.DB)
+	return queries.UserByID(context.TODO(), int64(id))
 }
 
 func FindByUsername(username string) (*User, error) {
@@ -134,23 +107,20 @@ func FindByUsername(username string) (*User, error) {
 	return &user, nil
 }
 
-func CreateParent(email *string, username string) (*User, error) {
-	result, err := db.DB.Exec("insert into users(email, username, is_parent) values(?, ?, true)", email, username)
-	if err != nil {
-		return nil, err
-	}
-	id, _ := result.LastInsertId()
-	return FindById(id)
-}
+func FindOrCreateParentByEmail(email string) (api.User, error) {
+	ctx := context.TODO()
+	queries := api.New(db.DB)
 
-func FindOrCreateParentByEmail(email string) (*User, error) {
-	user, err := FindByEmail(email)
+	// FIXME: make email not nullable and remove this
+	nullableEmail := sql.NullString{String: email, Valid: true}
+
+	user, err := queries.UserByEmail(ctx, nullableEmail)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			// we don't have a username here, so use the email, they can change it later
-			return CreateParent(&email, email)
+			return queries.CreateParent(ctx, api.CreateParentParams{Email: nullableEmail, Username: email})
 		}
-		return nil, err
+		return api.User{}, err
 	}
 	return user, nil
 }

@@ -4,9 +4,9 @@ import (
 	_ "embed"
 	"fmt"
 	"html/template"
+	"oj/api"
 	"oj/db"
 	"oj/element/gradient"
-	"oj/models/users"
 	"oj/services/background"
 	"oj/templatehelpers"
 )
@@ -31,12 +31,12 @@ func MustParse(templateContent ...string) *template.Template {
 }
 
 type Data struct {
-	User               users.User
+	User               api.User
 	BackgroundGradient gradient.Gradient
 	UnreadCount        int
 }
 
-func FromUser(user users.User) (Data, error) {
+func FromUser(user api.User) (Data, error) {
 	backgroundGradient, err := background.ForUser(user.ID)
 	if err != nil {
 		return Data{}, err

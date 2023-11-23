@@ -7,6 +7,7 @@ package api
 
 import (
 	"context"
+	"database/sql"
 	"time"
 )
 
@@ -115,6 +116,32 @@ func (q *Queries) CreateAttempt(ctx context.Context, arg CreateAttemptParams) (A
 		&i.CreatedAt,
 		&i.QuizID,
 		&i.UserID,
+	)
+	return i, err
+}
+
+const createParent = `-- name: CreateParent :one
+insert into users(email, username, is_parent) values(?, ?, true) returning id, created_at, username, email, avatar_url, is_parent, bio, become_user_id, admin
+`
+
+type CreateParentParams struct {
+	Email    sql.NullString
+	Username string
+}
+
+func (q *Queries) CreateParent(ctx context.Context, arg CreateParentParams) (User, error) {
+	row := q.db.QueryRowContext(ctx, createParent, arg.Email, arg.Username)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.Username,
+		&i.Email,
+		&i.AvatarURL,
+		&i.IsParent,
+		&i.Bio,
+		&i.BecomeUserID,
+		&i.Admin,
 	)
 	return i, err
 }
@@ -393,7 +420,7 @@ type RecentMessagesRow struct {
 	SenderID        int64
 	RoomID          string
 	Body            string
-	SenderAvatarURL interface{}
+	SenderAvatarURL string
 }
 
 func (q *Queries) RecentMessages(ctx context.Context, roomID string) ([]RecentMessagesRow, error) {
@@ -546,6 +573,69 @@ func (q *Queries) UpdateQuiz(ctx context.Context, arg UpdateQuizParams) (Quiz, e
 		&i.Name,
 		&i.Description,
 		&i.Published,
+	)
+	return i, err
+}
+
+const userByEmail = `-- name: UserByEmail :one
+select id, created_at, username, email, avatar_url, is_parent, bio, become_user_id, admin from users where email = ?
+`
+
+func (q *Queries) UserByEmail(ctx context.Context, email sql.NullString) (User, error) {
+	row := q.db.QueryRowContext(ctx, userByEmail, email)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.Username,
+		&i.Email,
+		&i.AvatarURL,
+		&i.IsParent,
+		&i.Bio,
+		&i.BecomeUserID,
+		&i.Admin,
+	)
+	return i, err
+}
+
+const userByID = `-- name: UserByID :one
+select id, created_at, username, email, avatar_url, is_parent, bio, become_user_id, admin from users where id = ?
+`
+
+func (q *Queries) UserByID(ctx context.Context, id int64) (User, error) {
+	row := q.db.QueryRowContext(ctx, userByID, id)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.Username,
+		&i.Email,
+		&i.AvatarURL,
+		&i.IsParent,
+		&i.Bio,
+		&i.BecomeUserID,
+		&i.Admin,
+	)
+	return i, err
+}
+
+const userBySessionKey = `-- name: UserBySessionKey :one
+select users.id, users.created_at, users.username, users.email, users.avatar_url, users.is_parent, users.bio, users.become_user_id, users.admin from sessions join users on sessions.user_id = users.id where sessions.key = ?
+`
+
+func (q *Queries) UserBySessionKey(ctx context.Context, key interface{}) (User, error) {
+	row := q.db.QueryRowContext(ctx, userBySessionKey, key)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.Username,
+		&i.Email,
+		&i.AvatarURL,
+		&i.IsParent,
+		&i.Bio,
+		&i.BecomeUserID,
+		&i.Admin,
 	)
 	return i, err
 }

@@ -133,7 +133,7 @@ type User struct {
 	CreatedAt    time.Time
 	Username     string
 	Email        sql.NullString
-	AvatarUrl    interface{}
+	AvatarURL    string
 	IsParent     bool
 	Bio          string
 	BecomeUserID sql.NullInt64

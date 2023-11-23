@@ -237,7 +237,7 @@ create table questions(
 	`--28 add published to quizzes
 alter table quizzes add column published bool default false;
 `,
-	`--fix attempts
+	`--29 fix attempts
 create table xattempts(
   id integer primary key,
   created_at datetime not null default current_timestamp,
@@ -249,5 +249,25 @@ select id, created_at, quiz_id, user_id
 from attempts;
 drop table attempts;
 alter table xattempts rename to attempts;
+`,
+	`--30 fix users
+CREATE TABLE xusers (
+  id integer primary key,
+  created_at datetime not null default current_timestamp,
+  username text not null unique check(length(username) > 0),
+  email text check (email like '%@%') unique,
+  avatar_url text not null default 'https://www.gravatar.com/avatar/?d=mp',
+  is_parent bool not null default false,
+  bio text not null default '',
+  become_user_id integer references users,
+  admin bool not null default false
+);
+
+insert into xusers(id,created_at,username,email,avatar_url,is_parent,bio,become_user_id,admin)
+  select id,created_at,username,email,avatar_url,is_parent,bio,become_user_id,admin
+  from users;
+
+drop table users;
+alter table xusers rename to users;
 `,
 }

@@ -4,6 +4,17 @@ CREATE TABLE "attempts"(
   quiz_id integer references quizzes not null,
   user_id integer references users not null
 );
+CREATE TABLE "users" (
+  id integer primary key,
+  created_at datetime not null default current_timestamp,
+  username text not null unique check(length(username) > 0),
+  email text check (email like '%@%') unique,
+  avatar_url text not null default 'https://www.gravatar.com/avatar/?d=mp',
+  is_parent bool not null default false,
+  bio text not null default '',
+  become_user_id integer references users,
+  admin bool not null default false
+);
 CREATE TABLE codes(
   id integer primary key,
   created_at datetime not null default current_timestamp,
@@ -104,9 +115,3 @@ CREATE TABLE sessions(
   user_id integer references users not null,
   key string unique not null
 );
-CREATE TABLE users (
-  id integer primary key,
-  created_at datetime not null default current_timestamp,
-  username text not null unique check(length(username) > 0),
-  email text check (email like '%@%') unique
-, avatar_url not null default 'https://www.gravatar.com/avatar/?d=mp', is_parent bool not null default false, bio text not null default '', become_user_id integer references users, admin bool not null default false);

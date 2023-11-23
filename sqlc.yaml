@@ -9,3 +9,4 @@ sql:
         out: "api"
         rename:
           sender_avatar_url: "SenderAvatarURL"
+          avatar_url: "AvatarURL"
