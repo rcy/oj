@@ -10,7 +10,7 @@
 
     <section style="display:flex; flex-direction:column; gap: 1em">
       {{range .UnreadUsers}}
-        {{template "friend" .}}
+        {{template "unreadFriend" .}}
       {{end}}
     </section>
 
@@ -40,8 +40,8 @@
   </section>
 {{end}}
 
-{{define "friend"}}
-  <div style="padding: 1em; border: 4px solid black; background: {{.GradientCSS}};">
+{{define "unreadFriend"}}
+  <div style="padding: 1em; border: 4px solid black; background: red;">
     <div class="nes-container"
          style="display:flex; flex-direction:column; gap: 1em; background: rgba(255,255,255,.9)">
       <a href="/u/{{.ID}}/chat" style="display:flex; gap:1em; color: inherit">

@@ -852,3 +852,58 @@ func (q *Queries) UserGradient(ctx context.Context, userID int64) (Gradient, err
 	)
 	return i, err
 }
+
+const usersWithUnreadCounts = `-- name: UsersWithUnreadCounts :many
+select users.id, users.created_at, users.username, users.email, users.avatar_url, users.is_parent, users.bio, users.become_user_id, users.admin, count(*) unread_count
+from deliveries
+join users on sender_id = users.id
+where recipient_id = ? and sent_at is null
+group by users.username
+`
+
+type UsersWithUnreadCountsRow struct {
+	ID           int64
+	CreatedAt    time.Time
+	Username     string
+	Email        sql.NullString
+	AvatarURL    string
+	IsParent     bool
+	Bio          string
+	BecomeUserID sql.NullInt64
+	Admin        bool
+	UnreadCount  int64
+}
+
+func (q *Queries) UsersWithUnreadCounts(ctx context.Context, recipientID int64) ([]UsersWithUnreadCountsRow, error) {
+	rows, err := q.db.QueryContext(ctx, usersWithUnreadCounts, recipientID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []UsersWithUnreadCountsRow
+	for rows.Next() {
+		var i UsersWithUnreadCountsRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.Username,
+			&i.Email,
+			&i.AvatarURL,
+			&i.IsParent,
+			&i.Bio,
+			&i.BecomeUserID,
+			&i.Admin,
+			&i.UnreadCount,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}

@@ -21,6 +21,14 @@ select * from (
   ) t
 order by created_at asc;
 
+-- name: UsersWithUnreadCounts :many
+select users.*, count(*) unread_count
+from deliveries
+join users on sender_id = users.id
+where recipient_id = ? and sent_at is null
+group by users.username;
+
+
 -- name: GetAttemptByID :one
 select * from attempts where id = ?;
 
