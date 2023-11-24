@@ -2,6 +2,8 @@ package notifyfriend
 
 import (
 	"context"
+	"database/sql"
+	"errors"
 	"fmt"
 	"log"
 	"net/url"
@@ -46,7 +48,7 @@ where f.id = ?
 
 	var mutualID int64
 	err = db.DB.Get(&mutualID, `select id from friends where a_id = ? and b_id = ?`, friend.BID, friend.AID)
-	if err != nil {
+	if err != nil && !errors.Is(err, sql.ErrNoRows) {
 		return err
 	}
 
