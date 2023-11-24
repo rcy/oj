@@ -3,7 +3,6 @@ package handlers
 import (
 	"net/http"
 	"net/http/httptest"
-	"oj/models/users"
 	"testing"
 
 	"github.com/go-chi/chi/v5"
@@ -15,7 +14,6 @@ func TestRouter(t *testing.T) {
 	for _, tc := range []struct {
 		name           string
 		path           string
-		user           *users.User
 		wantStatusCode int
 	}{
 		{
