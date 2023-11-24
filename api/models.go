@@ -96,7 +96,7 @@ type Quiz struct {
 	CreatedAt   time.Time
 	Name        interface{}
 	Description interface{}
-	Published   sql.NullBool
+	Published   bool
 }
 
 type Response struct {

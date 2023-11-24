@@ -707,6 +707,28 @@ func (q *Queries) RoomByKey(ctx context.Context, key string) (Room, error) {
 	return i, err
 }
 
+const setQuizPublished = `-- name: SetQuizPublished :one
+update quizzes set published = ? where id = ? returning id, created_at, name, description, published
+`
+
+type SetQuizPublishedParams struct {
+	Published bool
+	ID        int64
+}
+
+func (q *Queries) SetQuizPublished(ctx context.Context, arg SetQuizPublishedParams) (Quiz, error) {
+	row := q.db.QueryRowContext(ctx, setQuizPublished, arg.Published, arg.ID)
+	var i Quiz
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.Name,
+		&i.Description,
+		&i.Published,
+	)
+	return i, err
+}
+
 const updateQuestion = `-- name: UpdateQuestion :one
 update questions set text = ?, answer = ? where id = ? returning id, created_at, quiz_id, text, answer
 `

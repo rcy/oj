@@ -80,8 +80,11 @@ func patchQuiz(w http.ResponseWriter, r *http.Request) {
 }
 
 func togglePublished(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
 	quiz := quizctx.Value(r.Context())
-	err := db.DB.Get(&quiz, `update quizzes set published = ? where id = ? returning *`, !quiz.Published.Bool, quiz.ID)
+	queries := api.New(db.DB)
+
+	quiz, err := queries.SetQuizPublished(ctx, api.SetQuizPublishedParams{ID: quiz.ID, Published: !quiz.Published})
 	if err != nil {
 		render.Error(w, err.Error(), http.StatusInternalServerError)
 		return

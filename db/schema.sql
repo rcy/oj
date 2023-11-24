@@ -4,6 +4,13 @@ CREATE TABLE "attempts"(
   quiz_id integer references quizzes not null,
   user_id integer references users not null
 );
+CREATE TABLE "quizzes"(
+  id integer primary key,
+  created_at datetime not null default current_timestamp,
+  name string not null,
+  description string not null,
+  published bool not null default false
+);
 CREATE TABLE "users" (
   id integer primary key,
   created_at datetime not null default current_timestamp,
@@ -81,12 +88,6 @@ CREATE TABLE questions(
   text text not null,
   answer text not null
 ) strict;
-CREATE TABLE quizzes(
-  id integer primary key,
-  created_at datetime not null default current_timestamp,
-  name string not null,
-  description string not null
-, published bool default false);
 CREATE TABLE responses(
   id integer primary key,
   created_at datetime not null default current_timestamp,

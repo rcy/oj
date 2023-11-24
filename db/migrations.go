@@ -270,4 +270,19 @@ insert into xusers(id,created_at,username,email,avatar_url,is_parent,bio,become_
 drop table users;
 alter table xusers rename to users;
 `,
+	`--31 make quiz published not null
+CREATE TABLE xquizzes(
+  id integer primary key,
+  created_at datetime not null default current_timestamp,
+  name string not null,
+  description string not null,
+  published bool not null default false
+);
+insert into xquizzes(id, created_at, name, description, published)
+  select id, created_at, name, description, published
+  from quizzes;
+
+drop table quizzes;
+alter table xquizzes rename to quizzes;
+`,
 }

@@ -41,6 +41,9 @@ and
   questions.quiz_id = ?
 order by random();
 
+-- name: SetQuizPublished :one
+update quizzes set published = ? where id = ? returning *;
+
 -- name: QuestionCount :one
 select count(*) from questions where quiz_id = ?;
 
