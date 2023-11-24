@@ -5,12 +5,13 @@ import (
 	_ "embed"
 	"net/http"
 	"oj/api"
+	"oj/db"
 	"oj/handlers/connect"
 	"oj/handlers/layout"
 	"oj/handlers/me"
 	"oj/handlers/render"
-	"oj/models/users"
 	"oj/services/background"
+	"strconv"
 
 	"github.com/go-chi/chi/v5"
 )
@@ -23,10 +24,12 @@ var (
 )
 
 func UserPage(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	queries := api.New(db.DB)
 	l := layout.FromContext(r.Context())
 
-	userID := chi.URLParam(r, "userID")
-	pageUser, err := users.FindByStringId(userID)
+	userID, _ := strconv.Atoi(chi.URLParam(r, "userID"))
+	pageUser, err := queries.UserByID(ctx, int64(userID))
 	if err != nil {
 		if err == sql.ErrNoRows {
 			render.Error(w, "User not found", http.StatusNotFound)

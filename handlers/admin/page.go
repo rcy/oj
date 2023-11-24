@@ -3,13 +3,14 @@ package admin
 import (
 	_ "embed"
 	"net/http"
+	"oj/api"
+	"oj/db"
 	"oj/element/gradient"
 	"oj/handlers/admin/middleware/auth"
 	"oj/handlers/admin/middleware/background"
 	"oj/handlers/admin/quizzes"
 	"oj/handlers/layout"
 	"oj/handlers/render"
-	"oj/models/users"
 
 	"github.com/go-chi/chi/v5"
 )
@@ -28,9 +29,12 @@ var (
 )
 
 func page(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	queries := api.New(db.DB)
+
 	l := layout.FromContext(r.Context())
 
-	allUsers, err := users.FindAll()
+	allUsers, err := queries.AllUsers(ctx)
 	if err != nil {
 		render.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -38,7 +42,7 @@ func page(w http.ResponseWriter, r *http.Request) {
 
 	render.Execute(w, pageTemplate, struct {
 		Layout layout.Data
-		Users  []users.User
+		Users  []api.User
 	}{
 		Layout: l,
 		Users:  allUsers,

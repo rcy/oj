@@ -12,9 +12,9 @@ import (
 	"oj/handlers/layout"
 	"oj/handlers/render"
 	"oj/internal/middleware/auth"
-	"oj/models/users"
 	"oj/services/background"
 	"oj/services/room"
+	"strconv"
 	"sync"
 
 	"github.com/alexandrevicenzi/go-sse"
@@ -30,10 +30,11 @@ var (
 
 func Page(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
+	queries := api.New(db.DB)
 	user := auth.FromContext(ctx)
 
-	pageUserID := chi.URLParam(r, "userID")
-	pageUser, err := users.FindByStringId(pageUserID)
+	pageUserID, _ := strconv.Atoi(chi.URLParam(r, "userID"))
+	pageUser, err := queries.UserByID(ctx, int64(pageUserID))
 	if err != nil {
 		if err == sql.ErrNoRows {
 			render.Error(w, "User not found", 404)
@@ -52,7 +53,6 @@ func Page(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	queries := api.New(db.DB)
 	records, err := queries.RecentMessages(ctx, fmt.Sprint(room.ID))
 	if err != nil {
 		render.Error(w, "api selecting messages: "+err.Error(), 500)

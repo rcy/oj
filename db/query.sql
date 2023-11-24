@@ -39,6 +39,27 @@ select count(*) from questions where quiz_id = ?;
 -- name: ResponseCount :one
 select count(*) from responses where attempt_id = ?;
 
+-- name: UserByUsername :one
+select * from users where username = ?;
+
+-- name: CreateUser :one
+insert into users(username) values(?) returning *;
+
+-- name: CreateKidParent :one
+insert into kids_parents(kid_id, parent_id) values(?, ?) returning *;
+
+-- name: CreateFriend :one
+insert into friends(a_id, b_id, b_role) values(?, ?, ?) returning *;
+
+-- name: AllUsers :many
+select * from users order by created_at desc;
+
+-- name: ParentsByKidID :many
+select users.* from kids_parents join users on kids_parents.parent_id = users.id where kids_parents.kid_id = ?;
+
+-- name: KidsByParentID :many
+select users.* from kids_parents join users on kids_parents.kid_id = users.id where kids_parents.parent_id = ? order by kids_parents.created_at desc;
+
 -- name: AttemptResponseIDs :many
 select id from responses where attempt_id = ?;
 

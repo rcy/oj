@@ -44,6 +44,43 @@ func (q *Queries) AllQuizzes(ctx context.Context) ([]Quiz, error) {
 	return items, nil
 }
 
+const allUsers = `-- name: AllUsers :many
+select id, created_at, username, email, avatar_url, is_parent, bio, become_user_id, admin from users order by created_at desc
+`
+
+func (q *Queries) AllUsers(ctx context.Context) ([]User, error) {
+	rows, err := q.db.QueryContext(ctx, allUsers)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []User
+	for rows.Next() {
+		var i User
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.Username,
+			&i.Email,
+			&i.AvatarURL,
+			&i.IsParent,
+			&i.Bio,
+			&i.BecomeUserID,
+			&i.Admin,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const attemptNextQuestion = `-- name: AttemptNextQuestion :one
 select questions.id, questions.created_at, questions.quiz_id, questions.text, questions.answer from questions
 left join responses on responses.question_id = questions.id
@@ -116,6 +153,50 @@ func (q *Queries) CreateAttempt(ctx context.Context, arg CreateAttemptParams) (A
 		&i.CreatedAt,
 		&i.QuizID,
 		&i.UserID,
+	)
+	return i, err
+}
+
+const createFriend = `-- name: CreateFriend :one
+insert into friends(a_id, b_id, b_role) values(?, ?, ?) returning id, created_at, a_id, b_id, b_role
+`
+
+type CreateFriendParams struct {
+	AID   int64
+	BID   int64
+	BRole string
+}
+
+func (q *Queries) CreateFriend(ctx context.Context, arg CreateFriendParams) (Friend, error) {
+	row := q.db.QueryRowContext(ctx, createFriend, arg.AID, arg.BID, arg.BRole)
+	var i Friend
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.AID,
+		&i.BID,
+		&i.BRole,
+	)
+	return i, err
+}
+
+const createKidParent = `-- name: CreateKidParent :one
+insert into kids_parents(kid_id, parent_id) values(?, ?) returning id, created_at, kid_id, parent_id
+`
+
+type CreateKidParentParams struct {
+	KidID    int64
+	ParentID int64
+}
+
+func (q *Queries) CreateKidParent(ctx context.Context, arg CreateKidParentParams) (KidsParent, error) {
+	row := q.db.QueryRowContext(ctx, createKidParent, arg.KidID, arg.ParentID)
+	var i KidsParent
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.KidID,
+		&i.ParentID,
 	)
 	return i, err
 }
@@ -256,6 +337,27 @@ func (q *Queries) CreateRoomUser(ctx context.Context, arg CreateRoomUserParams) 
 	return i, err
 }
 
+const createUser = `-- name: CreateUser :one
+insert into users(username) values(?) returning id, created_at, username, email, avatar_url, is_parent, bio, become_user_id, admin
+`
+
+func (q *Queries) CreateUser(ctx context.Context, username string) (User, error) {
+	row := q.db.QueryRowContext(ctx, createUser, username)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.Username,
+		&i.Email,
+		&i.AvatarURL,
+		&i.IsParent,
+		&i.Bio,
+		&i.BecomeUserID,
+		&i.Admin,
+	)
+	return i, err
+}
+
 const delivery = `-- name: Delivery :one
 select id, created_at, message_id, room_id, recipient_id, sender_id, sent_at from deliveries where id = ?
 `
@@ -289,6 +391,80 @@ func (q *Queries) GetAttemptByID(ctx context.Context, id int64) (Attempt, error)
 		&i.UserID,
 	)
 	return i, err
+}
+
+const kidsByParentID = `-- name: KidsByParentID :many
+select users.id, users.created_at, users.username, users.email, users.avatar_url, users.is_parent, users.bio, users.become_user_id, users.admin from kids_parents join users on kids_parents.kid_id = users.id where kids_parents.parent_id = ? order by kids_parents.created_at desc
+`
+
+func (q *Queries) KidsByParentID(ctx context.Context, parentID int64) ([]User, error) {
+	rows, err := q.db.QueryContext(ctx, kidsByParentID, parentID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []User
+	for rows.Next() {
+		var i User
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.Username,
+			&i.Email,
+			&i.AvatarURL,
+			&i.IsParent,
+			&i.Bio,
+			&i.BecomeUserID,
+			&i.Admin,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const parentsByKidID = `-- name: ParentsByKidID :many
+select users.id, users.created_at, users.username, users.email, users.avatar_url, users.is_parent, users.bio, users.become_user_id, users.admin from kids_parents join users on kids_parents.parent_id = users.id where kids_parents.kid_id = ?
+`
+
+func (q *Queries) ParentsByKidID(ctx context.Context, kidID int64) ([]User, error) {
+	rows, err := q.db.QueryContext(ctx, parentsByKidID, kidID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []User
+	for rows.Next() {
+		var i User
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.Username,
+			&i.Email,
+			&i.AvatarURL,
+			&i.IsParent,
+			&i.Bio,
+			&i.BecomeUserID,
+			&i.Admin,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const publishedQuizzes = `-- name: PublishedQuizzes :many
@@ -625,6 +801,27 @@ select users.id, users.created_at, users.username, users.email, users.avatar_url
 
 func (q *Queries) UserBySessionKey(ctx context.Context, key interface{}) (User, error) {
 	row := q.db.QueryRowContext(ctx, userBySessionKey, key)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.Username,
+		&i.Email,
+		&i.AvatarURL,
+		&i.IsParent,
+		&i.Bio,
+		&i.BecomeUserID,
+		&i.Admin,
+	)
+	return i, err
+}
+
+const userByUsername = `-- name: UserByUsername :one
+select id, created_at, username, email, avatar_url, is_parent, bio, become_user_id, admin from users where username = ?
+`
+
+func (q *Queries) UserByUsername(ctx context.Context, username string) (User, error) {
+	row := q.db.QueryRowContext(ctx, userByUsername, username)
 	var i User
 	err := row.Scan(
 		&i.ID,

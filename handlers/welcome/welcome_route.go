@@ -13,8 +13,8 @@ import (
 	"oj/api"
 	"oj/db"
 	"oj/handlers/render"
-	"oj/models/users"
 	"oj/services/email"
+	"oj/services/family"
 	"time"
 
 	"github.com/go-chi/chi/v5"
@@ -139,9 +139,12 @@ func parentsCode(w http.ResponseWriter, r *http.Request) {
 }
 
 func kidsUsernameAction(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	queries := api.New(db.DB)
+
 	username := r.FormValue("username")
 
-	user, err := users.FindByUsername(username)
+	user, err := queries.UserByUsername(r.Context(), username)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			err = welcomeKidsTemplate.Execute(w, struct{ Error string }{"User not found"})
@@ -170,7 +173,7 @@ func kidsUsernameAction(w http.ResponseWriter, r *http.Request) {
 	http.SetCookie(w, &http.Cookie{Name: "kh_nonce", Value: nonce, Path: "/", Expires: time.Now().Add(time.Hour)})
 
 	// email code to kids parent(s)
-	parents, err := users.GetParents(user.ID)
+	parents, err := queries.ParentsByKidID(ctx, user.ID)
 	if err != nil {
 		render.Error(w, "Error getting parents wdEXqpGbDeTc69Ju3", 500)
 		return
@@ -186,7 +189,7 @@ func kidsUsernameAction(w http.ResponseWriter, r *http.Request) {
 			fmt.Sprintf("Code for %s is %s", username, code),
 			fmt.Sprintf(fmt.Sprintf("Your child, %s, is trying to login to Octopus Jr.  The verification code is %s.",
 				username, code)),
-			*parent.Email)
+			parent.Email.String)
 		if err != nil {
 			render.Error(w, fmt.Sprintf("Error emailing code: %s", err), http.StatusInternalServerError)
 		}
@@ -275,6 +278,8 @@ func kidsCodeAction(w http.ResponseWriter, r *http.Request) {
 }
 
 func parentsCodeAction(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
 	var email string
 
 	cookie, err := r.Cookie("kh_nonce")
@@ -303,7 +308,7 @@ func parentsCodeAction(w http.ResponseWriter, r *http.Request) {
 		log.Println("code is good")
 		// found email, code is good
 		// create user if not exists
-		user, err := users.FindOrCreateParentByEmail(email)
+		user, err := family.FindOrCreateParentByEmail(ctx, email)
 		if err != nil {
 			render.Error(w, "error getting user: "+err.Error(), 500)
 			return

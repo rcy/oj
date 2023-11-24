@@ -3,6 +3,7 @@ package parent
 import (
 	"database/sql"
 	_ "embed"
+	"errors"
 	"log"
 	"net/http"
 	"oj/api"
@@ -10,7 +11,7 @@ import (
 	"oj/handlers/layout"
 	"oj/handlers/render"
 	"oj/internal/middleware/auth"
-	"oj/models/users"
+	"oj/services/family"
 
 	"github.com/go-chi/chi/v5"
 )
@@ -23,9 +24,11 @@ var (
 )
 
 func Index(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	queries := api.New(db.DB)
 	l := layout.FromContext(r.Context())
 
-	kids, err := users.GetKids(l.User.ID)
+	kids, err := queries.KidsByParentID(ctx, l.User.ID)
 	if err != nil {
 		render.Error(w, err.Error(), 500)
 		return
@@ -34,7 +37,7 @@ func Index(w http.ResponseWriter, r *http.Request) {
 	err = t.Execute(w, struct {
 		Layout layout.Data
 		User   api.User
-		Kids   []users.User
+		Kids   []api.User
 	}{
 		Layout: l,
 		User:   l.User,
@@ -47,7 +50,9 @@ func Index(w http.ResponseWriter, r *http.Request) {
 
 func CreateKid(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
+	queries := api.New(db.DB)
 	user := auth.FromContext(ctx)
+
 	err := r.ParseForm()
 	if err != nil {
 		render.Error(w, err.Error(), 500)
@@ -55,24 +60,25 @@ func CreateKid(w http.ResponseWriter, r *http.Request) {
 	}
 	username := r.PostForm.Get("username")
 
-	kid, err := users.FindByUsername(username)
-	if err != nil && err != sql.ErrNoRows {
-		render.Error(w, err.Error(), 500)
-		return
-	}
-	if kid != nil {
-		render.Error(w, "username taken", http.StatusConflict)
+	_, err = queries.UserByUsername(ctx, username)
+	if errors.Is(err, sql.ErrNoRows) {
+		kid, err := family.CreateKid(ctx, user, username)
+		if err != nil {
+			render.Error(w, err.Error(), 500)
+			return
+		}
+		log.Printf("kid: %v", kid)
+		http.Redirect(w, r, "/parent", http.StatusSeeOther)
 		return
 	}
 
-	kid, err = users.CreateKid(user, username)
 	if err != nil {
 		render.Error(w, err.Error(), 500)
 		return
 	}
 
-	log.Printf("kid: %v", kid)
-	http.Redirect(w, r, "/parent", http.StatusSeeOther)
+	render.Error(w, "username taken", http.StatusConflict)
+	return
 }
 
 func DeleteKid(w http.ResponseWriter, r *http.Request) {

@@ -6,9 +6,9 @@ import (
 	"fmt"
 	"log"
 	"net/url"
+	"oj/api"
 	"oj/app"
 	"oj/db"
-	"oj/models/users"
 	"oj/services/email"
 	"time"
 
@@ -16,6 +16,8 @@ import (
 )
 
 func Handle(ctx context.Context) error {
+	queries := api.New(db.DB)
+
 	j, err := jobs.FromContext(ctx)
 	if err != nil {
 		return err
@@ -55,7 +57,7 @@ where f.id = ?
 
 	aUserLink := app.AbsoluteURL(url.URL{Path: fmt.Sprintf("/u/%d", friend.AID)})
 
-	bParents, err := users.GetParents(friend.BID)
+	bParents, err := queries.ParentsByKidID(ctx, friend.BID)
 	if err != nil {
 		return fmt.Errorf("GetParents %w", err)
 	}
@@ -70,13 +72,13 @@ where f.id = ?
 			subject = fmt.Sprintf("%s sent a friend request to your child, %s", friend.AUsername, friend.BUsername)
 			emailBody = fmt.Sprintf("click here to view %s: %s", friend.AUsername, aUserLink.String())
 		}
-		err = email.Send(subject, emailBody, *bParent.Email)
+		err = email.Send(subject, emailBody, bParent.Email.String)
 		if err != nil {
 			return err
 		}
 	}
 
-	aParents, err := users.GetParents(friend.AID)
+	aParents, err := queries.ParentsByKidID(ctx, friend.AID)
 	if err != nil {
 		return err
 	}
@@ -90,7 +92,7 @@ where f.id = ?
 			subject = fmt.Sprintf("your child, %s, sent a friend request to %s", friend.BUsername, friend.AUsername)
 			emailBody = fmt.Sprintf("click here to view %s: %s", friend.BUsername, aUserLink.String())
 		}
-		err = email.Send(subject, emailBody, *aParent.Email)
+		err = email.Send(subject, emailBody, aParent.Email.String)
 		if err != nil {
 			return err
 		}

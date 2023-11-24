@@ -8,7 +8,6 @@ import (
 	"oj/api"
 	"oj/app"
 	"oj/db"
-	"oj/models/users"
 	"oj/services/email"
 	"time"
 
@@ -69,7 +68,7 @@ where d.id = ?`, j.Payload["id"])
 		if err != nil {
 			return err
 		}
-		parents, err := users.GetParents(recipient.ID)
+		parents, err := queries.ParentsByKidID(ctx, recipient.ID)
 		if err != nil {
 			return err
 		}
@@ -79,7 +78,7 @@ where d.id = ?`, j.Payload["id"])
 			if p.ID == delivery.SenderID {
 				continue
 			}
-			return email.Send(subject, emailBody, *p.Email)
+			return email.Send(subject, emailBody, p.Email.String)
 		}
 	} else {
 		subject := fmt.Sprintf("%s sent you a message", delivery.SenderUsername)
