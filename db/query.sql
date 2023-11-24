@@ -147,5 +147,24 @@ from users u
 left join friends f1 on f1.b_id = u.id and f1.a_id = ?1
 left join friends f2 on f2.a_id = u.id and f2.b_id = ?1
 where
-  u.id = ?2
-;
+  u.id = ?2;
+
+-- name: GetConnections :many
+select u.*,
+       case
+           when f1.a_id = ?1 then f1.b_role
+           else ""
+       end as role_out,
+       case
+           when f2.b_id = ?1 then f2.b_role
+           else ""
+       end as role_in
+from users u
+left join friends f1 on f1.b_id = u.id and f1.a_id = ?1
+left join friends f2 on f2.a_id = u.id and f2.b_id = ?1
+where
+  u.id != ?1
+and
+  is_parent = 1
+order by role_in desc
+limit 128;

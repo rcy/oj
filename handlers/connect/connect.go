@@ -25,52 +25,11 @@ var (
 	t = layout.MustParse(pageContent, ConnectionContent)
 )
 
-type Connection struct {
-	users.User
-	RoleIn  string `db:"role_in"`
-	RoleOut string `db:"role_out"`
-}
-
-func (f Connection) Status() string {
-	if f.RoleOut == "" {
-		if f.RoleIn == "" {
-			return "none"
-		} else {
-			return "request received"
-		}
-	} else {
-		if f.RoleIn == "" {
-			return "request sent"
-		} else {
-			return "connected"
-		}
-	}
-}
-
 func Connect(w http.ResponseWriter, r *http.Request) {
 	lay := layout.FromContext(r.Context())
+	queries := api.New(db.DB)
 
-	var connections []Connection
-	err := db.DB.Select(&connections, `
-select u.*,
-       case
-           when f1.a_id = $1 then f1.b_role
-           else ""
-       end as role_out,
-       case
-           when f2.b_id = $1 then f2.b_role
-           else ""
-       end as role_in
-from users u
-left join friends f1 on f1.b_id = u.id and f1.a_id = $1
-left join friends f2 on f2.a_id = u.id and f2.b_id = $1
-where
-  u.id != $1
-and
-  is_parent = 1
-order by role_in desc
-limit 128;
-`, lay.User.ID)
+	connections, err := queries.GetConnections(r.Context(), lay.User.ID)
 	if err != nil {
 		render.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -78,7 +37,7 @@ limit 128;
 
 	render.Execute(w, t, struct {
 		Layout      layout.Data
-		Connections []Connection
+		Connections []api.GetConnectionsRow
 	}{
 		Layout:      lay,
 		Connections: connections,
