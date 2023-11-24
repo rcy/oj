@@ -11,7 +11,7 @@
           <div>
             Question: {{.QuestionText}}
           </div>
-          {{if (eq .QuestionText .QuestionAnswer)}}
+          {{if .IsCorrect}}
             <div>
               Your answer: {{.Text}} <span class="nes-text is-success">Correct!</span>
             </div>

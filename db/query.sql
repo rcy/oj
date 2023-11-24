@@ -117,7 +117,8 @@ insert into quizzes(name,description) values(?,?) returning *;
 select
    responses.*,
    questions.answer question_answer,
-   questions.text question_text
+   questions.text question_text,
+   questions.answer = responses.text is_correct
 from responses
  join questions on responses.question_id = questions.id
  where attempt_id = ?

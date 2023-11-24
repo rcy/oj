@@ -644,7 +644,8 @@ const responses = `-- name: Responses :many
 select
    responses.id, responses.created_at, responses.quiz_id, responses.user_id, responses.attempt_id, responses.question_id, responses.text,
    questions.answer question_answer,
-   questions.text question_text
+   questions.text question_text,
+   questions.answer = responses.text is_correct
 from responses
  join questions on responses.question_id = questions.id
  where attempt_id = ?
@@ -661,6 +662,7 @@ type ResponsesRow struct {
 	Text           interface{}
 	QuestionAnswer string
 	QuestionText   string
+	IsCorrect      bool
 }
 
 func (q *Queries) Responses(ctx context.Context, attemptID interface{}) ([]ResponsesRow, error) {
@@ -682,6 +684,7 @@ func (q *Queries) Responses(ctx context.Context, attemptID interface{}) ([]Respo
 			&i.Text,
 			&i.QuestionAnswer,
 			&i.QuestionText,
+			&i.IsCorrect,
 		); err != nil {
 			return nil, err
 		}
