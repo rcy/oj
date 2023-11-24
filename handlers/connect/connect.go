@@ -3,12 +3,14 @@ package connect
 import (
 	_ "embed"
 	"net/http"
+	"oj/api"
 	"oj/db"
 	"oj/handlers/layout"
 	"oj/handlers/render"
 	"oj/internal/middleware/auth"
 	"oj/models/users"
 	"oj/worker"
+	"strconv"
 
 	"github.com/go-chi/chi/v5"
 )
@@ -27,30 +29,6 @@ type Connection struct {
 	users.User
 	RoleIn  string `db:"role_in"`
 	RoleOut string `db:"role_out"`
-}
-
-func GetConnection(user1ID int64, user2ID any) (*Connection, error) {
-	var connection Connection
-	err := db.DB.Get(&connection, `
-select u.*,
-       case
-           when f1.a_id = $1 then f1.b_role
-           else ""
-       end as role_out,
-       case
-           when f2.b_id = $1 then f2.b_role
-           else ""
-       end as role_in
-from users u
-left join friends f1 on f1.b_id = u.id and f1.a_id = $1
-left join friends f2 on f2.a_id = u.id and f2.b_id = $1
-where
-  u.id = $2
-`, user1ID, user2ID)
-	if err != nil {
-		return nil, err
-	}
-	return &connection, err
 }
 
 func (f Connection) Status() string {
@@ -110,7 +88,8 @@ limit 128;
 func PutParentFriend(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	currentUser := auth.FromContext(ctx)
-	userID := chi.URLParam(r, "userID")
+	queries := api.New(db.DB)
+	userID, _ := strconv.Atoi(chi.URLParam(r, "userID"))
 
 	var user users.User
 	err := db.DB.Get(&user, `select * from users where id = $1`, userID)
@@ -135,7 +114,7 @@ func PutParentFriend(w http.ResponseWriter, r *http.Request) {
 	}
 	go worker.NotifyFriend(friendID)
 
-	connection, err := GetConnection(currentUser.ID, userID)
+	connection, err := queries.GetConnection(ctx, api.GetConnectionParams{AID: currentUser.ID, ID: int64(userID)})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -148,7 +127,9 @@ func PutParentFriend(w http.ResponseWriter, r *http.Request) {
 func DeleteParentFriend(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	currentUser := auth.FromContext(ctx)
-	userID := chi.URLParam(r, "userID")
+	queries := api.New(db.DB)
+
+	userID, _ := strconv.Atoi(chi.URLParam(r, "userID"))
 
 	var user users.User
 	err := db.DB.Get(&user, `select * from users where id = $1`, userID)
@@ -167,9 +148,9 @@ func DeleteParentFriend(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	connection, err := GetConnection(currentUser.ID, userID)
+	connection, err := queries.GetConnection(ctx, api.GetConnectionParams{AID: currentUser.ID, ID: int64(userID)})
 	if err != nil {
-		render.Error(w, err.Error(), http.StatusInternalServerError)
+		render.Error(w, "xxx"+err.Error(), http.StatusInternalServerError)
 		return
 	}
 

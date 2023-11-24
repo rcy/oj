@@ -52,7 +52,7 @@ func UserPage(w http.ResponseWriter, r *http.Request) {
 	// override layout gradient to show the page user's not the request user's
 	l.BackgroundGradient = *ug
 
-	connection, err := connect.GetConnection(l.User.ID, pageUser.ID)
+	connection, err := queries.GetConnection(ctx, api.GetConnectionParams{AID: l.User.ID, ID: pageUser.ID})
 	if err != nil {
 		render.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -63,7 +63,7 @@ func UserPage(w http.ResponseWriter, r *http.Request) {
 	d := struct {
 		Layout     layout.Data
 		User       api.User
-		Connection *connect.Connection
+		Connection api.GetConnectionRow
 		CanChat    bool
 	}{
 		Layout:     l,

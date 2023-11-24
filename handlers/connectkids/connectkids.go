@@ -5,13 +5,14 @@ import (
 	_ "embed"
 	"log"
 	"net/http"
+	"oj/api"
 	"oj/db"
-	"oj/handlers/connect"
 	"oj/handlers/layout"
 	"oj/handlers/render"
 	"oj/internal/middleware/auth"
 	"oj/models/users"
 	"oj/worker"
+	"strconv"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/jmoiron/sqlx"
@@ -26,6 +27,7 @@ var (
 func KidConnect(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	lay := layout.FromContext(ctx)
+	queries := api.New(db.DB)
 
 	// get possible friend connections
 	// find all the kids of all the friends of this kid's parenst
@@ -66,20 +68,20 @@ func KidConnect(w http.ResponseWriter, r *http.Request) {
 
 	delete(reachableKids, lay.User.ID)
 
-	var connections []connect.Connection
+	var connections []api.GetConnectionRow
 	for kidID := range reachableKids {
-		connection, err := connect.GetConnection(lay.User.ID, kidID)
+		connection, err := queries.GetConnection(ctx, api.GetConnectionParams{AID: lay.User.ID, ID: kidID})
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 		log.Printf("%v", connection)
-		connections = append(connections, *connection)
+		connections = append(connections, connection)
 	}
 
 	render.Execute(w, t, struct {
 		Layout      layout.Data
-		Connections []connect.Connection
+		Connections []api.GetConnectionRow
 	}{
 		Layout:      lay,
 		Connections: connections,
@@ -128,7 +130,8 @@ func GetFriends(ctx context.Context, db *sqlx.DB, userID int64) ([]users.User, e
 func PutKidFriend(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	currentUser := auth.FromContext(ctx)
-	userID := chi.URLParam(r, "userID")
+	userID, _ := strconv.Atoi(chi.URLParam(r, "userID"))
+	queries := api.New(db.DB)
 
 	var user users.User
 	err := db.DB.Get(&user, `select * from users where id = $1`, userID)
@@ -149,7 +152,7 @@ func PutKidFriend(w http.ResponseWriter, r *http.Request) {
 	}
 	go worker.NotifyKidFriend(friendID)
 
-	connection, err := connect.GetConnection(currentUser.ID, userID)
+	connection, err := queries.GetConnection(ctx, api.GetConnectionParams{AID: currentUser.ID, ID: int64(userID)})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -161,7 +164,8 @@ func PutKidFriend(w http.ResponseWriter, r *http.Request) {
 func DeleteKidFriend(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	currentUser := auth.FromContext(ctx)
-	userID := chi.URLParam(r, "userID")
+	userID, _ := strconv.Atoi(chi.URLParam(r, "userID"))
+	queries := api.New(db.DB)
 
 	var user users.User
 	err := db.DB.Get(&user, `select * from users where id = $1`, userID)
@@ -176,7 +180,7 @@ func DeleteKidFriend(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	connection, err := connect.GetConnection(currentUser.ID, userID)
+	connection, err := queries.GetConnection(ctx, api.GetConnectionParams{AID: currentUser.ID, ID: int64(userID)})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
