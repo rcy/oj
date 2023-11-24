@@ -8,7 +8,6 @@ import (
 	"oj/handlers/layout"
 	"oj/handlers/render"
 	"oj/internal/middleware/auth"
-	"oj/models/users"
 	"oj/worker"
 	"strconv"
 
@@ -50,18 +49,13 @@ func PutParentFriend(w http.ResponseWriter, r *http.Request) {
 	queries := api.New(db.DB)
 	userID, _ := strconv.Atoi(chi.URLParam(r, "userID"))
 
-	var user users.User
-	err := db.DB.Get(&user, `select * from users where id = $1`, userID)
+	user, err := queries.ParentByID(ctx, int64(userID))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusNotFound)
 		return
 	}
-	if !user.IsParent {
-		http.Error(w, "not a parent", http.StatusBadRequest)
-		return
-	}
 
-	result, err := db.DB.Exec(`insert into friends(a_id, b_id, b_role) values(?,?,'friend')`, currentUser.ID, userID)
+	result, err := db.DB.Exec(`insert into friends(a_id, b_id, b_role) values(?,?,'friend')`, currentUser.ID, user.ID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -73,7 +67,7 @@ func PutParentFriend(w http.ResponseWriter, r *http.Request) {
 	}
 	go worker.NotifyFriend(friendID)
 
-	connection, err := queries.GetConnection(ctx, api.GetConnectionParams{AID: currentUser.ID, ID: int64(userID)})
+	connection, err := queries.GetConnection(ctx, api.GetConnectionParams{AID: currentUser.ID, ID: user.ID})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -90,24 +84,19 @@ func DeleteParentFriend(w http.ResponseWriter, r *http.Request) {
 
 	userID, _ := strconv.Atoi(chi.URLParam(r, "userID"))
 
-	var user users.User
-	err := db.DB.Get(&user, `select * from users where id = $1`, userID)
+	user, err := queries.ParentByID(ctx, int64(userID))
 	if err != nil {
-		render.Error(w, err.Error(), http.StatusNotFound)
-		return
-	}
-	if !user.IsParent {
-		render.Error(w, "not a parent", http.StatusBadRequest)
+		http.Error(w, err.Error(), http.StatusNotFound)
 		return
 	}
 
-	_, err = db.DB.Exec(`delete from friends where a_id = $1 and b_id = $2`, currentUser.ID, userID)
+	_, err = db.DB.Exec(`delete from friends where a_id = $1 and b_id = $2`, currentUser.ID, user.ID)
 	if err != nil {
 		render.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	connection, err := queries.GetConnection(ctx, api.GetConnectionParams{AID: currentUser.ID, ID: int64(userID)})
+	connection, err := queries.GetConnection(ctx, api.GetConnectionParams{AID: currentUser.ID, ID: int64(user.ID)})
 	if err != nil {
 		render.Error(w, "xxx"+err.Error(), http.StatusInternalServerError)
 		return

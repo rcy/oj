@@ -7,6 +7,9 @@ select * from users where id = ?;
 -- name: CreateParent :one
 insert into users(email, username, is_parent) values(?, ?, true) returning *;
 
+-- name: ParentByID :one
+select * from users where id = ? and is_parent = true;
+
 -- name: UserByEmail :one
 select * from users where email = ?;
 

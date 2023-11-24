@@ -555,6 +555,27 @@ func (q *Queries) KidsByParentID(ctx context.Context, parentID int64) ([]User, e
 	return items, nil
 }
 
+const parentByID = `-- name: ParentByID :one
+select id, created_at, username, email, avatar_url, is_parent, bio, become_user_id, admin from users where id = ? and is_parent = true
+`
+
+func (q *Queries) ParentByID(ctx context.Context, id int64) (User, error) {
+	row := q.db.QueryRowContext(ctx, parentByID, id)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.Username,
+		&i.Email,
+		&i.AvatarURL,
+		&i.IsParent,
+		&i.Bio,
+		&i.BecomeUserID,
+		&i.Admin,
+	)
+	return i, err
+}
+
 const parentsByKidID = `-- name: ParentsByKidID :many
 select users.id, users.created_at, users.username, users.email, users.avatar_url, users.is_parent, users.bio, users.become_user_id, users.admin from kids_parents join users on kids_parents.parent_id = users.id where kids_parents.kid_id = ?
 `
