@@ -5,11 +5,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"oj/api"
 	"oj/db"
 	"oj/handlers/eventsource"
 	"oj/handlers/render"
 	"oj/internal/middleware/auth"
-	"oj/models/users"
 	"oj/worker"
 	"strconv"
 	"strings"
@@ -48,6 +48,8 @@ type RoomUser struct {
 }
 
 func postMessage(ctx context.Context, roomID, senderID int64, body string) error {
+	queries := api.New(db.DB)
+
 	var roomUsers []RoomUser
 
 	tx, err := db.DB.Beginx()
@@ -56,9 +58,7 @@ func postMessage(ctx context.Context, roomID, senderID int64, body string) error
 	}
 	defer tx.Rollback()
 
-	var sender users.User
-
-	err = tx.Get(&sender, `select * from users where id = ?`, senderID)
+	_, err = queries.UserByID(ctx, senderID)
 	if err != nil {
 		return err
 	}
