@@ -28,7 +28,7 @@ func KidConnect(w http.ResponseWriter, r *http.Request) {
 
 	connections, err := reachable.ReachableKids(ctx, l.User.ID)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		render.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
