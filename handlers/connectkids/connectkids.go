@@ -40,7 +40,7 @@ func KidConnect(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	for _, parent := range parents {
-		kids, err := GetKids(ctx, db.DB, parent.ID)
+		kids, err := queries.GetKids(ctx, parent.ID)
 		if err != nil {
 			render.Error(w, err.Error(), http.StatusInternalServerError)
 			return
@@ -55,7 +55,7 @@ func KidConnect(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		for _, friend := range friends {
-			kids, err := GetKids(ctx, db.DB, friend.ID)
+			kids, err := queries.GetKids(ctx, friend.ID)
 			if err != nil {
 				render.Error(w, err.Error(), http.StatusInternalServerError)
 				return
@@ -99,19 +99,6 @@ func GetParents(ctx context.Context, db *sqlx.DB, userID int64) ([]users.User, e
 		return nil, err
 	}
 	return parents, nil
-}
-
-func GetKids(ctx context.Context, db *sqlx.DB, userID int64) ([]users.User, error) {
-	var kids []users.User
-	err := db.Select(&kids, `
-		select u.* from users u
-		join friends f1 on f1.b_id = u.id and f1.a_id = $1 and f1.b_role = 'child'
-		join friends f2 on f2.a_id = u.id and f2.b_id = $1 and f2.b_role = 'parent'
-	`, userID)
-	if err != nil {
-		return nil, err
-	}
-	return kids, nil
 }
 
 func PutKidFriend(w http.ResponseWriter, r *http.Request) {

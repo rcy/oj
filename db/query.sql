@@ -176,3 +176,8 @@ limit 128;
 select u.* from users u
 join friends f1 on f1.b_id = u.id and f1.a_id = ?1 and f1.b_role = 'friend'
 join friends f2 on f2.a_id = u.id and f2.b_id = ?1 and f2.b_role = 'friend';
+
+-- name: GetKids :many
+select u.* from users u
+join friends f1 on f1.b_id = u.id and f1.a_id = ?1 and f1.b_role = 'child'
+join friends f2 on f2.a_id = u.id and f2.b_id = ?1 and f2.b_role = 'parent';
