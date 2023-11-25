@@ -596,6 +596,45 @@ func (q *Queries) GetKids(ctx context.Context, aID int64) ([]User, error) {
 	return items, nil
 }
 
+const getParents = `-- name: GetParents :many
+select u.id, u.created_at, u.username, u.email, u.avatar_url, u.is_parent, u.bio, u.become_user_id, u.admin from users u
+join friends f1 on f1.b_id = u.id and f1.a_id = ?1 and f1.b_role = 'parent'
+join friends f2 on f2.a_id = u.id and f2.b_id = ?1 and f2.b_role = 'child'
+`
+
+func (q *Queries) GetParents(ctx context.Context, aID int64) ([]User, error) {
+	rows, err := q.db.QueryContext(ctx, getParents, aID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []User
+	for rows.Next() {
+		var i User
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.Username,
+			&i.Email,
+			&i.AvatarURL,
+			&i.IsParent,
+			&i.Bio,
+			&i.BecomeUserID,
+			&i.Admin,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const kidsByParentID = `-- name: KidsByParentID :many
 select users.id, users.created_at, users.username, users.email, users.avatar_url, users.is_parent, users.bio, users.become_user_id, users.admin from kids_parents join users on kids_parents.kid_id = users.id where kids_parents.parent_id = ? order by kids_parents.created_at desc
 `

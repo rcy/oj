@@ -1,7 +1,6 @@
 package connectkids
 
 import (
-	"context"
 	_ "embed"
 	"log"
 	"net/http"
@@ -15,7 +14,6 @@ import (
 	"strconv"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/jmoiron/sqlx"
 )
 
 var (
@@ -34,7 +32,7 @@ func KidConnect(w http.ResponseWriter, r *http.Request) {
 
 	reachableKids := map[int64]any{}
 
-	parents, err := GetParents(ctx, db.DB, lay.User.ID)
+	parents, err := queries.GetParents(ctx, lay.User.ID)
 	if err != nil {
 		render.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -86,19 +84,6 @@ func KidConnect(w http.ResponseWriter, r *http.Request) {
 		Layout:      lay,
 		Connections: connections,
 	})
-}
-
-func GetParents(ctx context.Context, db *sqlx.DB, userID int64) ([]users.User, error) {
-	var parents []users.User
-	err := db.Select(&parents, `
-		select u.* from users u
-		join friends f1 on f1.b_id = u.id and f1.a_id = $1 and f1.b_role = 'parent'
-		join friends f2 on f2.a_id = u.id and f2.b_id = $1 and f2.b_role = 'child'
-	`, userID)
-	if err != nil {
-		return nil, err
-	}
-	return parents, nil
 }
 
 func PutKidFriend(w http.ResponseWriter, r *http.Request) {
