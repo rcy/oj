@@ -8,7 +8,6 @@ import (
 	"oj/handlers/layout"
 	"oj/handlers/render"
 	"oj/internal/middleware/auth"
-	"oj/models/users"
 	"oj/services/reachable"
 	"oj/worker"
 	"strconv"
@@ -47,14 +46,13 @@ func PutKidFriend(w http.ResponseWriter, r *http.Request) {
 	userID, _ := strconv.Atoi(chi.URLParam(r, "userID"))
 	queries := api.New(db.DB)
 
-	var user users.User
-	err := db.DB.Get(&user, `select * from users where id = $1`, userID)
+	user, err := queries.UserByID(ctx, int64(userID))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusNotFound)
 		return
 	}
 
-	result, err := db.DB.Exec(`insert into friends(a_id, b_id, b_role) values(?,?,'friend')`, currentUser.ID, userID)
+	result, err := db.DB.Exec(`insert into friends(a_id, b_id, b_role) values(?,?,'friend')`, currentUser.ID, user.ID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -66,7 +64,7 @@ func PutKidFriend(w http.ResponseWriter, r *http.Request) {
 	}
 	go worker.NotifyKidFriend(friendID)
 
-	connection, err := queries.GetConnection(ctx, api.GetConnectionParams{AID: currentUser.ID, ID: int64(userID)})
+	connection, err := queries.GetConnection(ctx, api.GetConnectionParams{AID: currentUser.ID, ID: user.ID})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -81,20 +79,19 @@ func DeleteKidFriend(w http.ResponseWriter, r *http.Request) {
 	userID, _ := strconv.Atoi(chi.URLParam(r, "userID"))
 	queries := api.New(db.DB)
 
-	var user users.User
-	err := db.DB.Get(&user, `select * from users where id = $1`, userID)
+	user, err := queries.UserByID(ctx, int64(userID))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusNotFound)
 		return
 	}
 
-	_, err = db.DB.Exec(`delete from friends where a_id = $1 and b_id = $2`, currentUser.ID, userID)
+	_, err = db.DB.Exec(`delete from friends where a_id = $1 and b_id = $2`, currentUser.ID, user.ID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	connection, err := queries.GetConnection(ctx, api.GetConnectionParams{AID: currentUser.ID, ID: int64(userID)})
+	connection, err := queries.GetConnection(ctx, api.GetConnectionParams{AID: currentUser.ID, ID: user.ID})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
