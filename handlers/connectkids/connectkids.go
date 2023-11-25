@@ -49,7 +49,7 @@ func KidConnect(w http.ResponseWriter, r *http.Request) {
 			reachableKids[kids.ID] = true
 		}
 
-		friends, err := GetFriends(ctx, db.DB, parent.ID)
+		friends, err := queries.GetFriends(ctx, parent.ID)
 		if err != nil {
 			render.Error(w, err.Error(), http.StatusInternalServerError)
 			return
@@ -112,19 +112,6 @@ func GetKids(ctx context.Context, db *sqlx.DB, userID int64) ([]users.User, erro
 		return nil, err
 	}
 	return kids, nil
-}
-
-func GetFriends(ctx context.Context, db *sqlx.DB, userID int64) ([]users.User, error) {
-	var friends []users.User
-	err := db.Select(&friends, `
-		select u.* from users u
-		join friends f1 on f1.b_id = u.id and f1.a_id = $1 and f1.b_role = 'friend'
-		join friends f2 on f2.a_id = u.id and f2.b_id = $1 and f2.b_role = 'friend'
-	`, userID)
-	if err != nil {
-		return nil, err
-	}
-	return friends, nil
 }
 
 func PutKidFriend(w http.ResponseWriter, r *http.Request) {
