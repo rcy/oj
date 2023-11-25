@@ -7,7 +7,8 @@ import (
 	"oj/db"
 )
 
-func CreateKid(ctx context.Context, u api.User, username string) (*api.User, error) {
+// Create a new kid user with username
+func CreateKid(ctx context.Context, parentID int64, username string) (*api.User, error) {
 	tx, err := db.DB.Beginx()
 	if err != nil {
 		return nil, err
@@ -21,17 +22,17 @@ func CreateKid(ctx context.Context, u api.User, username string) (*api.User, err
 		return nil, err
 	}
 
-	_, err = queries.CreateKidParent(ctx, api.CreateKidParentParams{KidID: kid.ID, ParentID: u.ID})
+	_, err = queries.CreateKidParent(ctx, api.CreateKidParentParams{KidID: kid.ID, ParentID: parentID})
 	if err != nil {
 		return nil, err
 	}
 
-	_, err = queries.CreateFriend(ctx, api.CreateFriendParams{AID: u.ID, BID: kid.ID, BRole: "child"})
+	_, err = queries.CreateFriend(ctx, api.CreateFriendParams{AID: parentID, BID: kid.ID, BRole: "child"})
 	if err != nil {
 		return nil, err
 	}
 
-	_, err = queries.CreateFriend(ctx, api.CreateFriendParams{AID: kid.ID, BID: u.ID, BRole: "parent"})
+	_, err = queries.CreateFriend(ctx, api.CreateFriendParams{AID: kid.ID, BID: parentID, BRole: "parent"})
 	if err != nil {
 		return nil, err
 	}

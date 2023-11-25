@@ -62,7 +62,7 @@ func CreateKid(w http.ResponseWriter, r *http.Request) {
 
 	_, err = queries.UserByUsername(ctx, username)
 	if errors.Is(err, sql.ErrNoRows) {
-		kid, err := family.CreateKid(ctx, user, username)
+		kid, err := family.CreateKid(ctx, user.ID, username)
 		if err != nil {
 			render.Error(w, err.Error(), 500)
 			return
