@@ -89,6 +89,8 @@ func applicationRouter(r chi.Router) {
 	r.Get("/me", me.Page)
 	r.Get("/me/edit", editme.MyPageEdit)
 	r.Post("/me/edit", editme.Post)
+	r.Get("/avatars", editme.GetAvatars)
+	r.Put("/avatar", editme.PutAvatar)
 
 	r.Get("/me/family", family.Page)
 	r.Get("/me/friends", friends.Page)
@@ -115,9 +117,6 @@ func applicationRouter(r chi.Router) {
 
 	r.Get("/u/{userID}", u.UserPage)
 	r.Get("/u/{userID}/chat", chat.Page)
-
-	r.Get("/avatars", editme.GetAvatars)
-	r.Put("/avatar", editme.PutAvatar)
 
 	r.Get("/connect", connect.Connect)
 	r.Put("/connect/friend/{userID}", connect.PutParentFriend)
