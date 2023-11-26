@@ -14,7 +14,7 @@
 
     {{template "card" .}}
 
-    {{if .CanChat}}
+    {{if .Connected}}
       <a class="nes-btn is-success" href="/u/{{.User.ID}}/chat">Chat</a>
     {{end}}
   </div>

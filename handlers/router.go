@@ -115,7 +115,7 @@ func applicationRouter(r chi.Router) {
 	r.Get("/fun/quizzes/attempts/{attemptID}/done", completed.Page)
 	r.Post("/fun/quizzes/attempts/{attemptID}/question/{questionID}/response", attempt.PostResponse)
 
-	r.Get("/u/{userID}", u.UserPage)
+	r.Get("/u/{userID}", u.Page)
 	r.Get("/u/{userID}/chat", chat.Page)
 
 	r.Get("/connect", connect.Connect)

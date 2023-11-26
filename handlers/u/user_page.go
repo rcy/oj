@@ -20,10 +20,10 @@ var (
 	//go:embed user_page.gohtml
 	pageContent string
 
-	userPageTemplate = layout.MustParse(pageContent, me.CardContent, connect.ConnectionContent)
+	pageTemplate = layout.MustParse(pageContent, me.CardContent, connect.ConnectionContent)
 )
 
-func UserPage(w http.ResponseWriter, r *http.Request) {
+func Page(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	queries := api.New(db.DB)
 	l := layout.FromContext(r.Context())
@@ -58,19 +58,19 @@ func UserPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	canChat := connection.RoleIn != "" && connection.RoleOut != ""
+	connected := connection.RoleIn != "" && connection.RoleOut != ""
 
 	d := struct {
 		Layout     layout.Data
 		User       api.User
 		Connection api.GetConnectionRow
-		CanChat    bool
+		Connected  bool
 	}{
 		Layout:     l,
 		User:       pageUser,
 		Connection: connection,
-		CanChat:    canChat,
+		Connected:  connected,
 	}
 
-	render.Execute(w, userPageTemplate, d)
+	render.Execute(w, pageTemplate, d)
 }
