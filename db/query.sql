@@ -152,7 +152,7 @@ left join friends f2 on f2.a_id = u.id and f2.b_id = ?1
 where
   u.id = ?2;
 
--- name: GetConnections :many
+-- name: GetCurrentAndPotentialParentConnections :many
 select u.*,
        case
            when f1.a_id = ?1 then f1.b_role

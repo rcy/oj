@@ -28,7 +28,7 @@ func Connect(w http.ResponseWriter, r *http.Request) {
 	lay := layout.FromContext(r.Context())
 	queries := api.New(db.DB)
 
-	connections, err := queries.GetConnections(r.Context(), lay.User.ID)
+	connections, err := queries.GetCurrentAndPotentialParentConnections(r.Context(), lay.User.ID)
 	if err != nil {
 		render.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -36,7 +36,7 @@ func Connect(w http.ResponseWriter, r *http.Request) {
 
 	render.Execute(w, t, struct {
 		Layout      layout.Data
-		Connections []api.GetConnectionsRow
+		Connections []api.GetCurrentAndPotentialParentConnectionsRow
 	}{
 		Layout:      lay,
 		Connections: connections,

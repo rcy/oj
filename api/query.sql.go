@@ -450,7 +450,7 @@ func (q *Queries) GetConnection(ctx context.Context, arg GetConnectionParams) (G
 	return i, err
 }
 
-const getConnections = `-- name: GetConnections :many
+const getCurrentAndPotentialParentConnections = `-- name: GetCurrentAndPotentialParentConnections :many
 select u.id, u.created_at, u.username, u.email, u.avatar_url, u.is_parent, u.bio, u.become_user_id, u.admin,
        case
            when f1.a_id = ?1 then f1.b_role
@@ -471,7 +471,7 @@ order by role_in desc
 limit 128
 `
 
-type GetConnectionsRow struct {
+type GetCurrentAndPotentialParentConnectionsRow struct {
 	ID           int64
 	CreatedAt    time.Time
 	Username     string
@@ -485,15 +485,15 @@ type GetConnectionsRow struct {
 	RoleIn       interface{}
 }
 
-func (q *Queries) GetConnections(ctx context.Context, aID int64) ([]GetConnectionsRow, error) {
-	rows, err := q.db.QueryContext(ctx, getConnections, aID)
+func (q *Queries) GetCurrentAndPotentialParentConnections(ctx context.Context, aID int64) ([]GetCurrentAndPotentialParentConnectionsRow, error) {
+	rows, err := q.db.QueryContext(ctx, getCurrentAndPotentialParentConnections, aID)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []GetConnectionsRow
+	var items []GetCurrentAndPotentialParentConnectionsRow
 	for rows.Next() {
-		var i GetConnectionsRow
+		var i GetCurrentAndPotentialParentConnectionsRow
 		if err := rows.Scan(
 			&i.ID,
 			&i.CreatedAt,
