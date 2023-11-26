@@ -10,3 +10,6 @@ sql:
         rename:
           sender_avatar_url: "SenderAvatarURL"
           avatar_url: "AvatarURL"
+        overrides:
+          - column: "gradients.gradient"
+            go_type: "oj/element/gradient.Gradient"

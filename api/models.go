@@ -7,6 +7,8 @@ package api
 import (
 	"database/sql"
 	"time"
+
+	"oj/element/gradient"
 )
 
 type Attempt struct {
@@ -46,7 +48,7 @@ type Gradient struct {
 	ID        int64
 	CreatedAt string
 	UserID    int64
-	Gradient  []byte
+	Gradient  gradient.Gradient
 }
 
 type Image struct {

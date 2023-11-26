@@ -9,6 +9,8 @@ import (
 	"context"
 	"database/sql"
 	"time"
+
+	"oj/element/gradient"
 )
 
 const allQuizzes = `-- name: AllQuizzes :many
@@ -518,6 +520,66 @@ func (q *Queries) GetConnections(ctx context.Context, aID int64) ([]GetConnectio
 	return items, nil
 }
 
+const getFamilyWithGradient = `-- name: GetFamilyWithGradient :many
+select u.id, u.created_at, u.username, u.email, u.avatar_url, u.is_parent, u.bio, u.become_user_id, u.admin, g.gradient, max(g.created_at)
+from users u
+join friends f1 on f1.b_id = u.id and f1.a_id = ?1
+join friends f2 on f2.a_id = u.id and f2.b_id = ?1
+left outer join gradients g
+on g.user_id = f1.b_id
+where f1.b_role <> 'friend'
+group by u.id
+`
+
+type GetFamilyWithGradientRow struct {
+	ID           int64
+	CreatedAt    time.Time
+	Username     string
+	Email        sql.NullString
+	AvatarURL    string
+	IsParent     bool
+	Bio          string
+	BecomeUserID sql.NullInt64
+	Admin        bool
+	Gradient     gradient.Gradient
+	Max          interface{}
+}
+
+func (q *Queries) GetFamilyWithGradient(ctx context.Context, aID int64) ([]GetFamilyWithGradientRow, error) {
+	rows, err := q.db.QueryContext(ctx, getFamilyWithGradient, aID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetFamilyWithGradientRow
+	for rows.Next() {
+		var i GetFamilyWithGradientRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.Username,
+			&i.Email,
+			&i.AvatarURL,
+			&i.IsParent,
+			&i.Bio,
+			&i.BecomeUserID,
+			&i.Admin,
+			&i.Gradient,
+			&i.Max,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getFriends = `-- name: GetFriends :many
 select u.id, u.created_at, u.username, u.email, u.avatar_url, u.is_parent, u.bio, u.become_user_id, u.admin from users u
 join friends f1 on f1.b_id = u.id and f1.a_id = ?1 and f1.b_role = 'friend'
@@ -543,6 +605,66 @@ func (q *Queries) GetFriends(ctx context.Context, aID int64) ([]User, error) {
 			&i.Bio,
 			&i.BecomeUserID,
 			&i.Admin,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getFriendsWithGradient = `-- name: GetFriendsWithGradient :many
+select u.id, u.created_at, u.username, u.email, u.avatar_url, u.is_parent, u.bio, u.become_user_id, u.admin, g.gradient, max(g.created_at)
+from users u
+join friends f1 on f1.b_id = u.id and f1.a_id = ?1-- and f1.b_role = 'friend'
+join friends f2 on f2.a_id = u.id and f2.b_id = ?1-- and f2.b_role = 'friend'
+left outer join gradients g
+on g.user_id = f1.b_id
+where f1.b_role = 'friend'
+group by u.id
+`
+
+type GetFriendsWithGradientRow struct {
+	ID           int64
+	CreatedAt    time.Time
+	Username     string
+	Email        sql.NullString
+	AvatarURL    string
+	IsParent     bool
+	Bio          string
+	BecomeUserID sql.NullInt64
+	Admin        bool
+	Gradient     gradient.Gradient
+	Max          interface{}
+}
+
+func (q *Queries) GetFriendsWithGradient(ctx context.Context, aID int64) ([]GetFriendsWithGradientRow, error) {
+	rows, err := q.db.QueryContext(ctx, getFriendsWithGradient, aID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetFriendsWithGradientRow
+	for rows.Next() {
+		var i GetFriendsWithGradientRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.Username,
+			&i.Email,
+			&i.AvatarURL,
+			&i.IsParent,
+			&i.Bio,
+			&i.BecomeUserID,
+			&i.Admin,
+			&i.Gradient,
+			&i.Max,
 		); err != nil {
 			return nil, err
 		}

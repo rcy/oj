@@ -177,6 +177,26 @@ select u.* from users u
 join friends f1 on f1.b_id = u.id and f1.a_id = ?1 and f1.b_role = 'friend'
 join friends f2 on f2.a_id = u.id and f2.b_id = ?1 and f2.b_role = 'friend';
 
+-- name: GetFriendsWithGradient :many
+select u.*, g.gradient, max(g.created_at)
+from users u
+join friends f1 on f1.b_id = u.id and f1.a_id = ?1
+join friends f2 on f2.a_id = u.id and f2.b_id = ?1
+left outer join gradients g
+on g.user_id = f1.b_id
+where f1.b_role = 'friend'
+group by u.id;
+
+-- name: GetFamilyWithGradient :many
+select u.*, g.gradient, max(g.created_at)
+from users u
+join friends f1 on f1.b_id = u.id and f1.a_id = ?1
+join friends f2 on f2.a_id = u.id and f2.b_id = ?1
+left outer join gradients g
+on g.user_id = f1.b_id
+where f1.b_role <> 'friend'
+group by u.id;
+
 -- name: GetKids :many
 select u.* from users u
 join friends f1 on f1.b_id = u.id and f1.a_id = ?1 and f1.b_role = 'child'
@@ -186,4 +206,3 @@ join friends f2 on f2.a_id = u.id and f2.b_id = ?1 and f2.b_role = 'parent';
 select u.* from users u
 join friends f1 on f1.b_id = u.id and f1.a_id = ?1 and f1.b_role = 'parent'
 join friends f2 on f2.a_id = u.id and f2.b_id = ?1 and f2.b_role = 'child';
-

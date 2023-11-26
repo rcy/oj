@@ -41,7 +41,7 @@ func Page(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-	ug, err := background.ForUser(pageUser.ID)
+	ug, err := background.ForUser(ctx, pageUser.ID)
 	if err != nil {
 		render.Error(w, err.Error(), 500)
 		return
@@ -66,7 +66,7 @@ func Page(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// get the layout after the deliveries have been updated to ensure unread count is correct
-	l, err := layout.FromUser(user)
+	l, err := layout.FromUser(ctx, user)
 	if err != nil {
 		render.Error(w, err.Error(), 500)
 		return

@@ -1,6 +1,7 @@
 package layout
 
 import (
+	"context"
 	_ "embed"
 	"fmt"
 	"html/template"
@@ -36,8 +37,8 @@ type Data struct {
 	UnreadCount        int
 }
 
-func FromUser(user api.User) (Data, error) {
-	backgroundGradient, err := background.ForUser(user.ID)
+func FromUser(ctx context.Context, user api.User) (Data, error) {
+	backgroundGradient, err := background.ForUser(ctx, user.ID)
 	if err != nil {
 		return Data{}, err
 	}

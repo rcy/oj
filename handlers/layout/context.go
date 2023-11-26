@@ -27,7 +27,7 @@ func Provider(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
 		user := auth.FromContext(ctx)
-		data, err := FromUser(user)
+		data, err := FromUser(ctx, user)
 		if err != nil {
 			render.Error(w, err.Error(), http.StatusInternalServerError)
 			return

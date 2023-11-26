@@ -44,7 +44,7 @@ func UserPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	ug, err := background.ForUser(pageUser.ID)
+	ug, err := background.ForUser(ctx, pageUser.ID)
 	if err != nil {
 		render.Error(w, err.Error(), http.StatusInternalServerError)
 		return

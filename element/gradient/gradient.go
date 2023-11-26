@@ -1,6 +1,8 @@
 package gradient
 
 import (
+	"database/sql/driver"
+	"encoding/json"
 	"fmt"
 	"html/template"
 	"math/rand"
@@ -19,6 +21,20 @@ type Gradient struct {
 	Degrees   int
 	Colors    []string
 	Positions []int
+}
+
+func (g Gradient) Value() (driver.Value, error) {
+	return json.Marshal(g)
+}
+
+func (g *Gradient) Scan(value interface{}) error {
+	b, ok := value.([]byte)
+	if !ok || len(b) == 0 {
+		*g = Default
+		return nil
+	}
+
+	return json.Unmarshal(b, g)
 }
 
 var (
