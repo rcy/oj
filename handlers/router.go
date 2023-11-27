@@ -24,6 +24,7 @@ import (
 	"oj/handlers/me"
 	"oj/handlers/me/editme"
 	"oj/handlers/parent"
+	"oj/handlers/postoffice"
 	"oj/handlers/render"
 	"oj/handlers/u"
 	"oj/handlers/welcome"
@@ -115,7 +116,7 @@ func applicationRouter(r chi.Router) {
 	r.Get("/fun/quizzes/attempts/{attemptID}/done", completed.Page)
 	r.Post("/fun/quizzes/attempts/{attemptID}/question/{questionID}/response", attempt.PostResponse)
 
-	r.Get("/u/{userID}", u.Page)
+	r.Route("/u/{userID}", u.Router)
 	r.Get("/u/{userID}/chat", chat.Page)
 
 	r.Get("/connect", connect.Connect)
@@ -129,6 +130,8 @@ func applicationRouter(r chi.Router) {
 	r.Get("/deliveries/{deliveryID}", deliveries.Page)
 	r.Get("/delivery/{deliveryID}", deliveries.Page) // temporary
 	r.Post("/deliveries/{deliveryID}/logout", deliveries.Logout)
+
+	r.Route("/postoffice", postoffice.Router)
 
 	r.NotFound(func(w http.ResponseWriter, r *http.Request) {
 		render.Error(w, "Page not found", 404)

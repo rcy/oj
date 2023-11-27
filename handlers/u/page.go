@@ -17,7 +17,7 @@ import (
 )
 
 var (
-	//go:embed user_page.gohtml
+	//go:embed page.gohtml
 	pageContent string
 
 	pageTemplate = layout.MustParse(pageContent, me.CardContent, connect.ConnectionContent)

@@ -85,6 +85,16 @@ type MigrationVersion struct {
 	Version sql.NullInt64
 }
 
+type Postcard struct {
+	ID        int64
+	CreatedAt time.Time
+	Sender    int64
+	Recipient int64
+	Subject   string
+	Body      string
+	State     string
+}
+
 type Question struct {
 	ID        int64
 	CreatedAt string

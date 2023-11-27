@@ -16,7 +16,7 @@ func (f GetConnectionRow) Status() string {
 	}
 }
 
-func (f GetConnectionsRow) Status() string {
+func (f GetCurrentAndPotentialParentConnectionsRow) Status() string {
 	if f.RoleOut == "" {
 		if f.RoleIn == "" {
 			return "none"

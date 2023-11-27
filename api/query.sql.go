@@ -229,6 +229,39 @@ func (q *Queries) CreateParent(ctx context.Context, arg CreateParentParams) (Use
 	return i, err
 }
 
+const createPostcard = `-- name: CreatePostcard :one
+insert into postcards(sender, recipient, subject, body, state) values(?,?,?,?,?) returning id, created_at, sender, recipient, subject, body, state
+`
+
+type CreatePostcardParams struct {
+	Sender    int64
+	Recipient int64
+	Subject   string
+	Body      string
+	State     string
+}
+
+func (q *Queries) CreatePostcard(ctx context.Context, arg CreatePostcardParams) (Postcard, error) {
+	row := q.db.QueryRowContext(ctx, createPostcard,
+		arg.Sender,
+		arg.Recipient,
+		arg.Subject,
+		arg.Body,
+		arg.State,
+	)
+	var i Postcard
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.Sender,
+		&i.Recipient,
+		&i.Subject,
+		&i.Body,
+		&i.State,
+	)
+	return i, err
+}
+
 const createQuestion = `-- name: CreateQuestion :one
 insert into questions(quiz_id, text, answer) values(?,?,?) returning id, created_at, quiz_id, text, answer
 `
@@ -450,6 +483,46 @@ func (q *Queries) GetConnection(ctx context.Context, arg GetConnectionParams) (G
 	return i, err
 }
 
+const getConnections = `-- name: GetConnections :many
+select u.id, u.created_at, u.username, u.email, u.avatar_url, u.is_parent, u.bio, u.become_user_id, u.admin from users u
+join friends f1 on f1.b_id = u.id and f1.a_id = ?1
+join friends f2 on f2.a_id = u.id and f2.b_id = ?1
+where f1.b_role <> '' and f2.b_role <> ''
+`
+
+func (q *Queries) GetConnections(ctx context.Context, aID int64) ([]User, error) {
+	rows, err := q.db.QueryContext(ctx, getConnections, aID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []User
+	for rows.Next() {
+		var i User
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.Username,
+			&i.Email,
+			&i.AvatarURL,
+			&i.IsParent,
+			&i.Bio,
+			&i.BecomeUserID,
+			&i.Admin,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getCurrentAndPotentialParentConnections = `-- name: GetCurrentAndPotentialParentConnections :many
 select u.id, u.created_at, u.username, u.email, u.avatar_url, u.is_parent, u.bio, u.become_user_id, u.admin,
        case
@@ -622,8 +695,8 @@ func (q *Queries) GetFriends(ctx context.Context, aID int64) ([]User, error) {
 const getFriendsWithGradient = `-- name: GetFriendsWithGradient :many
 select u.id, u.created_at, u.username, u.email, u.avatar_url, u.is_parent, u.bio, u.become_user_id, u.admin, g.gradient, max(g.created_at)
 from users u
-join friends f1 on f1.b_id = u.id and f1.a_id = ?1-- and f1.b_role = 'friend'
-join friends f2 on f2.a_id = u.id and f2.b_id = ?1-- and f2.b_role = 'friend'
+join friends f1 on f1.b_id = u.id and f1.a_id = ?1
+join friends f2 on f2.a_id = u.id and f2.b_id = ?1
 left outer join gradients g
 on g.user_id = f1.b_id
 where f1.b_role = 'friend'
@@ -1261,6 +1334,112 @@ func (q *Queries) UserGradient(ctx context.Context, userID int64) (Gradient, err
 		&i.Gradient,
 	)
 	return i, err
+}
+
+const userPostcardsReceived = `-- name: UserPostcardsReceived :many
+select p.id, p.created_at, p.sender, p.recipient, p.subject, p.body, p.state, s.username, s.avatar_url
+from postcards p
+join users s on p.sender = s.id
+where recipient = ?
+order by p.created_at desc
+`
+
+type UserPostcardsReceivedRow struct {
+	ID        int64
+	CreatedAt time.Time
+	Sender    int64
+	Recipient int64
+	Subject   string
+	Body      string
+	State     string
+	Username  string
+	AvatarURL string
+}
+
+func (q *Queries) UserPostcardsReceived(ctx context.Context, recipient int64) ([]UserPostcardsReceivedRow, error) {
+	rows, err := q.db.QueryContext(ctx, userPostcardsReceived, recipient)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []UserPostcardsReceivedRow
+	for rows.Next() {
+		var i UserPostcardsReceivedRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.Sender,
+			&i.Recipient,
+			&i.Subject,
+			&i.Body,
+			&i.State,
+			&i.Username,
+			&i.AvatarURL,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const userPostcardsSent = `-- name: UserPostcardsSent :many
+select p.id, p.created_at, p.sender, p.recipient, p.subject, p.body, p.state, r.username, r.avatar_url
+from postcards p
+join users r on p.recipient = r.id
+where sender = ?
+order by p.created_at desc
+`
+
+type UserPostcardsSentRow struct {
+	ID        int64
+	CreatedAt time.Time
+	Sender    int64
+	Recipient int64
+	Subject   string
+	Body      string
+	State     string
+	Username  string
+	AvatarURL string
+}
+
+func (q *Queries) UserPostcardsSent(ctx context.Context, sender int64) ([]UserPostcardsSentRow, error) {
+	rows, err := q.db.QueryContext(ctx, userPostcardsSent, sender)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []UserPostcardsSentRow
+	for rows.Next() {
+		var i UserPostcardsSentRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.Sender,
+			&i.Recipient,
+			&i.Subject,
+			&i.Body,
+			&i.State,
+			&i.Username,
+			&i.AvatarURL,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const usersWithUnreadCounts = `-- name: UsersWithUnreadCounts :many

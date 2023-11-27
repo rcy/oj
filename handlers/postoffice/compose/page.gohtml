@@ -1,0 +1,26 @@
+{{define "main"}}
+  <h1>compose new postcard</h1>
+
+  <form method="post">
+    <label for="recepient_field">To</label>
+    <div class="nes-select">
+      <select required name="recipient" id="recipient_field">
+        <option value="" disabled selected hidden>Select...</option>
+        {{range .Connections}}
+          <option value="{{.ID}}">{{.Username}}</option>
+        {{end}}
+      </select>
+    </div>
+
+    <div class="nes-field">
+      <label for="subject_field">Subject</label>
+      <input required name="subject" type="text" id="subject_field" class="nes-input">
+    </div>
+
+    <label for="body_field">Message</label>
+    <textarea required rows=10 name="body" id="body_field" class="nes-textarea"></textarea>
+
+    <button class="nes-btn primary">send</button>
+    <a href="inbox" class="nes-btn">cancel</a>
+  </form>
+{{end}}

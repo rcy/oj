@@ -177,6 +177,12 @@ select u.* from users u
 join friends f1 on f1.b_id = u.id and f1.a_id = ?1 and f1.b_role = 'friend'
 join friends f2 on f2.a_id = u.id and f2.b_id = ?1 and f2.b_role = 'friend';
 
+-- name: GetConnections :many
+select u.* from users u
+join friends f1 on f1.b_id = u.id and f1.a_id = ?1
+join friends f2 on f2.a_id = u.id and f2.b_id = ?1
+where f1.b_role <> '' and f2.b_role <> '';
+
 -- name: GetFriendsWithGradient :many
 select u.*, g.gradient, max(g.created_at)
 from users u
@@ -206,3 +212,20 @@ join friends f2 on f2.a_id = u.id and f2.b_id = ?1 and f2.b_role = 'parent';
 select u.* from users u
 join friends f1 on f1.b_id = u.id and f1.a_id = ?1 and f1.b_role = 'parent'
 join friends f2 on f2.a_id = u.id and f2.b_id = ?1 and f2.b_role = 'child';
+
+-- name: UserPostcardsSent :many
+select p.*, r.username, r.avatar_url
+from postcards p
+join users r on p.recipient = r.id
+where sender = ?
+order by p.created_at desc;
+
+-- name: UserPostcardsReceived :many
+select p.*, s.username, s.avatar_url
+from postcards p
+join users s on p.sender = s.id
+where recipient = ?
+order by p.created_at desc;
+
+-- name: CreatePostcard :one
+insert into postcards(sender, recipient, subject, body, state) values(?,?,?,?,?) returning *;

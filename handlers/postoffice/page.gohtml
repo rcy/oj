@@ -1,0 +1,22 @@
+{{define "main"}}
+  <h1>welcome to the post office</h1>
+
+  <div style="display:flex; justify-content:space-between">
+    <div></div>
+    <a href="compose" class="nes-btn is-primary">new postcard</a>
+  </div>
+
+  {{range .Sent}}
+    <div>
+      <img height="24" width="24" src="{{.AvatarURL}}"> {{.Username}} {{.Subject}}
+    </div>
+  {{end}}
+
+  <h2>Inbox</h2>
+
+  {{range .Received}}
+    <div>
+      <img height="24" width="24" src="{{.AvatarURL}}"> {{.Username}} {{.Subject}} ({{.State}})
+    </div>
+  {{end}}
+{{end}}

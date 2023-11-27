@@ -81,6 +81,15 @@ CREATE TABLE messages(
 CREATE TABLE migration_version (
 			version INTEGER
 		);
+CREATE TABLE postcards (
+  id integer primary key,
+  created_at datetime not null default current_timestamp,
+  sender integer not null references users,
+  recipient integer not null references users,
+  subject text not null,
+  body text not null,
+  state text not null default 'draft'
+);
 CREATE TABLE questions(
   id integer primary key,
   created_at text not null default current_timestamp,

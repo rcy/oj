@@ -285,4 +285,14 @@ insert into xquizzes(id, created_at, name, description, published)
 drop table quizzes;
 alter table xquizzes rename to quizzes;
 `,
+	`--32 add postcards
+create table postcards (
+  id integer primary key,
+  created_at datetime not null default current_timestamp,
+  sender integer not null references users,
+  recipient integer not null references users,
+  subject text not null,
+  body text not null,
+  state text not null default 'draft'
+)`,
 }
