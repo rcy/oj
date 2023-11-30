@@ -13,6 +13,9 @@ select * from users where id = ? and is_parent = true;
 -- name: UserByEmail :one
 select * from users where email = ?;
 
+-- name: UpdateAvatar :one
+update users set avatar_url = ? where id = ? returning *;
+
 -- name: RecentMessages :many
 select * from (
   select m.*, sender.avatar_url as sender_avatar_url

@@ -39,10 +39,14 @@ func GetAvatars(w http.ResponseWriter, r *http.Request) {
 
 func PutAvatar(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
+	queries := api.New(db.DB)
 	user := auth.FromContext(ctx)
 	newAvatarURL := r.FormValue("URL")
 
-	err := db.DB.Get(&user, "update users set avatar_url = ? where id = ? returning *", newAvatarURL, user.ID)
+	user, err := queries.UpdateAvatar(ctx, api.UpdateAvatarParams{
+		ID:        user.ID,
+		AvatarURL: newAvatarURL,
+	})
 	if err != nil {
 		render.Error(w, err.Error(), http.StatusInternalServerError)
 		return

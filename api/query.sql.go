@@ -1190,6 +1190,32 @@ func (q *Queries) SetQuizPublished(ctx context.Context, arg SetQuizPublishedPara
 	return i, err
 }
 
+const updateAvatar = `-- name: UpdateAvatar :one
+update users set avatar_url = ? where id = ? returning id, created_at, username, email, avatar_url, is_parent, bio, become_user_id, admin
+`
+
+type UpdateAvatarParams struct {
+	AvatarURL string
+	ID        int64
+}
+
+func (q *Queries) UpdateAvatar(ctx context.Context, arg UpdateAvatarParams) (User, error) {
+	row := q.db.QueryRowContext(ctx, updateAvatar, arg.AvatarURL, arg.ID)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.Username,
+		&i.Email,
+		&i.AvatarURL,
+		&i.IsParent,
+		&i.Bio,
+		&i.BecomeUserID,
+		&i.Admin,
+	)
+	return i, err
+}
+
 const updateQuestion = `-- name: UpdateQuestion :one
 update questions set text = ?, answer = ? where id = ? returning id, created_at, quiz_id, text, answer
 `
