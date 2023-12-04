@@ -53,7 +53,7 @@ func Page(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	records, err := queries.RecentMessages(ctx, fmt.Sprint(room.ID))
+	records, err := queries.RecentRoomMessages(ctx, fmt.Sprint(room.ID))
 	if err != nil {
 		render.Error(w, "api selecting messages: "+err.Error(), 500)
 		return
@@ -78,7 +78,7 @@ func Page(w http.ResponseWriter, r *http.Request) {
 		Layout   layout.Data
 		User     api.User
 		RoomID   int64
-		Messages []api.RecentMessagesRow
+		Messages []api.RecentRoomMessagesRow
 	}{
 		Layout:   l,
 		User:     pageUser,

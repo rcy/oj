@@ -1036,7 +1036,7 @@ func (q *Queries) QuizQuestions(ctx context.Context, quizID int64) ([]Question, 
 	return items, nil
 }
 
-const recentMessages = `-- name: RecentMessages :many
+const recentRoomMessages = `-- name: RecentRoomMessages :many
 select id, created_at, sender_id, room_id, body, sender_avatar_url from (
   select m.id, m.created_at, m.sender_id, m.room_id, m.body, sender.avatar_url as sender_avatar_url
    from messages m
@@ -1048,7 +1048,7 @@ select id, created_at, sender_id, room_id, body, sender_avatar_url from (
 order by created_at asc
 `
 
-type RecentMessagesRow struct {
+type RecentRoomMessagesRow struct {
 	ID              int64
 	CreatedAt       time.Time
 	SenderID        int64
@@ -1057,15 +1057,15 @@ type RecentMessagesRow struct {
 	SenderAvatarURL string
 }
 
-func (q *Queries) RecentMessages(ctx context.Context, roomID string) ([]RecentMessagesRow, error) {
-	rows, err := q.db.QueryContext(ctx, recentMessages, roomID)
+func (q *Queries) RecentRoomMessages(ctx context.Context, roomID string) ([]RecentRoomMessagesRow, error) {
+	rows, err := q.db.QueryContext(ctx, recentRoomMessages, roomID)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []RecentMessagesRow
+	var items []RecentRoomMessagesRow
 	for rows.Next() {
-		var i RecentMessagesRow
+		var i RecentRoomMessagesRow
 		if err := rows.Scan(
 			&i.ID,
 			&i.CreatedAt,
