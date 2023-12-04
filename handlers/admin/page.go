@@ -6,6 +6,7 @@ import (
 	"oj/api"
 	"oj/db"
 	"oj/element/gradient"
+	"oj/handlers/admin/messages"
 	"oj/handlers/admin/middleware/auth"
 	"oj/handlers/admin/middleware/background"
 	"oj/handlers/admin/quizzes"
@@ -20,6 +21,7 @@ func Router(r chi.Router) {
 	r.Use(background.Set(gradient.Admin))
 	r.Get("/", page)
 	r.Route("/quizzes", quizzes.Router)
+	r.Route("/messages", messages.Router)
 }
 
 var (

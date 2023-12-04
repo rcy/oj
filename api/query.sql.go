@@ -13,6 +13,73 @@ import (
 	"oj/element/gradient"
 )
 
+const adminDeleteMessage = `-- name: AdminDeleteMessage :one
+update messages
+set body = '+++ deleted +++'
+where id = ?1
+returning id, created_at, sender_id, room_id, body
+`
+
+func (q *Queries) AdminDeleteMessage(ctx context.Context, id int64) (Message, error) {
+	row := q.db.QueryRowContext(ctx, adminDeleteMessage, id)
+	var i Message
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.SenderID,
+		&i.RoomID,
+		&i.Body,
+	)
+	return i, err
+}
+
+const adminRecentMessages = `-- name: AdminRecentMessages :many
+select m.id, m.created_at, m.sender_id, m.room_id, m.body, sender.avatar_url as sender_avatar_url
+ from messages m
+ join users sender on m.sender_id = sender.id
+ order by m.created_at desc
+ limit 128
+`
+
+type AdminRecentMessagesRow struct {
+	ID              int64
+	CreatedAt       time.Time
+	SenderID        int64
+	RoomID          string
+	Body            string
+	SenderAvatarURL string
+}
+
+func (q *Queries) AdminRecentMessages(ctx context.Context) ([]AdminRecentMessagesRow, error) {
+	rows, err := q.db.QueryContext(ctx, adminRecentMessages)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []AdminRecentMessagesRow
+	for rows.Next() {
+		var i AdminRecentMessagesRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.SenderID,
+			&i.RoomID,
+			&i.Body,
+			&i.SenderAvatarURL,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const allQuizzes = `-- name: AllQuizzes :many
 select id, created_at, name, description, published from quizzes order by created_at desc
 `

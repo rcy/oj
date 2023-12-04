@@ -1,0 +1,28 @@
+{{define "main"}}
+  <div class="nes-container ghost">
+    <h1>recent messages</h1>
+
+    <table class="nes-table is-bordered is-centered">
+      {{range .Messages}}
+        {{template "message-row" .}}
+      {{end}}
+    </table>
+  </div>
+{{end}}
+
+{{define "message-row"}}
+  <tr>
+    <td>{{.ID}}</td>
+    <td>{{.SenderID}}</td>
+    <td>{{.Body}}</td>
+    <td>{{ago .CreatedAt}}</td>
+    <td>
+      <button hx-delete="/admin/messages/{{.ID}}"
+              hx-confirm="delete {{.Body}}?"
+              hx-target="closest tr"
+              hx-swap="outerHTML"
+              class="nes-btn"
+      >delete</button>
+    </td>
+  </tr>
+{{end}}

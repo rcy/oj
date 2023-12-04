@@ -27,6 +27,19 @@ select * from (
   ) t
 order by created_at asc;
 
+-- name: AdminRecentMessages :many
+select m.*, sender.avatar_url as sender_avatar_url
+ from messages m
+ join users sender on m.sender_id = sender.id
+ order by m.created_at desc
+ limit 128;
+
+-- name: AdminDeleteMessage :one
+update messages
+set body = '+++ deleted +++'
+where id = ?1
+returning *;
+
 -- name: UsersWithUnreadCounts :many
 select users.*, count(*) unread_count
 from deliveries
