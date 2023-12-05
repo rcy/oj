@@ -7,14 +7,15 @@ require (
 	github.com/acaloiaro/neoq v0.19.0
 	github.com/alexandrevicenzi/go-sse v1.6.0
 	github.com/go-chi/chi/v5 v5.0.8
-	github.com/gomarkdown/markdown v0.0.0-20230322041520-c84983bdbf2a
 	github.com/hako/durafmt v0.0.0-20210608085754-5c1018a4e16b
 	github.com/jmoiron/sqlx v1.3.5
 	github.com/mailgun/mailgun-go/v4 v4.9.0
 	github.com/microcosm-cc/bluemonday v1.0.25
 	github.com/minoplhy/duckduckgo-images-api v1.1.1
 	github.com/notnil/chess v1.9.0
+	golang.org/x/exp v0.0.0-20230817173708-d852ddb80c63
 	modernc.org/sqlite v1.23.1
+	mvdan.cc/xurls/v2 v2.5.0
 )
 
 require (
@@ -36,7 +37,6 @@ require (
 	github.com/robfig/cron v1.2.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	go.uber.org/zap v1.25.0 // indirect
-	golang.org/x/exp v0.0.0-20230817173708-d852ddb80c63 // indirect
 	golang.org/x/mod v0.12.0 // indirect
 	golang.org/x/net v0.17.0 // indirect
 	golang.org/x/sys v0.13.0 // indirect
