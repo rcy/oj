@@ -3,9 +3,19 @@
     <h1>recent messages</h1>
 
     <table class="nes-table is-bordered is-centered">
-      {{range .Messages}}
-        {{template "message-row" .}}
-      {{end}}
+      <thead>
+        <th>id</th>
+        <th>r</th>
+        <th colspan="2">sender</th>
+        <th>message body</th>
+        <th>sent</th>
+        <th></th>
+      </thead>
+      <tbody>
+        {{range .Messages}}
+          {{template "message-row" .}}
+        {{end}}
+      </tbody>
     </table>
   </div>
 {{end}}
@@ -13,6 +23,7 @@
 {{define "message-row"}}
   <tr>
     <td>{{.ID}}</td>
+    <td>{{.RoomID}}</td>
     <td>{{.SenderID}}</td>
     <td>{{.SenderUsername}}</td>
     <td>{{.Body}}</td>
