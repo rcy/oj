@@ -1,25 +1,30 @@
 package md
 
 import (
+	"fmt"
 	"html/template"
+	"strings"
 
-	"github.com/gomarkdown/markdown"
-	"github.com/gomarkdown/markdown/html"
-	"github.com/gomarkdown/markdown/parser"
 	"github.com/microcosm-cc/bluemonday"
+	"mvdan.cc/xurls/v2"
 )
 
 func RenderString(text string) template.HTML {
-	p := parser.NewWithExtensions(parser.NoExtensions | parser.Autolink)
-	r := html.NewRenderer(html.RendererOptions{Flags: html.HrefTargetBlank | html.SkipImages})
+	rx := xurls.Relaxed()
+	str := rx.ReplaceAllStringFunc(text, func(link string) string {
+		withProtocol := link
+
+		if !strings.HasPrefix(link, "https://") && !strings.HasPrefix(link, "http://") {
+			withProtocol = "https://" + link
+		}
+		return fmt.Sprintf(`<a href="%s" target="_blank">%s</a>`, withProtocol, link)
+	})
+
 	bm := bluemonday.NewPolicy()
 	bm.AllowStandardURLs()
 	bm.AllowAttrs("href", "target").OnElements("a")
 	bm.AllowElements("p")
 
-	bytes := markdown.ToHTML([]byte(text), p, r)
-
-	html := bm.SanitizeBytes(bytes)
-
-	return template.HTML(html)
+	html := bm.SanitizeBytes([]byte(str))
+	return template.HTML(fmt.Sprintf("<p>%s</p>\n", html))
 }
