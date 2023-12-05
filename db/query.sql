@@ -28,7 +28,10 @@ select * from (
 order by created_at asc;
 
 -- name: AdminRecentMessages :many
-select m.*, sender.avatar_url as sender_avatar_url
+select
+        m.*,
+        sender.username as sender_username,
+        sender.avatar_url as sender_avatar_url
  from messages m
  join users sender on m.sender_id = sender.id
  order by m.created_at desc

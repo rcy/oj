@@ -34,7 +34,10 @@ func (q *Queries) AdminDeleteMessage(ctx context.Context, id int64) (Message, er
 }
 
 const adminRecentMessages = `-- name: AdminRecentMessages :many
-select m.id, m.created_at, m.sender_id, m.room_id, m.body, sender.avatar_url as sender_avatar_url
+select
+        m.id, m.created_at, m.sender_id, m.room_id, m.body,
+        sender.username as sender_username,
+        sender.avatar_url as sender_avatar_url
  from messages m
  join users sender on m.sender_id = sender.id
  order by m.created_at desc
@@ -47,6 +50,7 @@ type AdminRecentMessagesRow struct {
 	SenderID        int64
 	RoomID          string
 	Body            string
+	SenderUsername  string
 	SenderAvatarURL string
 }
 
@@ -65,6 +69,7 @@ func (q *Queries) AdminRecentMessages(ctx context.Context) ([]AdminRecentMessage
 			&i.SenderID,
 			&i.RoomID,
 			&i.Body,
+			&i.SenderUsername,
 			&i.SenderAvatarURL,
 		); err != nil {
 			return nil, err
