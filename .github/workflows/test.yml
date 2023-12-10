@@ -7,6 +7,15 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    services:
+      minio:
+        image: docker.io/bitnami/minio:2023
+        env:
+          MINIO_ROOT_USER: username
+          MINIO_ROOT_PASSWORD: password
+          MINIO_DEFAULT_BUCKETS: bucket
+        ports:
+        - 9000:9000
     steps:
       - uses: actions/checkout@v3
       - run: make test
