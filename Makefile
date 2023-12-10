@@ -35,8 +35,5 @@ getproddb:
 	fly ssh sftp get /data/oj_production.db-shm
 	fly ssh sftp get /data/oj_production.db-wal
 
-test: export NO_SCHEMA_DUMP=1
-test: export SQLITE_DB=:memory:
-test: export ROOT_URL=http://localhost:2001
 test:
-	go test ./...
+	. ./.env.test && go test ./...
