@@ -155,6 +155,44 @@ func (q *Queries) AllUsers(ctx context.Context) ([]User, error) {
 	return items, nil
 }
 
+const assistantThreads = `-- name: AssistantThreads :many
+select id, created_at, thread_id, assistant_id, user_id from threads where assistant_id = ? and user_id = ?
+`
+
+type AssistantThreadsParams struct {
+	AssistantID string
+	UserID      int64
+}
+
+func (q *Queries) AssistantThreads(ctx context.Context, arg AssistantThreadsParams) ([]Thread, error) {
+	rows, err := q.db.QueryContext(ctx, assistantThreads, arg.AssistantID, arg.UserID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Thread
+	for rows.Next() {
+		var i Thread
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.ThreadID,
+			&i.AssistantID,
+			&i.UserID,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const attemptNextQuestion = `-- name: AttemptNextQuestion :one
 select questions.id, questions.created_at, questions.quiz_id, questions.text, questions.answer from questions
 left join responses on responses.question_id = questions.id
@@ -439,6 +477,29 @@ func (q *Queries) CreateRoomUser(ctx context.Context, arg CreateRoomUserParams) 
 		&i.ID,
 		&i.CreatedAt,
 		&i.RoomID,
+		&i.UserID,
+	)
+	return i, err
+}
+
+const createThread = `-- name: CreateThread :one
+insert into threads(user_id, thread_id, assistant_id) values(?,?,?) returning id, created_at, thread_id, assistant_id, user_id
+`
+
+type CreateThreadParams struct {
+	UserID      int64
+	ThreadID    string
+	AssistantID string
+}
+
+func (q *Queries) CreateThread(ctx context.Context, arg CreateThreadParams) (Thread, error) {
+	row := q.db.QueryRowContext(ctx, createThread, arg.UserID, arg.ThreadID, arg.AssistantID)
+	var i Thread
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.ThreadID,
+		&i.AssistantID,
 		&i.UserID,
 	)
 	return i, err
@@ -1538,6 +1599,28 @@ func (q *Queries) UserPostcardsSent(ctx context.Context, sender int64) ([]UserPo
 		return nil, err
 	}
 	return items, nil
+}
+
+const userThreadByID = `-- name: UserThreadByID :one
+select id, created_at, thread_id, assistant_id, user_id from threads where user_id = ? and thread_id = ?
+`
+
+type UserThreadByIDParams struct {
+	UserID   int64
+	ThreadID string
+}
+
+func (q *Queries) UserThreadByID(ctx context.Context, arg UserThreadByIDParams) (Thread, error) {
+	row := q.db.QueryRowContext(ctx, userThreadByID, arg.UserID, arg.ThreadID)
+	var i Thread
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.ThreadID,
+		&i.AssistantID,
+		&i.UserID,
+	)
+	return i, err
 }
 
 const usersWithUnreadCounts = `-- name: UsersWithUnreadCounts :many
