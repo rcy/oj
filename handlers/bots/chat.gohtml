@@ -1,0 +1,30 @@
+{{define "main"}}
+  <div class="nes-container ghost">
+    <div>
+      <a href="/bots/{{.Assistant.ID}}">{{.Assistant.Name}}</a>
+      {{.Assistant.Description}}
+    </div>
+
+    <img height="64px" width="64px" src="https://api.dicebear.com/7.x/bottts/svg?seed={{.Assistant.ID}}">
+
+    {{template "messages" .Messages}}
+
+    <input type="text" name="message" hx-post="{{.Thread.ID}}/messages">
+  </div>
+{{end}}
+
+
+{{define "messages"}}
+  <div>
+    {{range .}}
+      <div>
+        {{.Role}}:
+        {{range .Content}}
+          <p>
+            {{.Text.Value}}
+          </p>
+        {{end}}
+      </div>
+    {{end}}
+  </div>
+{{end}}

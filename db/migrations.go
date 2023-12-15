@@ -295,4 +295,12 @@ create table postcards (
   body text not null,
   state text not null default 'draft'
 )`,
+	`--33 add threads
+create table threads(
+  id integer primary key,
+  created_at datetime not null default current_timestamp,
+  thread_id text not null,
+  assistant_id text not null,
+  user_id integer references users not null
+)`,
 }

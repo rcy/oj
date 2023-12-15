@@ -248,3 +248,12 @@ order by p.created_at desc;
 
 -- name: CreatePostcard :one
 insert into postcards(sender, recipient, subject, body, state) values(?,?,?,?,?) returning *;
+
+-- name: CreateThread :one
+insert into threads(user_id, thread_id, assistant_id) values(?,?,?) returning *;
+
+-- name: AssistantThreads :many
+select * from threads where assistant_id = ? and user_id = ?;
+
+-- name: UserThreadByID :one
+select * from threads where user_id = ? and thread_id = ?;

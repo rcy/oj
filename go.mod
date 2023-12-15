@@ -14,6 +14,7 @@ require (
 	github.com/minio/minio-go/v7 v7.0.65
 	github.com/minoplhy/duckduckgo-images-api v1.1.1
 	github.com/notnil/chess v1.9.0
+	github.com/sashabaranov/go-openai v1.17.9
 	golang.org/x/exp v0.0.0-20230817173708-d852ddb80c63
 	modernc.org/sqlite v1.23.1
 	mvdan.cc/xurls/v2 v2.5.0
