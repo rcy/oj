@@ -7,18 +7,24 @@
 
     <img height="64px" width="64px" src="https://api.dicebear.com/7.x/bottts/svg?seed={{.Assistant.ID}}">
 
-    <div>
-      {{range .Messages}}
-        <div>
-          {{.Role}}
-          {{range .Content}}
-            <p>
-              {{.Text.Value}}
-            </p>
-          {{end}}
-        </div>
-      {{end}}
-    </div>
-    <input type="text">
+    {{template "messages" .Messages}}
+
+    <input type="text" name="message" hx-post="{{.Thread.ID}}/messages">
+  </div>
+{{end}}
+
+
+{{define "messages"}}
+  <div>
+    {{range .}}
+      <div>
+        {{.Role}}:
+        {{range .Content}}
+          <p>
+            {{.Text.Value}}
+          </p>
+        {{end}}
+      </div>
+    {{end}}
   </div>
 {{end}}

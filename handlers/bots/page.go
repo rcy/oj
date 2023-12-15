@@ -9,10 +9,15 @@ import (
 	"oj/handlers/layout"
 	"oj/handlers/render"
 	"oj/internal/middleware/auth"
+	"strings"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/sashabaranov/go-openai"
 )
+
+func strptr(str string) *string {
+	return &str
+}
 
 var (
 	//go:embed index.gohtml
@@ -30,9 +35,13 @@ var (
 
 func Router(r chi.Router) {
 	r.Get("/", listPage)
-	r.Get("/{assistantID}", assistantPage)
-	r.Get("/{assistantID}/chat", chatRedirectPage)
-	r.Get("/{assistantID}/chat/{threadID}", chatPage)
+	r.Group(func(r chi.Router) {
+		r.Use(provideAssistant)
+		r.Get("/{assistantID}", assistantPage)
+		r.Get("/{assistantID}/chat", chatRedirectPage)
+		r.Get("/{assistantID}/chat/{threadID}", chatPage)
+		r.Post("/{assistantID}/chat/{threadID}/messages", postMessage)
+	})
 }
 
 func listPage(w http.ResponseWriter, r *http.Request) {
@@ -58,11 +67,7 @@ func assistantPage(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	l := layout.FromContext(ctx)
 
-	assistant, err := ai.New().Client.RetrieveAssistant(ctx, chi.URLParam(r, "assistantID"))
-	if err != nil {
-		render.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
+	assistant := assistantFromContext(ctx)
 
 	render.Execute(w, assistantPageTemplate, struct {
 		Layout    layout.Data
@@ -78,12 +83,7 @@ func chatRedirectPage(w http.ResponseWriter, r *http.Request) {
 	query := api.New(db.DB)
 	client := ai.New().Client
 	user := auth.FromContext(ctx)
-
-	assistant, err := client.RetrieveAssistant(ctx, chi.URLParam(r, "assistantID"))
-	if err != nil {
-		render.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
+	assistant := assistantFromContext(ctx)
 
 	threads, err := query.AssistantThreads(ctx, api.AssistantThreadsParams{
 		UserID:      user.ID,
@@ -126,12 +126,7 @@ func chatPage(w http.ResponseWriter, r *http.Request) {
 	l := layout.FromContext(ctx)
 	client := ai.New().Client
 	query := api.New(db.DB)
-
-	assistant, err := client.RetrieveAssistant(ctx, chi.URLParam(r, "assistantID"))
-	if err != nil {
-		render.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
+	assistant := assistantFromContext(ctx)
 
 	userThread, err := query.UserThreadByID(ctx, api.UserThreadByIDParams{
 		UserID:   user.ID,
@@ -167,6 +162,33 @@ func chatPage(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func strptr(str string) *string {
-	return &str
+func postMessage(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	client := ai.New().Client
+	assistant := assistantFromContext(ctx)
+
+	content := strings.TrimSpace(r.FormValue("message"))
+	if content == "" {
+		http.Error(w, "empty message", http.StatusBadRequest)
+		return
+	}
+
+	threadID := chi.URLParam(r, "threadID")
+
+	_, err := client.CreateMessage(ctx, threadID, openai.MessageRequest{
+		Role:    openai.ChatMessageRoleUser,
+		Content: content,
+	})
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	_, err = client.CreateRun(ctx, threadID, openai.RunRequest{
+		AssistantID: assistant.ID,
+	})
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 }
