@@ -140,6 +140,14 @@ type Session struct {
 	Key    interface{}
 }
 
+type Thread struct {
+	ID          int64
+	CreatedAt   time.Time
+	ThreadID    string
+	AssistantID string
+	UserID      int64
+}
+
 type User struct {
 	ID           int64
 	CreatedAt    time.Time

@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 	"oj/handlers/admin"
+	"oj/handlers/bots"
 	"oj/handlers/chat"
 	"oj/handlers/connect"
 	"oj/handlers/connectkids"
@@ -115,6 +116,8 @@ func applicationRouter(r chi.Router) {
 	r.Get("/fun/quizzes/attempts/{attemptID}", attempt.Page)
 	r.Get("/fun/quizzes/attempts/{attemptID}/done", completed.Page)
 	r.Post("/fun/quizzes/attempts/{attemptID}/question/{questionID}/response", attempt.PostResponse)
+
+	r.Route("/bots", bots.Router)
 
 	r.Route("/u/{userID}", u.Router)
 	r.Get("/u/{userID}/chat", chat.Page)

@@ -125,3 +125,10 @@ CREATE TABLE sessions(
   user_id integer references users not null,
   key string unique not null
 );
+CREATE TABLE threads(
+  id integer primary key,
+  created_at datetime not null default current_timestamp,
+  thread_id text not null,
+  assistant_id text not null,
+  user_id integer references users not null
+);

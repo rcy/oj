@@ -1,0 +1,24 @@
+{{define "main"}}
+  <div class="nes-container ghost">
+    <h1 class="nes-text is-error">electrobots</h1>
+
+    <div>
+      <div style="display: flex; align-items: center; gap: 1em">
+        <img height="100px" width="100px" src="https://api.dicebear.com/7.x/bottts/svg?seed={{.Assistant.ID}}">
+        <div>
+          <h3><a href="/bots/{{.Assistant.ID}}">{{.Assistant.Name}}</a></h3>
+          <div>{{.Assistant.Description}}</div>
+        </div>
+      </div>
+      <br/>
+      
+      <h3>Instructions:</h3>
+      <p>
+        {{.Assistant.Instructions}}
+      </p>
+
+      <a href="/bots/{{.Assistant.ID}}/chat" class="nes-btn is-primary">chat with {{.Assistant.Name}}</a>
+    </div>
+
+  </div>
+{{end}}
