@@ -26,7 +26,7 @@ func GetAvatars(w http.ResponseWriter, r *http.Request) {
 	urls := []string{user.AvatarURL}
 
 	for i := 0; i < count; i += 1 {
-		base := "https://api.dicebear.com/7.x/bottts-neutral/svg?seed=%s"
+		base := "https://api.dicebear.com/7.x/avataaars/svg?seed=%s"
 		seed := fmt.Sprintf("%s-%d-%d", time.Now().Format(time.DateOnly), user.ID, i)
 		url := fmt.Sprintf(base, seed)
 		if url != urls[0] {
