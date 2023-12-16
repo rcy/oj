@@ -656,6 +656,65 @@ func (q *Queries) GetConnections(ctx context.Context, aID int64) ([]User, error)
 	return items, nil
 }
 
+const getConnectionsWithGradient = `-- name: GetConnectionsWithGradient :many
+select u.id, u.created_at, u.username, u.email, u.avatar_url, u.is_parent, u.bio, u.become_user_id, u.admin, g.gradient, max(g.created_at)
+from users u
+join friends f1 on f1.b_id = u.id and f1.a_id = ?1
+join friends f2 on f2.a_id = u.id and f2.b_id = ?1
+left outer join gradients g
+on g.user_id = f1.b_id
+group by u.id
+`
+
+type GetConnectionsWithGradientRow struct {
+	ID           int64
+	CreatedAt    time.Time
+	Username     string
+	Email        sql.NullString
+	AvatarURL    string
+	IsParent     bool
+	Bio          string
+	BecomeUserID sql.NullInt64
+	Admin        bool
+	Gradient     gradient.Gradient
+	Max          interface{}
+}
+
+func (q *Queries) GetConnectionsWithGradient(ctx context.Context, aID int64) ([]GetConnectionsWithGradientRow, error) {
+	rows, err := q.db.QueryContext(ctx, getConnectionsWithGradient, aID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetConnectionsWithGradientRow
+	for rows.Next() {
+		var i GetConnectionsWithGradientRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.Username,
+			&i.Email,
+			&i.AvatarURL,
+			&i.IsParent,
+			&i.Bio,
+			&i.BecomeUserID,
+			&i.Admin,
+			&i.Gradient,
+			&i.Max,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getCurrentAndPotentialParentConnections = `-- name: GetCurrentAndPotentialParentConnections :many
 select u.id, u.created_at, u.username, u.email, u.avatar_url, u.is_parent, u.bio, u.become_user_id, u.admin,
        case

@@ -21,6 +21,7 @@ import (
 	"oj/handlers/fun/quizzes/quiz"
 	"oj/handlers/fun/stickers"
 	"oj/handlers/header"
+	"oj/handlers/humans"
 	"oj/handlers/layout"
 	"oj/handlers/me"
 	"oj/handlers/me/editme"
@@ -96,6 +97,7 @@ func applicationRouter(r chi.Router) {
 	r.Get("/avatars", editme.GetAvatars)
 	r.Put("/avatar", editme.PutAvatar)
 
+	r.Get("/me/humans", humans.Page)
 	r.Get("/me/family", family.Page)
 	r.Get("/me/friends", friends.Page)
 
