@@ -1,71 +1,69 @@
 {{define "main"}}
-<div style="display:flex; flex-direction: column; gap:1em; margin-bottom: 50%">
-  <div class="nes-container is-dark" style="display:flex; flex-direction:column; gap:1em">
-    <h1>Hello parent! <small>{{.User.Email.String}}</small></h1>
+  <div style="display:flex; flex-direction: column; gap:1em; margin-bottom: 50%">
+    <div class="nes-container is-dark" style="display:flex; flex-direction:column; gap:1em">
+      <h1>Hello parent! <small>{{.User.Email.String}}</small></h1>
 
-    <p>
-      Here you can add managed accounts for your kids.
-    </p>
+      <p>
+        Here you can add managed accounts for your kids.
+      </p>
 
-    <p>
-      You are the manager for these accounts.  You can remove them and
-      all associated data at any time.
-    </p>
+      <p>
+        You are the manager for these accounts.  You can remove them and
+        all associated data at any time.
+      </p>
 
-    <p>
-      Choose a unique username for your child.  It can contain their
-      name, but doesn't have to.  They will be able to
-      change it to whatever they want when they login.
-    </p>
+      <p>
+        Choose a unique username for your child.  It can contain their
+        name, but doesn't have to.  They will be able to
+        change it to whatever they want when they login.
+      </p>
 
-    <div class="nes-container is-dark">
-      <form action="/parent/kids" method="post">
-        <label>
-          Child's Username
-          <input class="nes-input" type="text" name="username">
-        </label>
-        <button class="nes-btn is-primary">Add Kid</button>
-      </form>
+      <div class="nes-container is-dark">
+        <form action="/parent/kids" method="post">
+          <label>
+            Child's Username
+            <input class="nes-input" type="text" name="username">
+          </label>
+          <button class="nes-btn is-primary">Add Kid</button>
+        </form>
+      </div>
+
+      <p>
+        Kids login with their username and a one time code that will
+        be emailed to {{.User.Email}}.
+      </p>
     </div>
 
-    <p>
-      Kids login with their username and a one time code that will
-      be emailed to {{.User.Email}}.
-    </p>
+    {{range .Kids}}
+      {{template "kid" .}}
+    {{end}}
   </div>
-
-
-
-  {{range .Kids}}
-  {{template "kid" .}}
-  {{end}}
-</div>
 {{end}}
 
 {{define "kid"}}
-<div class="nes-container ghost kid">
-  <div style="display:flex; justify-content:space-between">
-    <a href="/u/{{.ID}}" style="display: flex; gap:1em">
-      <img src="{{.AvatarURL}}">
-      <div style="display:flex; flex-direction: column">
-        <h2>username: {{.Username}}</h2>
-        <div>Joined {{.CreatedAt}}</div>
+  <div class="nes-container ghost kid">
+    <div style="display:flex; justify-content:space-between">
+      <a href="/u/{{.ID}}" style="display: flex; gap:1em">
+        <img src="{{.AvatarURL}}">
+        <div style="display:flex; flex-direction: column">
+          <h2>username: {{.Username}}</h2>
+          <div>Joined {{.CreatedAt}}</div>
+        </div>
+      </a>
+      <div>
+        <!-- <button class="nes-btn is-warning"
+             hx-post="/parent/kids/{{.ID}}/logout"
+             hx-confirm="Logout {{.Username}} from all active sessions?"
+             hx-swap="outerHTML"
+             >logout</button>
+        -->
+        <button class="nes-btn is-error"
+                hx-delete="/parent/kids/{{.ID}}"
+                hx-confirm="Permanently delete {{.Username}} and all associated data?"
+                hx-target="closest .kid"
+                hx-swap="outerHTML"
+        >delete</button>
       </div>
-    </a>
-    <div>
-      <!-- <button class="nes-btn is-warning"
-           hx-post="/parent/kids/{{.ID}}/logout"
-           hx-confirm="Logout {{.Username}} from all active sessions?"
-           hx-swap="outerHTML"
-           >logout</button>
-      -->
-      <button class="nes-btn is-error"
-              hx-delete="/parent/kids/{{.ID}}"
-              hx-confirm="Permanently delete {{.Username}} and all associated data?"
-              hx-target="closest .kid"
-              hx-swap="outerHTML"
-      >delete</button>
     </div>
   </div>
-</div>
 {{end}}
