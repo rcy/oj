@@ -326,7 +326,7 @@ func parentsCodeAction(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		// set session cookie
-		http.SetCookie(w, &http.Cookie{Name: "kh_session", Value: key, Path: "/", Expires: time.Now().Add(30 * 24 * time.Hour)})
+		http.SetCookie(w, &http.Cookie{Name: "kh_session", Value: key, Path: "/", Expires: time.Now().Add(365 * 30 * 24 * time.Hour)})
 		// clear nonce cookie
 		http.SetCookie(w, &http.Cookie{Name: "kh_nonce", Path: "/", Expires: time.Now().Add(-time.Hour)})
 
