@@ -116,7 +116,7 @@ func emailRegisterAction(w http.ResponseWriter, r *http.Request) {
 	// email code to user
 	err = email.Send(
 		fmt.Sprintf("Parent sign in code: %s", code),
-		fmt.Sprintf("Your Octopus Jr verification code is %s", code),
+		fmt.Sprintf("Your Kable verification code is %s", code),
 		address)
 	if err != nil {
 		render.Error(w, "Error emailing code gYqGXoK6XfC2va3Rp", 500)
@@ -187,7 +187,7 @@ func kidsUsernameAction(w http.ResponseWriter, r *http.Request) {
 	for _, parent := range parents {
 		err = email.Send(
 			fmt.Sprintf("Code for %s is %s", username, code),
-			fmt.Sprintf(fmt.Sprintf("Your child, %s, is trying to login to Octopus Jr.  The verification code is %s.",
+			fmt.Sprintf(fmt.Sprintf("Your child, %s, is trying to login to Kable.  The verification code is %s.",
 				username, code)),
 			parent.Email.String)
 		if err != nil {
