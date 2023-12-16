@@ -11,7 +11,7 @@ processes = []
 
 [env]
   PORT = "8080"
-  ROOT_URL = "https://octopusjr.ca"
+  ROOT_URL = "https://kable.ca"
   SQLITE_DB = "/data/oj_production.db"
   NO_SCHEMA_DUMP = "1"
 
