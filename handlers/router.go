@@ -30,6 +30,7 @@ import (
 	"oj/handlers/welcome"
 	"oj/internal/middleware/auth"
 	"oj/internal/middleware/become"
+	"oj/internal/middleware/oj"
 	"oj/internal/middleware/redirect"
 	"os"
 
@@ -44,6 +45,8 @@ func Router() *chi.Mux {
 
 	middleware.DefaultLogger = middleware.RequestLogger(&middleware.DefaultLogFormatter{Logger: log.New(os.Stdout, "", log.LstdFlags), NoColor: true})
 	r.Use(middleware.Logger)
+
+	r.Use(oj.Redirect)
 
 	// authenticated routes
 	r.Route("/", func(r chi.Router) {
