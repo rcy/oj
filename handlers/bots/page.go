@@ -195,6 +195,9 @@ func postMessage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// trigger update to show user's message in the chat
+	w.Header().Add("HX-Trigger", "messagesUpdated")
+
 	render.ExecuteNamed(w, chatPageTemplate, "thinking", struct {
 		Assistant openai.Assistant
 		Run       openai.Run
@@ -227,7 +230,7 @@ func getRunStatus(w http.ResponseWriter, r *http.Request) {
 	default:
 		// the run may or may not have been successful, but at this point, we want to
 		// trigger an event to update the chat messages
-		w.Header().Add("HX-Trigger", "runResolved")
+		w.Header().Add("HX-Trigger", "messagesUpdated")
 
 		thread, err := client.RetrieveThread(ctx, run.ThreadID)
 		if err != nil {

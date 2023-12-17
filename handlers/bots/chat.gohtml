@@ -9,7 +9,7 @@
          class="nes-container ghost"
          style="overflow-y: scroll; display: flex; flex-direction: column-reverse"
          hx-get="{{.Thread.ID}}"
-         hx-trigger="runResolved from:body"
+         hx-trigger="messagesUpdated from:body"
          hx-select="#messages-container"
          hx-swap="outerHTML">
       {{template "messages" .Messages}}
@@ -36,18 +36,32 @@
 {{end}}
 
 {{define "input"}}
-  <input class="nes-input"
-         autofocus
-         type="text"
-         name="message"
-         placeholder="Message {{.Assistant.Name}}"
-         hx-post="{{.Thread.ID}}/messages"
-         hx-swap="outerHTML">
+  <section style="background: black">
+    <div style="float:right">
+      &nbsp;
+    </div>
+    <input class="nes-input"
+           autofocus
+           type="text"
+           name="message"
+           placeholder="Message {{.Assistant.Name}}"
+           hx-post="{{.Thread.ID}}/messages"
+           hx-swap="outerHTML"
+           hx-target="closest section">
+  </section>
 {{end}}
 
 {{define "thinking"}}
-  <div hx-get="{{.Run.ThreadID}}/runstatus/{{.Run.ID}}"
-       hx-trigger="load delay:1s">
-    {{.Assistant.Name}} is processing... {{.Run.Status}}
-  </div>
+  <section style="background: black; color: white">
+    <div style="float:right"
+         hx-get="{{.Run.ThreadID}}/runstatus/{{.Run.ID}}"
+         hx-trigger="load delay:300ms"
+         hx-target="closest section">
+      {{.Run.Status}}
+    </div>
+    <input class="nes-input"
+           type="text"
+           disabled
+           placeholder="Message {{.Assistant.Name}}">
+  </section>
 {{end}}
