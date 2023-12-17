@@ -1,33 +1,33 @@
 {{define "main"}}
-  <div style="height:100%; display: flex; flex-direction: column">
+  <div style="height:100%; display: flex; flex-direction: column; padding-bottom: 1em">
     <div class="nes-container ghost">
       <img height="64px" width="64px" src="https://api.dicebear.com/7.x/bottts/svg?seed={{.Assistant.ID}}">
       {{.Assistant.Name}}
     </div>
-    <div class="nes-container ghost" style="height:100%; overflow-y: scroll">
-
-      {{if .HasMore}}
-        earlier messages...
-      {{end}}
-
+    <div class="nes-container ghost" style="overflow-y: scroll; display: flex; flex-direction: column-reverse">
       {{template "messages" .Messages}}
+      {{if .HasMore}}
+        <button>load earlier messages...</button>
+      {{end}}
+    </div>
 
-      <input type="text" name="message" hx-post="{{.Thread.ID}}/messages">
+    <div>
+      <input class="nes-input"
+             type="text"
+             name="message"
+             placeholder="Message {{.Assistant.Name}}"
+             hx-post="{{.Thread.ID}}/messages">
     </div>
   </div>
 {{end}}
 
 {{define "messages"}}
-  <div>
-    {{range .}}
-      <div>
-        {{.Role}}:
-        {{range .Content}}
-          <p>
-            {{.Text.Value}}
-          </p>
-        {{end}}
-      </div>
-    {{end}}
-  </div>
+  {{range .}}
+    <div>
+      {{.Role}}:
+      {{range .Content}}
+        <p>{{.Text.Value}}</p>
+      {{end}}
+    </div>
+  {{end}}
 {{end}}

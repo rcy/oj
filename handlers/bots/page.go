@@ -13,7 +13,6 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/sashabaranov/go-openai"
-	"golang.org/x/exp/slices"
 )
 
 func strptr(str string) *string {
@@ -149,8 +148,6 @@ func chatPage(w http.ResponseWriter, r *http.Request) {
 		render.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-
-	slices.Reverse(messagesList.Messages)
 
 	render.Execute(w, chatPageTemplate, struct {
 		Layout    layout.Data
