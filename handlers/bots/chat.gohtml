@@ -4,14 +4,21 @@
       <img height="64px" width="64px" src="https://api.dicebear.com/7.x/bottts/svg?seed={{.Assistant.ID}}">
       {{.Assistant.Name}}
     </div>
-    <div class="nes-container ghost" style="overflow-y: scroll; display: flex; flex-direction: column-reverse">
+
+    <div id="messages-container"
+         class="nes-container ghost"
+         style="overflow-y: scroll; display: flex; flex-direction: column-reverse"
+         hx-get="{{.Thread.ID}}"
+         hx-trigger="runResolved from:body"
+         hx-select="#messages-container"
+         hx-swap="outerHTML">
       {{template "messages" .Messages}}
       {{if .HasMore}}
         <button>load earlier messages...</button>
       {{end}}
     </div>
 
-    <div>
+    <div style="background: white">
       {{template "input" .}}
     </div>
   </div>
@@ -33,5 +40,13 @@
          type="text"
          name="message"
          placeholder="Message {{.Assistant.Name}}"
-         hx-post="{{.Thread.ID}}/messages">
+         hx-post="{{.Thread.ID}}/messages"
+         hx-swap="outerHTML">
+{{end}}
+
+{{define "thinking"}}
+  <div hx-get="{{.Run.ThreadID}}/runstatus/{{.Run.ID}}"
+       hx-trigger="load delay:1s">
+    {{.Assistant.Name}} is processing... {{.Run.Status}}
+  </div>
 {{end}}

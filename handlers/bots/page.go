@@ -41,6 +41,7 @@ func Router(r chi.Router) {
 		r.Get("/{assistantID}/chat", chatRedirectPage)
 		r.Get("/{assistantID}/chat/{threadID}", chatPage)
 		r.Post("/{assistantID}/chat/{threadID}/messages", postMessage)
+		r.Get("/{assistantID}/chat/{threadID}/runstatus/{runID}", getRunStatus)
 	})
 }
 
@@ -186,7 +187,7 @@ func postMessage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err = client.CreateRun(ctx, threadID, openai.RunRequest{
+	run, err := client.CreateRun(ctx, threadID, openai.RunRequest{
 		AssistantID: assistant.ID,
 	})
 	if err != nil {
@@ -194,5 +195,52 @@ func postMessage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	render.ExecuteNamed(w, chatPageTemplate, "input", nil)
+	render.ExecuteNamed(w, chatPageTemplate, "thinking", struct {
+		Assistant openai.Assistant
+		Run       openai.Run
+	}{
+		Assistant: assistant,
+		Run:       run,
+	})
+}
+
+func getRunStatus(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	client := ai.New().Client
+	assistant := assistantFromContext(ctx)
+
+	run, err := client.RetrieveRun(ctx, chi.URLParam(r, "threadID"), chi.URLParam(r, "runID"))
+	if err != nil {
+		render.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	switch run.Status {
+	case openai.RunStatusQueued, openai.RunStatusInProgress:
+		render.ExecuteNamed(w, chatPageTemplate, "thinking", struct {
+			Assistant openai.Assistant
+			Run       openai.Run
+		}{
+			Assistant: assistant,
+			Run:       run,
+		})
+	default:
+		// the run may or may not have been successful, but at this point, we want to
+		// trigger an event to update the chat messages
+		w.Header().Add("HX-Trigger", "runResolved")
+
+		thread, err := client.RetrieveThread(ctx, run.ThreadID)
+		if err != nil {
+			render.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		render.ExecuteNamed(w, chatPageTemplate, "input", struct {
+			Assistant openai.Assistant
+			Thread    openai.Thread
+		}{
+			Assistant: assistant,
+			Thread:    thread,
+		})
+	}
 }
