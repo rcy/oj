@@ -1,6 +1,9 @@
 {{define "main"}}
   <div class="nes-container ghost">
-    <span class="nes-text is-error" style="font-size: 2em">kable bots</span>
+    <div style="display:flex; justify-content:space-between">
+      <div class="nes-text is-error" style="font-size: 2em">kable bots</div>
+      <a href="/bots/create" class="nes-btn is-primary">Create Bot</a>
+    </div>
 
     <div>
       {{range .AssistantsList.Assistants}}

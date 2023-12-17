@@ -1,0 +1,40 @@
+{{define "main"}}
+  <div class="nes-container ghost">
+    <h1>Welcome to the Bot Workshop</h1>
+    <p>
+      Here you can build a new bot.
+    </p>
+    <p>
+      Let's get started.
+    </p>
+
+    <hr>
+
+    <form method="post">
+      <div style="display:flex; flex-direction:column; gap: 2em">
+        <div class="nes-field">
+          <label for="name">Bot's Name</label>
+          <input id="name"
+                 class="nes-input"
+                 name="name"
+                 placeholder="ROBO-123"
+                 required
+          >
+        </div>
+
+        <div class="nes-field">
+          <label for="instructions">Instructions</label>
+          <textarea id="instructions"
+                    class="nes-textarea"
+                    name="instructions"
+                    rows="10"
+                    placeholder="You are a helpful assistant"
+          ></textarea>
+        </div>
+
+        <button class="nes-btn is-primary">Create</button>
+        <a href="/bots" class="nes-btn">Cancel</a>
+      </div>
+    </form>
+  </div>
+{{end}}

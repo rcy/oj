@@ -2,6 +2,7 @@ package bots
 
 import (
 	_ "embed"
+	"fmt"
 	"net/http"
 	"oj/api"
 	"oj/db"
@@ -28,6 +29,10 @@ var (
 	assistantPageContent  string
 	assistantPageTemplate = layout.MustParse(assistantPageContent)
 
+	//go:embed create.gohtml
+	createPageContent  string
+	createPageTemplate = layout.MustParse(createPageContent)
+
 	//go:embed chat.gohtml
 	chatPageContent  string
 	chatPageTemplate = layout.MustParse(chatPageContent)
@@ -35,6 +40,8 @@ var (
 
 func Router(r chi.Router) {
 	r.Get("/", listPage)
+	r.Get("/create", createPage)
+	r.Post("/create", postCreate)
 	r.Group(func(r chi.Router) {
 		r.Use(provideAssistant)
 		r.Get("/{assistantID}", assistantPage)
@@ -62,6 +69,53 @@ func listPage(w http.ResponseWriter, r *http.Request) {
 		Layout:         l,
 		AssistantsList: alist,
 	})
+}
+
+func createPage(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	l := layout.FromContext(ctx)
+
+	render.Execute(w, createPageTemplate, struct {
+		Layout layout.Data
+	}{
+		Layout: l,
+	})
+}
+
+func postCreate(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	client := ai.New().Client
+
+	name := r.FormValue("name")
+	if name == "" {
+		http.Redirect(w, r, "/bots/create", http.StatusSeeOther)
+		return
+	}
+	instructions := fmt.Sprintf("Your name is %s. %s", name, r.FormValue("instructions"))
+
+	// models, err := client.ListModels(ctx)
+	// if err != nil {
+	// 	render.Error(w, err.Error(), http.StatusInternalServerError)
+	// 	return
+	// }
+
+	// for _, m := range models.Models {
+	// 	fmt.Printf("%v\n", m)
+	// }
+
+	model := "gpt-3.5-turbo"
+
+	asst, err := client.CreateAssistant(ctx, openai.AssistantRequest{
+		Model:        model,
+		Name:         &name,
+		Instructions: &instructions,
+	})
+	if err != nil {
+		render.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	http.Redirect(w, r, "/bots/"+asst.ID, http.StatusSeeOther)
 }
 
 func assistantPage(w http.ResponseWriter, r *http.Request) {
