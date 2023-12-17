@@ -1,18 +1,21 @@
 {{define "main"}}
-  <div class="nes-container ghost">
-    <div>
-      <a href="/bots/{{.Assistant.ID}}">{{.Assistant.Name}}</a>
-      {{.Assistant.Description}}
+  <div style="height:100%; display: flex; flex-direction: column">
+    <div class="nes-container ghost">
+      <img height="64px" width="64px" src="https://api.dicebear.com/7.x/bottts/svg?seed={{.Assistant.ID}}">
+      {{.Assistant.Name}}
     </div>
+    <div class="nes-container ghost" style="height:100%; overflow-y: scroll">
 
-    <img height="64px" width="64px" src="https://api.dicebear.com/7.x/bottts/svg?seed={{.Assistant.ID}}">
+      {{if .HasMore}}
+        earlier messages...
+      {{end}}
 
-    {{template "messages" .Messages}}
+      {{template "messages" .Messages}}
 
-    <input type="text" name="message" hx-post="{{.Thread.ID}}/messages">
+      <input type="text" name="message" hx-post="{{.Thread.ID}}/messages">
+    </div>
   </div>
 {{end}}
-
 
 {{define "messages"}}
   <div>
