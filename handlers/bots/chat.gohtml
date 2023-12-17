@@ -12,11 +12,7 @@
     </div>
 
     <div>
-      <input class="nes-input"
-             type="text"
-             name="message"
-             placeholder="Message {{.Assistant.Name}}"
-             hx-post="{{.Thread.ID}}/messages">
+      {{template "input" .}}
     </div>
   </div>
 {{end}}
@@ -30,4 +26,12 @@
       {{end}}
     </div>
   {{end}}
+{{end}}
+
+{{define "input"}}
+  <input class="nes-input"
+         type="text"
+         name="message"
+         placeholder="Message {{.Assistant.Name}}"
+         hx-post="{{.Thread.ID}}/messages">
 {{end}}

@@ -193,4 +193,6 @@ func postMessage(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+
+	render.ExecuteNamed(w, chatPageTemplate, "input", nil)
 }
