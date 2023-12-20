@@ -270,6 +270,9 @@ select * from threads where user_id = ? and thread_id = ?;
 -- name: CreateBot :one
 insert into bots(owner_id, assistant_id, name, description) values(?,?,?,?) returning *;
 
+-- name: AllBots :many
+select * from bots;
+
 -- name: PublishedBots :many
 select * from bots where published = 1;
 
