@@ -58,7 +58,7 @@ func listPage(w http.ResponseWriter, r *http.Request) {
 	l := layout.FromContext(ctx)
 
 	query := api.New(db.DB)
-	bots, err := query.UserVisibleBots(ctx, l.User.ID)
+	bots, err := query.AllBots(ctx)
 	if err != nil {
 		render.Error(w, err.Error(), http.StatusInternalServerError)
 		return

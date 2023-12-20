@@ -85,6 +85,41 @@ func (q *Queries) AdminRecentMessages(ctx context.Context) ([]AdminRecentMessage
 	return items, nil
 }
 
+const allBots = `-- name: AllBots :many
+select id, created_at, owner_id, name, description, assistant_id, published from bots
+`
+
+func (q *Queries) AllBots(ctx context.Context) ([]Bot, error) {
+	rows, err := q.db.QueryContext(ctx, allBots)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Bot
+	for rows.Next() {
+		var i Bot
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.OwnerID,
+			&i.Name,
+			&i.Description,
+			&i.AssistantID,
+			&i.Published,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const allQuizzes = `-- name: AllQuizzes :many
 select id, created_at, name, description, published from quizzes order by created_at desc
 `
