@@ -94,7 +94,7 @@ func postCreate(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/bots/create", http.StatusSeeOther)
 		return
 	}
-	instructions := fmt.Sprintf("Your name is %s. %s", name, r.FormValue("instructions"))
+	instructions := r.FormValue("instructions")
 
 	// models, err := client.ListModels(ctx)
 	// if err != nil {
