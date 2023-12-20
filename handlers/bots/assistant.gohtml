@@ -2,18 +2,15 @@
   <div class="nes-container ghost">
     <div style="display: flex; flex-direction: column; gap: 2em">
       <div style="display: flex; align-items: center; gap: 1em">
-        <img height="100px" width="100px" src="https://api.dicebear.com/7.x/bottts/svg?seed={{.Assistant.ID}}">
-        <h1 class="nes-text is-error">{{.Assistant.Name}}</h1>
+        <img height="100px" width="100px" src="https://api.dicebear.com/7.x/bottts/svg?seed={{.Bot.ID}}">
+        <h1 class="nes-text is-error">{{.Bot.Name}}</h1>
       </div>
-      <div>
-        <h3>Instructions:</h3>
-        <p>
-          {{.Assistant.Instructions}}
-        </p>
-      </div>
+      <p>
+        {{.Bot.Description}}
+      </p>
 
       <div>
-        <a href="/bots/{{.Assistant.ID}}/chat" class="nes-btn is-primary">chat with {{.Assistant.Name}}</a>
+        <a href="/bots/{{.Bot.ID}}/chat" class="nes-btn is-primary">chat with {{.Bot.Name}}</a>
       </div>
     </div>
 

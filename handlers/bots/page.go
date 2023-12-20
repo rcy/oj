@@ -43,12 +43,13 @@ func Router(r chi.Router) {
 	r.Get("/create", createPage)
 	r.Post("/create", postCreate)
 	r.Group(func(r chi.Router) {
+		r.Use(provideBot)
 		r.Use(provideAssistant)
-		r.Get("/{assistantID}", assistantPage)
-		r.Get("/{assistantID}/chat", chatRedirectPage)
-		r.Get("/{assistantID}/chat/{threadID}", chatPage)
-		r.Post("/{assistantID}/chat/{threadID}/messages", postMessage)
-		r.Get("/{assistantID}/chat/{threadID}/runstatus/{runID}", getRunStatus)
+		r.Get("/{botID}", assistantPage)
+		r.Get("/{botID}/chat", chatRedirectPage)
+		r.Get("/{botID}/chat/{threadID}", chatPage)
+		r.Post("/{botID}/chat/{threadID}/messages", postMessage)
+		r.Get("/{botID}/chat/{threadID}/runstatus/{runID}", getRunStatus)
 	})
 }
 
@@ -56,18 +57,19 @@ func listPage(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	l := layout.FromContext(ctx)
 
-	alist, err := ai.New().Client.ListAssistants(ctx, nil, nil, nil, nil)
+	query := api.New(db.DB)
+	bots, err := query.UserVisibleBots(ctx, l.User.ID)
 	if err != nil {
 		render.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	render.Execute(w, listPageTemplate, struct {
-		Layout         layout.Data
-		AssistantsList openai.AssistantsList
+		Layout layout.Data
+		Bots   []api.Bot
 	}{
-		Layout:         l,
-		AssistantsList: alist,
+		Layout: l,
+		Bots:   bots,
 	})
 }
 
@@ -85,6 +87,8 @@ func createPage(w http.ResponseWriter, r *http.Request) {
 func postCreate(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	client := ai.New().Client
+	query := api.New(db.DB)
+	user := auth.FromContext(ctx)
 
 	name := r.FormValue("name")
 	if name == "" {
@@ -115,21 +119,32 @@ func postCreate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	http.Redirect(w, r, "/bots/"+asst.ID, http.StatusSeeOther)
+	bot, err := query.CreateBot(ctx, api.CreateBotParams{
+		OwnerID:     user.ID,
+		AssistantID: asst.ID,
+		Name:        name,
+		Description: instructions, // TODO: replace this with text from the bot introducing itself
+	})
+	if err != nil {
+		render.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	http.Redirect(w, r, fmt.Sprintf("/bots/%d", bot.ID), http.StatusSeeOther)
 }
 
 func assistantPage(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	l := layout.FromContext(ctx)
 
-	assistant := assistantFromContext(ctx)
+	//assistant := assistantFromContext(ctx)
 
 	render.Execute(w, assistantPageTemplate, struct {
-		Layout    layout.Data
-		Assistant openai.Assistant
+		Layout layout.Data
+		Bot    api.Bot
 	}{
-		Layout:    l,
-		Assistant: assistant,
+		Layout: l,
+		Bot:    botFromContext(ctx),
 	})
 }
 
@@ -177,14 +192,13 @@ func chatRedirectPage(w http.ResponseWriter, r *http.Request) {
 
 func chatPage(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	user := auth.FromContext(ctx)
 	l := layout.FromContext(ctx)
 	client := ai.New().Client
 	query := api.New(db.DB)
 	assistant := assistantFromContext(ctx)
 
 	userThread, err := query.UserThreadByID(ctx, api.UserThreadByIDParams{
-		UserID:   user.ID,
+		UserID:   l.User.ID,
 		ThreadID: chi.URLParam(r, "threadID"),
 	})
 	if err != nil {

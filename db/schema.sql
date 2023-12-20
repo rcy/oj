@@ -22,6 +22,15 @@ CREATE TABLE "users" (
   become_user_id integer references users,
   admin bool not null default false
 );
+CREATE TABLE bots(
+  id integer primary key,
+  created_at datetime not null default current_timestamp,
+  owner_id integer references users not null,
+  name text not null,
+  description text not null,
+  assistant_id text not null,
+  published bool not null default false
+);
 CREATE TABLE codes(
   id integer primary key,
   created_at datetime not null default current_timestamp,

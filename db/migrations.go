@@ -303,4 +303,15 @@ create table threads(
   assistant_id text not null,
   user_id integer references users not null
 )`,
+	`--34 add bots
+drop table if exists bots;
+create table bots(
+  id integer primary key,
+  created_at datetime not null default current_timestamp,
+  owner_id integer references users not null,
+  assistant_id text not null,
+  name text not null,
+  description text not null,
+  published bool not null default false
+)`,
 }
