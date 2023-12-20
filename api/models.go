@@ -18,6 +18,16 @@ type Attempt struct {
 	UserID    int64
 }
 
+type Bot struct {
+	ID          int64
+	CreatedAt   time.Time
+	OwnerID     int64
+	Name        string
+	Description string
+	AssistantID string
+	Published   bool
+}
+
 type Code struct {
 	ID        int64
 	CreatedAt time.Time

@@ -248,6 +248,25 @@ func (q *Queries) AttemptResponseIDs(ctx context.Context, attemptID interface{})
 	return items, nil
 }
 
+const bot = `-- name: Bot :one
+select id, created_at, owner_id, name, description, assistant_id, published from bots where id = ?
+`
+
+func (q *Queries) Bot(ctx context.Context, id int64) (Bot, error) {
+	row := q.db.QueryRowContext(ctx, bot, id)
+	var i Bot
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.OwnerID,
+		&i.Name,
+		&i.Description,
+		&i.AssistantID,
+		&i.Published,
+	)
+	return i, err
+}
+
 const createAttempt = `-- name: CreateAttempt :one
 insert into attempts(quiz_id, user_id) values(?,?) returning id, created_at, quiz_id, user_id
 `
@@ -265,6 +284,37 @@ func (q *Queries) CreateAttempt(ctx context.Context, arg CreateAttemptParams) (A
 		&i.CreatedAt,
 		&i.QuizID,
 		&i.UserID,
+	)
+	return i, err
+}
+
+const createBot = `-- name: CreateBot :one
+insert into bots(owner_id, assistant_id, name, description) values(?,?,?,?) returning id, created_at, owner_id, name, description, assistant_id, published
+`
+
+type CreateBotParams struct {
+	OwnerID     int64
+	AssistantID string
+	Name        string
+	Description string
+}
+
+func (q *Queries) CreateBot(ctx context.Context, arg CreateBotParams) (Bot, error) {
+	row := q.db.QueryRowContext(ctx, createBot,
+		arg.OwnerID,
+		arg.AssistantID,
+		arg.Name,
+		arg.Description,
+	)
+	var i Bot
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.OwnerID,
+		&i.Name,
+		&i.Description,
+		&i.AssistantID,
+		&i.Published,
 	)
 	return i, err
 }
@@ -1117,6 +1167,41 @@ func (q *Queries) ParentsByKidID(ctx context.Context, kidID int64) ([]User, erro
 	return items, nil
 }
 
+const publishedBots = `-- name: PublishedBots :many
+select id, created_at, owner_id, name, description, assistant_id, published from bots where published = 1
+`
+
+func (q *Queries) PublishedBots(ctx context.Context) ([]Bot, error) {
+	rows, err := q.db.QueryContext(ctx, publishedBots)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Bot
+	for rows.Next() {
+		var i Bot
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.OwnerID,
+			&i.Name,
+			&i.Description,
+			&i.AssistantID,
+			&i.Published,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const publishedQuizzes = `-- name: PublishedQuizzes :many
 select id, created_at, name, description, published from quizzes where published = true order by created_at desc
 `
@@ -1680,6 +1765,41 @@ func (q *Queries) UserThreadByID(ctx context.Context, arg UserThreadByIDParams) 
 		&i.UserID,
 	)
 	return i, err
+}
+
+const userVisibleBots = `-- name: UserVisibleBots :many
+select id, created_at, owner_id, name, description, assistant_id, published from bots where owner_id = ? or published = 1
+`
+
+func (q *Queries) UserVisibleBots(ctx context.Context, ownerID int64) ([]Bot, error) {
+	rows, err := q.db.QueryContext(ctx, userVisibleBots, ownerID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Bot
+	for rows.Next() {
+		var i Bot
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.OwnerID,
+			&i.Name,
+			&i.Description,
+			&i.AssistantID,
+			&i.Published,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const usersWithUnreadCounts = `-- name: UsersWithUnreadCounts :many

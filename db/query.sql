@@ -266,3 +266,15 @@ select * from threads where assistant_id = ? and user_id = ?;
 
 -- name: UserThreadByID :one
 select * from threads where user_id = ? and thread_id = ?;
+
+-- name: CreateBot :one
+insert into bots(owner_id, assistant_id, name, description) values(?,?,?,?) returning *;
+
+-- name: PublishedBots :many
+select * from bots where published = 1;
+
+-- name: UserVisibleBots :many
+select * from bots where owner_id = ? or published = 1;
+
+-- name: Bot :one
+select * from bots where id = ?;
