@@ -7,12 +7,10 @@ import (
 	"net/http"
 	"oj/api"
 	"oj/db"
-	"oj/handlers/bots/ai"
 	"oj/handlers/render"
 	"strconv"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/sashabaranov/go-openai"
 )
 
 func provideBot(next http.Handler) http.Handler {
@@ -38,24 +36,4 @@ func provideBot(next http.Handler) http.Handler {
 
 func botFromContext(ctx context.Context) api.Bot {
 	return ctx.Value("bot").(api.Bot)
-}
-
-func provideAssistant(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		ctx := r.Context()
-		bot := botFromContext(ctx)
-
-		assistant, err := ai.New().Client.RetrieveAssistant(ctx, bot.AssistantID)
-		if err != nil {
-			render.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-
-		ctx = context.WithValue(ctx, "assistant", assistant)
-		next.ServeHTTP(w, r.WithContext(ctx))
-	})
-}
-
-func assistantFromContext(ctx context.Context) openai.Assistant {
-	return ctx.Value("assistant").(openai.Assistant)
 }
