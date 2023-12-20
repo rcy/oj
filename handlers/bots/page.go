@@ -44,7 +44,6 @@ func Router(r chi.Router) {
 	r.Post("/create", postCreate)
 	r.Group(func(r chi.Router) {
 		r.Use(provideBot)
-		r.Use(provideAssistant)
 		r.Get("/{botID}", assistantPage)
 		r.Get("/{botID}/chat", chatRedirectPage)
 		r.Get("/{botID}/chat/{threadID}", chatPage)
@@ -137,8 +136,6 @@ func assistantPage(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	l := layout.FromContext(ctx)
 
-	//assistant := assistantFromContext(ctx)
-
 	render.Execute(w, assistantPageTemplate, struct {
 		Layout layout.Data
 		Bot    api.Bot
@@ -153,11 +150,11 @@ func chatRedirectPage(w http.ResponseWriter, r *http.Request) {
 	query := api.New(db.DB)
 	client := ai.New().Client
 	user := auth.FromContext(ctx)
-	assistant := assistantFromContext(ctx)
+	bot := botFromContext(ctx)
 
 	threads, err := query.AssistantThreads(ctx, api.AssistantThreadsParams{
 		UserID:      user.ID,
-		AssistantID: assistant.ID,
+		AssistantID: bot.AssistantID,
 	})
 	if err != nil {
 		render.Error(w, err.Error(), http.StatusInternalServerError)
@@ -175,7 +172,7 @@ func chatRedirectPage(w http.ResponseWriter, r *http.Request) {
 		}
 
 		_, err = query.CreateThread(ctx, api.CreateThreadParams{
-			AssistantID: assistant.ID,
+			AssistantID: bot.AssistantID,
 			ThreadID:    thread.ID,
 			UserID:      user.ID,
 		})
@@ -195,7 +192,7 @@ func chatPage(w http.ResponseWriter, r *http.Request) {
 	l := layout.FromContext(ctx)
 	client := ai.New().Client
 	query := api.New(db.DB)
-	assistant := assistantFromContext(ctx)
+	bot := botFromContext(ctx)
 
 	userThread, err := query.UserThreadByID(ctx, api.UserThreadByIDParams{
 		UserID:   l.User.ID,
@@ -219,24 +216,24 @@ func chatPage(w http.ResponseWriter, r *http.Request) {
 	}
 
 	render.Execute(w, chatPageTemplate, struct {
-		Layout    layout.Data
-		Assistant openai.Assistant
-		Thread    openai.Thread
-		Messages  []openai.Message
-		HasMore   bool
+		Layout   layout.Data
+		Bot      api.Bot
+		Thread   openai.Thread
+		Messages []openai.Message
+		HasMore  bool
 	}{
-		Layout:    l,
-		Assistant: assistant,
-		Thread:    thread,
-		Messages:  messagesList.Messages,
-		HasMore:   messagesList.HasMore,
+		Layout:   l,
+		Bot:      bot,
+		Thread:   thread,
+		Messages: messagesList.Messages,
+		HasMore:  messagesList.HasMore,
 	})
 }
 
 func postMessage(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	client := ai.New().Client
-	assistant := assistantFromContext(ctx)
+	bot := botFromContext(ctx)
 
 	content := strings.TrimSpace(r.FormValue("message"))
 	if content == "" {
@@ -256,7 +253,7 @@ func postMessage(w http.ResponseWriter, r *http.Request) {
 	}
 
 	run, err := client.CreateRun(ctx, threadID, openai.RunRequest{
-		AssistantID: assistant.ID,
+		AssistantID: bot.AssistantID,
 	})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -267,18 +264,18 @@ func postMessage(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("HX-Trigger", "messagesUpdated")
 
 	render.ExecuteNamed(w, chatPageTemplate, "thinking", struct {
-		Assistant openai.Assistant
-		Run       openai.Run
+		Bot api.Bot
+		Run openai.Run
 	}{
-		Assistant: assistant,
-		Run:       run,
+		Bot: bot,
+		Run: run,
 	})
 }
 
 func getRunStatus(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	client := ai.New().Client
-	assistant := assistantFromContext(ctx)
+	bot := botFromContext(ctx)
 
 	run, err := client.RetrieveRun(ctx, chi.URLParam(r, "threadID"), chi.URLParam(r, "runID"))
 	if err != nil {
@@ -289,11 +286,11 @@ func getRunStatus(w http.ResponseWriter, r *http.Request) {
 	switch run.Status {
 	case openai.RunStatusQueued, openai.RunStatusInProgress:
 		render.ExecuteNamed(w, chatPageTemplate, "thinking", struct {
-			Assistant openai.Assistant
-			Run       openai.Run
+			Bot api.Bot
+			Run openai.Run
 		}{
-			Assistant: assistant,
-			Run:       run,
+			Bot: bot,
+			Run: run,
 		})
 	default:
 		// the run may or may not have been successful, but at this point, we want to
@@ -307,11 +304,11 @@ func getRunStatus(w http.ResponseWriter, r *http.Request) {
 		}
 
 		render.ExecuteNamed(w, chatPageTemplate, "input", struct {
-			Assistant openai.Assistant
-			Thread    openai.Thread
+			Bot    api.Bot
+			Thread openai.Thread
 		}{
-			Assistant: assistant,
-			Thread:    thread,
+			Bot:    bot,
+			Thread: thread,
 		})
 	}
 }
