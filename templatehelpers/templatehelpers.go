@@ -2,11 +2,11 @@ package templatehelpers
 
 import (
 	"html/template"
-	"oj/internal/durfmt"
 	"oj/md"
 	"time"
 
 	"github.com/hako/durafmt"
+	"github.com/rcy/durfmt"
 )
 
 var FuncMap = template.FuncMap{
