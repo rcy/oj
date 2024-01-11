@@ -7,12 +7,12 @@
 
     <div id="messages-container"
          class="nes-container ghost"
-         style="overflow-y: scroll; display: flex; flex-direction: column-reverse"
+         style="overflow-y: scroll; display: flex; flex-direction: column-reverse; gap:4em"
          hx-get="{{.Thread.ID}}"
          hx-trigger="messagesUpdated from:body"
          hx-select="#messages-container"
          hx-swap="outerHTML">
-      {{template "messages" .Messages}}
+      {{template "messages" .}}
       {{if .HasMore}}
         <!-- <button>load earlier messages...</button> -->
       {{end}}
@@ -25,13 +25,32 @@
 {{end}}
 
 {{define "messages"}}
-  {{range .}}
-    <div>
-      {{.Role}}:
-      {{range .Content}}
-        <p>{{markdown .Text.Value}}</p>
-      {{end}}
-    </div>
+  {{range .Messages}}
+    {{if (eq .Role "assistant")}}
+      <div style="display:flex; gap:2em">
+        <div>
+          <img height="64px" width="64px" src="https://api.dicebear.com/7.x/bottts/svg?seed={{$.Bot.ID}}">
+        </div>
+        <div>
+          {{range .Content}}
+            {{markdown .Text.Value}}
+          {{end}}
+        </div>
+      </div>
+    {{end}}
+
+    {{if (eq .Role "user")}}
+      <div style="display:flex; gap:2em">
+        <div>
+          <img width="64" height="64" src="{{$.Layout.User.AvatarURL}}">
+        </div>
+        <div>
+          {{range .Content}}
+            {{markdown .Text.Value}}
+          {{end}}
+        </div>
+      </div>
+    {{end}}
   {{end}}
 {{end}}
 
