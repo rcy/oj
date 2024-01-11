@@ -6,8 +6,8 @@ with nixpkgs; mkShell {
   buildInputs = [
     air
     unstable.go_1_21
-    golint
-    gopls
+    unstable.golint
+    unstable.gopls
     sqlite
     flyctl
     golangci-lint
