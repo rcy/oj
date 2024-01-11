@@ -36,3 +36,27 @@ func TestRenderString(t *testing.T) {
 		})
 	}
 }
+
+func TestMarkdown(t *testing.T) {
+	for _, tc := range []struct {
+		text string
+		want string
+	}{
+		{
+			text: "# heading",
+			want: fmt.Sprintln("<h1>heading</h1>"),
+		},
+		{
+			text: "one line\n\nanother line",
+			want: fmt.Sprintln("<p>one line</p>\n<p>another line</p>"),
+		},
+	} {
+		t.Run(tc.text, func(t *testing.T) {
+			got := Markdown(tc.text)
+
+			if string(got) != tc.want {
+				t.Errorf("expected:\n'%s', got:\n'%s'\n", tc.want, got)
+			}
+		})
+	}
+}

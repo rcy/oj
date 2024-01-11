@@ -19,6 +19,9 @@ var FuncMap = template.FuncMap{
 	"html": func(str string) template.HTML {
 		return md.RenderString(str)
 	},
+	"markdown": func(str string) template.HTML {
+		return md.Markdown(str)
+	},
 	"ago": func(t time.Time) string {
 		dur := time.Now().Sub(t)
 		if dur < time.Minute {

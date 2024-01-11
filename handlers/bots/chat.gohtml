@@ -29,7 +29,7 @@
     <div>
       {{.Role}}:
       {{range .Content}}
-        <p>{{.Text.Value}}</p>
+        <p>{{markdown .Text.Value}}</p>
       {{end}}
     </div>
   {{end}}

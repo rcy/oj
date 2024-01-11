@@ -1,11 +1,13 @@
 package md
 
 import (
+	"bytes"
 	"fmt"
 	"html/template"
 	"strings"
 
 	"github.com/microcosm-cc/bluemonday"
+	"github.com/yuin/goldmark"
 	"mvdan.cc/xurls/v2"
 )
 
@@ -27,4 +29,13 @@ func RenderString(text string) template.HTML {
 
 	html := bm.SanitizeBytes([]byte(str))
 	return template.HTML(fmt.Sprintf("<p>%s</p>\n", html))
+}
+
+func Markdown(text string) template.HTML {
+	var buf bytes.Buffer
+	if err := goldmark.Convert([]byte(text), &buf); err != nil {
+		panic(err)
+	}
+
+	return template.HTML(buf.Bytes())
 }
