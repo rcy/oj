@@ -90,7 +90,7 @@ where f.id = ?
 			subject = fmt.Sprintf("your child, %s, accepted a friend request from %s", friend.AUsername, friend.BUsername)
 			emailBody = fmt.Sprintf("click here to view %s: %s", friend.BUsername, aUserLink.String())
 		} else {
-			subject = fmt.Sprintf("your child, %s, sent a friend request to %s", friend.BUsername, friend.AUsername)
+			subject = fmt.Sprintf("your child, %s, received a friend request to %s", friend.BUsername, friend.AUsername)
 			emailBody = fmt.Sprintf("click here to view %s: %s", friend.BUsername, aUserLink.String())
 		}
 		err = email.Send(subject, emailBody, aParent.Email.String)
