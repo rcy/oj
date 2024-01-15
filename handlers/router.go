@@ -143,4 +143,7 @@ func applicationRouter(r chi.Router) {
 	r.NotFound(func(w http.ResponseWriter, r *http.Request) {
 		render.Error(w, "Page not found", 404)
 	})
+	r.MethodNotAllowed(func(w http.ResponseWriter, r *http.Request) {
+		render.Error(w, "Method not allowed", 405)
+	})
 }
