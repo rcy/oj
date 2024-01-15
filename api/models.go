@@ -22,9 +22,9 @@ type Bot struct {
 	ID          int64
 	CreatedAt   time.Time
 	OwnerID     int64
+	AssistantID string
 	Name        string
 	Description string
-	AssistantID string
 	Published   bool
 }
 

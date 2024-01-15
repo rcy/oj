@@ -281,3 +281,6 @@ select * from bots where owner_id = ? or published = 1;
 
 -- name: Bot :one
 select * from bots where id = ?;
+
+-- name: UpdateBotDescription :one
+update bots set description = ?, name = ? where id = ? and owner_id = ? returning *;

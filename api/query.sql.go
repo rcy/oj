@@ -86,7 +86,7 @@ func (q *Queries) AdminRecentMessages(ctx context.Context) ([]AdminRecentMessage
 }
 
 const allBots = `-- name: AllBots :many
-select id, created_at, owner_id, name, description, assistant_id, published from bots
+select id, created_at, owner_id, assistant_id, name, description, published from bots
 `
 
 func (q *Queries) AllBots(ctx context.Context) ([]Bot, error) {
@@ -102,9 +102,9 @@ func (q *Queries) AllBots(ctx context.Context) ([]Bot, error) {
 			&i.ID,
 			&i.CreatedAt,
 			&i.OwnerID,
+			&i.AssistantID,
 			&i.Name,
 			&i.Description,
-			&i.AssistantID,
 			&i.Published,
 		); err != nil {
 			return nil, err
@@ -284,7 +284,7 @@ func (q *Queries) AttemptResponseIDs(ctx context.Context, attemptID interface{})
 }
 
 const bot = `-- name: Bot :one
-select id, created_at, owner_id, name, description, assistant_id, published from bots where id = ?
+select id, created_at, owner_id, assistant_id, name, description, published from bots where id = ?
 `
 
 func (q *Queries) Bot(ctx context.Context, id int64) (Bot, error) {
@@ -294,9 +294,9 @@ func (q *Queries) Bot(ctx context.Context, id int64) (Bot, error) {
 		&i.ID,
 		&i.CreatedAt,
 		&i.OwnerID,
+		&i.AssistantID,
 		&i.Name,
 		&i.Description,
-		&i.AssistantID,
 		&i.Published,
 	)
 	return i, err
@@ -324,7 +324,7 @@ func (q *Queries) CreateAttempt(ctx context.Context, arg CreateAttemptParams) (A
 }
 
 const createBot = `-- name: CreateBot :one
-insert into bots(owner_id, assistant_id, name, description) values(?,?,?,?) returning id, created_at, owner_id, name, description, assistant_id, published
+insert into bots(owner_id, assistant_id, name, description) values(?,?,?,?) returning id, created_at, owner_id, assistant_id, name, description, published
 `
 
 type CreateBotParams struct {
@@ -346,9 +346,9 @@ func (q *Queries) CreateBot(ctx context.Context, arg CreateBotParams) (Bot, erro
 		&i.ID,
 		&i.CreatedAt,
 		&i.OwnerID,
+		&i.AssistantID,
 		&i.Name,
 		&i.Description,
-		&i.AssistantID,
 		&i.Published,
 	)
 	return i, err
@@ -1203,7 +1203,7 @@ func (q *Queries) ParentsByKidID(ctx context.Context, kidID int64) ([]User, erro
 }
 
 const publishedBots = `-- name: PublishedBots :many
-select id, created_at, owner_id, name, description, assistant_id, published from bots where published = 1
+select id, created_at, owner_id, assistant_id, name, description, published from bots where published = 1
 `
 
 func (q *Queries) PublishedBots(ctx context.Context) ([]Bot, error) {
@@ -1219,9 +1219,9 @@ func (q *Queries) PublishedBots(ctx context.Context) ([]Bot, error) {
 			&i.ID,
 			&i.CreatedAt,
 			&i.OwnerID,
+			&i.AssistantID,
 			&i.Name,
 			&i.Description,
-			&i.AssistantID,
 			&i.Published,
 		); err != nil {
 			return nil, err
@@ -1528,6 +1528,37 @@ func (q *Queries) UpdateAvatar(ctx context.Context, arg UpdateAvatarParams) (Use
 	return i, err
 }
 
+const updateBotDescription = `-- name: UpdateBotDescription :one
+update bots set description = ?, name = ? where id = ? and owner_id = ? returning id, created_at, owner_id, assistant_id, name, description, published
+`
+
+type UpdateBotDescriptionParams struct {
+	Description string
+	Name        string
+	ID          int64
+	OwnerID     int64
+}
+
+func (q *Queries) UpdateBotDescription(ctx context.Context, arg UpdateBotDescriptionParams) (Bot, error) {
+	row := q.db.QueryRowContext(ctx, updateBotDescription,
+		arg.Description,
+		arg.Name,
+		arg.ID,
+		arg.OwnerID,
+	)
+	var i Bot
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.OwnerID,
+		&i.AssistantID,
+		&i.Name,
+		&i.Description,
+		&i.Published,
+	)
+	return i, err
+}
+
 const updateQuestion = `-- name: UpdateQuestion :one
 update questions set text = ?, answer = ? where id = ? returning id, created_at, quiz_id, text, answer
 `
@@ -1803,7 +1834,7 @@ func (q *Queries) UserThreadByID(ctx context.Context, arg UserThreadByIDParams) 
 }
 
 const userVisibleBots = `-- name: UserVisibleBots :many
-select id, created_at, owner_id, name, description, assistant_id, published from bots where owner_id = ? or published = 1
+select id, created_at, owner_id, assistant_id, name, description, published from bots where owner_id = ? or published = 1
 `
 
 func (q *Queries) UserVisibleBots(ctx context.Context, ownerID int64) ([]Bot, error) {
@@ -1819,9 +1850,9 @@ func (q *Queries) UserVisibleBots(ctx context.Context, ownerID int64) ([]Bot, er
 			&i.ID,
 			&i.CreatedAt,
 			&i.OwnerID,
+			&i.AssistantID,
 			&i.Name,
 			&i.Description,
-			&i.AssistantID,
 			&i.Published,
 		); err != nil {
 			return nil, err
