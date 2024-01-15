@@ -9,8 +9,12 @@
         {{.Bot.Description}}
       </p>
 
-      <div>
-        <a href="/bots/{{.Bot.ID}}/chat" class="nes-btn is-primary">chat with {{.Bot.Name}}</a>
+      <div style="display:flex; justify-content:space-between">
+        <a href="/bots/{{.Bot.ID}}/chat" class="nes-btn is-success">chat with this bot</a>
+
+        {{if .IsOwner}}
+          <a href="/bots/{{.Bot.ID}}/edit" class="nes-btn">edit instructions</a>
+        {{end}}
       </div>
     </div>
 

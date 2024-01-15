@@ -33,6 +33,10 @@ var (
 	createPageContent  string
 	createPageTemplate = layout.MustParse(createPageContent)
 
+	//go:embed edit.gohtml
+	editPageContent  string
+	editPageTemplate = layout.MustParse(editPageContent)
+
 	//go:embed chat.gohtml
 	chatPageContent  string
 	chatPageTemplate = layout.MustParse(chatPageContent)
@@ -46,6 +50,8 @@ func Router(r chi.Router) {
 		r.Use(provideBot)
 		r.Get("/{botID}", assistantPage)
 		r.Get("/{botID}/chat", chatRedirectPage)
+		r.Get("/{botID}/edit", editPage)
+		r.Post("/{botID}/edit", postEdit)
 		r.Get("/{botID}/chat/{threadID}", chatPage)
 		r.Post("/{botID}/chat/{threadID}/messages", postMessage)
 		r.Get("/{botID}/chat/{threadID}/runstatus/{runID}", getRunStatus)
@@ -132,16 +138,74 @@ func postCreate(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, fmt.Sprintf("/bots/%d", bot.ID), http.StatusSeeOther)
 }
 
-func assistantPage(w http.ResponseWriter, r *http.Request) {
+func editPage(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	l := layout.FromContext(ctx)
+	bot := botFromContext(ctx)
 
-	render.Execute(w, assistantPageTemplate, struct {
+	render.Execute(w, editPageTemplate, struct {
 		Layout layout.Data
 		Bot    api.Bot
 	}{
 		Layout: l,
-		Bot:    botFromContext(ctx),
+		Bot:    bot,
+	})
+}
+
+func postEdit(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	client := ai.New().Client
+	query := api.New(db.DB)
+	bot := botFromContext(ctx)
+	user := auth.FromContext(ctx)
+
+	name := r.FormValue("name")
+	if name == "" {
+		http.Redirect(w, r, r.URL.Path, http.StatusSeeOther)
+		return
+	}
+	instructions := r.FormValue("instructions")
+	if instructions == "" {
+		http.Redirect(w, r, r.URL.Path, http.StatusSeeOther)
+		return
+	}
+
+	bot, err := query.UpdateBotDescription(ctx, api.UpdateBotDescriptionParams{
+		OwnerID:     user.ID,
+		ID:          bot.ID,
+		Name:        name,
+		Description: instructions,
+	})
+	if err != nil {
+		render.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	_, err = client.ModifyAssistant(ctx, bot.AssistantID, openai.AssistantRequest{
+		Name:         &name,
+		Instructions: &instructions,
+	})
+	if err != nil {
+		render.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	http.Redirect(w, r, fmt.Sprintf("/bots/%d", bot.ID), http.StatusSeeOther)
+}
+
+func assistantPage(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	l := layout.FromContext(ctx)
+	bot := botFromContext(ctx)
+
+	render.Execute(w, assistantPageTemplate, struct {
+		Layout  layout.Data
+		Bot     api.Bot
+		IsOwner bool
+	}{
+		Layout:  l,
+		Bot:     bot,
+		IsOwner: bot.OwnerID == l.User.ID,
 	})
 }
 
