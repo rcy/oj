@@ -1,17 +1,26 @@
 {{define "main"}}
   <div class="nes-container ghost">
     <div style="display:flex; justify-content:space-between">
-      <div class="nes-text is-error" style="font-size: 2em">Kable Bots</div>
-      <a href="/bots/create" class="nes-btn is-primary">Create Bot</a>
+      <div class="nes-text is-error" style="font-size: 2em; padding-bottom: 2em;">Kable Bots</div>
+      <div><a href="/bots/create" class="nes-btn is-primary">Create Bot</a></div>
     </div>
 
-    <div>
+    <div style="display:flex; flex-direction:column; gap:2em">
       {{range .BotRows}}
-        <div>
+        <div style="display:flex; gap:1em; align-items:center">
           <img height="100px"
                width="100px"
                src="https://api.dicebear.com/7.x/bottts/svg?seed={{.Bot.ID}}">
-          <a href="/bots/{{.Bot.ID}}">{{.Bot.Name}}</a>
+          <div style="display:flex; flex-direction:column">
+            <h2><a href="/bots/{{.Bot.ID}}">{{.Bot.Name}}</a></h2>
+            <div style="display:flex; gap:1em">
+              <span style="color:gray">Programmed by </span>
+              <a style="display:flex" href="/u/{{.User.ID}}">
+                <span>{{.User.Username}}</span>
+                <img width="20px" height="20px" src="{{.User.AvatarURL}}">
+              </a>
+            </div>
+          </div>
         </div>
       {{end}}
     </div>
