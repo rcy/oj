@@ -6,9 +6,9 @@ import (
 	"net/http"
 	"oj/api"
 	"oj/db"
-	"oj/handlers/bots/ai"
 	"oj/handlers/layout"
 	"oj/handlers/render"
+	"oj/internal/ai"
 	"oj/internal/middleware/auth"
 	"strings"
 
