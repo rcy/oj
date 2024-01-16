@@ -21,7 +21,7 @@ func strptr(str string) *string {
 }
 
 var (
-	//go:embed index.gohtml
+	//go:embed list.gohtml
 	listPageContent  string
 	listPageTemplate = layout.MustParse(listPageContent)
 
@@ -63,18 +63,18 @@ func listPage(w http.ResponseWriter, r *http.Request) {
 	l := layout.FromContext(ctx)
 
 	query := api.New(db.DB)
-	bots, err := query.AllBots(ctx)
+	botRows, err := query.AllBots(ctx)
 	if err != nil {
 		render.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	render.Execute(w, listPageTemplate, struct {
-		Layout layout.Data
-		Bots   []api.Bot
+		Layout  layout.Data
+		BotRows []api.AllBotsRow
 	}{
-		Layout: l,
-		Bots:   bots,
+		Layout:  l,
+		BotRows: botRows,
 	})
 }
 

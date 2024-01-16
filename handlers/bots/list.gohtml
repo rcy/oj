@@ -6,10 +6,12 @@
     </div>
 
     <div>
-      {{range .Bots}}
+      {{range .BotRows}}
         <div>
-          <img height="100px" width="100px" src="https://api.dicebear.com/7.x/bottts/svg?seed={{.ID}}">
-          <a href="/bots/{{.ID}}">{{.Name}}</a>
+          <img height="100px"
+               width="100px"
+               src="https://api.dicebear.com/7.x/bottts/svg?seed={{.Bot.ID}}">
+          <a href="/bots/{{.Bot.ID}}">{{.Bot.Name}}</a>
         </div>
       {{end}}
     </div>
