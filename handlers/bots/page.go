@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"net/http"
 	"oj/api"
-	"oj/db"
 	"oj/handlers/layout"
 	"oj/handlers/render"
 	"oj/internal/ai"
@@ -42,28 +41,33 @@ var (
 	chatPageTemplate = layout.MustParse(chatPageContent)
 )
 
-func Router(r chi.Router) {
-	r.Get("/", listPage)
-	r.Get("/create", createPage)
-	r.Post("/create", postCreate)
-	r.Route("/{botID}", func(r chi.Router) {
-		r.Use(provideBot)
-		r.Get("/", assistantPage)
-		r.Get("/chat", chatRedirectPage)
-		r.Get("/edit", editPage)
-		r.Post("/edit", postEdit)
-		r.Get("/chat/{threadID}", chatPage)
-		r.Post("/chat/{threadID}/messages", postMessage)
-		r.Get("/chat/{threadID}/runstatus/{runID}", getRunStatus)
-	})
+type Resource struct {
+	Model *api.Queries
 }
 
-func listPage(w http.ResponseWriter, r *http.Request) {
+func (rs Resource) Routes() chi.Router {
+	r := chi.NewRouter()
+	r.Get("/", rs.listPage)
+	r.Get("/create", rs.createPage)
+	r.Post("/create", rs.postCreate)
+	r.Route("/{botID}", func(r chi.Router) {
+		r.Use(rs.provideBot)
+		r.Get("/", rs.assistantPage)
+		r.Get("/chat", rs.chatRedirectPage)
+		r.Get("/edit", rs.editPage)
+		r.Post("/edit", rs.postEdit)
+		r.Get("/chat/{threadID}", rs.chatPage)
+		r.Post("/chat/{threadID}/messages", rs.postMessage)
+		r.Get("/chat/{threadID}/runstatus/{runID}", rs.getRunStatus)
+	})
+	return r
+}
+
+func (rs Resource) listPage(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	l := layout.FromContext(ctx)
 
-	query := api.New(db.DB)
-	botRows, err := query.AllBots(ctx)
+	botRows, err := rs.Model.AllBots(ctx)
 	if err != nil {
 		render.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -78,7 +82,7 @@ func listPage(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func createPage(w http.ResponseWriter, r *http.Request) {
+func (rs Resource) createPage(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	l := layout.FromContext(ctx)
 
@@ -89,10 +93,9 @@ func createPage(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func postCreate(w http.ResponseWriter, r *http.Request) {
+func (rs Resource) postCreate(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	client := ai.New().Client
-	query := api.New(db.DB)
 	user := auth.FromContext(ctx)
 
 	name := r.FormValue("name")
@@ -124,7 +127,7 @@ func postCreate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	bot, err := query.CreateBot(ctx, api.CreateBotParams{
+	bot, err := rs.Model.CreateBot(ctx, api.CreateBotParams{
 		OwnerID:     user.ID,
 		AssistantID: asst.ID,
 		Name:        name,
@@ -138,7 +141,7 @@ func postCreate(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, fmt.Sprintf("/bots/%d", bot.ID), http.StatusSeeOther)
 }
 
-func editPage(w http.ResponseWriter, r *http.Request) {
+func (rs Resource) editPage(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	l := layout.FromContext(ctx)
 	bot := botFromContext(ctx)
@@ -152,10 +155,9 @@ func editPage(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func postEdit(w http.ResponseWriter, r *http.Request) {
+func (rs Resource) postEdit(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	client := ai.New().Client
-	query := api.New(db.DB)
 	bot := botFromContext(ctx)
 	user := auth.FromContext(ctx)
 
@@ -170,7 +172,7 @@ func postEdit(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	bot, err := query.UpdateBotDescription(ctx, api.UpdateBotDescriptionParams{
+	bot, err := rs.Model.UpdateBotDescription(ctx, api.UpdateBotDescriptionParams{
 		OwnerID:     user.ID,
 		ID:          bot.ID,
 		Name:        name,
@@ -193,7 +195,7 @@ func postEdit(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, fmt.Sprintf("/bots/%d", bot.ID), http.StatusSeeOther)
 }
 
-func assistantPage(w http.ResponseWriter, r *http.Request) {
+func (rs Resource) assistantPage(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	l := layout.FromContext(ctx)
 	bot := botFromContext(ctx)
@@ -209,14 +211,13 @@ func assistantPage(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func chatRedirectPage(w http.ResponseWriter, r *http.Request) {
+func (rs Resource) chatRedirectPage(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	query := api.New(db.DB)
 	client := ai.New().Client
 	user := auth.FromContext(ctx)
 	bot := botFromContext(ctx)
 
-	threads, err := query.AssistantThreads(ctx, api.AssistantThreadsParams{
+	threads, err := rs.Model.AssistantThreads(ctx, api.AssistantThreadsParams{
 		UserID:      user.ID,
 		AssistantID: bot.AssistantID,
 	})
@@ -235,7 +236,7 @@ func chatRedirectPage(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		_, err = query.CreateThread(ctx, api.CreateThreadParams{
+		_, err = rs.Model.CreateThread(ctx, api.CreateThreadParams{
 			AssistantID: bot.AssistantID,
 			ThreadID:    thread.ID,
 			UserID:      user.ID,
@@ -251,14 +252,13 @@ func chatRedirectPage(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, r.URL.Path+"/"+threadID, http.StatusSeeOther)
 }
 
-func chatPage(w http.ResponseWriter, r *http.Request) {
+func (rs Resource) chatPage(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	l := layout.FromContext(ctx)
 	client := ai.New().Client
-	query := api.New(db.DB)
 	bot := botFromContext(ctx)
 
-	userThread, err := query.UserThreadByID(ctx, api.UserThreadByIDParams{
+	userThread, err := rs.Model.UserThreadByID(ctx, api.UserThreadByIDParams{
 		UserID:   l.User.ID,
 		ThreadID: chi.URLParam(r, "threadID"),
 	})
@@ -294,7 +294,7 @@ func chatPage(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func postMessage(w http.ResponseWriter, r *http.Request) {
+func (rs Resource) postMessage(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	client := ai.New().Client
 	bot := botFromContext(ctx)
@@ -336,7 +336,7 @@ func postMessage(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func getRunStatus(w http.ResponseWriter, r *http.Request) {
+func (rs Resource) getRunStatus(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	client := ai.New().Client
 	bot := botFromContext(ctx)

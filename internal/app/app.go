@@ -77,7 +77,7 @@ func (rs Resource) Routes() chi.Router {
 	r.Get("/fun/quizzes/attempts/{attemptID}/done", completed.Page)
 	r.Post("/fun/quizzes/attempts/{attemptID}/question/{questionID}/response", attempt.PostResponse)
 
-	r.Route("/bots", bots.Router)
+	r.Mount("/bots", bots.Resource{Model: rs.Model}.Routes())
 
 	r.Route("/u/{userID}", u.Router)
 	r.Get("/u/{userID}/chat", chat.Page)

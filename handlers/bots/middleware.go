@@ -6,20 +6,18 @@ import (
 	"errors"
 	"net/http"
 	"oj/api"
-	"oj/db"
 	"oj/handlers/render"
 	"strconv"
 
 	"github.com/go-chi/chi/v5"
 )
 
-func provideBot(next http.Handler) http.Handler {
+func (rs Resource) provideBot(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
-		query := api.New(db.DB)
 
 		botID, _ := strconv.Atoi(chi.URLParam(r, "botID"))
-		bot, err := query.Bot(ctx, int64(botID))
+		bot, err := rs.Model.Bot(ctx, int64(botID))
 		if errors.Is(err, sql.ErrNoRows) {
 			render.NotFound(w)
 			return
