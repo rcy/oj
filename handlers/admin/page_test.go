@@ -9,7 +9,7 @@ import (
 )
 
 func TestRouter(t *testing.T) {
-	handler := Handler(db.DB)
+	routes := Resource{DB: db.DB}.Routes()
 
 	for _, tc := range []struct {
 		name           string
@@ -34,7 +34,7 @@ func TestRouter(t *testing.T) {
 			w := httptest.NewRecorder()
 			req := httptest.NewRequest("GET", tc.path, nil)
 			ctx := auth.NewContext(req.Context(), tc.user)
-			handler.ServeHTTP(w, req.WithContext(ctx))
+			routes.ServeHTTP(w, req.WithContext(ctx))
 			resp := w.Result()
 
 			if resp.StatusCode != tc.wantStatusCode {

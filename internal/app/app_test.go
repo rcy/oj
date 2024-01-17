@@ -8,11 +8,11 @@ import (
 )
 
 func TestApplicationRouter(t *testing.T) {
-	handler := Handler(db.DB)
+	routes := Resource{DB: db.DB}.Routes()
 
 	req := httptest.NewRequest("GET", "/", nil)
 	w := httptest.NewRecorder()
-	handler.ServeHTTP(w, req)
+	routes.ServeHTTP(w, req)
 	resp := w.Result()
 
 	if resp.StatusCode != http.StatusFound {
