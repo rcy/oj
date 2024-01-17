@@ -1,11 +1,8 @@
 package handlers
 
 import (
-	"net/http"
 	"net/http/httptest"
 	"testing"
-
-	"github.com/go-chi/chi/v5"
 )
 
 func TestRouter(t *testing.T) {
@@ -37,18 +34,5 @@ func TestRouter(t *testing.T) {
 				t.Errorf("bad status code, expected %d, got %d", tc.wantStatusCode, resp.StatusCode)
 			}
 		})
-	}
-}
-
-func TestApplicationRouter(t *testing.T) {
-	router := chi.NewRouter().Route("/", applicationRouter)
-
-	req := httptest.NewRequest("GET", "/", nil)
-	w := httptest.NewRecorder()
-	router.ServeHTTP(w, req)
-	resp := w.Result()
-
-	if resp.StatusCode != http.StatusFound {
-		t.Errorf("unexpected status code, got %d", resp.StatusCode)
 	}
 }

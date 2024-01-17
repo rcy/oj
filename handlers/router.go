@@ -4,32 +4,10 @@ import (
 	"log"
 	"net/http"
 	"oj/handlers/admin"
-	"oj/handlers/bots"
-	"oj/handlers/chat"
-	"oj/handlers/connect"
-	"oj/handlers/connectkids"
-	"oj/handlers/deliveries"
-	"oj/handlers/eventsource"
-	"oj/handlers/family"
-	"oj/handlers/friends"
-	"oj/handlers/fun"
-	"oj/handlers/fun/chess"
-	"oj/handlers/fun/gradients"
-	"oj/handlers/fun/quizzes"
-	"oj/handlers/fun/quizzes/attempt"
-	"oj/handlers/fun/quizzes/attempt/completed"
-	"oj/handlers/fun/quizzes/quiz"
-	"oj/handlers/fun/stickers"
-	"oj/handlers/header"
-	"oj/handlers/humans"
 	"oj/handlers/layout"
-	"oj/handlers/me"
-	"oj/handlers/me/editme"
-	"oj/handlers/parent"
-	"oj/handlers/postoffice"
 	"oj/handlers/render"
-	"oj/handlers/u"
 	"oj/handlers/welcome"
+	"oj/internal/app"
 	"oj/internal/middleware/auth"
 	"oj/internal/middleware/become"
 	"oj/internal/middleware/redirect"
@@ -56,7 +34,7 @@ func Router(db *sqlx.DB) *chi.Mux {
 		r.Use(become.Provider)
 		r.Use(redirect.Redirect)
 		r.Use(layout.Provider)
-		r.Route("/", applicationRouter)
+		r.Handle("/*", app.Handler(db))
 	})
 
 	r.Route("/admin", func(r chi.Router) {
@@ -84,67 +62,4 @@ func Router(db *sqlx.DB) *chi.Mux {
 	})
 
 	return r
-}
-
-func applicationRouter(r chi.Router) {
-	r.Get("/", Home)
-
-	r.Get("/header", header.Header)
-
-	r.Get("/parent", parent.Index)
-	r.Post("/parent/kids", parent.CreateKid)
-	r.Delete("/parent/kids/{userID}", parent.DeleteKid)
-	r.Post("/parent/kids/{userID}/logout", parent.LogoutKid)
-
-	r.Post("/chat/messages", chat.PostChatMessage)
-	r.Mount("/es", eventsource.SSE)
-
-	r.Get("/me", me.Page)
-	r.Get("/me/edit", editme.MyPageEdit)
-	r.Post("/me/edit", editme.Post)
-	r.Get("/avatars", editme.GetAvatars)
-	r.Put("/avatar", editme.PutAvatar)
-
-	r.Get("/me/humans", humans.Page)
-	r.Get("/me/family", family.Page)
-	r.Get("/me/friends", friends.Page)
-
-	r.Get("/fun", fun.Page)
-	r.Get("/fun/gradients", gradients.Index)
-	r.Post("/fun/gradients/picker", gradients.Picker)
-	r.Post("/fun/gradients/set-background", gradients.SetBackground)
-
-	r.Get("/fun/stickers", stickers.Page)
-	r.Post("/fun/stickers", stickers.Submit)
-	r.Post("/fun/stickers/save", stickers.SaveSticker)
-
-	r.Get("/fun/chess", chess.Page)
-	r.Get("/fun/chess/select/{rank}/{file}", chess.Select)
-	r.Get("/fun/chess/unselect", chess.Unselect)
-	//r.Get("/fun/chess/select/{r1}/{f1}/{r2}/{f2}", chess.Move)
-
-	r.Get("/fun/quizzes", quizzes.Page)
-	r.Route("/fun/quizzes/{quizID}", quiz.Router)
-	r.Get("/fun/quizzes/attempts/{attemptID}", attempt.Page)
-	r.Get("/fun/quizzes/attempts/{attemptID}/done", completed.Page)
-	r.Post("/fun/quizzes/attempts/{attemptID}/question/{questionID}/response", attempt.PostResponse)
-
-	r.Route("/bots", bots.Router)
-
-	r.Route("/u/{userID}", u.Router)
-	r.Get("/u/{userID}/chat", chat.Page)
-
-	r.Get("/connect", connect.Connect)
-	r.Put("/connect/friend/{userID}", connect.PutParentFriend)
-	r.Delete("/connect/friend/{userID}", connect.DeleteParentFriend)
-
-	r.Get("/connectkids", connectkids.KidConnect)
-	r.Put("/connectkids/friend/{userID}", connectkids.PutKidFriend)
-	r.Delete("/connectkids/friend/{userID}", connectkids.DeleteKidFriend)
-
-	r.Get("/deliveries/{deliveryID}", deliveries.Page)
-	r.Get("/delivery/{deliveryID}", deliveries.Page) // temporary
-	r.Post("/deliveries/{deliveryID}/logout", deliveries.Logout)
-
-	r.Route("/postoffice", postoffice.Router)
 }
