@@ -3,6 +3,7 @@ package handlers
 import (
 	"log"
 	"net/http"
+	"oj/api"
 	"oj/handlers/admin"
 	"oj/handlers/layout"
 	"oj/handlers/render"
@@ -26,13 +27,15 @@ func Router(db *sqlx.DB) *chi.Mux {
 	middleware.DefaultLogger = middleware.RequestLogger(&middleware.DefaultLogFormatter{Logger: log.New(os.Stdout, "", log.LstdFlags), NoColor: true})
 	r.Use(middleware.Logger)
 
+	model := api.New(db)
+
 	// authenticated routes
 	r.Route("/", func(r chi.Router) {
 		r.Use(auth.Provider)
 		r.Use(become.Provider)
 		r.Use(redirect.Redirect)
 		r.Use(layout.Provider)
-		r.Mount("/", app.Resource{DB: db}.Routes())
+		r.Mount("/", app.Resource{DB: db, Model: model}.Routes())
 		r.Mount("/admin", admin.Resource{DB: db}.Routes())
 	})
 

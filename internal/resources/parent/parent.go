@@ -7,14 +7,28 @@ import (
 	"log"
 	"net/http"
 	"oj/api"
-	"oj/db"
 	"oj/handlers/layout"
 	"oj/handlers/render"
 	"oj/internal/middleware/auth"
 	"oj/services/family"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/jmoiron/sqlx"
 )
+
+type Resource struct {
+	DB    *sqlx.DB
+	Model *api.Queries
+}
+
+func (rs Resource) Routes() chi.Router {
+	r := chi.NewRouter()
+	r.Get("/", rs.index)
+	r.Post("/kids", rs.createKid)
+	r.Delete("/kids/{userID}", rs.deleteKid)
+	r.Post("/kids/{userID}/logout", rs.logoutKid)
+	return r
+}
 
 var (
 	//go:embed parent.gohtml
@@ -23,12 +37,11 @@ var (
 	t = layout.MustParse(pageContent)
 )
 
-func Index(w http.ResponseWriter, r *http.Request) {
+func (rs Resource) index(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	queries := api.New(db.DB)
 	l := layout.FromContext(r.Context())
 
-	kids, err := queries.KidsByParentID(ctx, l.User.ID)
+	kids, err := rs.Model.KidsByParentID(ctx, l.User.ID)
 	if err != nil {
 		render.Error(w, err.Error(), 500)
 		return
@@ -48,9 +61,8 @@ func Index(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func CreateKid(w http.ResponseWriter, r *http.Request) {
+func (rs Resource) createKid(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	queries := api.New(db.DB)
 	user := auth.FromContext(ctx)
 
 	err := r.ParseForm()
@@ -60,7 +72,7 @@ func CreateKid(w http.ResponseWriter, r *http.Request) {
 	}
 	username := r.PostForm.Get("username")
 
-	_, err = queries.UserByUsername(ctx, username)
+	_, err = rs.Model.UserByUsername(ctx, username)
 	if errors.Is(err, sql.ErrNoRows) {
 		kid, err := family.CreateKid(ctx, user.ID, username)
 		if err != nil {
@@ -81,9 +93,9 @@ func CreateKid(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-func DeleteKid(w http.ResponseWriter, r *http.Request) {
+func (rs Resource) deleteKid(w http.ResponseWriter, r *http.Request) {
 	userID := chi.URLParam(r, "userID")
-	tx, err := db.DB.Beginx()
+	tx, err := rs.DB.Beginx()
 	if err != nil {
 		render.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -113,10 +125,10 @@ delete from users where id = ?;
 	}
 }
 
-func LogoutKid(w http.ResponseWriter, r *http.Request) {
+func (rs Resource) logoutKid(w http.ResponseWriter, r *http.Request) {
 	userID := chi.URLParam(r, "userID")
 
-	_, err := db.DB.Exec(`delete from sessions where user_id = ?`, userID)
+	_, err := rs.DB.Exec(`delete from sessions where user_id = ?`, userID)
 	if err != nil {
 		render.Error(w, err.Error(), http.StatusInternalServerError)
 		return

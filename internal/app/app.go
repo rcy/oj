@@ -2,6 +2,7 @@ package app
 
 import (
 	"net/http"
+	"oj/api"
 	"oj/handlers/bots"
 	"oj/handlers/chat"
 	"oj/handlers/connect"
@@ -21,9 +22,9 @@ import (
 	"oj/handlers/humans"
 	"oj/handlers/me"
 	"oj/handlers/me/editme"
-	"oj/handlers/parent"
 	"oj/handlers/postoffice"
 	"oj/handlers/u"
+	"oj/internal/resources/parent"
 	"oj/internal/resources/stickers"
 
 	"github.com/go-chi/chi/v5"
@@ -31,7 +32,8 @@ import (
 )
 
 type Resource struct {
-	DB *sqlx.DB
+	DB    *sqlx.DB
+	Model *api.Queries
 }
 
 func (rs Resource) Routes() chi.Router {
@@ -42,10 +44,7 @@ func (rs Resource) Routes() chi.Router {
 
 	r.Get("/header", header.Header)
 
-	r.Get("/parent", parent.Index)
-	r.Post("/parent/kids", parent.CreateKid)
-	r.Delete("/parent/kids/{userID}", parent.DeleteKid)
-	r.Post("/parent/kids/{userID}/logout", parent.LogoutKid)
+	r.Mount("/parent", parent.Resource{DB: rs.DB, Model: rs.Model}.Routes())
 
 	r.Post("/chat/messages", chat.PostChatMessage)
 	r.Mount("/es", eventsource.SSE)
