@@ -4,14 +4,29 @@ import (
 	_ "embed"
 	"net/http"
 	"net/url"
-	"oj/db"
 	"oj/handlers/layout"
 	"oj/handlers/render"
 	"oj/internal/middleware/auth"
 	"time"
 
+	"github.com/go-chi/chi/v5"
+	"github.com/jmoiron/sqlx"
 	goduckgo "github.com/minoplhy/duckduckgo-images-api"
 )
+
+type Resource struct {
+	DB *sqlx.DB
+}
+
+func (rs Resource) Routes() chi.Router {
+	r := chi.NewRouter()
+
+	r.Get("/", rs.page)
+	r.Post("/", rs.search)
+	r.Post("/save", rs.save)
+
+	return r
+}
 
 var (
 	//go:embed page.gohtml
@@ -26,11 +41,11 @@ type Image struct {
 	URL       string    `db:"url"`
 }
 
-func Page(w http.ResponseWriter, r *http.Request) {
+func (rs Resource) page(w http.ResponseWriter, r *http.Request) {
 	l := layout.FromContext(r.Context())
 
 	var images []Image
-	err := db.DB.Select(&images, `select * from images where user_id = ? order by created_at desc`, l.User.ID)
+	err := rs.DB.Select(&images, `select * from images where user_id = ? order by created_at desc`, l.User.ID)
 	if err != nil {
 		render.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -47,7 +62,7 @@ func Page(w http.ResponseWriter, r *http.Request) {
 	render.Execute(w, pageTemplate, d)
 }
 
-func Submit(w http.ResponseWriter, r *http.Request) {
+func (rs Resource) search(w http.ResponseWriter, r *http.Request) {
 	query := r.FormValue("query")
 
 	keyword := url.QueryEscape("cartoon " + query)
@@ -63,14 +78,14 @@ func Submit(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func SaveSticker(w http.ResponseWriter, r *http.Request) {
+func (rs Resource) save(w http.ResponseWriter, r *http.Request) {
 	user := auth.FromContext(r.Context())
 
 	url := r.FormValue("url")
 
 	img := Image{URL: url}
 
-	_, err := db.DB.Exec(`insert into images(url, user_id) values(?,?)`, url, user.ID)
+	_, err := rs.DB.Exec(`insert into images(url, user_id) values(?,?)`, url, user.ID)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return

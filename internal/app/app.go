@@ -17,7 +17,6 @@ import (
 	"oj/handlers/fun/quizzes/attempt"
 	"oj/handlers/fun/quizzes/attempt/completed"
 	"oj/handlers/fun/quizzes/quiz"
-	"oj/handlers/fun/stickers"
 	"oj/handlers/header"
 	"oj/handlers/humans"
 	"oj/handlers/me"
@@ -25,6 +24,7 @@ import (
 	"oj/handlers/parent"
 	"oj/handlers/postoffice"
 	"oj/handlers/u"
+	"oj/internal/resources/stickers"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/jmoiron/sqlx"
@@ -65,14 +65,7 @@ func (rs Resource) Routes() chi.Router {
 	r.Post("/fun/gradients/picker", gradients.Picker)
 	r.Post("/fun/gradients/set-background", gradients.SetBackground)
 
-	r.Get("/fun/stickers", stickers.Page)
-	r.Post("/fun/stickers", stickers.Submit)
-	r.Post("/fun/stickers/save", stickers.SaveSticker)
-
-	//r.Handle("/stickers2/*", stickers.Handler(database))
-	r.Get("/fun/stickers", stickers.Page)
-	r.Post("/fun/stickers", stickers.Submit)
-	r.Post("/fun/stickers/save", stickers.SaveSticker)
+	r.Mount("/stickers", stickers.Resource{DB: rs.DB}.Routes())
 
 	r.Get("/fun/chess", chess.Page)
 	r.Get("/fun/chess/select/{rank}/{file}", chess.Select)
