@@ -76,6 +76,13 @@ func Router(db *sqlx.DB) *chi.Mux {
 		http.ServeFile(w, r, "assets/favicon.ico")
 	})
 
+	r.NotFound(func(w http.ResponseWriter, r *http.Request) {
+		render.Error(w, "Page not found", 404)
+	})
+	r.MethodNotAllowed(func(w http.ResponseWriter, r *http.Request) {
+		render.Error(w, "Method not allowed", 405)
+	})
+
 	return r
 }
 
@@ -140,11 +147,4 @@ func applicationRouter(r chi.Router) {
 	r.Post("/deliveries/{deliveryID}/logout", deliveries.Logout)
 
 	r.Route("/postoffice", postoffice.Router)
-
-	r.NotFound(func(w http.ResponseWriter, r *http.Request) {
-		render.Error(w, "Page not found", 404)
-	})
-	r.MethodNotAllowed(func(w http.ResponseWriter, r *http.Request) {
-		render.Error(w, "Method not allowed", 405)
-	})
 }
