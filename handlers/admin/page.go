@@ -4,7 +4,6 @@ import (
 	_ "embed"
 	"net/http"
 	"oj/api"
-	"oj/db"
 	"oj/element/gradient"
 	"oj/handlers/admin/messages"
 	"oj/handlers/admin/middleware/auth"
@@ -14,14 +13,27 @@ import (
 	"oj/handlers/render"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/jmoiron/sqlx"
 )
 
-func Router(r chi.Router) {
-	r.Use(auth.EnsureAdmin)
-	r.Use(background.Set(gradient.Admin))
-	r.Get("/", page)
-	r.Route("/quizzes", quizzes.Router)
-	r.Route("/messages", messages.Router)
+type handler struct {
+	router   *chi.Mux
+	database *sqlx.DB
+}
+
+func (h *handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	h.router.ServeHTTP(w, r)
+}
+
+func Handler(database *sqlx.DB) *handler {
+	h := &handler{router: chi.NewRouter(), database: database}
+
+	h.router.Use(auth.EnsureAdmin)
+	h.router.Use(background.Set(gradient.Admin))
+	h.router.Get("/", h.page)
+	h.router.Route("/quizzes", quizzes.Router)
+	h.router.Route("/messages", messages.Router)
+	return h
 }
 
 var (
@@ -30,9 +42,9 @@ var (
 	pageTemplate = layout.MustParse(pageContent, pageContent)
 )
 
-func page(w http.ResponseWriter, r *http.Request) {
+func (h *handler) page(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	queries := api.New(db.DB)
+	queries := api.New(h.database)
 
 	l := layout.FromContext(r.Context())
 

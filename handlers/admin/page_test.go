@@ -3,14 +3,13 @@ package admin
 import (
 	"net/http/httptest"
 	"oj/api"
+	"oj/db"
 	"oj/internal/middleware/auth"
 	"testing"
-
-	"github.com/go-chi/chi/v5"
 )
 
 func TestRouter(t *testing.T) {
-	router := chi.NewRouter().Route("/", Router)
+	handler := Handler(db.DB)
 
 	for _, tc := range []struct {
 		name           string
@@ -35,7 +34,7 @@ func TestRouter(t *testing.T) {
 			w := httptest.NewRecorder()
 			req := httptest.NewRequest("GET", tc.path, nil)
 			ctx := auth.NewContext(req.Context(), tc.user)
-			router.ServeHTTP(w, req.WithContext(ctx))
+			handler.ServeHTTP(w, req.WithContext(ctx))
 			resp := w.Result()
 
 			if resp.StatusCode != tc.wantStatusCode {

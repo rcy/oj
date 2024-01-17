@@ -45,18 +45,15 @@ func main() {
 		log.Fatalf("failed to send startup email: %s", err)
 	}
 
-	listenAndServe(os.Getenv("PORT"), handlers.Router())
-}
-
-func listenAndServe(port string, handler http.Handler) {
+	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8080"
 	}
 
-	http.Handle("/", handler)
+	handler := handlers.Router(db.DB)
 
 	log.Printf("listening on port %s", port)
-	err := http.ListenAndServe(":"+port, nil)
+	err = http.ListenAndServe(":"+port, handler)
 	if errors.Is(err, http.ErrServerClosed) {
 		log.Printf("server closed\n")
 	} else if err != nil {

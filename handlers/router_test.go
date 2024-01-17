@@ -9,7 +9,7 @@ import (
 )
 
 func TestRouter(t *testing.T) {
-	router := Router()
+	router := Router(nil)
 
 	for _, tc := range []struct {
 		name           string

@@ -37,9 +37,10 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/jmoiron/sqlx"
 )
 
-func Router() *chi.Mux {
+func Router(db *sqlx.DB) *chi.Mux {
 	r := chi.NewRouter()
 
 	r.Use(middleware.RequestID)
@@ -61,7 +62,7 @@ func Router() *chi.Mux {
 	r.Route("/admin", func(r chi.Router) {
 		r.Use(auth.Provider)
 		r.Use(layout.Provider)
-		r.Route("/", admin.Router)
+		r.Handle("/", admin.Handler(db))
 	})
 
 	// non authenticated routes
