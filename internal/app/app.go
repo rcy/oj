@@ -30,80 +30,79 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-type handler struct {
-	router   *chi.Mux
-	database *sqlx.DB
+type Resource struct {
+	DB *sqlx.DB
 }
 
-func (h *handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	h.router.ServeHTTP(w, r)
-}
-
-func Handler(database *sqlx.DB) *handler {
-	h := &handler{router: chi.NewRouter(), database: database}
-
-	h.router.Get("/", func(w http.ResponseWriter, r *http.Request) {
+func (rs Resource) Routes() chi.Router {
+	r := chi.NewRouter()
+	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/me", http.StatusFound)
 	})
 
-	h.router.Get("/header", header.Header)
+	r.Get("/header", header.Header)
 
-	h.router.Get("/parent", parent.Index)
-	h.router.Post("/parent/kids", parent.CreateKid)
-	h.router.Delete("/parent/kids/{userID}", parent.DeleteKid)
-	h.router.Post("/parent/kids/{userID}/logout", parent.LogoutKid)
+	r.Get("/parent", parent.Index)
+	r.Post("/parent/kids", parent.CreateKid)
+	r.Delete("/parent/kids/{userID}", parent.DeleteKid)
+	r.Post("/parent/kids/{userID}/logout", parent.LogoutKid)
 
-	h.router.Post("/chat/messages", chat.PostChatMessage)
-	h.router.Mount("/es", eventsource.SSE)
+	r.Post("/chat/messages", chat.PostChatMessage)
+	r.Mount("/es", eventsource.SSE)
 
-	h.router.Get("/me", me.Page)
-	h.router.Get("/me/edit", editme.MyPageEdit)
-	h.router.Post("/me/edit", editme.Post)
-	h.router.Get("/avatars", editme.GetAvatars)
-	h.router.Put("/avatar", editme.PutAvatar)
+	r.Get("/me", me.Page)
+	r.Get("/me/edit", editme.MyPageEdit)
+	r.Post("/me/edit", editme.Post)
+	r.Get("/avatars", editme.GetAvatars)
+	r.Put("/avatar", editme.PutAvatar)
 
-	h.router.Get("/me/humans", humans.Page)
-	h.router.Get("/me/family", family.Page)
-	h.router.Get("/me/friends", friends.Page)
+	r.Get("/me/humans", humans.Page)
+	r.Get("/me/family", family.Page)
+	r.Get("/me/friends", friends.Page)
 
-	h.router.Get("/fun", fun.Page)
-	h.router.Get("/fun/gradients", gradients.Index)
-	h.router.Post("/fun/gradients/picker", gradients.Picker)
-	h.router.Post("/fun/gradients/set-background", gradients.SetBackground)
+	r.Get("/fun", fun.Page)
+	r.Get("/fun/gradients", gradients.Index)
+	r.Post("/fun/gradients/picker", gradients.Picker)
+	r.Post("/fun/gradients/set-background", gradients.SetBackground)
 
-	h.router.Get("/fun/stickers", stickers.Page)
-	h.router.Post("/fun/stickers", stickers.Submit)
-	h.router.Post("/fun/stickers/save", stickers.SaveSticker)
+	r.Get("/fun/stickers", stickers.Page)
+	r.Post("/fun/stickers", stickers.Submit)
+	r.Post("/fun/stickers/save", stickers.SaveSticker)
 
-	h.router.Get("/fun/chess", chess.Page)
-	h.router.Get("/fun/chess/select/{rank}/{file}", chess.Select)
-	h.router.Get("/fun/chess/unselect", chess.Unselect)
-	//h.router.Get("/fun/chess/select/{r1}/{f1}/{r2}/{f2}", chess.Move)
+	//r.Handle("/stickers2/*", stickers.Handler(database))
+	r.Get("/fun/stickers", stickers.Page)
+	r.Post("/fun/stickers", stickers.Submit)
+	r.Post("/fun/stickers/save", stickers.SaveSticker)
 
-	h.router.Get("/fun/quizzes", quizzes.Page)
-	h.router.Route("/fun/quizzes/{quizID}", quiz.Router)
-	h.router.Get("/fun/quizzes/attempts/{attemptID}", attempt.Page)
-	h.router.Get("/fun/quizzes/attempts/{attemptID}/done", completed.Page)
-	h.router.Post("/fun/quizzes/attempts/{attemptID}/question/{questionID}/response", attempt.PostResponse)
+	r.Get("/fun/chess", chess.Page)
+	r.Get("/fun/chess/select/{rank}/{file}", chess.Select)
+	r.Get("/fun/chess/unselect", chess.Unselect)
+	//r.Get("/fun/chess/select/{r1}/{f1}/{r2}/{f2}", chess.Move)
 
-	h.router.Route("/bots", bots.Router)
+	r.Get("/fun/quizzes", quizzes.Page)
+	r.Route("/fun/quizzes/{quizID}", quiz.Router)
+	r.Get("/fun/quizzes/attempts/{attemptID}", attempt.Page)
+	r.Get("/fun/quizzes/attempts/{attemptID}/done", completed.Page)
+	r.Post("/fun/quizzes/attempts/{attemptID}/question/{questionID}/response", attempt.PostResponse)
 
-	h.router.Route("/u/{userID}", u.Router)
-	h.router.Get("/u/{userID}/chat", chat.Page)
+	r.Route("/bots", bots.Router)
 
-	h.router.Get("/connect", connect.Connect)
-	h.router.Put("/connect/friend/{userID}", connect.PutParentFriend)
-	h.router.Delete("/connect/friend/{userID}", connect.DeleteParentFriend)
+	r.Route("/u/{userID}", u.Router)
+	r.Get("/u/{userID}/chat", chat.Page)
 
-	h.router.Get("/connectkids", connectkids.KidConnect)
-	h.router.Put("/connectkids/friend/{userID}", connectkids.PutKidFriend)
-	h.router.Delete("/connectkids/friend/{userID}", connectkids.DeleteKidFriend)
+	r.Get("/connect", connect.Connect)
+	r.Put("/connect/friend/{userID}", connect.PutParentFriend)
+	r.Delete("/connect/friend/{userID}", connect.DeleteParentFriend)
 
-	h.router.Get("/deliveries/{deliveryID}", deliveries.Page)
-	h.router.Get("/delivery/{deliveryID}", deliveries.Page) // temporary
-	h.router.Post("/deliveries/{deliveryID}/logout", deliveries.Logout)
+	r.Get("/connectkids", connectkids.KidConnect)
+	r.Put("/connectkids/friend/{userID}", connectkids.PutKidFriend)
+	r.Delete("/connectkids/friend/{userID}", connectkids.DeleteKidFriend)
 
-	h.router.Route("/postoffice", postoffice.Router)
+	r.Get("/deliveries/{deliveryID}", deliveries.Page)
+	r.Get("/delivery/{deliveryID}", deliveries.Page) // temporary
+	r.Post("/deliveries/{deliveryID}/logout", deliveries.Logout)
 
-	return h
+	r.Route("/postoffice", postoffice.Router)
+
+	return r
 }

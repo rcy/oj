@@ -16,24 +16,19 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-type handler struct {
-	router   *chi.Mux
-	database *sqlx.DB
+type Resource struct {
+	DB *sqlx.DB
 }
 
-func (h *handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	h.router.ServeHTTP(w, r)
-}
+func (rs Resource) Routes() chi.Router {
+	r := chi.NewRouter()
 
-func Handler(database *sqlx.DB) *handler {
-	h := &handler{router: chi.NewRouter(), database: database}
-
-	h.router.Use(auth.EnsureAdmin)
-	h.router.Use(background.Set(gradient.Admin))
-	h.router.Get("/", h.page)
-	h.router.Route("/quizzes", quizzes.Router)
-	h.router.Route("/messages", messages.Router)
-	return h
+	r.Use(auth.EnsureAdmin)
+	r.Use(background.Set(gradient.Admin))
+	r.Get("/", rs.page)
+	r.Route("/quizzes", quizzes.Router)
+	r.Route("/messages", messages.Router)
+	return r
 }
 
 var (
@@ -42,9 +37,9 @@ var (
 	pageTemplate = layout.MustParse(pageContent, pageContent)
 )
 
-func (h *handler) page(w http.ResponseWriter, r *http.Request) {
+func (rs Resource) page(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	queries := api.New(h.database)
+	queries := api.New(rs.DB)
 
 	l := layout.FromContext(r.Context())
 
