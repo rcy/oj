@@ -26,8 +26,6 @@ func Router(db *sqlx.DB) *chi.Mux {
 	middleware.DefaultLogger = middleware.RequestLogger(&middleware.DefaultLogFormatter{Logger: log.New(os.Stdout, "", log.LstdFlags), NoColor: true})
 	r.Use(middleware.Logger)
 
-	//r.Use(oj.Redirect)
-
 	// authenticated routes
 	r.Route("/", func(r chi.Router) {
 		r.Use(auth.Provider)
