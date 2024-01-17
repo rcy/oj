@@ -46,15 +46,15 @@ func Router(r chi.Router) {
 	r.Get("/", listPage)
 	r.Get("/create", createPage)
 	r.Post("/create", postCreate)
-	r.Group(func(r chi.Router) {
+	r.Route("/{botID}", func(r chi.Router) {
 		r.Use(provideBot)
-		r.Get("/{botID}", assistantPage)
-		r.Get("/{botID}/chat", chatRedirectPage)
-		r.Get("/{botID}/edit", editPage)
-		r.Post("/{botID}/edit", postEdit)
-		r.Get("/{botID}/chat/{threadID}", chatPage)
-		r.Post("/{botID}/chat/{threadID}/messages", postMessage)
-		r.Get("/{botID}/chat/{threadID}/runstatus/{runID}", getRunStatus)
+		r.Get("/", assistantPage)
+		r.Get("/chat", chatRedirectPage)
+		r.Get("/edit", editPage)
+		r.Post("/edit", postEdit)
+		r.Get("/chat/{threadID}", chatPage)
+		r.Post("/chat/{threadID}/messages", postMessage)
+		r.Get("/chat/{threadID}/runstatus/{runID}", getRunStatus)
 	})
 }
 
