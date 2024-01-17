@@ -7,7 +7,6 @@ import (
 	"log"
 	"net/http"
 	"oj/api"
-	"oj/db"
 	"oj/handlers/eventsource"
 	"oj/handlers/layout"
 	"oj/handlers/render"
@@ -22,19 +21,23 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
+type Resource struct {
+	Model *api.Queries
+	DB    *sqlx.DB
+}
+
 var (
 	//go:embed page.gohtml
 	pageContent  string
 	pageTemplate = layout.MustParse(pageContent)
 )
 
-func Page(w http.ResponseWriter, r *http.Request) {
+func (rs Resource) Page(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	queries := api.New(db.DB)
 	user := auth.FromContext(ctx)
 
 	pageUserID, _ := strconv.Atoi(chi.URLParam(r, "userID"))
-	pageUser, err := queries.UserByID(ctx, int64(pageUserID))
+	pageUser, err := rs.Model.UserByID(ctx, int64(pageUserID))
 	if err != nil {
 		if err == sql.ErrNoRows {
 			render.Error(w, "User not found", 404)
@@ -47,19 +50,19 @@ func Page(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	room, err := room.FindOrCreateByUserIDs(ctx, user.ID, pageUser.ID)
+	room, err := room.FindOrCreateByUserIDs(ctx, rs.DB, rs.Model, user.ID, pageUser.ID)
 	if err != nil {
 		render.Error(w, err.Error(), 500)
 		return
 	}
 
-	records, err := queries.RecentRoomMessages(ctx, fmt.Sprint(room.ID))
+	records, err := rs.Model.RecentRoomMessages(ctx, fmt.Sprint(room.ID))
 	if err != nil {
 		render.Error(w, "api selecting messages: "+err.Error(), 500)
 		return
 	}
 
-	err = updateDeliveries(db.DB, room.ID, user.ID)
+	err = rs.updateDeliveries(room.ID, user.ID)
 	if err != nil {
 		render.Error(w, "marking deliveries sent: "+err.Error(), 500)
 		return
@@ -91,12 +94,12 @@ func Page(w http.ResponseWriter, r *http.Request) {
 
 var udMut sync.Mutex
 
-func updateDeliveries(db *sqlx.DB, roomID, userID int64) error {
+func (rs Resource) updateDeliveries(roomID, userID int64) error {
 	udMut.Lock()
 	defer udMut.Unlock()
 
 	log.Printf("UPDATE DELIVERIES %d", userID)
-	_, err := db.DB.Exec(`update deliveries set sent_at = current_timestamp where sent_at is null and room_id = ? and recipient_id = ?`, roomID, userID)
+	_, err := rs.DB.Exec(`update deliveries set sent_at = current_timestamp where sent_at is null and room_id = ? and recipient_id = ?`, roomID, userID)
 	log.Printf("UPDATE DELIVERIES %d...done", userID)
 
 	eventsource.SSE.SendMessage(

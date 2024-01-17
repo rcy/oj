@@ -5,8 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"oj/api"
-	"oj/db"
 	"oj/handlers/eventsource"
 	"oj/handlers/render"
 	"oj/internal/middleware/auth"
@@ -18,7 +16,7 @@ import (
 	"github.com/alexandrevicenzi/go-sse"
 )
 
-func PostChatMessage(w http.ResponseWriter, r *http.Request) {
+func (rs Resource) PostChatMessage(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	user := auth.FromContext(ctx)
 	roomID, err := strconv.Atoi(r.FormValue("roomID"))
@@ -29,7 +27,7 @@ func PostChatMessage(w http.ResponseWriter, r *http.Request) {
 	body := r.FormValue("body")
 
 	if strings.TrimSpace(body) != "" {
-		err = postMessage(r.Context(), int64(roomID), user.ID, body)
+		err = rs.postMessage(r.Context(), int64(roomID), user.ID, body)
 		if err != nil {
 			render.Error(w, err.Error(), 500)
 			return
@@ -47,18 +45,16 @@ type RoomUser struct {
 	Email     *string   `db:"email"`
 }
 
-func postMessage(ctx context.Context, roomID, senderID int64, body string) error {
-	queries := api.New(db.DB)
-
+func (rs Resource) postMessage(ctx context.Context, roomID, senderID int64, body string) error {
 	var roomUsers []RoomUser
 
-	tx, err := db.DB.Beginx()
+	tx, err := rs.DB.Beginx()
 	if err != nil {
 		return err
 	}
 	defer tx.Rollback()
 
-	_, err = queries.UserByID(ctx, senderID)
+	_, err = rs.Model.UserByID(ctx, senderID)
 	if err != nil {
 		return err
 	}

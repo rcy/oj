@@ -47,7 +47,6 @@ func (rs Resource) Routes() chi.Router {
 
 	r.Mount("/parent", parent.Resource{DB: rs.DB, Model: rs.Model}.Routes())
 
-	r.Post("/chat/messages", chat.PostChatMessage)
 	r.Mount("/es", eventsource.SSE)
 
 	r.Get("/me", me.Page)
@@ -81,7 +80,9 @@ func (rs Resource) Routes() chi.Router {
 	r.Mount("/bots", bots.Resource{Model: rs.Model, AI: ai.New().Client}.Routes())
 
 	r.Route("/u/{userID}", u.Router)
-	r.Get("/u/{userID}/chat", chat.Page)
+
+	r.Get("/u/{userID}/chat", chat.Resource{DB: rs.DB, Model: rs.Model}.Page)
+	r.Post("/chat/messages", chat.Resource{DB: rs.DB, Model: rs.Model}.PostChatMessage)
 
 	r.Get("/connect", connect.Connect)
 	r.Put("/connect/friend/{userID}", connect.PutParentFriend)

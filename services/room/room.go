@@ -6,17 +6,17 @@ import (
 	"fmt"
 	"math"
 	"oj/api"
-	"oj/db"
+
+	"github.com/jmoiron/sqlx"
 )
 
-func FindOrCreateByUserIDs(ctx context.Context, id1, id2 int64) (*api.Room, error) {
+func FindOrCreateByUserIDs(ctx context.Context, db *sqlx.DB, model *api.Queries, id1, id2 int64) (*api.Room, error) {
 	key := makeRoomKey(id1, id2)
 
-	queries := api.New(db.DB)
-	room, err := queries.RoomByKey(ctx, key)
+	room, err := model.RoomByKey(ctx, key)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return build(ctx, key, id1, id2)
+			return build(ctx, db, model, key, id1, id2)
 		}
 		return nil, err
 	}
@@ -24,21 +24,21 @@ func FindOrCreateByUserIDs(ctx context.Context, id1, id2 int64) (*api.Room, erro
 }
 
 // Create room and add users
-func build(ctx context.Context, key string, userID1, userID2 int64) (*api.Room, error) {
-	tx, err := db.DB.Beginx()
+func build(ctx context.Context, db *sqlx.DB, model *api.Queries, key string, userID1, userID2 int64) (*api.Room, error) {
+	tx, err := db.Beginx()
 	if err != nil {
 		return nil, err
 	}
 	defer tx.Rollback()
+	txModel := model.WithTx(tx.Tx)
 
-	queries := api.New(tx)
-	room, err := queries.CreateRoom(ctx, key)
+	room, err := txModel.CreateRoom(ctx, key)
 	if err != nil {
 		return nil, err
 	}
 
 	for _, userID := range []int64{userID1, userID2} {
-		_, err = queries.CreateRoomUser(ctx, api.CreateRoomUserParams{
+		_, err = txModel.CreateRoomUser(ctx, api.CreateRoomUserParams{
 			RoomID: room.ID,
 			UserID: userID,
 		})
