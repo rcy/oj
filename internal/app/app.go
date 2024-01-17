@@ -24,6 +24,7 @@ import (
 	"oj/handlers/me/editme"
 	"oj/handlers/postoffice"
 	"oj/handlers/u"
+	"oj/internal/ai"
 	"oj/internal/resources/parent"
 	"oj/internal/resources/stickers"
 
@@ -77,7 +78,7 @@ func (rs Resource) Routes() chi.Router {
 	r.Get("/fun/quizzes/attempts/{attemptID}/done", completed.Page)
 	r.Post("/fun/quizzes/attempts/{attemptID}/question/{questionID}/response", attempt.PostResponse)
 
-	r.Mount("/bots", bots.Resource{Model: rs.Model}.Routes())
+	r.Mount("/bots", bots.Resource{Model: rs.Model, AI: ai.New().Client}.Routes())
 
 	r.Route("/u/{userID}", u.Router)
 	r.Get("/u/{userID}/chat", chat.Page)

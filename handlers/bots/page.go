@@ -7,7 +7,6 @@ import (
 	"oj/api"
 	"oj/handlers/layout"
 	"oj/handlers/render"
-	"oj/internal/ai"
 	"oj/internal/middleware/auth"
 	"strings"
 
@@ -43,6 +42,7 @@ var (
 
 type Resource struct {
 	Model *api.Queries
+	AI    *openai.Client
 }
 
 func (rs Resource) Routes() chi.Router {
@@ -95,7 +95,6 @@ func (rs Resource) createPage(w http.ResponseWriter, r *http.Request) {
 
 func (rs Resource) postCreate(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	client := ai.New().Client
 	user := auth.FromContext(ctx)
 
 	name := r.FormValue("name")
@@ -117,7 +116,7 @@ func (rs Resource) postCreate(w http.ResponseWriter, r *http.Request) {
 
 	model := "gpt-3.5-turbo"
 
-	asst, err := client.CreateAssistant(ctx, openai.AssistantRequest{
+	asst, err := rs.AI.CreateAssistant(ctx, openai.AssistantRequest{
 		Model:        model,
 		Name:         &name,
 		Instructions: &instructions,
@@ -157,7 +156,6 @@ func (rs Resource) editPage(w http.ResponseWriter, r *http.Request) {
 
 func (rs Resource) postEdit(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	client := ai.New().Client
 	bot := botFromContext(ctx)
 	user := auth.FromContext(ctx)
 
@@ -183,7 +181,7 @@ func (rs Resource) postEdit(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err = client.ModifyAssistant(ctx, bot.AssistantID, openai.AssistantRequest{
+	_, err = rs.AI.ModifyAssistant(ctx, bot.AssistantID, openai.AssistantRequest{
 		Name:         &name,
 		Instructions: &instructions,
 	})
@@ -213,7 +211,6 @@ func (rs Resource) assistantPage(w http.ResponseWriter, r *http.Request) {
 
 func (rs Resource) chatRedirectPage(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	client := ai.New().Client
 	user := auth.FromContext(ctx)
 	bot := botFromContext(ctx)
 
@@ -230,7 +227,7 @@ func (rs Resource) chatRedirectPage(w http.ResponseWriter, r *http.Request) {
 	if len(threads) > 0 {
 		threadID = threads[0].ThreadID
 	} else {
-		thread, err := client.CreateThread(ctx, openai.ThreadRequest{})
+		thread, err := rs.AI.CreateThread(ctx, openai.ThreadRequest{})
 		if err != nil {
 			render.Error(w, err.Error(), http.StatusInternalServerError)
 			return
@@ -255,7 +252,6 @@ func (rs Resource) chatRedirectPage(w http.ResponseWriter, r *http.Request) {
 func (rs Resource) chatPage(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	l := layout.FromContext(ctx)
-	client := ai.New().Client
 	bot := botFromContext(ctx)
 
 	userThread, err := rs.Model.UserThreadByID(ctx, api.UserThreadByIDParams{
@@ -267,13 +263,13 @@ func (rs Resource) chatPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	thread, err := client.RetrieveThread(ctx, userThread.ThreadID)
+	thread, err := rs.AI.RetrieveThread(ctx, userThread.ThreadID)
 	if err != nil {
 		render.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	messagesList, err := client.ListMessage(ctx, thread.ID, nil, strptr("desc"), nil, nil)
+	messagesList, err := rs.AI.ListMessage(ctx, thread.ID, nil, strptr("desc"), nil, nil)
 	if err != nil {
 		render.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -296,7 +292,6 @@ func (rs Resource) chatPage(w http.ResponseWriter, r *http.Request) {
 
 func (rs Resource) postMessage(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	client := ai.New().Client
 	bot := botFromContext(ctx)
 
 	content := strings.TrimSpace(r.FormValue("message"))
@@ -307,7 +302,7 @@ func (rs Resource) postMessage(w http.ResponseWriter, r *http.Request) {
 
 	threadID := chi.URLParam(r, "threadID")
 
-	_, err := client.CreateMessage(ctx, threadID, openai.MessageRequest{
+	_, err := rs.AI.CreateMessage(ctx, threadID, openai.MessageRequest{
 		Role:    openai.ChatMessageRoleUser,
 		Content: content,
 	})
@@ -316,7 +311,7 @@ func (rs Resource) postMessage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	run, err := client.CreateRun(ctx, threadID, openai.RunRequest{
+	run, err := rs.AI.CreateRun(ctx, threadID, openai.RunRequest{
 		AssistantID: bot.AssistantID,
 	})
 	if err != nil {
@@ -338,10 +333,9 @@ func (rs Resource) postMessage(w http.ResponseWriter, r *http.Request) {
 
 func (rs Resource) getRunStatus(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	client := ai.New().Client
 	bot := botFromContext(ctx)
 
-	run, err := client.RetrieveRun(ctx, chi.URLParam(r, "threadID"), chi.URLParam(r, "runID"))
+	run, err := rs.AI.RetrieveRun(ctx, chi.URLParam(r, "threadID"), chi.URLParam(r, "runID"))
 	if err != nil {
 		render.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -361,7 +355,7 @@ func (rs Resource) getRunStatus(w http.ResponseWriter, r *http.Request) {
 		// trigger an event to update the chat messages
 		w.Header().Add("HX-Trigger", "messagesUpdated")
 
-		thread, err := client.RetrieveThread(ctx, run.ThreadID)
+		thread, err := rs.AI.RetrieveThread(ctx, run.ThreadID)
 		if err != nil {
 			render.Error(w, err.Error(), http.StatusInternalServerError)
 			return
