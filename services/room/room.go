@@ -25,12 +25,12 @@ func FindOrCreateByUserIDs(ctx context.Context, db *sqlx.DB, model *api.Queries,
 
 // Create room and add users
 func build(ctx context.Context, db *sqlx.DB, model *api.Queries, key string, userID1, userID2 int64) (*api.Room, error) {
-	tx, err := db.Beginx()
+	tx, err := db.BeginTx(ctx, nil)
 	if err != nil {
 		return nil, err
 	}
 	defer tx.Rollback()
-	txModel := model.WithTx(tx.Tx)
+	txModel := model.WithTx(tx)
 
 	room, err := txModel.CreateRoom(ctx, key)
 	if err != nil {
