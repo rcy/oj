@@ -62,7 +62,7 @@ func Router(db *sqlx.DB) *chi.Mux {
 	r.Route("/admin", func(r chi.Router) {
 		r.Use(auth.Provider)
 		r.Use(layout.Provider)
-		r.Handle("/", admin.Handler(db))
+		r.Handle("/*", admin.Handler(db))
 	})
 
 	// non authenticated routes
