@@ -28,7 +28,7 @@ db/schema-fixed.sql: db/schema.sql
 	sed -e 's/\"//g' $< > $@
 
 generate: db/schema-fixed.sql
-	`go env GOPATH`/bin/sqlc generate
+	go run github.com/sqlc-dev/sqlc/cmd/sqlc@latest generate
 
 getproddb:
 	fly ssh sftp get /data/oj_production.db
