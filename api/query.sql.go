@@ -86,7 +86,7 @@ func (q *Queries) AdminRecentMessages(ctx context.Context) ([]AdminRecentMessage
 }
 
 const allBots = `-- name: AllBots :many
-select bots.id, bots.created_at, bots.owner_id, bots.name, bots.description, bots.assistant_id, bots.published, users.id, users.created_at, users.username, users.email, users.avatar_url, users.is_parent, users.bio, users.become_user_id, users.admin from bots join users on bots.owner_id = users.id order by created_at desc
+select bots.id, bots.created_at, bots.owner_id, bots.name, bots.description, bots.assistant_id, bots.published, users.id, users.created_at, users.username, users.email, users.avatar_url, users.is_parent, users.bio, users.become_user_id, users.admin from bots join users on bots.owner_id = users.id order by bots.created_at desc
 `
 
 type AllBotsRow struct {
