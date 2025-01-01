@@ -269,7 +269,7 @@ func (rs Resource) chatPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	messagesList, err := rs.AI.ListMessage(ctx, thread.ID, nil, strptr("desc"), nil, nil)
+	messagesList, err := rs.AI.ListMessage(ctx, thread.ID, nil, strptr("desc"), nil, nil, nil)
 	if err != nil {
 		render.Error(w, err.Error(), http.StatusInternalServerError)
 		return

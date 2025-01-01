@@ -15,7 +15,7 @@ require (
 	github.com/minoplhy/duckduckgo-images-api v1.1.1
 	github.com/notnil/chess v1.9.0
 	github.com/rcy/durfmt v0.0.0-20240102082646-83cc8efdab91
-	github.com/sashabaranov/go-openai v1.17.9
+	github.com/sashabaranov/go-openai v1.36.1
 	github.com/yuin/goldmark v1.4.13
 	golang.org/x/exp v0.0.0-20230817173708-d852ddb80c63
 	modernc.org/sqlite v1.23.1
