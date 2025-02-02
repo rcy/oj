@@ -314,4 +314,13 @@ create table bots(
   description text not null,
   published bool not null default false
 )`,
+	`--35 add notes
+drop table if exists notes;
+create table notes(
+  id integer primary key,
+  created_at datetime not null default current_timestamp,
+  owner_id integer references users not null,
+  body text not null,
+  published bool not null default false
+)`,
 }

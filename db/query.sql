@@ -284,3 +284,19 @@ select * from bots where id = ?;
 
 -- name: UpdateBotDescription :one
 update bots set description = ?, name = ? where id = ? and owner_id = ? returning *;
+
+-- name: PublishedNotes :many
+select * from notes where published = 1;
+
+-- name: UserNotes :many
+select * from notes where owner_id = 1;
+
+-- name: CreateNote :one
+insert into notes(owner_id,body) values(?,?) returning *;
+
+-- name: UpdateNote :one
+update notes set body = ? where id = ? and owner_id = ? returning *;
+
+-- name: DeleteNote :exec
+delete from notes where id = ? and owner_id = ?;
+

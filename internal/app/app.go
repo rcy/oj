@@ -14,6 +14,7 @@ import (
 	"oj/handlers/fun"
 	"oj/handlers/fun/chess"
 	"oj/handlers/fun/gradients"
+	"oj/handlers/fun/notebook"
 	"oj/handlers/fun/quizzes"
 	"oj/handlers/fun/quizzes/attempt"
 	"oj/handlers/fun/quizzes/attempt/completed"
@@ -76,6 +77,11 @@ func (rs Resource) Routes() chi.Router {
 	r.Get("/fun/quizzes/attempts/{attemptID}", attempt.Page)
 	r.Get("/fun/quizzes/attempts/{attemptID}/done", completed.Page)
 	r.Post("/fun/quizzes/attempts/{attemptID}/question/{questionID}/response", attempt.PostResponse)
+
+	r.Get("/fun/notes", notebook.Page)
+	r.Post("/fun/notes", notebook.Post)
+	r.Put("/fun/notes/{noteID}", notebook.Put)
+	r.Delete("/fun/notes/{noteID}", notebook.Delete)
 
 	r.Mount("/bots", bots.Resource{Model: rs.Model, AI: ai.New().Client}.Routes())
 

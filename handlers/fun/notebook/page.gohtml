@@ -1,0 +1,44 @@
+{{define "main"}}
+  <div style="display:flex; flex-direction: column; gap: 1em">
+    {{template "notebookheader"}}
+
+    <div id="notes" style="display:flex; flex-direction:column; gap:1em">
+      {{range .Notes}}
+        {{template "note" .}}
+      {{end}}
+    </div>
+
+    <div style="display:flex; justify-content:flex-start">
+      <button class="nes-btn is-success" hx-post="/fun/notes" hx-swap="beforeend" hx-target="#notes">new note</button>
+    </div>
+  </div>
+{{end}}
+
+{{define "notebookheader"}}
+  <div class="nes-container ghost">
+    <h1>Notebook</h1>
+  </div>
+{{end}}
+
+{{define "note"}}
+  <div style="display:flex; gap:1em" class="note">
+    <div style="flex:1">
+      <textarea
+        class="nes-textarea"
+        placeholder="type your note here"
+        rows="5"
+        hx-put="/fun/notes/{{.ID}}"
+        hx-trigger="keyup changed delay:500ms"
+        name="body"
+      >{{.Body}}</textarea>
+    </div>
+    <div>
+      <button class="nes-btn is-error"
+              hx-delete="/fun/notes/{{.ID}}"
+              hx-target="closest .note"
+              hx-swap="outerHTML"
+              hx-confirm="really delete this note?"
+      >-</button>
+    </div>
+  </div>
+{{end}}
