@@ -1812,11 +1812,11 @@ func (q *Queries) UserGradient(ctx context.Context, userID int64) (Gradient, err
 }
 
 const userNotes = `-- name: UserNotes :many
-select id, created_at, owner_id, body, published from notes where owner_id = 1
+select id, created_at, owner_id, body, published from notes where owner_id = ?
 `
 
-func (q *Queries) UserNotes(ctx context.Context) ([]Note, error) {
-	rows, err := q.db.QueryContext(ctx, userNotes)
+func (q *Queries) UserNotes(ctx context.Context, ownerID int64) ([]Note, error) {
+	rows, err := q.db.QueryContext(ctx, userNotes, ownerID)
 	if err != nil {
 		return nil, err
 	}

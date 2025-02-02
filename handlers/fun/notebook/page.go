@@ -25,7 +25,7 @@ func Page(w http.ResponseWriter, r *http.Request) {
 	l := layout.FromContext(ctx)
 	queries := api.New(db.DB)
 
-	allNotes, err := queries.UserNotes(ctx)
+	allNotes, err := queries.UserNotes(ctx, l.User.ID)
 	if err != nil && err != sql.ErrNoRows {
 		render.Error(w, err.Error(), http.StatusInternalServerError)
 		return

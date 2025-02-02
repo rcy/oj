@@ -289,7 +289,7 @@ update bots set description = ?, name = ? where id = ? and owner_id = ? returnin
 select * from notes where published = 1;
 
 -- name: UserNotes :many
-select * from notes where owner_id = 1;
+select * from notes where owner_id = ?;
 
 -- name: CreateNote :one
 insert into notes(owner_id,body) values(?,?) returning *;
